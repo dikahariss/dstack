@@ -52,12 +52,12 @@ Should, Could, Would-not." We use three of the four tiers.
 
 ## M1 — Add 5 or more useful skills ✅ ports merged
 
-- **Status.** Five skills landed: `/tdd`, `/investigate`,
-  `/brainstorm`, `/review`, `/verification`. Sources, token counts,
-  and adaptation notes are in `docs/plans/v1/DONE.md`. Acceptance
-  criterion #4 ("at least one skill is actually used by the user in
-  real work") is the next gate; the ports themselves are merged
-  and installable.
+- **Status.** Five skills landed: `/tdd`, `/debugging`,
+  `/brainstorm`, `/code-review`, `/verification`. Sources, token
+  counts, and adaptation notes are in `docs/plans/v1/DONE.md`.
+  Acceptance criterion #4 ("at least one skill is actually used by
+  the user in real work") is the next gate; the ports themselves
+  are merged and installable.
 - **Why.** dstack with one skill is a demo. dstack with the workflows
   the user runs daily is a tool.
 - **Candidate skills**, in order of likely usefulness to the user:

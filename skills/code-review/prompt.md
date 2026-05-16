@@ -1,4 +1,4 @@
-# /review
+# /code-review
 
 Respond to code-review feedback with technical rigor. Verify before
 implementing, ask before assuming, push back when the reviewer is
@@ -171,7 +171,7 @@ Fixing."
 Not:
 
 ```
-"My apologies, I should have…"  ← over-apologising
+"My apologies, I should have…"  ← over-apologizing
 "I pushed back because I thought…"  ← defending
 "In hindsight…"  ← over-explaining
 ```

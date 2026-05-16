@@ -1,4 +1,4 @@
-# /investigate
+# /debugging
 
 Root-cause investigation discipline. Find why the system is broken
 before proposing how to fix it.

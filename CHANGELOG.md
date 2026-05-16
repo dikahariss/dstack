@@ -15,13 +15,14 @@ Phase 2 work toward v1. Not yet tagged.
 - **Five new skills land under `skills/`** (ROADMAP M1):
   - `/tdd` — red-green-refactor discipline, adapted from
     `superpowers/test-driven-development`. ~1.7 k tokens.
-  - `/investigate` — root-cause-first debugging in four phases,
+  - `/debugging` — root-cause-first debugging in four phases,
     adapted from `superpowers/systematic-debugging`. ~2.1 k tokens.
   - `/brainstorm` — decision-tree interview pairs with
     `AskUserQuestion`, adapted from
     `mattpocock-skills/productivity/grill-me`. ~0.7 k tokens.
-  - `/review` — receive code-review feedback with technical rigor,
-    adapted from `superpowers/receiving-code-review`. ~1.7 k tokens.
+  - `/code-review` — receive code-review feedback with technical
+    rigor, adapted from `superpowers/receiving-code-review`. ~1.7 k
+    tokens.
   - `/verification` — evidence-before-claim gate, adapted from
     `superpowers/verification-before-completion`. ~1.3 k tokens.
 
@@ -33,8 +34,8 @@ Phase 2 work toward v1. Not yet tagged.
   and ~8.3 k tokens combined.
 - **`Glob` and `Grep` added to `CLAUDE_CODE_TOOLS` registry.** They
   are first-class Claude Code tools; the registry omission was
-  caught when the new `/investigate` and `/review` skills declared
-  them. No skill broke from the addition.
+  caught when the new `/debugging` and `/code-review` skills
+  declared them. No skill broke from the addition.
 - **`includes:` directive now resolves.** `FileSkillRepository` reads
   each path listed under `includes:` (relative to `skills/`) and
   exposes the concatenated text on `Skill.includesContent`. The
