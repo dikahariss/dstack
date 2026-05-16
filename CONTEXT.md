@@ -213,9 +213,11 @@ so any local secrets you add later stay local. See
 ## How to use this file
 
 If you are an AI agent (Claude, Codex, etc.) starting work in this
-repo: read this file first, then `docs/ARCHITECTURE.md`, then the ADR
-that is most relevant to your task. Most session vocabulary lives
-here; new terms should be added here when they appear in code review.
+repo: read [`CLAUDE.md`](CLAUDE.md) FIRST (rules and forbidden
+patterns), then this file (vocabulary), then `docs/ARCHITECTURE.md`
+(structure), then the ADR most relevant to your task. Most session
+vocabulary lives here; new terms should be added here when they
+appear in code review.
 
 If you are a human contributor: skim this once to ground your
 vocabulary, then refer back when a term feels overloaded.

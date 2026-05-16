@@ -38,6 +38,11 @@ foundation v1 builds on.
 - **`.env.example` template** — documents the optional
   `DSTACK_TELEMETRY` env variable. Bun auto-loads `.env`, which is
   gitignored.
+- **`CLAUDE.md`** — agent instructions at the repo root. Read-order
+  pointers, forbidden patterns (concrete list, not prose), code
+  conventions, and pacing rules. Structured with tables and short
+  bullets so cheaper models (Haiku/Sonnet) can parse and follow it
+  without inference. About 2 300 tokens.
 
 ### Changed
 

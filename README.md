@@ -156,6 +156,7 @@ local.
 
 ```
 dstack/
+├── CLAUDE.md          # Agent instructions (read first if you are an AI)
 ├── CONTEXT.md         # Domain language glossary (for AI agents)
 ├── VERSION            # Current dstack version
 ├── CHANGELOG.md       # Release notes

@@ -54,6 +54,7 @@ if it ever becomes necessary, will arrive as an on-demand subcommand
 | File | Purpose |
 |---|---|
 | `README.md` | Project introduction and quickstart |
+| `CLAUDE.md` | Agent instructions: read-order, rules, forbidden patterns. Optimised so cheap models (Haiku/Sonnet) can parse it without inference. |
 | `CONTEXT.md` | Domain language glossary (for AI agents) — A1 |
 | `CHANGELOG.md` | Release notes per version — M6 |
 | `VERSION` | Current version string — M6 |
