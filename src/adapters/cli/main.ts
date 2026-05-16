@@ -19,6 +19,7 @@ import { join, resolve } from 'node:path';
 import { BuildCatalog } from '@app/BuildCatalog';
 import { BuildSkill } from '@app/BuildSkill';
 import { InstallSkills } from '@app/InstallSkills';
+import { ListCatalog } from '@app/ListCatalog';
 import { ValidateCatalog } from '@app/ValidateCatalog';
 import { Host } from '@domain/host/Host';
 import { SkillId } from '@domain/skill/SkillId';
@@ -29,14 +30,20 @@ import { CLAUDE_CODE_TOOLS } from '@adapters/claude-code/tools';
 import { Telemetry } from '@obs/Telemetry';
 import { NoopTelemetry } from '@obs/NoopTelemetry';
 import { FileTelemetry } from '@obs/FileTelemetry';
+import { ConsoleTelemetry } from '@obs/ConsoleTelemetry';
 import { scaffoldSkill, ScaffoldError } from './scaffold';
 import { formatWarnings, countWarnings } from './warning-formatter';
 import { formatValidationResults } from './validate-formatter';
+import { formatRowsTable, formatRowsJson } from './list-formatter';
+import { diagnose, formatDoctorReport } from './doctor';
 
 const PROJECT_ROOT = resolve(import.meta.dir, '../../..');
 const SKILLS_ROOT = join(PROJECT_ROOT, 'skills');
 
 function telemetryFromEnv(): Telemetry {
+  if (process.env['DSTACK_LOG'] === 'debug') {
+    return new ConsoleTelemetry();
+  }
   if (process.env['DSTACK_TELEMETRY'] === 'local') {
     return new FileTelemetry(join(homedir(), '.dstack/telemetry/events.jsonl'));
   }
@@ -63,6 +70,7 @@ async function main(argv: readonly string[]): Promise<number> {
   switch (command) {
     case 'build': {
       const scope: 'local' | 'global' = rest.includes('--global') ? 'global' : 'local';
+      const strict = rest.includes('--strict');
       const outputRoot = defaultOutputRoot(scope);
       const host = claudeHost(outputRoot);
       const results = await new BuildCatalog(skills, renderer, telemetry).execute({
@@ -82,7 +90,7 @@ async function main(argv: readonly string[]): Promise<number> {
         console.log('');
         console.log(warningOutput);
       }
-      return 0;
+      return strict && warningCount > 0 ? 1 : 0;
     }
 
     case 'render': {
@@ -107,6 +115,24 @@ async function main(argv: readonly string[]): Promise<number> {
       return 2;
     }
 
+    case 'list': {
+      const asJson = rest.includes('--json');
+      const outputRoot = defaultOutputRoot('local');
+      const host = claudeHost(outputRoot);
+      const skillIds = skills.listIds();
+      const rows = await new ListCatalog(skills, renderer, telemetry).execute({
+        skillIds,
+        host,
+        now: new Date(),
+      });
+      if (asJson) {
+        console.log(formatRowsJson(rows));
+      } else {
+        for (const line of formatRowsTable(rows)) console.log(line);
+      }
+      return 0;
+    }
+
     case 'validate': {
       const outputRoot = defaultOutputRoot('local');
       const host = claudeHost(outputRoot);
@@ -119,6 +145,20 @@ async function main(argv: readonly string[]): Promise<number> {
       const { lines, exitCode } = formatValidationResults(results);
       for (const line of lines) console.log(line);
       return exitCode;
+    }
+
+    case 'doctor': {
+      const outputRoot = defaultOutputRoot('local');
+      const host = claudeHost(outputRoot);
+      const report = await diagnose({
+        repo: skills,
+        renderer,
+        telemetry,
+        host,
+        installRoot: outputRoot,
+      });
+      for (const line of formatDoctorReport(report)) console.log(line);
+      return report.exitCode;
     }
 
     case 'new': {
@@ -155,12 +195,16 @@ async function main(argv: readonly string[]): Promise<number> {
       console.log('dstack — skill catalog for Claude Code');
       console.log('');
       console.log('Usage:');
-      console.log('  dstack build [--global]   render all skills and install');
+      console.log('  dstack build [--global] [--strict]  render all skills and install');
+      console.log('                            --strict exits 1 if any warning was emitted');
       console.log('  dstack render <skill-id>  render one skill to stdout');
       console.log('  dstack new <skill-id>     scaffold a new skill from template');
+      console.log('  dstack list [--json]      list every skill with version, tokens, tools');
       console.log('  dstack validate           check every skill; exit 1 if any fails');
+      console.log('  dstack doctor             diagnose source/install consistency');
       console.log('');
       console.log('Env:');
+      console.log('  DSTACK_LOG=debug          print structured events to stderr');
       console.log('  DSTACK_TELEMETRY=local    enable local JSONL telemetry');
       return 0;
     }

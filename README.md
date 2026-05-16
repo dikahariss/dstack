@@ -134,7 +134,9 @@ bun link
 dstack build
 dstack render careful
 dstack new my-new-skill
+dstack list
 dstack validate
+dstack doctor
 dstack --help
 ```
 
@@ -154,6 +156,7 @@ local.
 
 | Variable | What it does |
 |---|---|
+| `DSTACK_LOG=debug` | Print one structured line per telemetry event to stderr. Off by default. Takes precedence over `DSTACK_TELEMETRY=local`. |
 | `DSTACK_TELEMETRY=local` | Enable local-only JSONL telemetry to `~/.dstack/telemetry/events.jsonl`. Off by default. See [ADR-0006](docs/adr/0006-telemetry-opt-in.md). |
 
 ## Directory layout

@@ -11,11 +11,11 @@ When a roadmap item lands, move its row into this document.
 | Metric | Value |
 |---|---|
 | Current version | 0.1.0 (see [`VERSION`](../../../VERSION) and [`CHANGELOG.md`](../../../CHANGELOG.md)) |
-| Total tracked files | About 80 (excluding `node_modules/`, `.claude/skills/`) |
-| Total lines | About 7,400 (TypeScript + Markdown + YAML) |
-| Tests | 58 pass, 0 fail, about 210 ms total |
-| Skills rendered end-to-end | 1 (`careful`) |
-| Architecture Decision Records | 11 |
+| Total tracked files | About 100 (excluding `node_modules/`, `.claude/skills/`) |
+| Total lines | About 9,500 (TypeScript + Markdown + YAML) |
+| Tests | 87 pass, 0 fail, about 540 ms total |
+| Skills rendered end-to-end | 6 (`careful`, `tdd`, `debugging`, `brainstorm`, `code-review`, `verification`) |
+| Architecture Decision Records | 12 |
 
 ## v0 baseline (initial commit `a730e96`)
 
@@ -49,6 +49,16 @@ summary.
 | **`docs/code-taxonomy.md`** | Reference doc parallel to `skill-taxonomy.md`. Captures the project's coding defaults (small-first, no single-use helpers, no defaults on one-call-site params, etc.) and explicitly lists where ADR-0001 / ADR-0006 / ADR-0011 override the defaults (use-case classes, ports as interfaces, alias imports). Includes a Part 7 review checklist for pre-commit walk-through. CLAUDE.md read-order points new contributors at it before they touch `src/`. |
 | **ADR-0012 — Frontmatter alignment with official schema** | Renamed input YAML key `id:` → `name:` so dstack accepts the same field name as `anthropics-skills`. Added two optional fields (`license:`, `compatibility:`) that round-trip through the renderer into the output frontmatter. `SkillSpec.id` (the TypeScript internal field) is unchanged; only the YAML surface flips. Migrated `skills/careful/skill.yaml`, nine test fixtures, the `dstack new` scaffold template, and `docs/specs/skill-spec.md`. New fixture `test/fixtures/skills/with-licenses/licensed/` and three tests in `test/unit/adapters/fs/optional-fields.test.ts` cover the new fields. |
 | **M1 — Five skills ported** | `skills/tdd/`, `skills/debugging/`, `skills/brainstorm/`, `skills/code-review/`, `skills/verification/`. Sources: `superpowers/test-driven-development`, `superpowers/systematic-debugging`, `mattpocock-skills/productivity/grill-me`, `superpowers/receiving-code-review`, `superpowers/verification-before-completion`. Every skill carries the advisory note required by the ROADMAP acceptance criteria (dstack has no hook engine; discipline is reinforced by the rendered prompt). All six skills (including `careful`) render under their per-skill budgets and total ~8 300 tokens combined. `CLAUDE_CODE_TOOLS` registry gained `Glob` and `Grep` to support `/debugging` and `/code-review`. Acceptance criterion #4 ("at least one skill used by the user in real work") is the next gate — the ports are merged and installable. |
+| **M7 — `dstack list` command** | `src/application/ListCatalog.ts` returns `SkillRow[]` (id, version, description, tools, tokenCount, tokenBudget); broken skills surface as `error` rows rather than aborting. `src/adapters/cli/list-formatter.ts` renders the rows as an aligned table or, with `--json`, as a JSON array. Wired through main.ts and `bun run list`. |
+| **M8 — HostRenderer contract suite** | `test/contract/HostRenderer.contract.ts` exports `runHostRendererContract(name, factory)` — applied to `ClaudeCodeRenderer` in a one-line `.contract.test.ts`. Invariants: deterministic render, token count proportional to body length, frontmatter parses as YAML and carries `name`+`version`, include warnings forwarded, `token-near-budget` warning fires when content exceeds 90% of budget. |
+| **M9 — Installer contract suite** | `test/contract/Installer.contract.ts` exports `runInstallerContract(name, factory)` — applied to `FsInstaller`. Invariants: fresh write reports `written`, identical content on second run reports `skipped`, content change rewrites, orphan dirs are removed, writes outside the path allow-list throw. Tests use `mkdtempSync` under `~/.dstack/skills/` (an allowed root) and clean up. |
+| **M10 — End-to-end integration test + benchmark** | `test/integration/build-and-install.test.ts` wires the real adapters (`FileSkillRepository`, `ClaudeCodeRenderer`, `FsInstaller`, `NoopTelemetry`) and runs the same `BuildCatalog`+`InstallSkills` pipeline as `dstack build`. Two cases: a two-skill end-to-end with file-on-disk assertions, and a 100-skill benchmark that asserts wall-clock under 1 second. Both use `mkdtempSync` for inputs/outputs and clean up. |
+| **M11 — CI pipeline** | `.github/workflows/ci.yml` runs `bun install --frozen-lockfile`, `bun run typecheck`, `bun test`, and `bun run validate` on every pull request and push to `main`. Five-minute timeout. Failing job blocks merge. |
+| **M12 — `CONTRIBUTING.md`** | Top-level guide walking a contributor from "I have an idea" to "my skill renders, validates, and a test verifies it." Cross-references `docs/specs/skill-spec.md` (full schema), `docs/code-taxonomy.md` (coding rules), `docs/plans/v1/DEFERRED.md` (what is intentionally not built), and `docs/adr/README.md` (when to write a new ADR). |
+| **M13 — `DSTACK_LOG=debug` console telemetry** | `src/observability/ConsoleTelemetry.ts` writes one line per `TelemetryEvent` to stderr in the format `[<ISO ts>] <kind> <JSON details>`. Wired in `telemetryFromEnv()` with precedence over `DSTACK_TELEMETRY=local`. Off by default so existing usage is unchanged. |
+| **M14 — `dstack build --strict`** | New flag on `build`. Returns exit code 1 instead of 0 when any renderer warning was emitted (token-near-budget, include-cycle-broken, overlapping-trigger). Default behavior is unchanged. |
+| **M19 — Agent Skills schema compatibility test** | `test/contract/AgentSkillsSchema.contract.test.ts` renders every real skill in `skills/` and asserts the frontmatter matches the official Anthropic Agent Skills schema: kebab-case `name`, non-empty `description`, optional `license`/`compatibility` as strings, optional `allowed-tools` as a string array. Catches drift in either direction. |
+| **M20 — `dstack doctor` command** | `src/adapters/cli/doctor.ts` walks `skills/` and the install root and reports per-skill consistency: validation failures from the source side, version drift between `skill.yaml` and the installed `SKILL.md` frontmatter, and orphan directories under the install root that no longer correspond to a source skill. Exit 0 when consistent, 1 when any issue is detected. |
 
 **M2 was explored and rejected.** The original plan was to wire
 Anthropic's `messages.countTokens` as an opt-in tokenizer. After
@@ -195,15 +205,9 @@ if it ever becomes necessary, will arrive as an on-demand subcommand
 
 ## Known gaps (handed off to ROADMAP)
 
-These items are explicitly NOT in v0.1.0. Each has a milestone in
-[ROADMAP.md](ROADMAP.md):
+Phase 2 shipped the remaining ROADMAP work. Only two gaps remain:
 
-| Gap | Roadmap milestone |
+| Gap | Status |
 |---|---|
-| Only 1 skill exists (`careful`); v1 needs at least 5 useful skills | M1 |
-| No `dstack list` command | M7 |
-| Only `SkillRepository` has a shared contract suite | M8 (HostRenderer), M9 (Installer) |
-| No integration test | M10 |
-| No continuous integration (CI) pipeline | M11 |
-| No `CONTRIBUTING.md` | M12 |
-| `packages/browse/` exists only as a README | Deferred (see DEFERRED.md) |
+| At least one skill used by the user in real work (M1 acceptance #4) | User-dependent; the ports are merged and installable. |
+| `packages/browse/` exists only as a README | Deferred — see [DEFERRED.md](DEFERRED.md) D4. |

@@ -50,6 +50,12 @@ Should, Could, Would-not." We use three of the four tiers.
 
 # Must (blocking for v1)
 
+All Must milestones (M1, M3, M4) are done. The Should and Could tier
+milestones below are also shipped in Phase 2 — see
+[DONE.md](DONE.md) for the per-item summary. The remaining gate for
+v1 is acceptance #4 on M1 ("at least one skill used by the user in
+real work"), which is user-dependent.
+
 ## M1 — Add 5 or more useful skills ✅ ports merged
 
 - **Status.** Five skills landed: `/tdd`, `/debugging`,
@@ -159,7 +165,10 @@ Should, Could, Would-not." We use three of the four tiers.
 
 # Should (high value, not blocking)
 
-## M7 — `dstack list` command
+All Should milestones below (M7 through M12) are shipped. Acceptance
+details are recorded in [DONE.md](DONE.md).
+
+## M7 — `dstack list` command ✅ shipped
 
 - **Why.** Today there is no way to ask "what skills do I have, what
   versions, and what is their token cost?" except by running `ls -la
@@ -173,7 +182,7 @@ Should, Could, Would-not." We use three of the four tiers.
 - **Depends on**: Nothing. Token counts shown are approximate (±10%);
   the column header should note "approx" to make that explicit.
 
-## M8 — Contract suite for `HostRenderer`
+## M8 — Contract suite for `HostRenderer` ✅ shipped
 
 - **Why.** ADR-0001 says one of the payoffs of hexagonal architecture
   is a shared contract test suite for each port. Only
@@ -191,7 +200,7 @@ Should, Could, Would-not." We use three of the four tiers.
 - **Effort**: 45 minutes.
 - **Depends on**: Nothing.
 
-## M9 — Contract suite for `Installer`
+## M9 — Contract suite for `Installer` ✅ shipped
 
 - **Why.** Same reasoning as M8. `FsInstaller` is the only
   implementation today. A future installer (one that writes a JSON
@@ -205,7 +214,7 @@ Should, Could, Would-not." We use three of the four tiers.
 - **Effort**: 30 minutes.
 - **Depends on**: Nothing.
 
-## M10 — End-to-end integration test (and build-time benchmark)
+## M10 — End-to-end integration test (and build-time benchmark) ✅ shipped
 
 - **Why.** Today, the proof that the chain works is that `bun run
   build` succeeded once on the developer's machine. This proof needs
@@ -229,7 +238,7 @@ Should, Could, Would-not." We use three of the four tiers.
   benchmark case.
 - **Depends on**: Nothing.
 
-## M11 — Continuous integration (CI) pipeline
+## M11 — Continuous integration (CI) pipeline ✅ shipped
 
 - **Why.** "Tests pass on main" is only true if a machine other than
   the developer's runs them. CI is also a forcing function for clean
@@ -247,7 +256,7 @@ Should, Could, Would-not." We use three of the four tiers.
     **Decision: GitHub Actions for now**, because the repository is
     on GitHub. Revisit if the repository moves.
 
-## M12 — `CONTRIBUTING.md` (how to add a skill)
+## M12 — `CONTRIBUTING.md` (how to add a skill) ✅ shipped
 
 - **Why.** Without this document, the answer to "how do I add a
   skill?" requires reading 4 files. New contributors waste time.
@@ -265,7 +274,11 @@ Should, Could, Would-not." We use three of the four tiers.
 
 # Could (postpone if Must or Should run long)
 
-## M13 — Debug logging
+M13, M14, M19, M20 are shipped in Phase 2. M16 stays out of scope.
+M17 (bucket organisation) is still gated on the catalog reaching ten
+or more skills.
+
+## M13 — Debug logging ✅ shipped
 
 - **Why.** When rendering produces an unexpected result, "why" is
   invisible. A `DSTACK_LOG=debug` environment variable that prints
@@ -276,7 +289,7 @@ Should, Could, Would-not." We use three of the four tiers.
   <event> <details>`.
 - **Effort**: 30 minutes.
 
-## M14 — `--strict` flag (treat warnings as errors)
+## M14 — `--strict` flag (treat warnings as errors) ✅ shipped
 
 - **Why.** Continuous integration wants binary signal: passed or
   failed. M5 (shipped) surfaces warnings to the CLI. M14 lets CI fail
@@ -314,7 +327,7 @@ Should, Could, Would-not." We use three of the four tiers.
   skills, OR a contributor reports that the flat layout is hard to
   scan.
 
-## M19 — Spec-compatibility test against Anthropic's official spec
+## M19 — Spec-compatibility test against Anthropic's official spec ✅ shipped
 
 - **Why.** The rendered `SKILL.md` format is defined by Anthropic.
   A test that validates output against the official spec leaves the
@@ -329,7 +342,7 @@ Should, Could, Would-not." We use three of the four tiers.
 - **Effort**: 1 hour.
 - **Depends on**: Nothing structural.
 
-## M20 — `dstack doctor` command
+## M20 — `dstack doctor` command ✅ shipped
 
 - **Why.** A health check that diagnoses common skill-installation
   problems without the user having to read source. Catches: orphan
@@ -349,25 +362,19 @@ Should, Could, Would-not." We use three of the four tiers.
 
 # Effort summary
 
-Phase 1 (M5 + M6 + M15 + A1 + A3) is done and shipped in v0.1.0. M2
-was explored and rejected (see Phase 1 section above). Remaining work
-to reach v1:
+Phase 1 (M5 + M6 + M15 + A1 + A3) shipped in v0.1.0. M2 was
+explored and rejected. Phase 2 (everything below) is done:
 
-| Tier | Items | Total AI-pair time |
+| Tier | Items | Status |
 |---|---|---|
-| Must | M1, M3, M4 | About 8 to 12 hours (M1 is most of the total) |
-| Should | M7 through M12 | About 5 hours (M10 grew by 30 min for the benchmark case) |
-| Could | M13, M14, M16, M17, M19, M20 | About 4 to 5 hours |
-| **v1 minimum** | **8 milestones (Must + Should)** | **About 14 to 18 hours** |
+| Must | M1, M3, M4 | ✅ shipped |
+| Should | M7 through M12 | ✅ shipped |
+| Could | M13, M14, M19, M20 | ✅ shipped |
+| Could (deferred) | M16 (out of scope), M17 (waiting on ten-skill trigger) | — |
 
-M17, M19, M20 are not blocking for v1 — they are mid-term polish that
-becomes valuable once the catalog grows past ten skills (M17), the
-maintainer wants to consider Anthropic-marketplace publication (M19),
-or installation-debug friction shows up in real use (M20).
-
-For a senior full-time engineer working without AI, the remainder is
-roughly one week of work. For this user, working part-time, plan
-about two weeks.
+The remaining gate for v1 is M1 acceptance criterion #4 ("at least
+one skill is actually used by the user in real work"). The ports
+themselves are merged and installable.
 
 # Suggested order
 

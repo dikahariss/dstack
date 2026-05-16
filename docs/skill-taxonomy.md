@@ -478,10 +478,11 @@ adopted, each computation type gets its own test strategy:
 
 ### 6.5 Implications for skill documentation
 
-The planned `dstack list` command (milestone M7 in the roadmap) could
+The shipped `dstack list` command (ROADMAP M7) could be extended to
 group its output by computation type. The user would then see the
 catalog's profile at a glance: how many Deterministic, how many Hybrid,
-and so on.
+and so on. Today the column set is fixed; adding a `--group-by type`
+flag is a small follow-up if the grouping becomes useful.
 
 ---
 

@@ -57,6 +57,67 @@ Phase 2 work toward v1. Not yet tagged.
   collect-errors-instead-of-throwing logic so it can be reused. The
   CLI now lists `validate` in `--help` and `package.json` exposes
   `bun run validate`. (ROADMAP M4.)
+- **`dstack list` command.** Prints a table with columns `ID`,
+  `VERSION`, `TOKENS (approx)`, `TOOLS`, `DESCRIPTION` — one row per
+  skill. `--json` emits the same data as a JSON array for programs.
+  Skills that fail to load surface as an error row rather than
+  aborting the listing. A new `ListCatalog` use case mirrors
+  `ValidateCatalog`'s per-skill loop and returns `SkillRow[]`; a
+  `list-formatter` adapter handles text + JSON output. (ROADMAP M7.)
+- **`dstack doctor` command.** Diagnoses source-vs-install
+  consistency: per-skill validation (reuses `ValidateCatalog`),
+  version drift between `skill.yaml` and the installed `SKILL.md`
+  frontmatter, and orphan directories under the install root that
+  no longer correspond to a source skill. Exit 0 when consistent,
+  1 when any issue is detected. (ROADMAP M20.)
+- **`dstack build --strict`.** New flag that flips the build's exit
+  code to 1 whenever any renderer warning was emitted (token near
+  budget, include cycle broken, overlapping triggers). Default
+  remains 0 so existing usage stays unchanged. Intended for CI.
+  (ROADMAP M14.)
+- **Contract suite for `HostRenderer`.** `test/contract/
+  HostRenderer.contract.ts` defines the shared invariants
+  (deterministic render, token count proportional to body length,
+  frontmatter is parseable YAML, include warnings forwarded,
+  near-budget warning fires). Applied to `ClaudeCodeRenderer`. A
+  future Codex/Kiro adapter plugs into the same suite without
+  rewrite. (ROADMAP M8.)
+- **Contract suite for `Installer`.** `test/contract/
+  Installer.contract.ts` covers fresh write, idempotent skip on
+  identical content, rewrite on content change, orphan removal,
+  and path-policy rejection. Applied to `FsInstaller`. Tests run
+  under `~/.dstack/skills/__contract-test-*` (an allowed root) and
+  clean up after themselves. (ROADMAP M9.)
+- **End-to-end integration test.** `test/integration/
+  build-and-install.test.ts` wires real adapters and runs the
+  same pipeline as `dstack build`: write fixture skills, render,
+  install, assert files on disk. A second case generates 100
+  minimal skills and asserts the full pipeline finishes in under
+  1 second (the claim in the README). (ROADMAP M10.)
+- **Agent Skills schema compatibility test.** `test/contract/
+  AgentSkillsSchema.contract.test.ts` renders every real skill in
+  `skills/` and asserts the frontmatter conforms to the official
+  Anthropic Agent Skills schema (kebab-case `name`, non-empty
+  `description`, optional `license`/`compatibility`/`allowed-tools`
+  with correct types). Surfaces drift if either side changes.
+  (ROADMAP M19.)
+- **CI pipeline.** `.github/workflows/ci.yml` runs `bun install
+  --frozen-lockfile`, `bun run typecheck`, `bun test`, and `bun run
+  validate` on every pull request and push to `main`. Five-minute
+  timeout per job. Required for merge. (ROADMAP M11.)
+- **`CONTRIBUTING.md`.** Step-by-step walk from "I have an idea" to
+  "my skill renders, validates, and a test verifies it." Covers
+  scaffolding, schema basics, prompt conventions, validation,
+  rendering, testing, commits, version bumps, and when to write a
+  new ADR. Cross-references the specs rather than duplicating them.
+  (ROADMAP M12.)
+- **`DSTACK_LOG=debug` env-gated console telemetry.** New
+  `ConsoleTelemetry` adapter writes one line per telemetry event
+  to stderr in the format `[<ISO ts>] <kind> <JSON details>`.
+  Off by default; opt-in by setting `DSTACK_LOG=debug`. Takes
+  precedence over `DSTACK_TELEMETRY=local`. Surfaces what each use
+  case is doing without changing domain or application code.
+  (ROADMAP M13.)
 
 ### Changed
 
