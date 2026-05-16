@@ -44,10 +44,11 @@ Each field is listed below. Required fields must be present in every
 ```yaml
 # REQUIRED FIELDS
 
-id: string
+name: string
   # Globally unique. Lowercase letters, digits, hyphens.
   # Must start with a letter. 1 to 64 characters.
   # Must match the directory name.
+  # Aligned with the official Agent Skills schema (ADR-0012).
 
 version: string
   # Semantic version. Examples: "1.0.0", "0.2.1", "2.0.0".
@@ -67,6 +68,17 @@ context_budget_tokens: integer
   # Hard ceiling: 16000 (set by ADR-0010).
 
 # OPTIONAL FIELDS
+
+license: string
+  # License name or pointer (e.g. "MIT", "Apache-2.0",
+  # "Proprietary. LICENSE.txt has complete terms").
+  # Forwarded into the rendered SKILL.md frontmatter. Aligned with the
+  # official Agent Skills schema (ADR-0012).
+
+compatibility: string
+  # Environment requirement (e.g. "Requires Python 3.14+",
+  # "Designed for Claude Code"). Forwarded into the rendered SKILL.md
+  # frontmatter. Aligned with the official Agent Skills schema (ADR-0012).
 
 inputs:
   # A list of values the skill expects from the caller (the user or another skill).
@@ -136,8 +148,8 @@ continues but prints a message.
 
 | Rule | Severity | What happens if broken |
 |---|---|---|
-| `id` matches the directory name | Error | Build fails. |
-| `id` is unique across all skills | Error | Build fails. |
+| `name` matches the directory name | Error | Build fails. |
+| `name` is unique across all skills | Error | Build fails. |
 | `version` is valid semantic version | Error | Build fails. |
 | Every entry in `tools` is in the host's tool registry | Error | Build fails. See [host-spec.md](host-spec.md). |
 | `context_budget_tokens` is in the range (0, 16000] | Error | Build fails. The ceiling is set by [ADR-0010](../adr/0010-context-budget.md). |
@@ -168,7 +180,7 @@ The `careful` skill in `skills/careful/` is the reference example. Its
 yaml file looks like this:
 
 ```yaml
-id: careful
+name: careful
 version: 0.2.0
 description: |
   Safety guardrails for destructive commands. Reminds the user to pause before

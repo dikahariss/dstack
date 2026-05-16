@@ -1,4 +1,4 @@
-id: missing-tools
+name: missing-tools
 version: 1.0.0
 description: |
   No tools field at all.

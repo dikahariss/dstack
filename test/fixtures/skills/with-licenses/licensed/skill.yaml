@@ -1,0 +1,11 @@
+name: licensed
+version: 1.0.0
+description: |
+  Fixture that populates the optional license and compatibility fields
+  added by ADR-0012. Used to verify both parser round-trip and renderer
+  emission.
+tools:
+  - Read
+context_budget_tokens: 1000
+license: Apache-2.0
+compatibility: Requires Bun 1.3+

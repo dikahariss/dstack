@@ -2,17 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { SkillId } from '@domain/skill/SkillId';
 
-/**
- * Scaffold a new skill directory under `<root>/<skill-id>/`.
- *
- * Writes two starter files:
- *   - `skill.yaml` — metadata stub with `id`, `version`, `description`,
- *     `tools`, and `context_budget_tokens` set to the default 4 000.
- *   - `prompt.md` — a heading + a TODO placeholder.
- *
- * Refuses to overwrite an existing skill directory. Returns the
- * absolute path of the created skill.
- */
+/** Scaffold `<root>/<skill-id>/{skill.yaml, prompt.md}`. Refuses to overwrite. */
 export interface ScaffoldResult {
   readonly skillId: string;
   readonly skillDir: string;
@@ -50,7 +40,7 @@ export function scaffoldSkill(skillsRoot: string, idRaw: string): ScaffoldResult
 }
 
 function skillYamlTemplate(skillId: string): string {
-  return `id: ${skillId}
+  return `name: ${skillId}
 version: 0.1.0
 description: |
   TODO: one or two sentences describing what this skill does and when to use

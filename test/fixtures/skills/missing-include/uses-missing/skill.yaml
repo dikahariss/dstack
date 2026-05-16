@@ -1,4 +1,4 @@
-id: uses-missing
+name: uses-missing
 version: 1.0.0
 description: |
   Fixture whose includes field points at a file that does not exist.

@@ -35,6 +35,8 @@ export interface SkillSpecData {
   readonly contextBudgetTokens: number;
   readonly triggers: readonly TriggerPhrase[];
   readonly includes: readonly string[];
+  readonly license?: string;
+  readonly compatibility?: string;
 }
 
 /**
@@ -54,6 +56,8 @@ export class SkillSpec implements SkillSpecData {
   readonly contextBudgetTokens: number;
   readonly triggers: readonly TriggerPhrase[];
   readonly includes: readonly string[];
+  readonly license?: string;
+  readonly compatibility?: string;
 
   private constructor(data: SkillSpecData) {
     this.id = data.id;
@@ -65,6 +69,8 @@ export class SkillSpec implements SkillSpecData {
     this.contextBudgetTokens = data.contextBudgetTokens;
     this.triggers = data.triggers;
     this.includes = data.includes;
+    if (data.license !== undefined) this.license = data.license;
+    if (data.compatibility !== undefined) this.compatibility = data.compatibility;
   }
 
   static fromValidated(data: SkillSpecData): SkillSpec {

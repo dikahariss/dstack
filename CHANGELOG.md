@@ -48,6 +48,16 @@ Phase 2 work toward v1. Not yet tagged.
   that used to read `'../../../../src/...'` now read `'@adapters/...'`.
   ADR-0011 records the convention. Bun resolves the aliases at
   runtime; no bundler is required.
+- **Skill frontmatter aligns with the official Agent Skills schema.**
+  The input YAML key `id:` is renamed to `name:` to match what
+  `anthropics-skills` ships, so an official example pastes into a
+  dstack folder with no rename. Two optional fields are now accepted
+  and forwarded into the rendered output frontmatter: `license:`
+  (e.g. `Apache-2.0`) and `compatibility:` (e.g. `Requires Bun 1.3+`).
+  Internal TypeScript `SkillSpec.id` is unchanged. ADR-0012 records
+  the decision. Existing `skill.yaml` files must rename `id:` →
+  `name:`; the `careful` skill and the nine test fixtures have been
+  migrated.
 
 ## [0.1.0] — 2026-05-16
 

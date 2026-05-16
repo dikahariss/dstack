@@ -149,10 +149,12 @@ export class FileSkillRepository implements SkillRepository {
     lineCounter: LineCounter,
   ): SkillSpec {
     // Resolve the skill id first so subsequent error messages can use the
-    // canonical id rather than the directory name.
-    const idRaw = this.requireString(raw, 'id', yamlPath, dirName, contents, lineCounter);
-    const id = SkillId.parse(idRaw, 'id');
-    const errId = idRaw; // canonical for error messages from here down
+    // canonical id rather than the directory name. The YAML key is `name`
+    // per the official Agent Skills schema (ADR-0012); internally the value
+    // becomes `SkillSpec.id` because the term "skill id" predates the rename.
+    const nameRaw = this.requireString(raw, 'name', yamlPath, dirName, contents, lineCounter);
+    const id = SkillId.parse(nameRaw, 'name');
+    const errId = nameRaw; // canonical for error messages from here down
 
     const version = this.requireString(raw, 'version', yamlPath, errId, contents, lineCounter);
     const description = this.requireString(raw, 'description', yamlPath, errId, contents, lineCounter);
@@ -168,6 +170,9 @@ export class FileSkillRepository implements SkillRepository {
       );
     }
 
+    const license = this.optionalString(raw, 'license', yamlPath, errId, contents, lineCounter);
+    const compatibility = this.optionalString(raw, 'compatibility', yamlPath, errId, contents, lineCounter);
+
     return SkillSpec.fromValidated({
       id,
       version,
@@ -178,7 +183,30 @@ export class FileSkillRepository implements SkillRepository {
       contextBudgetTokens: budget,
       triggers: (raw['triggers'] as string[]) ?? [],
       includes: (raw['includes'] as string[]) ?? [],
+      ...(license !== undefined ? { license } : {}),
+      ...(compatibility !== undefined ? { compatibility } : {}),
     });
+  }
+
+  private optionalString(
+    raw: Record<string, unknown>,
+    field: string,
+    yamlPath: string,
+    skillId: string,
+    contents: unknown,
+    lineCounter: LineCounter,
+  ): string | undefined {
+    const value = raw[field];
+    if (value === undefined) return undefined;
+    if (typeof value !== 'string' || value.length === 0) {
+      throw new SkillSpecError(
+        skillId,
+        field,
+        'must be a non-empty string when present',
+        this.locateField(field, yamlPath, contents, lineCounter),
+      );
+    }
+    return value;
   }
 
   private requireString(

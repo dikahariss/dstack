@@ -1,4 +1,4 @@
-id: careful
+name: careful
 version: 0.2.0
 description: |
   Safety guardrails for destructive commands. Reminds the user to pause before

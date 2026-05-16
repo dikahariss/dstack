@@ -69,6 +69,7 @@ Each ADR has six sections. Aim for under 80 lines per ADR.
 | [0009](0009-spec-driven-skills.md) | Skills ship a contract | Accepted | Cheap |
 | [0010](0010-context-budget.md) | Hard token budget per skill | Accepted | Cheap |
 | [0011](0011-import-path-aliases.md) | Import path aliases for cross-layer references | Accepted | Cheap |
+| [0012](0012-frontmatter-align-official.md) | Frontmatter alignment with official Agent Skills schema | Accepted | Cheap |
 
 ## How to add a new ADR
 

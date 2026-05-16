@@ -1,4 +1,4 @@
-id: wrong-type
+name: wrong-type
 version: 1.0.0
 description: |
   tools field is not an array — should be a list, not a scalar.

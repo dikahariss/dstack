@@ -1,4 +1,4 @@
-id: syntax-error
+name: syntax-error
 version: 1.0.0
 description: |
   Has a YAML syntax error on line 7.

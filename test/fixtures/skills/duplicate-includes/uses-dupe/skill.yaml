@@ -1,4 +1,4 @@
-id: uses-dupe
+name: uses-dupe
 version: 1.0.0
 description: |
   Fixture that names the same include twice; the second reference must

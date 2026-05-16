@@ -41,7 +41,7 @@ export class ClaudeCodeRenderer implements HostRenderer {
     };
   }
 
-  private buildFrontmatter(_host: Host, spec: import('../../domain/skill/SkillSpec').SkillSpec): string {
+  private buildFrontmatter(_host: Host, spec: import('@domain/skill/SkillSpec').SkillSpec): string {
     const lines = [
       '---',
       `name: ${spec.id.value}`,
@@ -49,8 +49,10 @@ export class ClaudeCodeRenderer implements HostRenderer {
       `description: |`,
       ...spec.description.split('\n').map((l) => `  ${l}`),
       `allowed-tools: [${spec.tools.join(', ')}]`,
-      '---',
     ];
+    if (spec.license !== undefined) lines.push(`license: ${spec.license}`);
+    if (spec.compatibility !== undefined) lines.push(`compatibility: ${spec.compatibility}`);
+    lines.push('---');
     return lines.join('\n');
   }
 }

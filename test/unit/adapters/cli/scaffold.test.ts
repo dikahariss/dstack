@@ -30,10 +30,10 @@ describe('scaffoldSkill', () => {
     expect(existsSync(join(tmpRoot, 'my-new-skill', 'prompt.md'))).toBe(true);
   });
 
-  test('skill.yaml contains the id and default budget', () => {
+  test('skill.yaml contains the name and default budget', () => {
     scaffoldSkill(tmpRoot, 'alpha');
     const yaml = readFileSync(join(tmpRoot, 'alpha', 'skill.yaml'), 'utf-8');
-    expect(yaml).toContain('id: alpha');
+    expect(yaml).toContain('name: alpha');
     expect(yaml).toContain('context_budget_tokens: 4000');
     expect(yaml).toContain('version: 0.1.0');
     expect(yaml).toContain('tools:');

@@ -1,4 +1,4 @@
-id: uses-shared
+name: uses-shared
 version: 1.0.0
 description: |
   Fixture that pulls in shared content via the includes field.
