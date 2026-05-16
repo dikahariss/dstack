@@ -47,6 +47,24 @@ export class FileSkillRepository implements SkillRepository {
     return this.loadOne(dir);
   }
 
+  /**
+   * Return directory names that look like skill folders, sorted. Used by
+   * commands (e.g. `dstack validate`) that want to enumerate skills
+   * without loading them, so a single broken skill does not abort the
+   * scan. Skips entries starting with `_` (shared dirs) or `.` (hidden).
+   */
+  listIds(): readonly string[] {
+    if (!existsSync(this.root)) return [];
+    const ids: string[] = [];
+    for (const entry of readdirSync(this.root)) {
+      if (entry.startsWith('_') || entry.startsWith('.')) continue;
+      const dir = join(this.root, entry);
+      if (!statSync(dir).isDirectory()) continue;
+      ids.push(entry);
+    }
+    return ids.sort();
+  }
+
   private loadOne(skillDir: string): Skill {
     const dirName = basename(skillDir); // best-guess skill id before we parse
     const yamlPath = join(skillDir, 'skill.yaml');

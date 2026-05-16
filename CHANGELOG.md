@@ -21,6 +21,17 @@ Phase 2 work toward v1. Not yet tagged.
   the build; a path repeated inside one chain emits an
   `include-cycle-broken` warning and is included only once. The
   depth limit is 4. (ROADMAP M3.)
+- **`dstack validate` command.** Walks the `skills/` directory, runs
+  every skill through the same per-skill pipeline as `dstack build`,
+  and prints one greppable line per skill: `<id>: OK (N/M tokens)`
+  or `<id>: ERR <message>`. Exit code is 0 when every skill is
+  valid, 1 when any skill fails. Errors that carry a source
+  location (YAML syntax, field validation) include `at <file>:<line>`
+  so editors can jump to the offending line. A new
+  `ValidateCatalog` use case under `src/application/` owns the
+  collect-errors-instead-of-throwing logic so it can be reused. The
+  CLI now lists `validate` in `--help` and `package.json` exposes
+  `bun run validate`. (ROADMAP M4.)
 
 ### Changed
 

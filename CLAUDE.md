@@ -26,8 +26,9 @@ bun install                  # one-time setup
 bun run build                # render every skill → .claude/skills/
 bun run render <skill-id>    # render one skill, print to stdout
 bun run new <skill-id>       # scaffold skills/<id>/ from template
+bun run validate             # check every skill; exit 1 on any failure
 bun run typecheck            # tsc --noEmit, strict mode
-bun test                     # all tests, ~100 ms
+bun test                     # all tests, ~200 ms
 ```
 
 The CLI entry point is `src/adapters/cli/main.ts`. All wiring of

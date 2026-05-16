@@ -19,6 +19,7 @@ import { join, resolve } from 'node:path';
 import { BuildCatalog } from '../../application/BuildCatalog';
 import { BuildSkill } from '../../application/BuildSkill';
 import { InstallSkills } from '../../application/InstallSkills';
+import { ValidateCatalog } from '../../application/ValidateCatalog';
 import { Host } from '../../domain/host/Host';
 import { SkillId } from '../../domain/skill/SkillId';
 import { FileSkillRepository } from '../fs/FileSkillRepository';
@@ -30,6 +31,7 @@ import { NoopTelemetry } from '../../observability/NoopTelemetry';
 import { FileTelemetry } from '../../observability/FileTelemetry';
 import { scaffoldSkill, ScaffoldError } from './scaffold';
 import { formatWarnings, countWarnings } from './warning-formatter';
+import { formatValidationResults } from './validate-formatter';
 
 const PROJECT_ROOT = resolve(import.meta.dir, '../../..');
 const SKILLS_ROOT = join(PROJECT_ROOT, 'skills');
@@ -105,6 +107,20 @@ async function main(argv: readonly string[]): Promise<number> {
       return 2;
     }
 
+    case 'validate': {
+      const outputRoot = defaultOutputRoot('local');
+      const host = claudeHost(outputRoot);
+      const skillIds = skills.listIds();
+      const results = await new ValidateCatalog(skills, renderer, telemetry).execute({
+        skillIds,
+        host,
+        now: new Date(),
+      });
+      const { lines, exitCode } = formatValidationResults(results);
+      for (const line of lines) console.log(line);
+      return exitCode;
+    }
+
     case 'new': {
       const idRaw = rest[0];
       if (!idRaw) {
@@ -142,6 +158,7 @@ async function main(argv: readonly string[]): Promise<number> {
       console.log('  dstack build [--global]   render all skills and install');
       console.log('  dstack render <skill-id>  render one skill to stdout');
       console.log('  dstack new <skill-id>     scaffold a new skill from template');
+      console.log('  dstack validate           check every skill; exit 1 if any fails');
       console.log('');
       console.log('Env:');
       console.log('  DSTACK_TELEMETRY=local    enable local JSONL telemetry');

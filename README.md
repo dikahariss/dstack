@@ -111,6 +111,9 @@ bun run render careful
 # Scaffold a new skill (creates skills/<skill-id>/{skill.yaml,prompt.md})
 bun run new my-new-skill
 
+# Validate every skill (no install); exit 1 if any skill fails
+bun run validate
+
 # Check that the TypeScript code is valid
 bun run typecheck
 
@@ -131,6 +134,7 @@ bun link
 dstack build
 dstack render careful
 dstack new my-new-skill
+dstack validate
 dstack --help
 ```
 

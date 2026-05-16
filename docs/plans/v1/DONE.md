@@ -13,7 +13,7 @@ When a roadmap item lands, move its row into this document.
 | Current version | 0.1.0 (see [`VERSION`](../../../VERSION) and [`CHANGELOG.md`](../../../CHANGELOG.md)) |
 | Total tracked files | About 80 (excluding `node_modules/`, `.claude/skills/`) |
 | Total lines | About 7,400 (TypeScript + Markdown + YAML) |
-| Tests | 47 pass, 0 fail, about 380 ms total |
+| Tests | 58 pass, 0 fail, about 210 ms total |
 | Skills rendered end-to-end | 1 (`careful`) |
 | Architecture Decision Records | 10 |
 
@@ -44,6 +44,7 @@ summary.
 | Item | Where it landed |
 |---|---|
 | **M3 — `includes:` directive resolved** | `FileSkillRepository.resolveIncludes()` reads each path relative to the skills root and exposes the concatenated text on `Skill.includesContent`. `IncludeNotFoundError` aborts the build; a path repeated in one chain emits an `include-cycle-broken` warning. `ClaudeCodeRenderer` prepends the resolved text before `prompt.md` and forwards the warnings to `RenderResult`. |
+| **M4 — `dstack validate` command** | New `ValidateCatalog` use case under `src/application/`. `FileSkillRepository.listIds()` enumerates skill directories without loading them, so one broken skill no longer hides the rest. `formatValidationResults` (in `src/adapters/cli/validate-formatter.ts`) renders one greppable line per skill (`<id>: OK (N/M tokens)` or `<id>: ERR <message>`) plus a summary; exits 1 if any skill failed. Wired through the `validate` case in `src/adapters/cli/main.ts` and surfaced as `bun run validate` / `dstack validate`. |
 
 **M2 was explored and rejected.** The original plan was to wire
 Anthropic's `messages.countTokens` as an opt-in tokenizer. After
@@ -105,6 +106,7 @@ if it ever becomes necessary, will arrive as an on-demand subcommand
 | `src/application/BuildSkill.ts` | Render one skill. Check tools. Check token budget. |
 | `src/application/BuildCatalog.ts` | Render every skill. Check for duplicate ids. |
 | `src/application/InstallSkills.ts` | Thin wrapper that calls the `Installer` port. |
+| `src/application/ValidateCatalog.ts` | Per-skill validation that collects errors instead of throwing. Underpins `dstack validate` — M4. |
 
 ### Adapter layer (input/output)
 
@@ -116,9 +118,10 @@ if it ever becomes necessary, will arrive as an on-demand subcommand
 | `src/adapters/fs/FileSkillRepository.ts` | Reads `skills/<skill-id>/{skill.yaml, prompt.md}`; uses YAML `LineCounter` for error locations — M15 |
 | `src/adapters/fs/FsInstaller.ts` | Atomic write, skip-unchanged, remove-orphan behavior |
 | `src/adapters/fs/paths.ts` | Path policy (allowed roots, traversal protection) |
-| `src/adapters/cli/main.ts` | CLI entrypoint. Dispatches `build`, `render`, `new`. Prints warnings. |
+| `src/adapters/cli/main.ts` | CLI entrypoint. Dispatches `build`, `render`, `new`, `validate`. Prints warnings. |
 | `src/adapters/cli/scaffold.ts` | `scaffoldSkill()` for the `dstack new` command — A3 |
 | `src/adapters/cli/warning-formatter.ts` | `formatWarnings()` and `countWarnings()` for CLI output — M5 |
+| `src/adapters/cli/validate-formatter.ts` | `formatValidationResults()` — greppable per-skill OK/ERR lines for `dstack validate` — M4 |
 
 ### Observability layer
 
@@ -141,13 +144,15 @@ if it ever becomes necessary, will arrive as an on-demand subcommand
 | `test/unit/domain/SkillId.test.ts` | Unit | 8 |
 | `test/unit/adapters/cli/scaffold.test.ts` | Unit | 8 |
 | `test/unit/adapters/cli/warning-formatter.test.ts` | Unit | 8 |
+| `test/unit/adapters/cli/validate-formatter.test.ts` | Unit | 5 |
 | `test/unit/adapters/claude-code/tokens.test.ts` | Unit | 5 |
 | `test/unit/adapters/claude-code/renderer-includes.test.ts` | Unit | 3 |
 | `test/unit/adapters/fs/error-messages.test.ts` | Unit | 5 |
 | `test/unit/adapters/fs/includes.test.ts` | Unit | 4 |
+| `test/unit/application/ValidateCatalog.test.ts` | Unit | 6 |
 | `test/contract/SkillRepository.contract.ts` | Contract (shared suite) | (defines suite) |
 | `test/contract/FileSkillRepository.contract.test.ts` | Contract (applied to one adapter) | 6 |
-| **Totals** |  | **47 pass, 0 fail — about 380 ms across 8 files** |
+| **Totals** |  | **58 pass, 0 fail — about 210 ms across 10 files** |
 
 ### Test fixtures
 
@@ -192,7 +197,6 @@ These items are explicitly NOT in v0.1.0. Each has a milestone in
 | Gap | Roadmap milestone |
 |---|---|
 | Only 1 skill exists (`careful`); v1 needs at least 5 useful skills | M1 |
-| No `dstack validate` command | M4 |
 | No `dstack list` command | M7 |
 | Only `SkillRepository` has a shared contract suite | M8 (HostRenderer), M9 (Installer) |
 | No integration test | M10 |

@@ -11,6 +11,7 @@
     "build": "bun run src/adapters/cli/main.ts build",
     "render": "bun run src/adapters/cli/main.ts render",
     "new": "bun run src/adapters/cli/main.ts new",
+    "validate": "bun run src/adapters/cli/main.ts validate",
     "install:local": "bun run src/adapters/cli/main.ts install --local",
     "typecheck": "tsc --noEmit",
     "test": "bun test"
