@@ -1,0 +1,7 @@
+id: alpha
+version: 1.0.0
+description: |
+  First test fixture skill.
+tools:
+  - Read
+context_budget_tokens: 1000

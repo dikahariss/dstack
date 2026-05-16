@@ -1,0 +1,170 @@
+# Deferred from v1 — YAGNI register
+
+This document lists features that are deliberately NOT in v1. Each
+entry includes the reason for deferral and the conditions that would
+make us reconsider.
+
+Reading this list and thinking "I want feature X" is not the same as
+needing X. Before building any item from this list, check whether the
+listed "trigger to revisit" has actually happened.
+
+## Terms used in this document
+
+| Term | Definition |
+|---|---|
+| YAGNI | "You Aren't Gonna Need It." A discipline of not building features until they are actually needed. |
+| Trigger | A concrete condition that, if it becomes true, makes us reconsider whether to build the feature. |
+| Estimated effort | AI-pair time, measured the same way as `ROADMAP.md`. |
+
+---
+
+## D1 — Multi-host renderer (Codex, Kiro, OpenCode, etc.)
+
+- **Why deferred.** One user, one AI host (Claude Code).
+  [ADR-0002](../../docs/adr/0002-single-host-v0.md) covers the
+  reasoning.
+- **What is in place.** The `HostRenderer` port is defined. Adding a
+  host requires one new adapter file and one wiring line.
+- **Trigger to revisit.** A named real user wants Codex, Kiro, or
+  similar, AND has agreed to maintain the adapter.
+- **Estimated effort when triggered.** 2 to 3 hours for the first
+  additional host. About 1 hour for each host after that.
+
+## D2 — Hook engine (skill-controlled PreToolUse, PostToolUse)
+
+- **Why deferred.** gstack's `/careful` and a few other skills use
+  Claude Code's hook mechanism. Implementing hook routing would
+  require changes to the renderer (frontmatter passthrough) and
+  possibly a runtime daemon for shared state. This is outside the v0
+  surface.
+- **What is in place.** The renderer copies known frontmatter fields
+  only. Unknown fields (like `hooks:`) are dropped silently.
+- **Trigger to revisit.** A v1 skill port is blocked because the
+  behavior genuinely requires runtime interception (for example,
+  `/careful` must move from "advisory" to "enforcement").
+- **Estimated effort when triggered.** 3 to 5 hours. A new ADR is
+  required. This is a significant capability change.
+
+## D3 — LLM-judge evaluation harness
+
+- **Why deferred.** [ADR-0009](../../docs/adr/0009-spec-driven-skills.md)
+  describes the reason. LLM evaluations matter when a second person
+  is shipping skills that the original author cannot review by hand.
+  Today, the same person writes and reviews. Self-judging is enough.
+- **What is in place.** Contract tests for ports. Static validation
+  (planned in roadmap milestone M4).
+- **Trigger to revisit.** A second contributor lands a skill pull
+  request, OR a ported skill quietly degrades and we lack a way to
+  detect it.
+- **Estimated effort when triggered.** 1 to 2 weeks. This is the
+  largest deferred item.
+
+## D4 — `packages/browse/` implementation
+
+- **Why deferred.** gstack already has a working `browse/` package.
+  Porting it before any v1 skill needs it is speculation.
+  [ADR-0007](../../docs/adr/0007-browse-separate-process.md) keeps
+  the boundary so that the port is mechanical when the need is real.
+- **What is in place.** `packages/browse/README.md` describes the
+  planned layout and the contract for cross-package communication
+  (child process or HTTP).
+- **Trigger to revisit.** A ported skill (like `/qa` or `/review` of
+  a staging URL) needs browser automation, AND falling back to
+  gstack's binary is creating friction.
+- **Estimated effort when triggered.** 2 to 4 weeks. The gstack
+  browse package is about 42,000 lines. A clean port might be 20,000
+  to 25,000 lines (with the unused parts dropped). This work needs
+  its own ADRs under `packages/browse/docs/adr/`.
+
+## D5 — Remote telemetry endpoint
+
+- **Why deferred.** [ADR-0006](../../docs/adr/0006-telemetry-opt-in.md)
+  is explicit: telemetry is local only. Adding a remote endpoint
+  would require a new ADR plus a major version bump plus an explicit
+  user consent flow.
+- **What is in place.** Local-only `FileTelemetry`. Opt-in by
+  environment variable.
+- **Trigger to revisit.** dstack becomes a published or widely-shared
+  tool, AND the maintainer designs an explicit consent flow, AND a
+  specific question exists that only aggregate data can answer.
+- **Estimated effort when triggered.** 1 to 2 weeks. Includes the
+  consent flow and the new ADR.
+
+## D6 — Plugin or extension system
+
+- **Why deferred.** No external contributors today.
+  [ADR-0004](../../docs/adr/0004-no-template-engine-v0.md) (YAGNI
+  guard) applies here too.
+- **Trigger to revisit.** A second person wants to ship a skill that
+  requires rendering behavior dstack does not have, AND the change
+  cannot reasonably be added to dstack core.
+- **Estimated effort when triggered.** Reject by default. Prefer
+  contributing the new behavior to dstack core. A plugin system is a
+  last resort.
+
+## D7 — Auto-update mechanism (`dstack upgrade`)
+
+- **Why deferred.** Single user, one machine. Manual `git pull`
+  works. gstack ships an auto-update mechanism and it is well-built,
+  but the "throttle to once per hour, network-failure-safe"
+  engineering is real work that we do not need yet.
+- **Trigger to revisit.** dstack is used on 3 or more machines, OR
+  by 2 or more people who do not automatically know when an update
+  is available.
+- **Estimated effort when triggered.** 4 to 6 hours. The hard part
+  is making it not block startup when the network is bad.
+
+## D8 — Sidebar, Chrome extension, GStack Browser
+
+- **Why deferred.** Out of scope. dstack is a skill catalog renderer,
+  not a product surface. The gstack sidebar is a separate concern.
+- **Trigger to revisit.** Probably never. If the user wants a sidebar,
+  the answer is "use the gstack sidebar," not "rebuild it in dstack."
+
+## D9 — Conductor / worktree integration
+
+- **Why deferred.** gstack has Conductor-specific code because gstack
+  is developed against itself using Conductor (a development tool).
+  dstack is not.
+- **Trigger to revisit.** dstack development moves into Conductor
+  worktrees AND we hit a real conflict.
+- **Estimated effort when triggered.** 1 to 2 hours.
+
+## D10 — Team-mode install
+
+- **Why deferred.** gstack's `--team` mode bootstraps a project
+  repository so that teammates get gstack automatically when they
+  clone. dstack is single-user.
+- **Trigger to revisit.** Same trigger as D5: dstack becomes a shared
+  tool.
+
+---
+
+# How to read this list
+
+Each entry is a **promise to revisit when the trigger fires**, not a
+"never." When the trigger does fire, the item moves into ROADMAP for
+the relevant version (v1.1, v2, etc.).
+
+If you read this list and think "I want item X," resist building it.
+Ask: has the trigger fired?
+
+- If yes: open ROADMAP and add it.
+- If no: document why you want it (update this file with a "Why I want
+  this" note), and check back next sprint. Most deferred items stay
+  deferred forever, and that is the correct outcome. The trigger was
+  never going to fire.
+
+---
+
+# Items that are rejected (not deferred)
+
+These items are NOT in v1 and are unlikely to ever be in dstack.
+
+| Item | Why rejected |
+|---|---|
+| Template variable substitution in `prompt.md` (`{{var}}`) | [ADR-0003](../../docs/adr/0003-skill-as-data.md). The prompt is what the LLM sees. Variable substitution is the host's job, not the renderer's. |
+| A plugin marketplace | dstack is not a platform. |
+| Web UI for editing skills | Skills are text files. Edit them in a text editor. |
+| A daemon for hot-reloading the skill catalog | `dstack build` runs in under 1 second for 100 skills. Daemons add complexity for no real benefit. |
+| Skill dependency graph ("this skill requires that one") | If two skills genuinely depend on each other, they should be one skill. The `includes:` mechanism (roadmap M3) covers the legitimate sharing cases. |

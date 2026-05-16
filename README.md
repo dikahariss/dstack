@@ -1,0 +1,137 @@
+# dstack
+
+dstack is a small TypeScript project. It builds a catalog of AI agent
+workflows ("skills") for Claude Code. dstack reads skill definitions from
+disk, validates them, and writes the result in the format Claude Code
+expects.
+
+This project is a rewrite of [gstack](../gstack/) for a single user and a
+single AI host (Claude Code). The goal is to keep today's solution simple,
+and to organize the code so that future changes do not become expensive.
+
+## What "skill" means here
+
+A skill is a slash command that the user can run in Claude Code. For
+example: `/ship`, `/review`, `/qa`. Each skill is one directory under
+`skills/<skill-id>/`. The directory contains two files:
+
+- `skill.yaml` — metadata. The skill's name, version, description, and
+  the list of tools it is allowed to use.
+- `prompt.md` — the prompt text. This is the instruction the AI model
+  reads when the user runs the skill.
+
+## What this project does
+
+1. Reads every skill directory under `skills/`.
+2. Validates each skill against the schema defined in
+   [`docs/specs/skill-spec.md`](docs/specs/skill-spec.md).
+3. Combines the prompt body with a small YAML header (called frontmatter)
+   that Claude Code understands.
+4. Writes the result to `.claude/skills/<skill-id>/SKILL.md`. Claude Code
+   reads files from this directory at startup.
+
+## What this project does NOT do (and why)
+
+The following features are deliberately not built:
+
+- **Multiple AI hosts**. Today this project only generates output for
+  Claude Code. The code is structured so that a second host (such as
+  Codex or Kiro) can be added later, but no second host is written.
+  Reason: only one user, only one host. Adding more would create code
+  that no one uses. See [ADR-0002](docs/adr/0002-single-host-v0.md).
+
+- **Template engine for prompts**. Skill prompts are plain Markdown.
+  There are no template variables, no resolvers, no shared snippets
+  injected automatically. Reason: gstack has a template engine; the cost
+  of that engine appears in every skill, even skills that need nothing
+  from it. See [ADR-0003](docs/adr/0003-skill-as-data.md) and
+  [ADR-0004](docs/adr/0004-no-template-engine-v0.md).
+
+- **Browser, Chrome extension, sidebar**. The browser automation tool is
+  documented as a separate package (`packages/browse/`) but is not
+  implemented yet. See [ADR-0007](docs/adr/0007-browse-separate-process.md).
+
+- **Telemetry by default**. Nothing is logged unless the user sets the
+  environment variable `DSTACK_TELEMETRY=local`. See
+  [ADR-0006](docs/adr/0006-telemetry-opt-in.md).
+
+## Why this rewrite exists
+
+Three concrete problems appeared when using gstack on Ubuntu 24.04:
+
+1. **Unwanted host directories**. Running `bun run build` in gstack
+   creates ten output directories (`.opencode/`, `.kiro/`,
+   `.openclaw/`, and others) even when the user only uses Claude Code.
+   Every user pays this cost.
+   See [ADR-0002](docs/adr/0002-single-host-v0.md).
+
+2. **Large setup script**. The gstack install script `setup` is 1044
+   lines of bash. It does many separate jobs in one file: building
+   binaries, detecting hosts, creating symbolic links, and more. The
+   file is hard to read and hard to extend.
+   See [ADR-0005](docs/adr/0005-bun-runtime.md).
+
+3. **Browser fails on Ubuntu 24.04**. The browse tool tries to start
+   Chromium without the `--no-sandbox` flag. On Ubuntu 24.04, the
+   default kernel setting blocks unprivileged user namespaces, so
+   Chromium cannot create its sandbox and the process crashes. gstack
+   does not detect this case.
+   See [ADR-0008](docs/adr/0008-sandbox-detection-at-adapter.md).
+
+These three problems are not bugs in gstack. They are design pressures
+that appeared as gstack grew. dstack is what you write when you know
+where the pressures will appear.
+
+## Project status
+
+This project is at version 0 (v0). It builds and runs. Two skills are
+included as examples. See `plan/v1/` for the roadmap to version 1.
+
+- Architecture overview: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- Architecture Decision Records (ADRs): [docs/adr/](docs/adr/)
+- Skill schema: [docs/specs/skill-spec.md](docs/specs/skill-spec.md)
+- Example skill: [skills/example-greet/](skills/example-greet/)
+- v1 roadmap: [plan/v1/ROADMAP.md](plan/v1/ROADMAP.md)
+
+## How to run
+
+This project uses [Bun](https://bun.sh/) (a JavaScript runtime and
+package manager).
+
+```bash
+# Install dependencies
+bun install
+
+# Build all skills and install to ./.claude/skills/
+bun run build
+
+# Render one skill and print to standard output
+bun run render example-greet
+
+# Check that the TypeScript code is valid
+bun run typecheck
+
+# Run all tests
+bun test
+```
+
+## Directory layout
+
+```
+dstack/
+├── docs/              # ARCHITECTURE, ADRs, specs
+├── src/               # TypeScript source code
+│   ├── domain/        # Core types, no input/output operations
+│   ├── application/   # Use cases that orchestrate the domain
+│   ├── adapters/      # Code that talks to filesystem, Claude Code, CLI
+│   └── observability/ # Telemetry (logging to file, opt-in only)
+├── packages/browse/   # Browser automation (separate package, planned)
+├── skills/            # Skill definitions — the product
+├── plan/v1/           # Roadmap, deferred items, status
+└── test/              # Tests (unit, contract, integration)
+```
+
+## License
+
+License is not yet decided. Do not redistribute this code until a
+license is chosen.

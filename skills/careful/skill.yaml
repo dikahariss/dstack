@@ -1,0 +1,26 @@
+id: careful
+version: 0.2.0
+description: |
+  Safety guardrails for destructive commands. Reminds the user to pause before
+  rm -rf, DROP TABLE, force-push, git reset --hard, kubectl delete, and similar
+  destructive operations. Use when touching prod, debugging live systems, or
+  working in a shared environment. Use when asked to "be careful", "safety
+  mode", "prod mode", or "careful mode".
+
+tools:
+  - Bash
+  - Read
+
+context_budget_tokens: 1500
+
+triggers:
+  - be careful
+  - warn before destructive
+  - safety mode
+  - prod mode
+
+# Note: gstack's /careful uses a PreToolUse hook to intercept bash commands.
+# dstack v0 does not support hooks (see ADR-0004 — no template engine; hooks
+# would be a similar engine-level concern). This port reduces /careful to
+# advisory text. The behavior is degraded compared to gstack until dstack
+# adds hook support via a new ADR.

@@ -1,0 +1,21 @@
+{
+  "name": "dstack",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Skill catalog for Claude Code. v0 spec — see docs/ARCHITECTURE.md.",
+  "scripts": {
+    "build": "bun run src/adapters/cli/main.ts build",
+    "render": "bun run src/adapters/cli/main.ts render",
+    "install:local": "bun run src/adapters/cli/main.ts install --local",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.5.0"
+  },
+  "dependencies": {
+    "yaml": "^2.6.0"
+  }
+}
