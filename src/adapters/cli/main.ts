@@ -28,6 +28,8 @@ import { CLAUDE_CODE_TOOLS } from '../claude-code/tools';
 import { Telemetry } from '../../observability/Telemetry';
 import { NoopTelemetry } from '../../observability/NoopTelemetry';
 import { FileTelemetry } from '../../observability/FileTelemetry';
+import { scaffoldSkill, ScaffoldError } from './scaffold';
+import { formatWarnings, countWarnings } from './warning-formatter';
 
 const PROJECT_ROOT = resolve(import.meta.dir, '../../..');
 const SKILLS_ROOT = join(PROJECT_ROOT, 'skills');
@@ -69,10 +71,15 @@ async function main(argv: readonly string[]): Promise<number> {
         outputRoot,
         results,
       });
-      console.log(
-        `built ${results.length} skills, wrote ${report.written}, skipped ${report.skipped}, removed ${report.removed}`,
-      );
+      const warningCount = countWarnings(results);
+      const summary = `built ${results.length} skills, wrote ${report.written}, skipped ${report.skipped}, removed ${report.removed}`;
+      console.log(warningCount > 0 ? `${summary} (${warningCount} warnings)` : summary);
       console.log(`output: ${report.outputRoot}`);
+      const warningOutput = formatWarnings(results);
+      if (warningOutput) {
+        console.log('');
+        console.log(warningOutput);
+      }
       return 0;
     }
 
@@ -98,6 +105,34 @@ async function main(argv: readonly string[]): Promise<number> {
       return 2;
     }
 
+    case 'new': {
+      const idRaw = rest[0];
+      if (!idRaw) {
+        console.error('usage: dstack new <skill-id>');
+        console.error('  skill-id: lowercase letters, digits, hyphens; must start with a letter');
+        return 2;
+      }
+      try {
+        const result = scaffoldSkill(SKILLS_ROOT, idRaw);
+        console.log(`created skill: ${result.skillId}`);
+        for (const file of result.filesWritten) {
+          console.log(`  ${file}`);
+        }
+        console.log('');
+        console.log('next steps:');
+        console.log(`  1. edit ${result.skillDir}/skill.yaml — set description, tools, triggers`);
+        console.log(`  2. edit ${result.skillDir}/prompt.md — write the instruction body`);
+        console.log(`  3. run \`bun run build\` to render and install`);
+        return 0;
+      } catch (err) {
+        if (err instanceof ScaffoldError) {
+          console.error(`dstack new: ${err.message}`);
+          return 1;
+        }
+        throw err;
+      }
+    }
+
     case undefined:
     case '--help':
     case '-h': {
@@ -106,6 +141,7 @@ async function main(argv: readonly string[]): Promise<number> {
       console.log('Usage:');
       console.log('  dstack build [--global]   render all skills and install');
       console.log('  dstack render <skill-id>  render one skill to stdout');
+      console.log('  dstack new <skill-id>     scaffold a new skill from template');
       console.log('');
       console.log('Env:');
       console.log('  DSTACK_TELEMETRY=local    enable local JSONL telemetry');

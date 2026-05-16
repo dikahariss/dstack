@@ -32,16 +32,16 @@ listed "trigger to revisit" has actually happened.
 
 ## D2 — Hook engine (skill-controlled PreToolUse, PostToolUse)
 
-- **Why deferred.** gstack's `/careful` and a few other skills use
-  Claude Code's hook mechanism. Implementing hook routing would
-  require changes to the renderer (frontmatter passthrough) and
+- **Why deferred.** Some skills (such as `/careful`) want to intercept
+  Claude Code tool calls before they run. Implementing hook routing
+  would require changes to the renderer (frontmatter passthrough) and
   possibly a runtime daemon for shared state. This is outside the v0
   surface.
 - **What is in place.** The renderer copies known frontmatter fields
   only. Unknown fields (like `hooks:`) are dropped silently.
-- **Trigger to revisit.** A v1 skill port is blocked because the
-  behavior genuinely requires runtime interception (for example,
-  `/careful` must move from "advisory" to "enforcement").
+- **Trigger to revisit.** A v1 skill is blocked because the behavior
+  genuinely requires runtime interception (for example, `/careful`
+  must move from "advisory" to "enforcement").
 - **Estimated effort when triggered.** 3 to 5 hours. A new ADR is
   required. This is a significant capability change.
 
@@ -61,20 +61,18 @@ listed "trigger to revisit" has actually happened.
 
 ## D4 — `packages/browse/` implementation
 
-- **Why deferred.** gstack already has a working `browse/` package.
-  Porting it before any v1 skill needs it is speculation.
+- **Why deferred.** No v1 skill needs browser automation yet. Building
+  the package before there is a real caller is speculation.
   [ADR-0007](../../docs/adr/0007-browse-separate-process.md) keeps
   the boundary so that the port is mechanical when the need is real.
 - **What is in place.** `packages/browse/README.md` describes the
   planned layout and the contract for cross-package communication
   (child process or HTTP).
-- **Trigger to revisit.** A ported skill (like `/qa` or `/review` of
-  a staging URL) needs browser automation, AND falling back to
-  gstack's binary is creating friction.
-- **Estimated effort when triggered.** 2 to 4 weeks. The gstack
-  browse package is about 42,000 lines. A clean port might be 20,000
-  to 25,000 lines (with the unused parts dropped). This work needs
-  its own ADRs under `packages/browse/docs/adr/`.
+- **Trigger to revisit.** A v1 skill (such as a hypothetical `/qa` or
+  `/review` against a staging URL) needs browser automation.
+- **Estimated effort when triggered.** 2 to 4 weeks. A clean
+  implementation is on the order of 20,000 to 25,000 lines. This work
+  needs its own ADRs under `packages/browse/docs/adr/`.
 
 ## D5 — Remote telemetry endpoint
 
@@ -105,38 +103,61 @@ listed "trigger to revisit" has actually happened.
 ## D7 — Auto-update mechanism (`dstack upgrade`)
 
 - **Why deferred.** Single user, one machine. Manual `git pull`
-  works. gstack ships an auto-update mechanism and it is well-built,
-  but the "throttle to once per hour, network-failure-safe"
-  engineering is real work that we do not need yet.
+  works. An auto-update mechanism that is throttled, network-failure
+  safe, and non-blocking is real engineering we do not need yet.
 - **Trigger to revisit.** dstack is used on 3 or more machines, OR
   by 2 or more people who do not automatically know when an update
   is available.
 - **Estimated effort when triggered.** 4 to 6 hours. The hard part
   is making it not block startup when the network is bad.
 
-## D8 — Sidebar, Chrome extension, GStack Browser
+## D8 — Sidebar, Chrome extension, integrated browser product
 
 - **Why deferred.** Out of scope. dstack is a skill catalog renderer,
-  not a product surface. The gstack sidebar is a separate concern.
-- **Trigger to revisit.** Probably never. If the user wants a sidebar,
-  the answer is "use the gstack sidebar," not "rebuild it in dstack."
+  not a product surface. A browser-integrated sidebar belongs in a
+  separate tool, not in dstack.
+- **Trigger to revisit.** Probably never. If the user wants a
+  sidebar, the answer is to use a separate tool, not to rebuild it
+  inside dstack.
 
-## D9 — Conductor / worktree integration
+## D9 — Worktree / parallel-session integration
 
-- **Why deferred.** gstack has Conductor-specific code because gstack
-  is developed against itself using Conductor (a development tool).
-  dstack is not.
-- **Trigger to revisit.** dstack development moves into Conductor
-  worktrees AND we hit a real conflict.
+- **Why deferred.** dstack development today happens in one working
+  directory. Tooling that manages multiple parallel sessions
+  (worktrees, isolated workspaces) is not part of v1.
+- **Trigger to revisit.** dstack development moves into a multi-
+  worktree setup AND we hit a real conflict.
 - **Estimated effort when triggered.** 1 to 2 hours.
 
 ## D10 — Team-mode install
 
-- **Why deferred.** gstack's `--team` mode bootstraps a project
-  repository so that teammates get gstack automatically when they
-  clone. dstack is single-user.
+- **Why deferred.** A `--team` mode that bootstraps a project
+  repository so teammates get dstack automatically when they clone
+  is a multi-user feature. dstack is single-user.
 - **Trigger to revisit.** Same trigger as D5: dstack becomes a shared
   tool.
+
+## D11 — Exact token counting on demand
+
+- **Why deferred.** Originally tracked as ROADMAP M2 ("real Anthropic
+  tokenizer"). The opt-in implementation was built end-to-end, tested
+  against the live API, and then removed: requiring an API key, a
+  network call, and an extra runtime dependency for every build was
+  not worth the ±1% accuracy gain over the offline approximation.
+  The 90% near-budget warning fires well inside the approximation's
+  ±10% error band, so coarse counting is enough for the
+  budget-enforcement contract.
+- **What is in place.** `approximateTokenCount` in
+  `src/adapters/claude-code/tokens.ts`. Inlined into
+  `ClaudeCodeRenderer` (no port, per ADR-0001 YAGNI guard).
+- **Trigger to revisit.** A real skill lands within 5% of its budget
+  AND the approximation is reported wrong by a meaningful margin in
+  production use.
+- **Estimated effort when triggered.** 2 to 3 hours. The shape would
+  be a separate `dstack count <skill-id>` subcommand that shells out
+  to `claude -p --output-format json` (reusing the user's existing
+  Claude Code auth) and prints `usage.input_tokens` — not a
+  per-build dependency. No API key required.
 
 ---
 

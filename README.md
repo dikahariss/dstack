@@ -84,14 +84,14 @@ where the pressures will appear.
 
 ## Project status
 
-This project is at version 0 (v0). It builds and runs. Two skills are
-included as examples. See `plan/v1/` for the roadmap to version 1.
+This project is at version 0 (v0). It builds and runs. One skill is
+included as an example. See `docs/plans/v1/` for the roadmap to version 1.
 
 - Architecture overview: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Architecture Decision Records (ADRs): [docs/adr/](docs/adr/)
 - Skill schema: [docs/specs/skill-spec.md](docs/specs/skill-spec.md)
-- Example skill: [skills/example-greet/](skills/example-greet/)
-- v1 roadmap: [plan/v1/ROADMAP.md](plan/v1/ROADMAP.md)
+- Example skill: [skills/careful/](skills/careful/)
+- v1 roadmap: [docs/plans/v1/ROADMAP.md](docs/plans/v1/ROADMAP.md)
 
 ## How to run
 
@@ -106,7 +106,10 @@ bun install
 bun run build
 
 # Render one skill and print to standard output
-bun run render example-greet
+bun run render careful
+
+# Scaffold a new skill (creates skills/<skill-id>/{skill.yaml,prompt.md})
+bun run src/adapters/cli/main.ts new my-new-skill
 
 # Check that the TypeScript code is valid
 bun run typecheck
@@ -115,11 +118,30 @@ bun run typecheck
 bun test
 ```
 
+## Configuration (optional)
+
+dstack runs with defaults and needs no configuration. The only opt-in
+today is local telemetry. Copy `.env.example` to `.env` and uncomment
+the variable to enable it. Bun loads `.env` automatically on every
+command. `.env` is gitignored so any local secrets you add later stay
+local.
+
+| Variable | What it does |
+|---|---|
+| `DSTACK_TELEMETRY=local` | Enable local-only JSONL telemetry to `~/.dstack/telemetry/events.jsonl`. Off by default. See [ADR-0006](docs/adr/0006-telemetry-opt-in.md). |
+
 ## Directory layout
 
 ```
 dstack/
-├── docs/              # ARCHITECTURE, ADRs, specs
+├── CONTEXT.md         # Domain language glossary (for AI agents)
+├── VERSION            # Current dstack version
+├── CHANGELOG.md       # Release notes
+├── .env.example       # Template for optional env vars (copy to .env)
+├── docs/              # ARCHITECTURE, adr/, specs/, plans/
+│   ├── adr/           # Architecture Decision Records
+│   ├── specs/         # skill-spec, render-spec, install-spec, host-spec
+│   └── plans/v1/      # Roadmap, deferred items, status
 ├── src/               # TypeScript source code
 │   ├── domain/        # Core types, no input/output operations
 │   ├── application/   # Use cases that orchestrate the domain
@@ -127,7 +149,6 @@ dstack/
 │   └── observability/ # Telemetry (logging to file, opt-in only)
 ├── packages/browse/   # Browser automation (separate package, planned)
 ├── skills/            # Skill definitions — the product
-├── plan/v1/           # Roadmap, deferred items, status
 └── test/              # Tests (unit, contract, integration)
 ```
 

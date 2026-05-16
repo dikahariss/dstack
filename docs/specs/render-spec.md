@@ -73,7 +73,8 @@ Step 4: Combine (frontmatter + body)
 Step 5: Measure tokens (against the budget)
 ```
 
-The five steps replace the 14-step pipeline in gstack. See
+The five steps are a deliberate contrast to a typical 14-step
+template-driven pipeline. See
 [ADR-0004](../adr/0004-no-template-engine-v0.md) for the reasoning.
 
 ## Algorithm for the Claude Code renderer
@@ -141,7 +142,8 @@ The full content is:
 
 ### Step 5. Measure tokens
 
-Count tokens in the full content using the host's token counter.
+Count tokens in the full content using `approximateTokenCount` (see
+the paragraph below for the algorithm).
 
 Compare to `tokenBudget`:
 
@@ -151,8 +153,13 @@ Compare to `tokenBudget`:
 | `tokenCount > tokenBudget * 0.9` | Add a warning of kind `token-near-budget`. Build continues. |
 | `tokenCount ≤ tokenBudget * 0.9` | No warning. |
 
-Token counting today uses character-based approximation. See `plan/v1/ROADMAP.md`
-milestone M2 for the planned switch to Anthropic's real tokenizer.
+Token counting uses an offline approximation
+(`approximateTokenCount` in
+`src/adapters/claude-code/tokens.ts`): characters divided by 4, plus a
+5% safety margin, rounded up. Empirically within ±10% of Anthropic's
+exact tokenizer, which is well inside the 10% margin between the
+warning threshold and the budget ceiling. See
+[ADR-0010](../adr/0010-context-budget.md) for the budget rules.
 
 ### Final: return the result
 
@@ -196,7 +203,7 @@ useful message.
 
 | Error class | When raised |
 |---|---|
-| `SkillSpecError(skillId, field, problem)` | A field in `skill.yaml` is invalid. |
+| `SkillSpecError(skillId, field, problem, source?)` | A field in `skill.yaml` is invalid. `source` carries `{ file, line? }` so the message ends with `at <file>:<line>` when available. |
 | `IncludeNotFoundError(skillId, includePath)` | A file listed in `includes` does not exist. |
 | `TokenBudgetExceededError(skillId, actual, budget)` | The rendered output is larger than the declared budget. |
 | `UnknownToolError(skillId, toolName, knownTools)` | A tool name in `skill.yaml` is not in the host's tool registry. See [host-spec.md](host-spec.md). |
@@ -208,8 +215,9 @@ that produces any error does not write any output. See
 
 ## Warnings raised by the renderer
 
-Warnings are non-fatal. The build continues. The CLI prints them at the
-end of the run (planned in `plan/v1/ROADMAP.md` milestone M5).
+Warnings are non-fatal. The build continues. The CLI prints them at
+the end of the run, grouped by skill, via
+`src/adapters/cli/warning-formatter.ts` (M5, shipped in v0.1.0).
 
 | Warning kind | When raised |
 |---|---|
@@ -225,8 +233,7 @@ milestone M8) will assert that:
 
 1. Rendering the same skill twice with the same `now` produces
    byte-identical output.
-2. The reported `tokenCount` matches the actual character-based
-   approximation of `content`.
+2. The reported `tokenCount` matches `approximateTokenCount(content)`.
 3. The frontmatter is parseable YAML.
 4. Every collected warning has a known kind.
 

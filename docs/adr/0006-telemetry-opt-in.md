@@ -17,17 +17,16 @@
 
 ## Context
 
-gstack writes telemetry to `~/.gstack/analytics/skill-usage.jsonl` on
-every skill invocation. The default is "on, with a prompt on first run."
-This is honest and well-implemented. We choose a different default for
-two reasons:
+A common pattern in developer tooling is "telemetry on by default,
+with a prompt on first run." That default is honest and easy to
+implement, but it has two drawbacks for dstack specifically:
 
-1. The current default is opt-out (telemetry is on unless the user
-   declines). Users who read the prompt quickly often accept it. Users
-   who want privacy must remember to disable it.
+1. Opt-out defaults bias toward collection. Users who read the prompt
+   quickly often accept it. Users who want privacy must remember to
+   disable it.
 2. Telemetry that stays on the user's local machine has limited value
    for the maintainer (no aggregate view). The privacy-vs-utility
-   trade-off is real but small.
+   trade-off is real but small at dstack's scale.
 
 ## Decision
 
@@ -92,6 +91,7 @@ new adapter file. The behavior of existing sinks is unchanged.
 
 ## References
 
-- gstack's telemetry implementation is well-engineered. The choice we
-  disagree with is the default value (opt-out vs. opt-in), not the
-  implementation.
+- The choice this ADR makes is about *defaults*, not implementation.
+  An opt-out telemetry pipeline is straightforward to build well;
+  what matters here is whether the program collects anything at all
+  before the user says yes.

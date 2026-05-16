@@ -1,19 +1,24 @@
 /**
  * Token counting for context-budget enforcement.
  *
- * We do not depend on Anthropic's exact tokenizer here. Approximation is
- * sufficient: budgets are coarse (4000, 8000, 16000), and the renderer
- * fails loud either way. Tightening to exact tokens is a future optimization
- * (and reversible — change one function).
+ * dstack uses an approximate, offline counter: `chars / 4`, plus a 5%
+ * safety margin, rounded up. Empirically within ±10% of Anthropic's
+ * exact tokenizer for ordinary prose.
  *
- * Approximation: 1 token ≈ 4 characters for English text. Code and tables
- * skew slightly lower; we round up by adding 5% margin. Empirical accuracy
- * within ±10% of Anthropic's tokenizer for prompts we'd actually write.
+ * Why approximate-only:
  *
- * Real impl would call `@anthropic-ai/sdk`'s `countTokens` or a wasm tokenizer.
+ *   - Budgets are coarse (default 4 000, ceiling 16 000) and the
+ *     near-budget warning fires at 90%. The ±10% approximation error
+ *     fits comfortably inside that margin.
+ *   - Exact tokenization requires a network call to Anthropic's API,
+ *     which means an API key, a per-build cost in latency, and a new
+ *     failure mode (offline / unauthorised). The trade-off is not
+ *     worth it for the budgets dstack enforces today.
+ *   - If precise counting ever becomes necessary, do it on demand —
+ *     a future `dstack count <skill-id>` subcommand can shell out
+ *     once instead of taxing every build.
  */
 export function approximateTokenCount(text: string): number {
-  const chars = text.length;
-  const base = Math.ceil(chars / 4);
+  const base = Math.ceil(text.length / 4);
   return Math.ceil(base * 1.05);
 }

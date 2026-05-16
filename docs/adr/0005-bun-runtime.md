@@ -16,28 +16,28 @@
 
 ## Context
 
-The gstack install script `setup` is 1044 lines of bash. It performs
-nine separate jobs in one file:
+A "do everything in install" bash script tends to grow past a thousand
+lines and to combine many unrelated jobs in one file:
 
 1. Validating required programs are installed (Bun, git).
 2. Parsing command-line flags (`--host`, `--local`, `--prefix`).
-3. Building binaries (`browse`, `find-browse`, `design`, `pdf`).
-4. Detecting whether the script is running inside a Conductor
-   workspace (a git-related tool gstack supports).
-5. Migrating skills that were installed in an older location.
+3. Building compiled binaries.
+4. Detecting whether the script is running inside a worktree-style
+   parallel-session tool.
+5. Migrating files that were installed in an older location.
 6. Creating symbolic links from one skill directory to another.
-7. Installing Playwright Chromium (a browser used by gstack tools).
+7. Installing Playwright Chromium for browser automation.
 8. Saving configuration values to disk.
 9. Cleaning up old symbolic links from earlier installs.
 
-Each job is reasonable on its own. The cost of putting them all in one
-bash script:
+Each job is reasonable on its own. The cost of putting them all in
+one bash script:
 
-- Hard to read. A reader must scroll through 1044 lines to find one
-  topic.
-- Hard to test. Bash testing tools exist but the code is not structured
-  for them.
-- Hard to extend. Adding a new step risks breaking adjacent steps,
+- Hard to read. A reader scrolls through a thousand-plus lines to
+  find one topic.
+- Hard to test. Bash testing tools exist but the code is not
+  structured for them.
+- Hard to extend. Adding a new step risks breaking adjacent steps
   because there are few interfaces between them.
 
 ## Decision
@@ -53,7 +53,8 @@ Bun is the runtime, for these reasons:
   installation.
 - Bun includes a compile-to-binary command (when we need a single-file
   binary, which is not in v0).
-- Bun is already used by gstack. The user is familiar with its tooling.
+- Bun is already familiar to the maintainer from prior work, so the
+  learning cost is zero.
 
 Subcommands today:
 
@@ -118,7 +119,8 @@ reduce future cost:
 
 ## References
 
-- The gstack `setup` script is 1044 lines. Read it once to feel the
-  weight of nine concerns in one file.
-- Bun version 1.0 was released in September 2023. By now (May 2026) it
-  is stable enough for production use in the surrounding gstack tools.
+- A monolithic install script that combines nine concerns in one file
+  is a recurring pattern in JS/TS tooling. dstack avoids reproducing
+  it by routing everything through TypeScript subcommands.
+- Bun version 1.0 was released in September 2023. By May 2026 it is
+  stable enough for production use.

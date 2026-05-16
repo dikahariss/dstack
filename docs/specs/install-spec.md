@@ -235,7 +235,7 @@ without writing or deleting anything.
 | `Error (generic)` | A file system operation failed (disk full, permissions, etc.). The installer does not wrap these in typed errors today. |
 
 The plan for v1 is to wrap file system errors in typed installer
-errors. See `plan/v1/ROADMAP.md` (no current milestone; a candidate for
+errors. See `docs/plans/v1/ROADMAP.md` (no current milestone; a candidate for
 v1.x).
 
 ## Concurrent install behavior
@@ -286,4 +286,4 @@ shared contract suite at `test/contract/Installer.contract.ts`
   that makes `Installer` a port.
 - `src/adapters/fs/README.md` — adapter-level documentation, including
   the path policy.
-- `plan/v1/ROADMAP.md` M9 — the planned contract suite for `Installer`.
+- `docs/plans/v1/ROADMAP.md` M9 — the planned contract suite for `Installer`.

@@ -18,18 +18,14 @@
 
 ## Context
 
-gstack's `browse/` directory is a 42,000-line TypeScript codebase that
-wraps Playwright. It ships:
+A browser-automation surface for skills (snapshot, click, type,
+navigate) is a sizable codebase on its own — comfortably tens of
+thousands of lines once it includes a daemon, an HTTP/CLI surface,
+session management, and Playwright wiring.
 
-- A daemon called `browse-server` that runs in the background.
-- A CLI that sends commands to the daemon over HTTP.
-- Snapshot, click, type, navigate, and other commands.
-
-Skills that need browser automation run `browse <command>` as a child
-process. This design works well for gstack.
-
-dstack must decide: when porting browse, do we put it in `src/` (one
-package, one install) or in a separate package (`packages/browse/`)?
+dstack must decide: when this surface is built, does it live in `src/`
+(one package, one install) or in a separate package
+(`packages/browse/`)?
 
 Option 1 (inline into `src/`) looks neat: one directory, one install.
 But it makes every dstack install pull in:
@@ -41,9 +37,8 @@ But it makes every dstack install pull in:
 Many dstack users will never run a browser-automation skill. They
 should not pay these costs.
 
-Option 2 (separate package) keeps the boundary that gstack already pays
-for. It also matches the bounded-context design described in the
-architecture overview.
+Option 2 (separate package) preserves a process boundary that matches
+the bounded-context design described in the architecture overview.
 
 ## Decision
 
@@ -63,8 +58,8 @@ channels:
    long-lived sessions.
 
 The two surfaces are documented in `packages/browse/README.md`. As of
-v0, that README is the only thing implemented. The actual port of
-gstack's browse code is deferred.
+v0, that README is the only thing implemented. Building the actual
+package is deferred until a real skill needs it (see DEFERRED.md D4).
 
 ## Trade-offs
 
@@ -93,7 +88,7 @@ isolation for now.
 
 Do not invent a custom protocol for the inter-process boundary. Use
 JSON over standard input/output for short-lived calls. Use HTTP for
-long-lived sessions. Both work in gstack today.
+long-lived sessions. Both are well-trodden patterns.
 
 ## Reversibility
 
@@ -104,12 +99,11 @@ Moderate. To inline `browse` into `src/` later:
 3. Update imports.
 
 The opposite direction (inlining first, extracting later) is harder.
-gstack's `browse/` is proof that extraction at this size is the right
-choice from the start.
+At this expected size — a server file in the 2 000-line range, a
+browser-manager file in the 1 000-line range — extraction from the
+start is cheaper than retrofit.
 
 ## References
 
-- gstack's `browse/src/server.ts` is 2,284 lines.
-- gstack's `browse/src/browser-manager.ts` is 1,469 lines.
-- See [ADR-0008](0008-sandbox-detection-at-adapter.md) for one bug that
-  this boundary makes easier to fix.
+- See [ADR-0008](0008-sandbox-detection-at-adapter.md) for one bug
+  that this boundary makes easier to fix.

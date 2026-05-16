@@ -17,16 +17,16 @@
 
 ## Context
 
-gstack has a soft warning at about 40,000 tokens per skill ("watch for
-feature growth"). Several skills regularly exceed it: `ship`,
-`plan-ceo-review`, and `office-hours` are around 25,000 to 35,000
-tokens each. The warning appears on every build, so over time it has
-become noise. The largest rendered skill in gstack is over 47,000
-lines (about 35,000 tokens).
+It is easy for a skill to grow into the tens of thousands of tokens
+once it accumulates workflow steps, examples, and shared preamble.
+Soft warnings on size ("watch for feature growth") tend to become
+noise: when every build prints the same warning for the same three
+big skills, readers learn to scroll past it.
 
-Modern Claude models have context windows from 200,000 to 1,000,000
-tokens. A 35,000-token skill is 3 to 18 percent of the window. So token
-bloat is not a correctness failure today. But it has three real costs:
+Modern Claude models have context windows from 200 000 to 1 000 000
+tokens. A 35 000-token skill is 3 to 18 percent of the window. So
+token bloat is not a correctness failure today. But it has three
+real costs:
 
 1. Latency. Longer prompts take longer for the LLM to process.
 2. Prompt cache misses. Prompts that change require re-processing.
@@ -58,10 +58,13 @@ If a skill needs more than 16,000 tokens, the author must:
 
 This requires a deliberate decision. The friction is intentional.
 
-Token counting today uses an approximation (4 characters per token,
-with a 5% safety margin). A future change can use the official
-Anthropic tokenizer. Approximation error is bounded and acceptable for
-the current scale. See `plan/v1/ROADMAP.md` milestone M2.
+Token counting uses an offline approximation (4 characters per token,
+with a 5% safety margin). The exact Anthropic tokenizer would require
+a network call, an API key, and a new dependency for every build; the
+approximation error (±10%) is bounded and well inside the 10% margin
+between the warning threshold and the budget ceiling. Precise counting
+is deferred as a future on-demand subcommand, not a build-time
+requirement (see `docs/plans/v1/DEFERRED.md`).
 
 ## Trade-offs
 
@@ -101,7 +104,8 @@ is a one-line constant change.
 
 ## References
 
-- gstack's CLAUDE.md describes a soft warning at about 40,000 tokens.
-  dstack chooses a stricter discipline.
+- Soft warnings on skill size are easy to ignore; hard budgets force
+  the conversation at build time. dstack chooses the stricter
+  discipline deliberately.
 - See [ADR-0009](0009-spec-driven-skills.md) for how the budget is
   declared.

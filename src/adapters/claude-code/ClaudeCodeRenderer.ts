@@ -9,9 +9,9 @@ import { approximateTokenCount } from './tokens';
  *
  * Output layout: `<host.outputRoot>/<skill-id>/SKILL.md`
  *
- * The renderer is pure and deterministic. It does not read includes itself —
- * those are resolved upstream by the SkillRepository so the cache lives in
- * one place. The renderer composes what it is given.
+ * The renderer is pure and deterministic. It does not read includes
+ * itself — those are resolved upstream by the SkillRepository so the
+ * cache lives in one place.
  */
 export class ClaudeCodeRenderer implements HostRenderer {
   render(ctx: RenderContext): RenderResult {

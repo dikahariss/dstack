@@ -295,4 +295,4 @@ Three test tiers:
    seconds.
 
 LLM-judge evaluations (where a separate LLM scores the output of a skill)
-are not part of v0 testing. See ADR-0009 and `plan/v1/DEFERRED.md`.
+are not part of v0 testing. See ADR-0009 and `docs/plans/v1/DEFERRED.md`.

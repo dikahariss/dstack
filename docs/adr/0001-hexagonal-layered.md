@@ -18,22 +18,20 @@
 
 ## Context
 
-gstack mixes input/output operations directly into business logic. The
-code that renders a skill also reads templates from the file system,
-processes them through resolvers, and writes the output. Doing all of
-this in one function makes three things harder:
+Render pipelines that mix input/output operations directly into
+business logic make three things harder:
 
-1. Adding a new host (such as Codex) requires changes in 12 or more
-   files.
-2. Tests of skill rendering need a real file system. A test cannot run
-   without a temporary directory and fixture files.
-3. Reading the code requires understanding the file system layout. The
-   logic is mixed with paths.
+1. Adding a new host (such as a second AI runtime) requires changes
+   across many files.
+2. Tests of skill rendering need a real file system. A test cannot
+   run without a temporary directory and fixture files.
+3. Reading the code requires understanding the file system layout.
+   The logic is mixed with paths.
 
-A clearer separation would help. The pattern "stable core, varying
-adapters" is already present in the gstack codebase (eight host targets,
-three install modes, two telemetry backends). The pattern is not
-documented or enforced.
+A clearer separation pays off as the catalog grows. dstack already has
+the shape of "stable core, varying adapters" implicit in the design
+(skill repository, host renderer, installer, telemetry sink). Making
+that pattern explicit and enforced is cheap now and expensive later.
 
 ## Decision
 
@@ -73,8 +71,8 @@ easier to read for a project of this size.
 
 **Downsides (`-`)**
 
-- More files for small features. One port plus one adapter where gstack
-  would use a single function.
+- More files for small features. One port plus one adapter where a
+  flat design would use a single function.
 - Stack traces are longer because of the extra interface layer. Reading
   a stack trace requires understanding the port/adapter relationship.
 - Risk of creating ports that have only one implementation. Such ports
@@ -92,11 +90,11 @@ A port with one implementation and no test fake is unnecessary. Inline
 the call. Wait until the second case actually appears before extracting
 a port.
 
-Example of this guard catching a problem: gstack defines a `HostConfig`
-interface with ten concrete hosts. Five of those hosts have never been
-used by anyone we know. Each one adds a row to the rendering loop and a
-directory to the output. The interface is fine. The number of unused
-implementations is the problem. See [ADR-0002](0002-single-host-v0.md).
+Example of the failure mode this guard prevents: a `HostConfig` port
+with ten concrete hosts, where five are never used by anyone. Each
+adds a row to the rendering loop and a directory to the output. The
+interface is fine; the number of unused implementations is the
+problem. See [ADR-0002](0002-single-host-v0.md).
 
 ## Reversibility
 

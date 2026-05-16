@@ -102,18 +102,18 @@ Schema-constrained Semantic is not a subtype of Hybrid. In Hybrid, the
 LLM produces prose that code then interprets. In Schema-constrained, the
 LLM produces the structured data directly.
 
-### Examples from the gstack ecosystem
+### Examples
 
 | Skill or code path | Type |
 |---|---|
-| `bin/gstack-config` (read/write config file) | Deterministic |
+| A CLI command that reads or writes a config file | Deterministic |
 | `/freeze`, `/unfreeze` (set a flag file) | Deterministic |
-| `/office-hours` (interrogate product idea, generate plan) | Open-ended Semantic |
-| `/retro` (write weekly reflection) | Open-ended Semantic |
+| `/office-hours` (interrogate a product idea, generate a plan) | Open-ended Semantic |
+| `/retro` (write a weekly reflection) | Open-ended Semantic |
 | `/ship` (read git, reason, bump version, write CHANGELOG, push) | Hybrid |
 | `/qa` (load URL, reason about UX, write report) | Hybrid |
-| `browse/src/security-classifier.ts` (output `{label, confidence}`) | Schema-constrained Semantic |
-| TestSavantAI prompt-injection classifier | Schema-constrained Semantic |
+| A classifier that outputs `{ label, confidence }` | Schema-constrained Semantic |
+| A prompt-injection classifier with a fixed label set | Schema-constrained Semantic |
 
 ---
 
@@ -144,7 +144,7 @@ When and for how long the skill runs.
 | Multi-turn conversational | The skill runs across several turns of user-skill dialog. Example: `/office-hours`. |
 | Asynchronous | The skill starts, returns immediately, and delivers its result later. |
 | Continuous loop | The skill runs in the background indefinitely. Example: `/canary` monitoring after deploy. |
-| Event-driven | The skill activates automatically when some other event fires. Example: gstack's `/careful` PreToolUse hook activates before each Bash tool call. |
+| Event-driven | The skill activates automatically when some other event fires. Example: a PreToolUse hook on `/careful` that activates before each Bash tool call (not yet supported in dstack — see DEFERRED.md D2). |
 
 ### Axis C — Coordination pattern
 
@@ -531,12 +531,12 @@ and so on.
 
 ### Plan documents
 
-- [`plan/v1/DEFERRED.md`](../plan/v1/DEFERRED.md) entry D3 — LLM-judge
+- [`docs/plans/v1/DEFERRED.md`](plans/v1/DEFERRED.md) entry D3 — LLM-judge
   evaluation, the test strategy for Open-ended Semantic skills.
-- [`plan/v1/ROADMAP.md`](../plan/v1/ROADMAP.md) — M2 (real tokenizer)
-  matters for Semantic types; M3 (includes) matters for any type that
-  composes shared content; M5 (warning surfacing) helps users notice
-  when their classification is wrong.
+- [`docs/plans/v1/ROADMAP.md`](plans/v1/ROADMAP.md) — M3 (includes)
+  matters for any type that composes shared content. M5 (warning
+  surfacing, already shipped) helps users notice when their
+  classification is wrong.
 
 ## One-paragraph summary
 

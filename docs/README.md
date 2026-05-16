@@ -12,7 +12,7 @@ This folder contains the design and reference documentation for dstack.
 | Modifying the renderer | [specs/render-spec.md](specs/render-spec.md). |
 | Modifying the installer | [specs/install-spec.md](specs/install-spec.md). |
 | Understanding a design choice | [adr/](adr/) — read in number order. |
-| Planning v1 work | [`../plan/v1/`](../plan/v1/). |
+| Planning v1 work | [`plans/v1/`](plans/v1/). |
 
 ## Top-level documents
 
@@ -88,7 +88,7 @@ A typical reading path for a new contributor:
 | Location | Purpose |
 |---|---|
 | `../README.md` | Project overview. The first file a new reader sees. |
-| `../plan/v1/` | Status, roadmap, deferred items for the next version. |
+| `plans/v1/` | Status, roadmap, deferred items for the next version. |
 | `../src/<layer>/README.md` | Per-layer rules and conventions. |
 | `../test/README.md` | Test strategy. |
 | `../packages/browse/README.md` | Planned browser-automation package (not yet implemented). |

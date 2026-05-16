@@ -19,8 +19,8 @@ triggers:
   - safety mode
   - prod mode
 
-# Note: gstack's /careful uses a PreToolUse hook to intercept bash commands.
-# dstack v0 does not support hooks (see ADR-0004 — no template engine; hooks
-# would be a similar engine-level concern). This port reduces /careful to
-# advisory text. The behavior is degraded compared to gstack until dstack
-# adds hook support via a new ADR.
+# Note: a strict version of /careful would use a PreToolUse hook to
+# intercept bash commands before they run. dstack does not yet support
+# hooks — see docs/plans/v1/DEFERRED.md entry D2. Today /careful is
+# advisory text only. Hook-level enforcement will arrive via a new ADR
+# when the hook engine is in place.

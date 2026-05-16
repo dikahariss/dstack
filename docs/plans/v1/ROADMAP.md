@@ -1,8 +1,9 @@
 # dstack v1 — Roadmap
 
-The list of work needed to take dstack from v0 (architecture proven,
-two skills) to v1 (useful as a daily replacement for gstack core
-workflows, single user).
+The list of work needed to take dstack from v0.1.0 (Phase 1 complete:
+architecture in place, one skill, CLI warnings + file:line errors
+shipped) to v1 (useful as a daily replacement for the workflows the
+user runs most often, single user).
 
 Each milestone has:
 
@@ -13,6 +14,26 @@ Each milestone has:
   with Claude as a coding partner).
 - **Depends on**: other milestones that must finish first.
 - **Open questions**: decisions still to make.
+
+## Phase 1 (shipped in v0.1.0)
+
+The first tagged version landed these milestones. Their entries have
+been moved to [DONE.md](DONE.md):
+
+- **M5** — Renderer warnings printed in CLI output.
+- **M6** — `VERSION` file plus `CHANGELOG.md` discipline.
+- **M15** — Errors carry `file[:line]` source location.
+
+Plus two non-ROADMAP additions:
+
+- **A1** — `CONTEXT.md` at repo root (domain language glossary).
+- **A3** — `dstack new <skill-id>` scaffolding command.
+
+**M2 (real Anthropic tokenizer) was explored and rejected.** The
+opt-in design was built end-to-end, then removed: the API-key /
+network / extra-dep cost outweighed the ±1% accuracy gain over the
+offline approximation. Precise counting may return as an on-demand
+subcommand (see [DEFERRED.md](DEFERRED.md)).
 
 ## Tier classification
 
@@ -29,11 +50,10 @@ Should, Could, Would-not." We use three of the four tiers.
 
 # Must (blocking for v1)
 
-## M1 — Port 5 or more useful skills from gstack
+## M1 — Add 5 or more useful skills
 
-- **Why.** dstack with 2 skills is a demo. dstack with the workflows
-  the user runs daily is a tool. Without more skills, there is no
-  reason to switch from gstack.
+- **Why.** dstack with one skill is a demo. dstack with the workflows
+  the user runs daily is a tool.
 - **Candidate skills**, in order of likely usefulness to the user:
   1. `/retro` — weekly reflection. Stand-alone. No hooks needed.
   2. `/investigate` — root-cause debugging methodology. Plain prose
@@ -41,54 +61,30 @@ Should, Could, Would-not." We use three of the four tiers.
   3. `/review` — code review of the current diff. Uses the `Bash`
      tool only.
   4. `/context-save` and `/context-restore` — session continuity.
-  5. `/ship` — the workflow that ties many others together. The
-     gstack version is about 36,000 tokens. It will likely need to be
-     split into smaller skills, or trimmed, to fit the dstack token
-     budget.
+  5. `/ship` — the workflow that ties many others together. A full
+     ship workflow can run wide (tens of thousands of tokens); for
+     dstack, plan to split it into smaller skills or trim to fit the
+     16 000-token ceiling.
 - **Acceptance**:
   - 5 skills live under `skills/<skill-id>/`.
   - All pass `bun run build` (no `TokenBudgetExceededError`).
-  - Each skill has a one-line note about what (if anything) differs
-    from the gstack version.
+  - Each skill has a one-line note in its prompt body that documents
+    any deliberate behavior differences from the reference (advisory
+    vs enforcement, etc.).
   - At least one skill is actually used by the user in real work.
 - **Effort**: 1 to 2 hours of AI-pair time per skill. Total: 6 to 10
   hours.
-- **Depends on**: M2 (the real tokenizer). The current approximate
-  counter may misjudge large skills. Better to port with the real
-  counter ready.
+- **Depends on**: Nothing structural. Token counting is approximate;
+  for any skill that lands near its budget, verify the count by hand
+  (paste the rendered SKILL.md into the Anthropic console or run a
+  spot-check via `claude -p --output-format json`).
 - **Open questions**:
   - Does `/ship` exceed the 16,000-token ceiling? If yes, either split
     it into smaller skills, or write a new ADR that raises the ceiling
     for this one skill.
-  - Which gstack skills carry too much gstack-specific telemetry or
-    preamble code to port cleanly? Record those in the skill's
+  - Which candidate skills carry too much harness-specific telemetry
+    or preamble to import cleanly? Record those in the skill's
     comments.
-
-## M2 — Use the real Anthropic tokenizer instead of approximation
-
-- **Why.** [ADR-0010](../../docs/adr/0010-context-budget.md) requires
-  hard budget enforcement. Today we use character-count approximation
-  with a 5% safety margin. For skills near their declared budget, the
-  approximation may be wrong in either direction: a false failure (the
-  build fails when the skill would fit), or a silent overshoot (the
-  build passes but the LLM actually receives too many tokens).
-- **Acceptance**:
-  - The file `src/adapters/claude-code/tokens.ts` calls Anthropic's
-    real tokenizer. The expected path is
-    `@anthropic-ai/sdk`'s `messages.countTokens` method, or a
-    WebAssembly port of the tokenizer.
-  - A test with a fixture text of known token count returns the
-    correct count within plus or minus 1 percent.
-  - The approximate counter is kept as a fallback. The environment
-    variable `DSTACK_TOKEN_APPROX=1` selects the approximate counter
-    for offline use.
-- **Effort**: 1 to 2 hours. Most of the time is figuring out the SDK
-  API.
-- **Depends on**: Nothing.
-- **Open questions**:
-  - Does the SDK tokenizer require a network call? If yes, then offline
-    builds cannot use it. In that case, keep the approximate counter
-    as the default and add an ADR addendum explaining the trade-off.
 
 ## M3 — Resolve `includes:` directive
 
@@ -141,44 +137,6 @@ Should, Could, Would-not." We use three of the four tiers.
     overrun is the most common silent breakage. Catching it without
     rendering is cheap.
 
-## M5 — Print renderer warnings in the CLI output
-
-- **Why.** The domain emits typed warnings (`token-near-budget`,
-  `overlapping-trigger`, etc.). The renderer collects them. The CLI
-  currently ignores them. A warning that no one reads is useless.
-- **Acceptance**:
-  - `dstack build` prints warnings, grouped by skill, at the end of
-    its output.
-  - Each warning line includes the skill id, the warning kind, and
-    the message.
-  - The exit code remains 0 (warnings do not fail the build) unless
-    the `--strict` flag is passed.
-- **Effort**: 30 minutes.
-- **Depends on**: Nothing.
-
-## M6 — Add `VERSION` and `CHANGELOG.md` discipline
-
-- **Why.** Today dstack has no version number. As soon as a second
-  person reads this code, "what changed since I last looked" is a
-  natural question. A CHANGELOG answers it cheaply. The VERSION file
-  makes future auto-update possible.
-- **Acceptance**:
-  - A `VERSION` file at the repository root contains the current
-    version. The first version is `0.1.0`.
-  - A `CHANGELOG.md` file at the repository root contains one entry
-    per release.
-  - Each entry lists user-visible changes first. Contributor-only
-    changes go in a separate "For contributors" subsection.
-  - The first entry (for v0) lists the architecture work and the two
-    initial skills.
-- **Effort**: 30 minutes.
-- **Depends on**: Nothing.
-- **Open questions**:
-  - Should we use gstack's four-part version scheme (`X.Y.Z.W`)?
-    **Decision: no, use classic three-part semantic versioning.** The
-    four-part scheme in gstack exists because of its workspace queue
-    behavior. dstack does not need that.
-
 ---
 
 # Should (high value, not blocking)
@@ -194,7 +152,8 @@ Should, Could, Would-not." We use three of the four tiers.
   - `dstack list --json` prints the same data as JSON for programs
     that consume it.
 - **Effort**: 45 minutes.
-- **Depends on**: M2 (so token counts are accurate).
+- **Depends on**: Nothing. Token counts shown are approximate (±10%);
+  the column header should note "approx" to make that explicit.
 
 ## M8 — Contract suite for `HostRenderer`
 
@@ -294,22 +253,12 @@ Should, Could, Would-not." We use three of the four tiers.
 ## M14 — `--strict` flag (treat warnings as errors)
 
 - **Why.** Continuous integration wants binary signal: passed or
-  failed. M5 surfaces warnings. M14 lets CI fail when warnings appear.
+  failed. M5 (shipped) surfaces warnings to the CLI. M14 lets CI fail
+  when warnings appear.
 - **Acceptance**: `dstack build --strict` exits with non-zero status
   if any warning was emitted.
 - **Effort**: 15 minutes.
-- **Depends on**: M5.
-
-## M15 — Better error messages with file and line numbers
-
-- **Why.** An error like `SkillSpecError: must be a non-empty string`
-  tells the user what is wrong but not where. Including
-  `skills/<skill-id>/skill.yaml:7` would make it faster to fix.
-- **Acceptance**: errors carry the source file path. When the
-  underlying parser provides line numbers, errors include the line
-  number too.
-- **Effort**: 1 hour. The `yaml` package provides source location
-  information; we just do not currently extract it.
+- **Depends on**: Nothing (M5 is shipped).
 
 ## M16 — `dstack diff <version-a> <version-b>` for skills
 
@@ -321,28 +270,26 @@ Should, Could, Would-not." We use three of the four tiers.
 
 # Effort summary
 
+Phase 1 (M5 + M6 + M15 + A1 + A3) is done and shipped in v0.1.0. M2
+was explored and rejected (see Phase 1 section above). Remaining work
+to reach v1:
+
 | Tier | Items | Total AI-pair time |
 |---|---|---|
-| Must | M1 through M6 | About 10 to 13 hours (M1 is most of the total) |
+| Must | M1, M3, M4 | About 8 to 11 hours (M1 is most of the total) |
 | Should | M7 through M12 | About 5 hours |
-| Could | M13 through M16 | About 2 hours |
-| **v1 total** | **M1 through M12** | **About 15 to 18 hours** |
+| Could | M13, M14, M16 | About 1 to 2 hours |
+| **v1 remaining** | **8 milestones** | **About 14 to 18 hours** |
 
-For a senior full-time engineer working without AI, v1 is roughly one
-week of work. For this user, working part-time, plan about two weeks.
+For a senior full-time engineer working without AI, the remainder is
+roughly one week of work. For this user, working part-time, plan
+about two weeks.
 
 # Suggested order
 
-The dependencies between milestones suggest this order, which
-maximizes early value:
+The dependencies between remaining milestones suggest this order:
 
 ```
-M6 (VERSION + CHANGELOG)
-  |
-  v
-M2 (real tokenizer)         M5 (surface warnings)
-  |                            |
-  v                            v
 M3 (includes)               M4 (validate)
   |                            |
   +------------+---------------+
@@ -361,10 +308,8 @@ M11 (CI)    M12 (CONTRIBUTING.md)    M7 (list command)
   (these three can run in parallel)
   |
   v
-Could tier (M13 through M16, as time permits)
+Could tier (M13, M14, M16 as time permits)
 ```
 
-A good first session covers M6 + M2 + M5. They are small, mostly
-mechanical, and build confidence. A second session covers M3 + M4,
-which prepare the ground for porting real skills. After that, M1
-dominates the calendar.
+A good next session covers M3 + M4, which prepare the ground for
+porting real skills. After that, M1 dominates the calendar.

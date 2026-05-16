@@ -159,30 +159,39 @@ encode this. Adding it would require:
 2. A new optional field in `skill.yaml`, for example: `type: hybrid`.
 3. Updates to the parser in `src/adapters/fs/FileSkillRepository.ts`.
 
-This is a known evolution path, not committed. See `plan/v1/DEFERRED.md`
+This is a known evolution path, not committed. See `docs/plans/v1/DEFERRED.md`
 for status.
 
-## Example: minimal valid skill
+## Example: a real skill
 
-The smallest valid skill is in `skills/example-greet/`. The yaml file
-looks like this:
+The `careful` skill in `skills/careful/` is the reference example. Its
+yaml file looks like this:
 
 ```yaml
-id: example-greet
-version: 1.0.0
+id: careful
+version: 0.2.0
 description: |
-  Greet the user by name. Demonstrates the minimal skill spec: required
-  fields only, no inputs, no outputs, no includes.
+  Safety guardrails for destructive commands. Reminds the user to pause before
+  rm -rf, DROP TABLE, force-push, git reset --hard, kubectl delete, and similar
+  destructive operations. Use when touching prod, debugging live systems, or
+  working in a shared environment. Use when asked to "be careful", "safety
+  mode", "prod mode", or "careful mode".
+
 tools:
-  - AskUserQuestion
-context_budget_tokens: 1000
+  - Bash
+  - Read
+
+context_budget_tokens: 1500
+
 triggers:
-  - "say hi"
-  - "greet me"
+  - be careful
+  - warn before destructive
+  - safety mode
+  - prod mode
 ```
 
-The matching `prompt.md` is two sentences of instructions plus a closing
-note. See `skills/example-greet/prompt.md`.
+The matching `prompt.md` carries the advisory text. See
+`skills/careful/prompt.md`.
 
 ## Versioning rule
 

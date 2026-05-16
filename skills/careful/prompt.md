@@ -1,9 +1,9 @@
 # /careful — Destructive Command Guardrails
 
-Safety mode is **advisory** in dstack v0. Unlike gstack, dstack does not
-intercept bash via hooks — the discipline is yours plus this checklist.
-Before running any of the patterns below, stop, restate what the command
-will do, and confirm with the user.
+Safety mode is **advisory** in dstack. dstack does not intercept bash
+via hooks — the discipline is yours plus this checklist. Before
+running any of the patterns below, stop, restate what the command will
+do, and confirm with the user.
 
 ## Patterns that require explicit confirmation
 
@@ -41,11 +41,13 @@ This is slower than running the command. That is the point.
 
 ## When this skill is NOT enough
 
-Hook-based interception (the gstack behavior) is strictly stronger than
-advisory text — it catches operations that bypass conscious thought. If
-you are working on prod or a shared system, prefer gstack `/careful` over
-dstack `/careful` until dstack adds hook support.
+Hook-based interception (a `PreToolUse` hook that blocks a Bash call
+before it runs) is strictly stronger than advisory text — it catches
+operations that bypass conscious thought. If you are working on prod
+or a shared system and need that guarantee, use a tool that supports
+hook-level enforcement until dstack adds hook support.
 
-A future dstack ADR will decide whether to add hooks. The trade-off there
-is real: hooks are powerful and also a renderer-engine concern that v0
-explicitly excludes (see ADR-0004).
+A future dstack ADR will decide whether to add hooks. The trade-off
+is real: hooks are powerful, but they also add runtime complexity
+dstack has so far avoided. See `docs/plans/v1/DEFERRED.md` entry D2
+for the current status of hook support.

@@ -19,7 +19,7 @@ Claude Code as a target AI host.
 |---|---|
 | `ClaudeCodeRenderer.ts` | Implements `HostRenderer` for Claude Code's expected directory format. |
 | `tools.ts` | The list of tool names Claude Code's harness recognizes. |
-| `tokens.ts` | Approximate token counting. Used to check skills against their declared budget. |
+| `tokens.ts` | `approximateTokenCount()` — offline counter (`chars / 4`, +5% margin, rounded up). Called directly by the renderer. |
 
 ## What this adapter knows
 

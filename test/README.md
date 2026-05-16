@@ -21,16 +21,23 @@ strategy and conventions.
 | Unit | Under 50 ms | Free | Domain entities, value objects, pure functions. |
 | Contract | Under 500 ms | Free | One shared suite per port. Every adapter that implements the port passes the same suite. |
 | Integration | Under 2 seconds | Free | One full use case wired with real adapters, running against a temporary directory. |
-| LLM-judge | Over 30 seconds | Paid (about USD 0.15 per run) | Not used in v0. See [DEFERRED.md](../plan/v1/DEFERRED.md) D3. |
+| LLM-judge | Over 30 seconds | Paid (about USD 0.15 per run) | Not used in v0. See [DEFERRED.md](../docs/plans/v1/DEFERRED.md) D3. |
 
 ## Folder layout
 
 ```
 test/
 ├── unit/
-│   └── domain/
-│       ├── SkillId.test.ts
-│       └── (future) SkillSpec.test.ts
+│   ├── domain/
+│   │   └── SkillId.test.ts
+│   └── adapters/
+│       ├── cli/
+│       │   ├── scaffold.test.ts             # `dstack new` scaffolder.
+│       │   └── warning-formatter.test.ts    # CLI warning output.
+│       ├── claude-code/
+│       │   └── tokens.test.ts               # approximateTokenCount formula + determinism.
+│       └── fs/
+│           └── error-messages.test.ts       # SkillSpecError file:line locations.
 ├── contract/
 │   ├── SkillRepository.contract.ts          # Defines the shared suite.
 │   └── FileSkillRepository.contract.test.ts # Applies the suite to one adapter.
@@ -39,7 +46,8 @@ test/
 └── fixtures/
     └── skills/
         ├── good/                            # Valid skills used by tests.
-        └── missing-prompt/                  # Invalid skill: no prompt.md.
+        ├── missing-prompt/                  # Invalid skill: no prompt.md.
+        └── bad-yaml/                        # Invalid YAML or wrong-type fields, for error-message tests.
 ```
 
 ## How contract tests work
@@ -90,7 +98,7 @@ implementations is caught at test time, not in production.
 
 - **LLM-judge evaluations.** Skills are run by humans on real Claude
   Code at v0. Automated LLM-based scoring is deferred until a second
-  user exists. See `plan/v1/DEFERRED.md` D3.
+  user exists. See `docs/plans/v1/DEFERRED.md` D3.
 - **Browser integration.** That belongs in `packages/browse/test/`
   (when that package is implemented).
 - **Performance benchmarks.** The renderer is small enough that
@@ -106,9 +114,9 @@ implementations is caught at test time, not in production.
 | `bun test test/contract/` | Contract tests only. |
 | `bun test test/integration/` | Integration tests only (when written; not yet present in v0). |
 
-Total runtime today is under 5 seconds. If a tier's runtime exceeds its
-budget in the table above, profile before adding test skips. Slow
-tests that are skipped stay slow forever.
+Total runtime today is about 100 ms across 6 files (40 pass).
+If a tier's runtime exceeds its budget in the table above, profile
+before adding test skips. Slow tests that are skipped stay slow forever.
 
 ## Adding a new test
 

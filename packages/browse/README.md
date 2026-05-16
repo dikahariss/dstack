@@ -29,8 +29,9 @@ can call to:
 - Run JavaScript on the page.
 - Check console logs and network requests.
 
-The implementation will be ported from the existing gstack `browse/`
-codebase (about 42,000 lines of TypeScript).
+A full implementation runs on the order of 20 000 to 25 000 lines of
+TypeScript (a daemon, an HTTP/CLI surface, session management, and
+Playwright wiring).
 
 ## Why this package is separate
 
@@ -55,7 +56,7 @@ Two communication channels:
 | Child process | Short, one-shot calls. Example: `browse goto https://example.com`. The process exits after the command finishes. |
 | HTTP API | Long-lived sessions. The browse daemon runs in the background. Other programs send `POST /command` requests to it. |
 
-Both styles already work in gstack today.
+Both styles are standard for Playwright-based browser tools.
 
 ## Planned directory layout
 
@@ -93,13 +94,10 @@ know how browse works internally.
 
 This README is the v0 deliverable.
 
-The actual port of gstack's `browse/` code is deferred. The port will
-happen when one of these triggers is true:
+The actual implementation is deferred. It will happen when a real v1
+skill needs browser automation.
 
-- A real v1 skill needs browser automation, AND
-- Falling back to gstack's `browse/` binary is creating friction.
-
-See [`plan/v1/DEFERRED.md`](../../plan/v1/DEFERRED.md) entry D4.
+See [`docs/plans/v1/DEFERRED.md`](../../docs/plans/v1/DEFERRED.md) entry D4.
 
 ## Type sharing across the boundary
 

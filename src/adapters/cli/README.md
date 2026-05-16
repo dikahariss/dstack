@@ -20,15 +20,18 @@ case.
 | File | Purpose |
 |---|---|
 | `main.ts` | Single entrypoint. Parses arguments. Wires adapters. Dispatches to use cases. |
+| `scaffold.ts` | `scaffoldSkill()` — creates `skills/<id>/{skill.yaml,prompt.md}` from a template. Used by `dstack new`. |
+| `warning-formatter.ts` | `formatWarnings()` + `countWarnings()` — turn `RenderResult.warnings` into greppable CLI output. |
 
 ## Commands today
 
 | Command | Use case it runs | What happens |
 |---|---|---|
-| `dstack build` | `BuildCatalog` + `InstallSkills` | Renders every skill and writes the result to `./.claude/skills/`. |
+| `dstack build` | `BuildCatalog` + `InstallSkills` | Renders every skill and writes the result to `./.claude/skills/`. Prints warnings grouped by skill. |
 | `dstack build --global` | Same as `dstack build`, different output root | Writes to `~/.claude/skills/dstack/` instead. |
 | `dstack render <skill-id>` | `BuildSkill` | Renders one skill. Prints the output to standard output. |
-| `dstack install` | (not yet implemented) | Will install previously-rendered output. See `plan/v1/ROADMAP.md`. |
+| `dstack new <skill-id>` | `scaffoldSkill()` | Creates a new skill directory under `skills/<skill-id>/` from a template. Refuses to overwrite. |
+| `dstack install` | (not yet implemented) | Will install previously-rendered output. See `docs/plans/v1/ROADMAP.md`. |
 
 ## Wiring
 

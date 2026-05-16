@@ -16,16 +16,18 @@
 
 ## Context
 
-gstack skills are written as prose in Markdown. A reader cannot tell
-what tools `/ship` will use, what files it will touch, or what success
-looks like, without reading the full `SKILL.md` (about 35,000 tokens
-for `/ship`).
+Prose-only skills (no machine-readable contract beyond a description)
+are hard to reason about programmatically. A reader cannot tell what
+tools a large skill will use, what files it will touch, or what
+success looks like, without reading the full `SKILL.md` — which can
+run into tens of thousands of tokens.
 
-To make sure a skill still works after a change, gstack runs LLM-judge
-evaluations. These cost about USD 0.15 per run.
+The standard way to keep prose-only skills honest is to run LLM-judge
+evaluations on every change. Those are slow (tens of seconds) and
+paid (about USD 0.15 per run).
 
-A declared contract — structured metadata about what a skill promises —
-would let us do several things without running the LLM:
+A declared contract — structured metadata about what a skill promises
+— lets us do several things without an LLM:
 
 - Check that the tools a skill declares match the harness's tool list.
   A skill that calls a non-existent tool would fail before the LLM is
@@ -120,7 +122,8 @@ skill but is mechanical work.
 
 ## References
 
-- gstack has an `allowed-tools` field in skill frontmatter. dstack
-  extends the same idea into a full contract.
-- See [ADR-0010](0010-context-budget.md) for how `context_budget_tokens`
-  is enforced.
+- Claude Code already accepts an `allowed-tools` frontmatter field per
+  skill. dstack extends that single field into a full contract:
+  tools, inputs, outputs, budget, triggers.
+- See [ADR-0010](0010-context-budget.md) for how
+  `context_budget_tokens` is enforced.

@@ -16,7 +16,8 @@
 
 ## Context
 
-gstack's file `browser-manager.ts` includes this code around line 204:
+A common pattern for launching Chromium under Playwright is to disable
+the sandbox in environments where it cannot work:
 
 ```typescript
 const isRoot = typeof process.getuid === 'function' && process.getuid() === 0;
@@ -25,8 +26,7 @@ if (process.env.CI || process.env.CONTAINER || isRoot) {
 }
 ```
 
-This code adds the `--no-sandbox` flag to Chromium's launch command in
-three cases:
+This code adds the `--no-sandbox` flag in three cases:
 
 1. The environment variable `CI` is set (continuous integration build).
 2. The environment variable `CONTAINER` is set (running in a container).
