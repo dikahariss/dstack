@@ -14,6 +14,7 @@ follow them literally.
 |---|---|---|
 | [CONTEXT.md](CONTEXT.md) | Domain glossary. What "skill", "port", "renderer", "wiring point" mean here. | Always, first. |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Layered design with diagrams. Port + adapter inventory. | When touching `src/`. |
+| [docs/code-taxonomy.md](docs/code-taxonomy.md) | Coding rules. When to write a function vs a class, inline vs constant, helper extraction, error handling, comments, imports. Resolves the rule-vs-ADR conflicts. | When writing or reviewing any code in `src/` or `test/`. |
 | [docs/plans/v1/ROADMAP.md](docs/plans/v1/ROADMAP.md) | What's planned for v1 and what's done. | When suggesting features. |
 | [docs/plans/v1/DEFERRED.md](docs/plans/v1/DEFERRED.md) | What is deliberately NOT being built and why. | When tempted to add something big. |
 | [docs/adr/](docs/adr/) | Why each design choice was made. Read the relevant one before changing it. | When changing architecture. |

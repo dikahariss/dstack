@@ -203,6 +203,14 @@ skill-spec      host-spec       render-spec     install-spec
   (input)   ->   (target)   ->  (transform)  ->  (output)
 ```
 
+## Code taxonomy reference
+
+For decisions at the function and file level — function vs class,
+inline vs constant, helper extraction, error handling, comments,
+imports — see [code-taxonomy.md](code-taxonomy.md). That document
+captures the project's defaults and the exceptions ADR-0001,
+ADR-0006, and ADR-0011 justify.
+
 ## Skill taxonomy reference
 
 When deciding **how** to design a new skill (not just **what** it does),
