@@ -1,0 +1,20 @@
+name: verification
+version: 0.1.0
+description: |
+  Evidence-before-claim gate. Before declaring work complete, fixed, or
+  passing — run the verification command in this turn, read the output,
+  and only then make the claim. Use before committing, before pushing,
+  before opening a PR, before saying "done", and after any subagent
+  reports success.
+
+tools:
+  - Bash
+  - Read
+
+context_budget_tokens: 3000
+
+triggers:
+  - verify
+  - prove it
+  - before declaring done
+  - evidence before claim

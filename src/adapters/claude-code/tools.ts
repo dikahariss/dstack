@@ -14,6 +14,8 @@ export const CLAUDE_CODE_TOOLS: readonly string[] = [
   'AskUserQuestion',
   'Bash',
   'Edit',
+  'Glob',
+  'Grep',
   'NotebookEdit',
   'Read',
   'TaskCreate',

@@ -1,0 +1,22 @@
+name: investigate
+version: 0.1.0
+description: |
+  Root-cause investigation discipline. Trace the bug to its source before
+  proposing any fix. Use when hitting a test failure, a production bug,
+  unexpected behavior, a perf regression, a build break, or any technical
+  issue where the cause is not obvious. Use when asked to "investigate",
+  "debug systematically", "find the root cause", or "stop guessing".
+
+tools:
+  - Read
+  - Bash
+  - Grep
+
+context_budget_tokens: 4000
+
+triggers:
+  - investigate
+  - find the root cause
+  - debug systematically
+  - stop guessing
+  - root cause first

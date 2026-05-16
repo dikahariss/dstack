@@ -1,0 +1,23 @@
+name: review
+version: 0.1.0
+description: |
+  Receive code-review feedback with technical rigor. Verify before
+  implementing, ask before assuming, push back with reasoning when the
+  reviewer is wrong. Use when handling PR comments, /codereview output,
+  inline review threads, or asked to "respond to this review", "address
+  these comments", or "the reviewer said X".
+
+tools:
+  - Read
+  - Bash
+  - Grep
+  - Glob
+  - Edit
+
+context_budget_tokens: 3500
+
+triggers:
+  - respond to review
+  - address review
+  - reviewer said
+  - handle review feedback
