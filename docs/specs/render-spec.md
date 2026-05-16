@@ -90,18 +90,29 @@ For each path in `skill.spec.includes`:
 
 If a file does not exist, raise `IncludeNotFoundError`. The build fails.
 
+Resolution location:
+
+- `FileSkillRepository` performs include resolution at load time. The
+  renderer receives the already-concatenated text on
+  `Skill.includesContent` plus any warnings on `Skill.includeWarnings`.
+
 Caching:
 
-- Include resolution is cached across one build run.
-- Two skills that share the same include file read it from disk only
-  once.
+- Not implemented today. Two skills that share the same include file
+  read it from disk twice. The OS file cache keeps the cost
+  negligible for catalogs in the hundreds. Add per-build memoization
+  to the repository if profiling later shows it matters.
 
 Cycle detection:
 
-- If include file A references include file B, and B references A
-  (directly or transitively), the renderer stops following the chain
-  at the cycle and emits a warning of kind `include-cycle-broken`.
-- Maximum include depth is 4. Going deeper emits the same warning.
+- If a path appears more than once while resolving a single skill's
+  include chain, the resolver emits a warning of kind
+  `include-cycle-broken` and skips the repeat. Today the only way a
+  repeat can occur is a duplicate entry in one skill's `includes:`
+  list. The same mechanism guards a future nesting syntax (an
+  include file that references other files).
+- Maximum include depth is 4. Crossing the limit emits the same
+  warning kind.
 
 ### Step 2. Assemble the body
 
@@ -110,6 +121,10 @@ Concatenate, in order:
 1. The "includes content" buffer from Step 1.
 2. A single newline character.
 3. The contents of `prompt.md`.
+
+If the includes content buffer is empty (no `includes:` field, or an
+empty list), the body is just `prompt.md` — the separator newline is
+not added.
 
 The result is the body.
 

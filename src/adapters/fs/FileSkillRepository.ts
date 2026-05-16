@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
-import { basename, join } from 'node:path';
+import { basename, join, resolve } from 'node:path';
 import { LineCounter, parseDocument, YAMLMap, isScalar } from 'yaml';
 import { Skill } from '../../domain/skill/Skill';
 import { SkillId } from '../../domain/skill/SkillId';
@@ -9,7 +9,10 @@ import {
   CONTEXT_BUDGET_CEILING,
 } from '../../domain/skill/SkillSpec';
 import { SkillRepository } from '../../domain/skill/ports';
-import { SkillSpecError, SourceLocation } from '../../domain/errors';
+import { Warning } from '../../domain/render/RenderResult';
+import { IncludeNotFoundError, SkillSpecError, SourceLocation } from '../../domain/errors';
+
+const INCLUDE_DEPTH_LIMIT = 4;
 
 /**
  * Reads skills from a directory layout: `<root>/<skill-id>/{skill.yaml,prompt.md}`.
@@ -84,8 +87,71 @@ export class FileSkillRepository implements SkillRepository {
 
     const spec = this.parseSpec(raw, yamlPath, dirName, doc.contents, lineCounter);
     const prompt = readFileSync(promptPath, 'utf-8');
+    const { content: includesContent, warnings: includeWarnings } = this.resolveIncludes(
+      spec.id.value,
+      spec.includes,
+    );
 
-    return new Skill(spec, prompt);
+    return new Skill(spec, prompt, includesContent, includeWarnings);
+  }
+
+  /**
+   * Resolve `includes` paths against `<root>/`. Each path is read in order and
+   * concatenated with a newline separator. A path repeated in the same skill's
+   * list triggers an `include-cycle-broken` warning and is included only once.
+   *
+   * Nested includes (an include file that itself references other files) are
+   * not implemented today — the depth-limit and per-chain `seen` set are in
+   * place so a future nesting syntax can plug in without restructuring.
+   */
+  private resolveIncludes(
+    skillId: string,
+    paths: readonly string[],
+  ): { content: string; warnings: Warning[] } {
+    if (paths.length === 0) return { content: '', warnings: [] };
+
+    const warnings: Warning[] = [];
+    const buffer: string[] = [];
+    const seen = new Set<string>();
+
+    for (const includePath of paths) {
+      this.resolveOneInclude(skillId, includePath, buffer, warnings, seen, 0);
+    }
+
+    return { content: buffer.join('\n'), warnings };
+  }
+
+  private resolveOneInclude(
+    skillId: string,
+    includePath: string,
+    buffer: string[],
+    warnings: Warning[],
+    seen: Set<string>,
+    depth: number,
+  ): void {
+    if (depth > INCLUDE_DEPTH_LIMIT) {
+      warnings.push({
+        kind: 'include-cycle-broken',
+        message: `${includePath}: depth exceeded ${INCLUDE_DEPTH_LIMIT}`,
+      });
+      return;
+    }
+
+    const absolutePath = resolve(this.root, includePath);
+    if (seen.has(absolutePath)) {
+      warnings.push({
+        kind: 'include-cycle-broken',
+        message: `${includePath}: already included in this chain`,
+      });
+      return;
+    }
+
+    if (!existsSync(absolutePath)) {
+      throw new IncludeNotFoundError(skillId, includePath);
+    }
+
+    seen.add(absolutePath);
+    buffer.push(readFileSync(absolutePath, 'utf-8'));
   }
 
   private parseSpec(

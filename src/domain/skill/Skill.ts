@@ -1,17 +1,21 @@
+import { Warning } from '../render/RenderResult';
 import { SkillSpec } from './SkillSpec';
 
 /**
- * Skill is the aggregate: a validated spec plus the prompt body.
+ * Skill is the aggregate: a validated spec plus the prompt body and any
+ * resolved `includes` content.
  *
  * The aggregate boundary is "everything the renderer needs to produce
- * output for one skill." It does not include resolved `includes` content
- * — that happens in the renderer, where include resolution can be cached
- * across the build.
+ * output for one skill." Include resolution happens in the repository
+ * (where filesystem reads belong); the renderer receives the already
+ * resolved text and any warnings collected during resolution.
  */
 export class Skill {
   constructor(
     readonly spec: SkillSpec,
     readonly prompt: string,
+    readonly includesContent: string = '',
+    readonly includeWarnings: readonly Warning[] = [],
   ) {
     if (prompt.length === 0) {
       throw new Error(

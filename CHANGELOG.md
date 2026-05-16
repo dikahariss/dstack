@@ -6,6 +6,31 @@ The format follows [Keep a Changelog](https://keepachangelog.com/)
 and the version scheme follows [Semantic Versioning](https://semver.org/)
 (classic three-part: `MAJOR.MINOR.PATCH`).
 
+## [Unreleased]
+
+Phase 2 work toward v1. Not yet tagged.
+
+### Added
+
+- **`includes:` directive now resolves.** `FileSkillRepository` reads
+  each path listed under `includes:` (relative to `skills/`) and
+  exposes the concatenated text on `Skill.includesContent`. The
+  Claude Code renderer prepends that text above `prompt.md`, so
+  shared snippets under `skills/_shared/` no longer fall on the
+  floor. A missing path raises `IncludeNotFoundError` and aborts
+  the build; a path repeated inside one chain emits an
+  `include-cycle-broken` warning and is included only once. The
+  depth limit is 4. (ROADMAP M3.)
+
+### Changed
+
+- `Skill` aggregate carries two new optional fields,
+  `includesContent: string` and `includeWarnings: readonly Warning[]`,
+  defaulting to empty so existing call sites keep working.
+- `docs/specs/render-spec.md` reflects the new resolution location
+  (repository, not renderer) and softens the prior caching claim
+  to match the implementation.
+
 ## [0.1.0] — 2026-05-16
 
 First tagged version. The architecture is in place, one skill

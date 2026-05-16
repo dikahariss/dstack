@@ -9,17 +9,21 @@ import { approximateTokenCount } from './tokens';
  *
  * Output layout: `<host.outputRoot>/<skill-id>/SKILL.md`
  *
- * The renderer is pure and deterministic. It does not read includes
- * itself — those are resolved upstream by the SkillRepository so the
- * cache lives in one place.
+ * The renderer is pure and deterministic. Include resolution happens
+ * upstream in the SkillRepository — the renderer receives the already
+ * concatenated text on `Skill.includesContent` and forwards any
+ * resolution warnings it produced.
  */
 export class ClaudeCodeRenderer implements HostRenderer {
   render(ctx: RenderContext): RenderResult {
     const { skill } = ctx;
-    const warnings: Warning[] = [];
+    const warnings: Warning[] = [...skill.includeWarnings];
 
     const frontmatter = this.buildFrontmatter(ctx.host, skill.spec);
-    const content = frontmatter + '\n' + skill.prompt;
+    const body = skill.includesContent.length > 0
+      ? skill.includesContent + '\n' + skill.prompt
+      : skill.prompt;
+    const content = frontmatter + '\n' + body;
     const tokenCount = approximateTokenCount(content);
 
     if (tokenCount > skill.spec.contextBudgetTokens * 0.9) {

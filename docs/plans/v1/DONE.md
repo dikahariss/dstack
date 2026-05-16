@@ -13,7 +13,7 @@ When a roadmap item lands, move its row into this document.
 | Current version | 0.1.0 (see [`VERSION`](../../../VERSION) and [`CHANGELOG.md`](../../../CHANGELOG.md)) |
 | Total tracked files | About 80 (excluding `node_modules/`, `.claude/skills/`) |
 | Total lines | About 7,400 (TypeScript + Markdown + YAML) |
-| Tests | 40 pass, 0 fail, about 100 ms total |
+| Tests | 47 pass, 0 fail, about 380 ms total |
 | Skills rendered end-to-end | 1 (`careful`) |
 | Architecture Decision Records | 10 |
 
@@ -38,6 +38,12 @@ summary.
 | **M5 — Renderer warnings printed in CLI** | `src/adapters/cli/warning-formatter.ts`; `dstack build` prints a `warnings:` section grouped by skill |
 | **M6 — VERSION + CHANGELOG.md** | [`VERSION`](../../../VERSION) (0.1.0) and [`CHANGELOG.md`](../../../CHANGELOG.md) at repo root |
 | **M15 — Errors carry file and line** | `SourceLocation` field on `SkillSpecError`; YAML `LineCounter` used in `FileSkillRepository` |
+
+## Shipped after v0.1.0 (Phase 2, unreleased)
+
+| Item | Where it landed |
+|---|---|
+| **M3 — `includes:` directive resolved** | `FileSkillRepository.resolveIncludes()` reads each path relative to the skills root and exposes the concatenated text on `Skill.includesContent`. `IncludeNotFoundError` aborts the build; a path repeated in one chain emits an `include-cycle-broken` warning. `ClaudeCodeRenderer` prepends the resolved text before `prompt.md` and forwards the warnings to `RenderResult`. |
 
 **M2 was explored and rejected.** The original plan was to wire
 Anthropic's `messages.countTokens` as an opt-in tokenizer. After
@@ -136,10 +142,12 @@ if it ever becomes necessary, will arrive as an on-demand subcommand
 | `test/unit/adapters/cli/scaffold.test.ts` | Unit | 8 |
 | `test/unit/adapters/cli/warning-formatter.test.ts` | Unit | 8 |
 | `test/unit/adapters/claude-code/tokens.test.ts` | Unit | 5 |
+| `test/unit/adapters/claude-code/renderer-includes.test.ts` | Unit | 3 |
 | `test/unit/adapters/fs/error-messages.test.ts` | Unit | 5 |
+| `test/unit/adapters/fs/includes.test.ts` | Unit | 4 |
 | `test/contract/SkillRepository.contract.ts` | Contract (shared suite) | (defines suite) |
 | `test/contract/FileSkillRepository.contract.test.ts` | Contract (applied to one adapter) | 6 |
-| **Totals** |  | **40 pass, 0 fail — about 100 ms across 6 files** |
+| **Totals** |  | **47 pass, 0 fail — about 380 ms across 8 files** |
 
 ### Test fixtures
 
@@ -151,6 +159,9 @@ if it ever becomes necessary, will arrive as an on-demand subcommand
 | `test/fixtures/skills/bad-yaml/syntax-error/` | Unclosed quoted string. Verifies `LineCounter` reports a line number on YAML parse failure — M15 |
 | `test/fixtures/skills/bad-yaml/wrong-type/` | `tools` field is a scalar, not an array. Verifies field-level line number reporting — M15 |
 | `test/fixtures/skills/bad-yaml/missing-tools/` | `tools` field is absent. Verifies file path is reported when line is unknown — M15 |
+| `test/fixtures/skills/with-includes/uses-shared/` + `_shared/intro.md` | Skill that pulls in shared content via `includes:`. Verifies include text is concatenated above `prompt.md` — M3 |
+| `test/fixtures/skills/missing-include/uses-missing/` | Skill whose include path does not exist. Verifies `IncludeNotFoundError` — M3 |
+| `test/fixtures/skills/duplicate-includes/uses-dupe/` + `_shared/preamble.md` | Skill whose `includes:` lists the same file twice. Verifies the second reference triggers an `include-cycle-broken` warning and is not re-included — M3 |
 
 ## Tooling files
 
@@ -181,7 +192,6 @@ These items are explicitly NOT in v0.1.0. Each has a milestone in
 | Gap | Roadmap milestone |
 |---|---|
 | Only 1 skill exists (`careful`); v1 needs at least 5 useful skills | M1 |
-| `includes:` directive in `skill.yaml` is parsed but does not resolve | M3 |
 | No `dstack validate` command | M4 |
 | No `dstack list` command | M7 |
 | Only `SkillRepository` has a shared contract suite | M8 (HostRenderer), M9 (Installer) |
