@@ -1,16 +1,8 @@
 # /verification
 
-Evidence before claim. Before saying work is done, run the verification
-command, read the output, and only then make the claim.
-
-> Adapted from `superpowers/verification-before-completion`. dstack is
-> advisory — there is no hook that intercepts an unverified "done."
-> The skill text reminds; the user enforces.
-
-## Core principle
-
-Claiming work is complete without running the verification command is
-not efficient, it is dishonest. Confidence is not evidence.
+Evidence before claim. Before saying work is done, run the
+verification command in **this** turn, read the output, and only
+then make the claim.
 
 ## The iron law
 
@@ -18,55 +10,74 @@ not efficient, it is dishonest. Confidence is not evidence.
 NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
 ```
 
-If you have not run the verification command in this turn, you cannot
-claim it passes. Evidence from an earlier turn is stale — the code
-may have changed, the environment may have shifted.
+If you have not run the verification command in this turn, you
+cannot claim it passes. Evidence from an earlier turn is stale —
+code may have changed, environment may have shifted, dependencies
+may have been re-installed.
+
+Confidence is not evidence.
+
+## When to use this skill
+
+Apply this gate before any of these:
+
+- Any variation of "complete", "done", "fixed", "working", "ready",
+  "all set".
+- Any expression of satisfaction with the work.
+- Any positive statement about the state of the code.
+- Committing, pushing, opening a PR, marking a task complete.
+- Moving to the next task in the queue.
+- Handing work back to the user.
+
+The rule covers exact phrases, paraphrases, synonyms, and anything
+that implies completion or correctness.
 
 ## The gate function
 
-Before any success claim or expression of satisfaction:
+Before any claim:
 
 1. **Identify** the command that proves this claim.
 2. **Run** the full command (fresh, complete — not a partial subset).
-3. **Read** the full output. Check exit code. Count failures.
+3. **Read** the full output. Check the exit code. Count failures.
 4. **Verify** that the output confirms the claim.
-   - If it does not, state the actual status with evidence.
-   - If it does, state the claim **with** the evidence.
+   - If it does not: state the actual status with evidence. Do not
+     claim done.
+   - If it does: state the claim **with** the evidence — name the
+     command, the exit code, the pass/fail count.
 5. **Only then** make the claim.
 
 Skipping any step is lying, not verifying.
 
-## Common claim → required evidence
+## Claim → required evidence
 
 | Claim | Required evidence | Not sufficient |
 |---|---|---|
-| Tests pass | Test command output: zero failures, expected count | "Should pass", a previous run |
-| Linter clean | Linter output: zero errors | Partial check, extrapolation |
-| Build succeeds | Build command exit 0 | Linter passing, logs that "look fine" |
+| Tests pass | Test command output: zero failures, expected count | "Should pass", a previous run, "the file looks right" |
+| Linter clean | Linter output: zero errors | Partial check, extrapolation, fewer warnings than before |
+| Build succeeds | Build command exit 0 | Linter passing, "logs look fine" |
+| Type check clean | `tsc --noEmit` exit 0 | Build worked, IDE shows no red squiggle |
 | Bug fixed | Re-run the test that reproduces the bug — passes | Code changed and assumed fixed |
 | Regression test works | Red-green-revert-red cycle verified | Test passes once |
-| Subagent completed | VCS diff shows the changes | Subagent self-reports "success" |
+| Subagent completed | VCS diff shows the changes you requested | Subagent self-reports "success" |
 | Requirements met | Line-by-line checklist against the plan | Tests pass alone |
 
 ## Red flags — stop before claiming
 
-Catch yourself if you are about to:
+If you catch yourself about to do any of these:
 
-- Use "should", "probably", or "seems to" to describe outcome.
-- Express satisfaction before verification ("Great!", "Perfect!",
-  "Done!").
+- Use "should", "probably", or "seems to" about the outcome.
+- Type "Great!", "Perfect!", "Done!" before running anything.
 - Commit, push, or open a PR without running verification.
 - Trust a subagent's success message without checking the diff.
-- Rely on partial verification (only ran one file, only checked
-  exit code).
-- Think "just this once."
+- Rely on partial verification (one file, only the exit code).
+- Think "just this once".
 - Feel tired and want the work to be over.
-- Use any wording that implies success without having run the
-  verification.
 
-## Rationalization → reality
+Each of these means: stop. Run the command. Then claim.
 
-| Excuse | Reality |
+## Common excuses, defused
+
+| Excuse | Reply |
 |---|---|
 | "Should work now." | Run the verification. |
 | "I am confident." | Confidence is not evidence. |
@@ -79,27 +90,28 @@ Catch yourself if you are about to:
 
 ## Key patterns
 
-**Tests:**
+**Tests.**
 
 ```
 Run the test command. Read the output: "34 passed, 0 failed."
-Then: "All tests pass — 34 passed, 0 failed."
+Claim: "All tests pass — 34 passed, 0 failed (bun test)."
 
 Not: "Should pass now." Not: "Looks correct."
 ```
 
-**Regression tests (red-green discipline):**
+**Regression test (red-green-revert discipline — same as `/tdd`).**
 
 ```
-Write the test → run it → it fails for the right reason →
-apply the fix → run again → it passes → revert the fix → run
-again → MUST FAIL → restore the fix → run again → passes.
-Only then: "Regression test verified."
+Write the test → run it → fails for the right reason.
+Apply the fix → run again → passes.
+Revert the fix → run again → MUST FAIL.
+Restore the fix → run again → passes.
+Only now: "Regression test verified."
 
 Not: "I wrote a regression test."
 ```
 
-**Build:**
+**Build.**
 
 ```
 Run the full build. Read the exit code. "Build passes, exit 0."
@@ -107,18 +119,18 @@ Run the full build. Read the exit code. "Build passes, exit 0."
 Not: "Linter passed." (The linter does not compile.)
 ```
 
-**Requirements:**
+**Requirements.**
 
 ```
 Re-read the plan or task description.
-Create a line-by-line checklist against it.
-Verify each item.
-Report what is done and what is not.
+Make a line-by-line checklist against it.
+Tick each line only after observing the evidence.
+Report what is done, what is not, what is deferred.
 
 Not: "Tests pass, phase complete."
 ```
 
-**Subagent delegation:**
+**Subagent delegation.**
 
 ```
 The subagent reports success.
@@ -129,21 +141,41 @@ Report the actual state to the user.
 Not: trust the subagent's self-report.
 ```
 
-## When this gate applies
+## Response templates
 
-Apply before any of these:
+**All claims verified:**
 
-- Any variation of "complete", "done", "fixed", "working", "ready".
-- Any expression of satisfaction with the work.
-- Any positive statement about the state of the code.
-- Committing, opening a PR, marking a task complete.
-- Moving to the next task in the queue.
-- Handing work back to the user.
+```
+Done — ran <command> (exit 0). <Specific evidence: 34/34 tests
+passed, build artifact at X, diff at file:line>.
+```
 
-The rule covers exact phrases, paraphrases, synonyms, and anything
-that implies completion or correctness.
+**Partial completion:**
+
+```
+Items 1, 2, 4 done — ran <command>, output confirms.
+Item 3 not done because <reason>. Item 5 deferred — see
+<follow-up>.
+```
+
+**Cannot verify in this environment:**
+
+```
+Cannot verify <claim> here because <reason>. The check that would
+verify it is <command>. Want me to run it, or accept the
+limitation?
+```
+
+## Cross-references
+
+- `/tdd` — the green-verification step is the same gate. Re-run
+  the test, do not say "should pass now".
+- `/debugging` — Phase 4 step 3 ("verify the fix") is this gate.
+- `/code-review` — when applying review fixes, each implemented
+  item is gated by running the test, not by "fixed".
 
 ## Bottom line
 
-Run the command. Read the output. **Then** claim the result. Non-
-negotiable.
+Run the command. Read the output. **Then** claim the result.
+
+Non-negotiable.
