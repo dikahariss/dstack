@@ -9,7 +9,7 @@
  * coarse budgets dstack enforces (default 4 000, ceiling 16 000).
  */
 import { describe, test, expect } from 'bun:test';
-import { approximateTokenCount } from '../../../../src/adapters/claude-code/tokens';
+import { approximateTokenCount } from '@adapters/claude-code/tokens';
 
 describe('approximateTokenCount', () => {
   test('returns positive count for non-empty text', () => {

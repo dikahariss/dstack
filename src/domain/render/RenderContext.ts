@@ -1,5 +1,5 @@
-import { Host } from '../host/Host';
-import { Skill } from '../skill/Skill';
+import { Host } from '@domain/host/Host';
+import { Skill } from '@domain/skill/Skill';
 
 /**
  * RenderContext is the immutable input to a renderer.

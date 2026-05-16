@@ -276,6 +276,7 @@ Read in number order if you want the full reasoning.
 | [0008](adr/0008-sandbox-detection-at-adapter.md) | Sandbox detection in adapter, not domain | Accepted |
 | [0009](adr/0009-spec-driven-skills.md) | Each skill ships a contract (inputs/outputs/tools) | Accepted |
 | [0010](adr/0010-context-budget.md) | Hard token budget per rendered skill | Accepted |
+| [0011](adr/0011-import-path-aliases.md) | Import path aliases for cross-layer references | Accepted |
 
 "Accepted" means the decision is in force. If we change our minds, we
 write a new ADR that supersedes the old one. We do not edit accepted

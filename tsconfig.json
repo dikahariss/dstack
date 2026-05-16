@@ -13,7 +13,13 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "types": ["bun"]
+    "types": ["bun"],
+    "paths": {
+      "@domain/*": ["./src/domain/*"],
+      "@app/*": ["./src/application/*"],
+      "@adapters/*": ["./src/adapters/*"],
+      "@obs/*": ["./src/observability/*"]
+    }
   },
   "include": ["src/**/*.ts", "packages/**/*.ts", "test/**/*.ts"]
 }

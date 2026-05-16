@@ -1,10 +1,10 @@
-import { Host } from '../domain/host/Host';
-import { HostRenderer } from '../domain/host/ports';
-import { SkillRepository } from '../domain/skill/ports';
-import { RenderResult } from '../domain/render/RenderResult';
-import { DuplicateSkillIdError } from '../domain/errors';
+import { Host } from '@domain/host/Host';
+import { HostRenderer } from '@domain/host/ports';
+import { SkillRepository } from '@domain/skill/ports';
+import { RenderResult } from '@domain/render/RenderResult';
+import { DuplicateSkillIdError } from '@domain/errors';
+import { Telemetry } from '@obs/Telemetry';
 import { BuildSkill } from './BuildSkill';
-import { Telemetry } from '../observability/Telemetry';
 
 /**
  * Render every skill in the repository for one host.

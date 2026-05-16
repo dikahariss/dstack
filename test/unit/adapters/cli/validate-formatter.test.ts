@@ -2,8 +2,8 @@
  * Tests for `formatValidationResults`. Covers M4.
  */
 import { describe, test, expect } from 'bun:test';
-import { formatValidationResults } from '../../../../src/adapters/cli/validate-formatter';
-import type { ValidationResult } from '../../../../src/application/ValidateCatalog';
+import { formatValidationResults } from '@adapters/cli/validate-formatter';
+import type { ValidationResult } from '@app/ValidateCatalog';
 
 describe('formatValidationResults', () => {
   test('empty input prints a sentinel line and exits 0', () => {

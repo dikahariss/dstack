@@ -41,6 +41,12 @@ Phase 2 work toward v1. Not yet tagged.
 - `docs/specs/render-spec.md` reflects the new resolution location
   (repository, not renderer) and softens the prior caching claim
   to match the implementation.
+- **Import paths use aliases for non-sibling references.** `@domain/*`,
+  `@app/*`, `@adapters/*`, `@obs/*` map to the four source roots in
+  `tsconfig.json`. Sibling imports (`./X`) stay relative. Test files
+  that used to read `'../../../../src/...'` now read `'@adapters/...'`.
+  ADR-0011 records the convention. Bun resolves the aliases at
+  runtime; no bundler is required.
 
 ## [0.1.0] — 2026-05-16
 

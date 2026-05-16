@@ -1,4 +1,4 @@
-import { SkillSpecError } from '../errors';
+import { SkillSpecError } from '@domain/errors';
 
 /**
  * SkillId is a validated string. The constructor enforces format so invalid

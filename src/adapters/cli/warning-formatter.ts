@@ -1,4 +1,4 @@
-import { RenderResult } from '../../domain/render/RenderResult';
+import { RenderResult } from '@domain/render/RenderResult';
 
 /**
  * Format renderer warnings for CLI output.

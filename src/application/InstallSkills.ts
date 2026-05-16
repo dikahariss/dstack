@@ -1,6 +1,6 @@
-import { Installer, InstallReport } from '../domain/host/ports';
-import { RenderResult } from '../domain/render/RenderResult';
-import { Telemetry } from '../observability/Telemetry';
+import { Installer, InstallReport } from '@domain/host/ports';
+import { RenderResult } from '@domain/render/RenderResult';
+import { Telemetry } from '@obs/Telemetry';
 
 /**
  * Write rendered output to disk via an Installer.

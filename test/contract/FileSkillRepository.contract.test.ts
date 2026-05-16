@@ -6,7 +6,7 @@
  * factory. The shared suite catches drift.
  */
 import { resolve } from 'node:path';
-import { FileSkillRepository } from '../../src/adapters/fs/FileSkillRepository';
+import { FileSkillRepository } from '@adapters/fs/FileSkillRepository';
 import { runSkillRepositoryContract } from './SkillRepository.contract';
 
 const FIXTURES = resolve(import.meta.dir, '../fixtures/skills');

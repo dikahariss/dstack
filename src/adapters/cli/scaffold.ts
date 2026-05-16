@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { SkillId } from '../../domain/skill/SkillId';
+import { SkillId } from '@domain/skill/SkillId';
 
 /**
  * Scaffold a new skill directory under `<root>/<skill-id>/`.

@@ -1,4 +1,4 @@
-import { Warning } from '../render/RenderResult';
+import { Warning } from '@domain/render/RenderResult';
 import { SkillSpec } from './SkillSpec';
 
 /**

@@ -15,7 +15,7 @@ When a roadmap item lands, move its row into this document.
 | Total lines | About 7,400 (TypeScript + Markdown + YAML) |
 | Tests | 58 pass, 0 fail, about 210 ms total |
 | Skills rendered end-to-end | 1 (`careful`) |
-| Architecture Decision Records | 10 |
+| Architecture Decision Records | 11 |
 
 ## v0 baseline (initial commit `a730e96`)
 
@@ -45,6 +45,7 @@ summary.
 |---|---|
 | **M3 — `includes:` directive resolved** | `FileSkillRepository.resolveIncludes()` reads each path relative to the skills root and exposes the concatenated text on `Skill.includesContent`. `IncludeNotFoundError` aborts the build; a path repeated in one chain emits an `include-cycle-broken` warning. `ClaudeCodeRenderer` prepends the resolved text before `prompt.md` and forwards the warnings to `RenderResult`. |
 | **M4 — `dstack validate` command** | New `ValidateCatalog` use case under `src/application/`. `FileSkillRepository.listIds()` enumerates skill directories without loading them, so one broken skill no longer hides the rest. `formatValidationResults` (in `src/adapters/cli/validate-formatter.ts`) renders one greppable line per skill (`<id>: OK (N/M tokens)` or `<id>: ERR <message>`) plus a summary; exits 1 if any skill failed. Wired through the `validate` case in `src/adapters/cli/main.ts` and surfaced as `bun run validate` / `dstack validate`. |
+| **ADR-0011 — Import path aliases** | `tsconfig.json` exposes `@domain/*`, `@app/*`, `@adapters/*`, `@obs/*`. Convention: sibling imports stay relative (`./X`); anything else uses the alias. All `src/` and `test/` files migrated. Bun resolves the aliases natively. |
 
 **M2 was explored and rejected.** The original plan was to wire
 Anthropic's `messages.countTokens` as an opt-in tokenizer. After

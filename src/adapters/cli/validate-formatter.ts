@@ -1,4 +1,4 @@
-import { ValidationResult } from '../../application/ValidateCatalog';
+import { ValidationResult } from '@app/ValidateCatalog';
 
 /**
  * Render `ValidationResult`s as the line-oriented output of

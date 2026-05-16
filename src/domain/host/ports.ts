@@ -1,5 +1,5 @@
-import { RenderContext } from '../render/RenderContext';
-import { RenderResult } from '../render/RenderResult';
+import { RenderContext } from '@domain/render/RenderContext';
+import { RenderResult } from '@domain/render/RenderResult';
 
 /**
  * HostRenderer turns a Skill into a file content + path for a specific host.

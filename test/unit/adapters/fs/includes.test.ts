@@ -4,9 +4,9 @@
  */
 import { describe, test, expect } from 'bun:test';
 import { resolve } from 'node:path';
-import { FileSkillRepository } from '../../../../src/adapters/fs/FileSkillRepository';
-import { SkillId } from '../../../../src/domain/skill/SkillId';
-import { IncludeNotFoundError } from '../../../../src/domain/errors';
+import { FileSkillRepository } from '@adapters/fs/FileSkillRepository';
+import { SkillId } from '@domain/skill/SkillId';
+import { IncludeNotFoundError } from '@domain/errors';
 
 const FIXTURES = resolve(import.meta.dir, '../../../fixtures/skills');
 

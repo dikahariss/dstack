@@ -9,8 +9,8 @@ import {
   statSync,
 } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { Installer, InstallReport } from '../../domain/host/ports';
-import { RenderResult } from '../../domain/render/RenderResult';
+import { Installer, InstallReport } from '@domain/host/ports';
+import { RenderResult } from '@domain/render/RenderResult';
 import { assertAllowed } from './paths';
 
 /**

@@ -6,12 +6,12 @@
  */
 import { describe, test, expect } from 'bun:test';
 import { resolve } from 'node:path';
-import { ValidateCatalog } from '../../../src/application/ValidateCatalog';
-import { FileSkillRepository } from '../../../src/adapters/fs/FileSkillRepository';
-import { ClaudeCodeRenderer } from '../../../src/adapters/claude-code/ClaudeCodeRenderer';
-import { CLAUDE_CODE_TOOLS } from '../../../src/adapters/claude-code/tools';
-import { Host } from '../../../src/domain/host/Host';
-import { NoopTelemetry } from '../../../src/observability/NoopTelemetry';
+import { ValidateCatalog } from '@app/ValidateCatalog';
+import { FileSkillRepository } from '@adapters/fs/FileSkillRepository';
+import { ClaudeCodeRenderer } from '@adapters/claude-code/ClaudeCodeRenderer';
+import { CLAUDE_CODE_TOOLS } from '@adapters/claude-code/tools';
+import { Host } from '@domain/host/Host';
+import { NoopTelemetry } from '@obs/NoopTelemetry';
 
 const FIXTURES = resolve(import.meta.dir, '../../fixtures/skills');
 const HOST = new Host('claude-code', '/tmp/dstack-validate-test', {

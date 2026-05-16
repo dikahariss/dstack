@@ -1,10 +1,10 @@
-import { Host } from '../domain/host/Host';
-import { HostRenderer } from '../domain/host/ports';
-import { SkillId } from '../domain/skill/SkillId';
-import { SkillRepository } from '../domain/skill/ports';
-import { RenderResult } from '../domain/render/RenderResult';
-import { TokenBudgetExceededError, UnknownToolError } from '../domain/errors';
-import { Telemetry } from '../observability/Telemetry';
+import { Host } from '@domain/host/Host';
+import { HostRenderer } from '@domain/host/ports';
+import { SkillId } from '@domain/skill/SkillId';
+import { SkillRepository } from '@domain/skill/ports';
+import { RenderResult } from '@domain/render/RenderResult';
+import { TokenBudgetExceededError, UnknownToolError } from '@domain/errors';
+import { Telemetry } from '@obs/Telemetry';
 
 /**
  * Render one skill for one host. Used by `dstack render <id>` and by

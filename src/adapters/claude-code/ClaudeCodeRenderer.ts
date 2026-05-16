@@ -1,7 +1,7 @@
-import { Host } from '../../domain/host/Host';
-import { HostRenderer } from '../../domain/host/ports';
-import { RenderContext } from '../../domain/render/RenderContext';
-import { RenderResult, Warning } from '../../domain/render/RenderResult';
+import { Host } from '@domain/host/Host';
+import { HostRenderer } from '@domain/host/ports';
+import { RenderContext } from '@domain/render/RenderContext';
+import { RenderResult, Warning } from '@domain/render/RenderResult';
 import { approximateTokenCount } from './tokens';
 
 /**

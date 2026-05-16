@@ -7,8 +7,8 @@ import { describe, test, expect, beforeEach, afterEach } from 'bun:test';
 import { mkdtempSync, rmSync, existsSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { scaffoldSkill, ScaffoldError } from '../../../../src/adapters/cli/scaffold';
-import { SkillSpecError } from '../../../../src/domain/errors';
+import { scaffoldSkill, ScaffoldError } from '@adapters/cli/scaffold';
+import { SkillSpecError } from '@domain/errors';
 
 describe('scaffoldSkill', () => {
   let tmpRoot: string;

@@ -9,9 +9,9 @@
  * between adapters (e.g. a future HttpSkillRepository) is caught here.
  */
 import { describe, test, expect } from 'bun:test';
-import type { SkillRepository } from '../../src/domain/skill/ports';
-import { SkillId } from '../../src/domain/skill/SkillId';
-import { SkillSpecError } from '../../src/domain/errors';
+import type { SkillRepository } from '@domain/skill/ports';
+import { SkillId } from '@domain/skill/SkillId';
+import { SkillSpecError } from '@domain/errors';
 
 export interface ContractFixtures {
   /** Repo pointed at a valid two-skill set: ids "alpha" and "beta". */

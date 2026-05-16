@@ -4,8 +4,8 @@
  * Pure logic, no fs, no setup. The whole file should run in <10ms.
  */
 import { describe, test, expect } from 'bun:test';
-import { SkillId } from '../../../src/domain/skill/SkillId';
-import { SkillSpecError } from '../../../src/domain/errors';
+import { SkillId } from '@domain/skill/SkillId';
+import { SkillSpecError } from '@domain/errors';
 
 describe('SkillId', () => {
   test('accepts lowercase letters and digits with hyphens', () => {

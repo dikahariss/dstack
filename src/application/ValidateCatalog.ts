@@ -1,9 +1,9 @@
-import { Host } from '../domain/host/Host';
-import { HostRenderer } from '../domain/host/ports';
-import { SkillRepository } from '../domain/skill/ports';
-import { SkillId } from '../domain/skill/SkillId';
-import { Warning } from '../domain/render/RenderResult';
-import { Telemetry } from '../observability/Telemetry';
+import { Host } from '@domain/host/Host';
+import { HostRenderer } from '@domain/host/ports';
+import { SkillRepository } from '@domain/skill/ports';
+import { SkillId } from '@domain/skill/SkillId';
+import { Warning } from '@domain/render/RenderResult';
+import { Telemetry } from '@obs/Telemetry';
 import { BuildSkill } from './BuildSkill';
 
 /**

@@ -1,16 +1,16 @@
 import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
 import { basename, join, resolve } from 'node:path';
 import { LineCounter, parseDocument, YAMLMap, isScalar } from 'yaml';
-import { Skill } from '../../domain/skill/Skill';
-import { SkillId } from '../../domain/skill/SkillId';
+import { Skill } from '@domain/skill/Skill';
+import { SkillId } from '@domain/skill/SkillId';
 import {
   SkillSpec,
   CONTEXT_BUDGET_DEFAULT,
   CONTEXT_BUDGET_CEILING,
-} from '../../domain/skill/SkillSpec';
-import { SkillRepository } from '../../domain/skill/ports';
-import { Warning } from '../../domain/render/RenderResult';
-import { IncludeNotFoundError, SkillSpecError, SourceLocation } from '../../domain/errors';
+} from '@domain/skill/SkillSpec';
+import { SkillRepository } from '@domain/skill/ports';
+import { Warning } from '@domain/render/RenderResult';
+import { IncludeNotFoundError, SkillSpecError, SourceLocation } from '@domain/errors';
 
 const INCLUDE_DEPTH_LIMIT = 4;
 

@@ -7,8 +7,8 @@ import { describe, test, expect } from 'bun:test';
 import {
   formatWarnings,
   countWarnings,
-} from '../../../../src/adapters/cli/warning-formatter';
-import type { RenderResult } from '../../../../src/domain/render/RenderResult';
+} from '@adapters/cli/warning-formatter';
+import type { RenderResult } from '@domain/render/RenderResult';
 
 function makeResult(
   skillId: string,

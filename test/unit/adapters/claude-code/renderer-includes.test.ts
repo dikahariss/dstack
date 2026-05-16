@@ -4,12 +4,12 @@
  * include warnings to the RenderResult.
  */
 import { describe, test, expect } from 'bun:test';
-import { ClaudeCodeRenderer } from '../../../../src/adapters/claude-code/ClaudeCodeRenderer';
-import { Skill } from '../../../../src/domain/skill/Skill';
-import { SkillSpec } from '../../../../src/domain/skill/SkillSpec';
-import { SkillId } from '../../../../src/domain/skill/SkillId';
-import { Host } from '../../../../src/domain/host/Host';
-import { CLAUDE_CODE_TOOLS } from '../../../../src/adapters/claude-code/tools';
+import { ClaudeCodeRenderer } from '@adapters/claude-code/ClaudeCodeRenderer';
+import { Skill } from '@domain/skill/Skill';
+import { SkillSpec } from '@domain/skill/SkillSpec';
+import { SkillId } from '@domain/skill/SkillId';
+import { Host } from '@domain/host/Host';
+import { CLAUDE_CODE_TOOLS } from '@adapters/claude-code/tools';
 
 function fixtureSpec(): SkillSpec {
   return SkillSpec.fromValidated({
