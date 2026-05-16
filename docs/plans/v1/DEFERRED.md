@@ -38,12 +38,22 @@ listed "trigger to revisit" has actually happened.
   possibly a runtime daemon for shared state. This is outside the v0
   surface.
 - **What is in place.** The renderer copies known frontmatter fields
-  only. Unknown fields (like `hooks:`) are dropped silently.
-- **Trigger to revisit.** A v1 skill is blocked because the behavior
-  genuinely requires runtime interception (for example, `/careful`
-  must move from "advisory" to "enforcement").
-- **Estimated effort when triggered.** 3 to 5 hours. A new ADR is
-  required. This is a significant capability change.
+  only. Unknown fields (like `hooks:`) are dropped silently. `/careful`
+  ships as advisory text and documents the degradation in its own
+  prompt body.
+- **Status note (v0.1.0).** One skill (`/careful`) already wants
+  hooks. By itself this is not enough to elevate D2 — one degraded
+  skill is acceptable in v0.x. The elevation threshold is **two or
+  more skills** that materially need hooks (for example, a future
+  `/freeze`/`/guard` pair that has to block file edits, not just
+  remind the user).
+- **Trigger to revisit.** A second v1 skill needs runtime
+  interception, OR a real incident traces to `/careful`'s advisory
+  behavior failing where hook enforcement would have caught it.
+- **Estimated effort when triggered.** 3 to 5 hours. Implementation
+  should start with a `HookEngine` port plus contract tests, then a
+  minimal adapter that supports `PreToolUse` only — not a general
+  hook framework. A new ADR is required.
 
 ## D3 — LLM-judge evaluation harness
 
