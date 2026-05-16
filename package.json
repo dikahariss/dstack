@@ -4,9 +4,13 @@
   "private": true,
   "type": "module",
   "description": "Skill catalog for Claude Code. v0 spec — see docs/ARCHITECTURE.md.",
+  "bin": {
+    "dstack": "./src/adapters/cli/main.ts"
+  },
   "scripts": {
     "build": "bun run src/adapters/cli/main.ts build",
     "render": "bun run src/adapters/cli/main.ts render",
+    "new": "bun run src/adapters/cli/main.ts new",
     "install:local": "bun run src/adapters/cli/main.ts install --local",
     "typecheck": "tsc --noEmit",
     "test": "bun test"

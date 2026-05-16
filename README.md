@@ -109,7 +109,7 @@ bun run build
 bun run render careful
 
 # Scaffold a new skill (creates skills/<skill-id>/{skill.yaml,prompt.md})
-bun run src/adapters/cli/main.ts new my-new-skill
+bun run new my-new-skill
 
 # Check that the TypeScript code is valid
 bun run typecheck
@@ -117,6 +117,28 @@ bun run typecheck
 # Run all tests
 bun test
 ```
+
+### Optional: install `dstack` as a global command
+
+`package.json` declares `dstack` as a binary, so you can use it
+anywhere instead of running scripts from the repo root.
+
+```bash
+# One-time setup from the dstack repo root
+bun link
+
+# Now usable from anywhere
+dstack build
+dstack render careful
+dstack new my-new-skill
+dstack --help
+```
+
+To remove: run `bun unlink` from the repo root.
+
+The CLI entry point is `src/adapters/cli/main.ts`. It carries a
+`#!/usr/bin/env bun` shebang and the executable bit, so it can also
+be invoked directly: `./src/adapters/cli/main.ts <command>`.
 
 ## Configuration (optional)
 
