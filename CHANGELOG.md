@@ -18,9 +18,10 @@ Phase 2 work toward v1. Not yet tagged.
   Claude Code renderer prepends that text above `prompt.md`, so
   shared snippets under `skills/_shared/` no longer fall on the
   floor. A missing path raises `IncludeNotFoundError` and aborts
-  the build; a path repeated inside one chain emits an
-  `include-cycle-broken` warning and is included only once. The
-  depth limit is 4. (ROADMAP M3.)
+  the build; a path repeated inside one skill's `includes:` list
+  emits an `include-cycle-broken` warning and is included only
+  once. Nesting (an include file that has its own `includes:`) is
+  not supported. (ROADMAP M3.)
 - **`dstack validate` command.** Walks the `skills/` directory, runs
   every skill through the same per-skill pipeline as `dstack build`,
   and prints one greppable line per skill: `<id>: OK (N/M tokens)`
@@ -35,9 +36,9 @@ Phase 2 work toward v1. Not yet tagged.
 
 ### Changed
 
-- `Skill` aggregate carries two new optional fields,
+- `Skill` aggregate carries two new required fields,
   `includesContent: string` and `includeWarnings: readonly Warning[]`,
-  defaulting to empty so existing call sites keep working.
+  populated by `FileSkillRepository` during load.
 - `docs/specs/render-spec.md` reflects the new resolution location
   (repository, not renderer) and softens the prior caching claim
   to match the implementation.

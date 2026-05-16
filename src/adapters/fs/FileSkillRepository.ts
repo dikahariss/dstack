@@ -12,8 +12,6 @@ import { SkillRepository } from '@domain/skill/ports';
 import { Warning } from '@domain/render/RenderResult';
 import { IncludeNotFoundError, SkillSpecError, SourceLocation } from '@domain/errors';
 
-const INCLUDE_DEPTH_LIMIT = 4;
-
 /**
  * Reads skills from a directory layout: `<root>/<skill-id>/{skill.yaml,prompt.md}`.
  *
@@ -113,15 +111,7 @@ export class FileSkillRepository implements SkillRepository {
     return new Skill(spec, prompt, includesContent, includeWarnings);
   }
 
-  /**
-   * Resolve `includes` paths against `<root>/`. Each path is read in order and
-   * concatenated with a newline separator. A path repeated in the same skill's
-   * list triggers an `include-cycle-broken` warning and is included only once.
-   *
-   * Nested includes (an include file that itself references other files) are
-   * not implemented today — the depth-limit and per-chain `seen` set are in
-   * place so a future nesting syntax can plug in without restructuring.
-   */
+  /** Read each `includes:` path relative to `<root>/`, joined by newline. Repeats warn and are kept once. */
   private resolveIncludes(
     skillId: string,
     paths: readonly string[],
@@ -133,43 +123,22 @@ export class FileSkillRepository implements SkillRepository {
     const seen = new Set<string>();
 
     for (const includePath of paths) {
-      this.resolveOneInclude(skillId, includePath, buffer, warnings, seen, 0);
+      const absolutePath = resolve(this.root, includePath);
+      if (seen.has(absolutePath)) {
+        warnings.push({
+          kind: 'include-cycle-broken',
+          message: `${includePath}: already included in this chain`,
+        });
+        continue;
+      }
+      if (!existsSync(absolutePath)) {
+        throw new IncludeNotFoundError(skillId, includePath);
+      }
+      seen.add(absolutePath);
+      buffer.push(readFileSync(absolutePath, 'utf-8'));
     }
 
     return { content: buffer.join('\n'), warnings };
-  }
-
-  private resolveOneInclude(
-    skillId: string,
-    includePath: string,
-    buffer: string[],
-    warnings: Warning[],
-    seen: Set<string>,
-    depth: number,
-  ): void {
-    if (depth > INCLUDE_DEPTH_LIMIT) {
-      warnings.push({
-        kind: 'include-cycle-broken',
-        message: `${includePath}: depth exceeded ${INCLUDE_DEPTH_LIMIT}`,
-      });
-      return;
-    }
-
-    const absolutePath = resolve(this.root, includePath);
-    if (seen.has(absolutePath)) {
-      warnings.push({
-        kind: 'include-cycle-broken',
-        message: `${includePath}: already included in this chain`,
-      });
-      return;
-    }
-
-    if (!existsSync(absolutePath)) {
-      throw new IncludeNotFoundError(skillId, includePath);
-    }
-
-    seen.add(absolutePath);
-    buffer.push(readFileSync(absolutePath, 'utf-8'));
   }
 
   private parseSpec(

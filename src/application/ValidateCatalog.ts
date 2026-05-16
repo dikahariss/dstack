@@ -6,13 +6,7 @@ import { Warning } from '@domain/render/RenderResult';
 import { Telemetry } from '@obs/Telemetry';
 import { BuildSkill } from './BuildSkill';
 
-/**
- * One skill's verdict after running the per-skill validation pipeline.
- * `ok: true` means the skill loaded, every tool resolved, and the render
- * fit inside its declared `context_budget_tokens`. Warnings (e.g.
- * `token-near-budget`, `include-cycle-broken`) are non-fatal and listed
- * for display but do not flip `ok`.
- */
+/** One skill's verdict from the validation pipeline. Warnings are non-fatal and do not flip `ok`. */
 export interface ValidationResult {
   readonly skillId: string;
   readonly ok: boolean;
@@ -30,15 +24,9 @@ export interface ValidationError {
 }
 
 /**
- * Validate a list of skill IDs against a host. Used by `dstack validate`.
- *
- * Unlike BuildCatalog this never short-circuits: one bad skill does not
- * prevent the next from being checked. Each id is run through the same
- * BuildSkill pipeline as a normal build, but exceptions are captured per
- * skill instead of propagating.
- *
- * The caller supplies the id list (e.g. by enumerating `skills/`). That
- * keeps directory walking in the adapter layer.
+ * Validate skill IDs against a host. Unlike BuildCatalog this never
+ * short-circuits — exceptions are captured per-skill so one bad skill
+ * does not block the rest.
  */
 export class ValidateCatalog {
   constructor(

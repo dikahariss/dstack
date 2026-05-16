@@ -49,7 +49,7 @@ describe('ClaudeCodeRenderer + includes', () => {
   });
 
   test('emits no extra blank line when includesContent is empty', () => {
-    const skill = new Skill(fixtureSpec(), 'PROMPT-ONLY\n');
+    const skill = new Skill(fixtureSpec(), 'PROMPT-ONLY\n', '', []);
     const result = new ClaudeCodeRenderer().render({
       host: HOST,
       skill,

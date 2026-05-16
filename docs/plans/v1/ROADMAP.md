@@ -120,8 +120,12 @@ Should, Could, Would-not." We use three of the four tiers.
     at the bottom? **Decision: at the top.** Includes set context;
     the prompt body acts on that context.
   - Should we support nested includes (one include file that itself
-    has an `includes` directive)? **Decision: yes, with a depth limit
-    of 4 and cycle detection.**
+    has an `includes` directive)? **Decision at planning: yes, with
+    a depth limit of 4 and cycle detection.** Revisited during
+    implementation: no skill needs nesting yet, so the depth tracking
+    was removed per code-taxonomy Anti-pattern 8 (structure for
+    hypothetical future flexibility). Duplicate-path cycle detection
+    on the flat list remains.
 
 ## M4 — `dstack validate` command
 

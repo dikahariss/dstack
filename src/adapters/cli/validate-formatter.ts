@@ -1,24 +1,9 @@
 import { ValidationResult } from '@app/ValidateCatalog';
 
-/**
- * Render `ValidationResult`s as the line-oriented output of
- * `dstack validate`. Each line begins with the skill id followed by
- * `OK` or `ERR`, so the output stays greppable:
- *
- *   careful: OK (1238/1500 tokens)
- *   wrong-type: ERR field "tools": must be an array of strings at /…/skill.yaml:5
- *
- * Exit code is 0 if every skill is OK, 1 if any skill failed.
- * Empty input yields one line so the caller can tell validate ran.
- */
-export interface FormattedValidation {
-  readonly lines: readonly string[];
-  readonly exitCode: 0 | 1;
-}
-
+/** Render ValidationResults as greppable lines for `dstack validate`. Exit 1 if any skill failed; empty input prints a sentinel line. */
 export function formatValidationResults(
   results: readonly ValidationResult[],
-): FormattedValidation {
+): { readonly lines: readonly string[]; readonly exitCode: 0 | 1 } {
   if (results.length === 0) {
     return { lines: ['(no skills found)'], exitCode: 0 };
   }
@@ -27,8 +12,17 @@ export function formatValidationResults(
   let anyError = false;
 
   for (const r of results) {
-    lines.push(r.ok ? formatOk(r) : formatErr(r));
-    if (!r.ok) anyError = true;
+    if (r.ok) {
+      lines.push(`${r.skillId}: OK (${r.tokenCount}/${r.tokenBudget} tokens)`);
+      continue;
+    }
+    // SkillSpecError.message already begins with `skill <id>: `; trim it so
+    // the per-line skill-id prefix is not duplicated.
+    const raw = r.error?.message ?? 'unknown error';
+    const prefix = `skill ${r.skillId}: `;
+    const message = raw.startsWith(prefix) ? raw.slice(prefix.length) : raw;
+    lines.push(`${r.skillId}: ERR ${message}`);
+    anyError = true;
   }
 
   const okCount = results.filter((r) => r.ok).length;
@@ -37,23 +31,4 @@ export function formatValidationResults(
   lines.push(`${results.length} skills checked: ${okCount} OK, ${errCount} ERR`);
 
   return { lines, exitCode: anyError ? 1 : 0 };
-}
-
-function formatOk(r: ValidationResult): string {
-  return `${r.skillId}: OK (${r.tokenCount}/${r.tokenBudget} tokens)`;
-}
-
-function formatErr(r: ValidationResult): string {
-  const message = stripSkillPrefix(r.skillId, r.error?.message ?? 'unknown error');
-  return `${r.skillId}: ERR ${message}`;
-}
-
-/**
- * SkillSpecError.message already begins with `skill <id>: `, which would
- * duplicate the per-line skill id prefix. Trim that duplication so each
- * line reads `<id>: ERR <field-and-problem-and-source>`.
- */
-function stripSkillPrefix(skillId: string, message: string): string {
-  const prefix = `skill ${skillId}: `;
-  return message.startsWith(prefix) ? message.slice(prefix.length) : message;
 }

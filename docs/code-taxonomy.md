@@ -271,8 +271,8 @@ Answer in order. Stop at the first matching question.
 
 - Used once → **inline**.
 - Used twice in one file → **borderline; inline unless the name adds
-  meaning a literal would not** (example: `INCLUDE_DEPTH_LIMIT = 4`
-  reads better than two stray `4`s).
+  meaning a literal would not** (example: `MAX_RETRIES = 3` reads
+  better than two stray `3`s).
 - Used three or more times, or across files → **constant**.
 
 ### Question 3: Extract a helper or inline?

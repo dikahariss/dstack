@@ -14,8 +14,8 @@ export class Skill {
   constructor(
     readonly spec: SkillSpec,
     readonly prompt: string,
-    readonly includesContent: string = '',
-    readonly includeWarnings: readonly Warning[] = [],
+    readonly includesContent: string,
+    readonly includeWarnings: readonly Warning[],
   ) {
     if (prompt.length === 0) {
       throw new Error(

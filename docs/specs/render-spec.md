@@ -106,13 +106,10 @@ Caching:
 Cycle detection:
 
 - If a path appears more than once while resolving a single skill's
-  include chain, the resolver emits a warning of kind
-  `include-cycle-broken` and skips the repeat. Today the only way a
-  repeat can occur is a duplicate entry in one skill's `includes:`
-  list. The same mechanism guards a future nesting syntax (an
-  include file that references other files).
-- Maximum include depth is 4. Crossing the limit emits the same
-  warning kind.
+  `includes:` list, the resolver emits a warning of kind
+  `include-cycle-broken` and skips the repeat. Nesting (an include
+  file that references other files) is not supported today, so the
+  only way a repeat can occur is a duplicate entry in the list.
 
 ### Step 2. Assemble the body
 
@@ -238,7 +235,7 @@ the end of the run, grouped by skill, via
 |---|---|
 | `token-near-budget` | Token count is above 90% of the declared budget. |
 | `overlapping-trigger` | Two skills declare the same trigger phrase. |
-| `include-cycle-broken` | Include files form a cycle, or include depth exceeded 4. |
+| `include-cycle-broken` | A path appears more than once in one skill's `includes:` list. |
 | `long-description` | Skill description is over 200 words. |
 
 ## Determinism testing
