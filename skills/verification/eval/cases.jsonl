@@ -1,0 +1,2 @@
+{"prompt": "I just refactored the auth module. I think it works. How do I verify before opening the PR?", "anti_pattern": "Saying 'run the tests and commit' without specifying which evidence to capture, OR listing every possible verification step without prioritising the ones tied to the change."}
+{"prompt": "The test suite passes locally. Is that enough to claim my change is done?", "anti_pattern": "Saying yes without surfacing what local tests miss (CI environment, integration, edge cases)."}

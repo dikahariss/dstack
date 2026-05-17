@@ -1,0 +1,22 @@
+Failure shape: **intermittent / flaky** (passes locally, fails CI). Per the triage table, the first probe is to **raise the failure rate before debugging** — a 1% flake isn't debuggable, a 50% flake is.
+
+Before I can run anything, I need the specifics. To start Phase 1 I need:
+
+1. **Test command + file**: which Jest invocation and which test file/name fails on CI?
+2. **CI failure output**: the actual error message and stack trace from a failed CI run (not "it failed" — the text).
+3. **Recent CI failure pattern**: how often does it fail (1 in 5? 1 in 50?), and on which CI job/runner?
+4. **What changed**: when did the flake start? (`git log --oneline -20` around that point.)
+
+Once I have those, the loop probe is:
+
+```bash
+# Match CI env as closely as possible, then loop
+TZ=UTC LANG=C for i in $(seq 1 100); do
+  npx jest --runInBand --no-cache --testPathPattern=<file> -t "<name>" \
+    || { echo "FAIL on run $i"; break; }
+done
+```
+
+If 100 local runs all pass, the bug is environmental, not in the test logic — and the next probe is the env diff (Node version, TZ, locale, CPU count, container image SHA) between your laptop and the CI runner, not more loops.
+
+Side note: your message ended with "Run 5" mid-sentence — did you mean "run it 5 times", "Node 5", or something else? Clarify so I don't fill the gap from imagination (that's one of the listed red flags).

@@ -10,8 +10,11 @@ description: |
 allowed-tools: Read Bash Grep
 metadata:
   dstack:
-    version: 0.1.0
-    context_budget_tokens: 4000
+    version: 0.2.0
+    type: semantic
+    side_effects: readonly
+    agency: deliberative
+    context_budget_tokens: 4500
     triggers:
       - debugging
       - find the root cause
@@ -55,6 +58,66 @@ Do not skip when:
 - You are in a hurry. Rushing guarantees rework.
 - The user wants it fixed now. The systematic loop is faster than
   thrashing.
+
+## Triage by failure shape
+
+Different failure shapes have different first probes. Pick the row
+that matches before starting Phase 1 — the right starting probe
+saves time. This table is procedural, not exhaustive.
+
+| Failure shape | Tell-tale signal | First probe | Tooling |
+|---|---|---|---|
+| Intermittent ("flaky") | Same input, different outcome; "passes locally, fails CI" | Loop the repro to raise rate before debugging | `for i in $(seq 1 100); do <test> --runInBand --no-cache \|\| break; done`; pin time + seed + RNG |
+| Single-user / single-tenant | One specific input crashes; others fine | Diff the one input against working inputs at every layer | `jq` / `psql` to extract the failing record; compare to a known-good record field by field |
+| Environment-only | Works locally, fails in staging/prod | Capture the env diff (vars, versions, locale, TZ) | `env \| diff`; `<runtime> --version`; container image SHA; CI artifact download |
+| Multi-component | "It worked yesterday"; multiple services in the chain | Instrument each boundary entry/exit before guessing | See worked example below |
+| Memory / perf regression | RSS climbs, latency drifts, no error | Establish baseline before fixing | heap snapshots (`node --inspect` + `chrome://inspect`), `--prof`, flame graphs |
+| 3+ fixes failed | Each fix moves the symptom | Stop fixing. Question the architecture. | Phase 4.5 below |
+
+### Worked example — multi-layer boundary instrumentation
+
+When a request crosses CI → build → signer → deploy (or
+client → API → service → DB), instrument every boundary **before**
+guessing which layer is wrong:
+
+```bash
+# Layer 1 — outermost (e.g., workflow / client)
+echo "=== L1 inputs: ==="; printenv | grep '^EXPECTED_'
+
+# Layer 2 — build / service
+echo "=== L2 received: ==="; env | grep '^EXPECTED_' || echo "(missing)"
+
+# Layer 3 — signer / database call
+echo "=== L3 keychain / connection: ==="
+security list-keychains   # or: psql -c "SELECT current_user, current_database()"
+
+# Layer 4 — the actual operation that fails
+codesign --sign "$IDENTITY" --verbose=4 "$APP"   # or the failing call
+```
+
+Run once. Read the output. The first layer where expected ≠ received
+is the failing layer. Investigate there.
+
+### Worked example — pin variance before chasing flakes
+
+```bash
+# Match CI as closely as possible
+TZ=UTC LANG=C jest --runInBand --no-cache --randomize \
+  --testPathPattern=<file> -t "<exact test name>"
+
+# Loop until failure (raise the rate from 1% to debuggable)
+for i in $(seq 1 100); do
+  jest --runInBand --no-cache --testPathPattern=<file> \
+    || { echo "FAIL on run $i"; break; }
+done
+
+# If still won't repro: add CPU pressure
+stress-ng --cpu 4 &  # in another shell
+# re-run the loop
+```
+
+A 50%-flake bug is debuggable. A 1% flake is not. The probe is to
+raise the rate, not to add a retry.
 
 ## The four phases
 
@@ -105,9 +168,13 @@ Complete each phase before moving to the next.
 
 ### Phase 3 — Hypothesis and minimal test
 
-1. **State one hypothesis** in writing: "I think X is the root
-   cause because Y." Be specific. "Something with auth" is not a
-   hypothesis.
+1. **Generate 3 to 5 ranked hypotheses, then state the top one in
+   writing.** Format: "If X is the cause, then changing Y will make
+   the bug disappear (or changing Z will make it worse)." Each
+   hypothesis must be **falsifiable** — if you cannot name the
+   prediction, the hypothesis is a vibe; sharpen it or discard it.
+   Single-hypothesis generation anchors on the first plausible idea
+   and is a common debugging anti-pattern.
 2. **Test minimally.** The smallest change that would falsify or
    confirm the hypothesis. One variable at a time. Do not stack
    "while I'm here" changes onto the test.
@@ -118,6 +185,24 @@ Complete each phase before moving to the next.
    not understand X." Ask the user. Research more. Do not pretend.
 
 ### Phase 4 — Implementation
+
+For **memory / perf regressions**, the regression test is
+*measurement*, not assertion. Baseline first:
+
+```bash
+# Memory leak — Node.js
+node --inspect --max-old-space-size=512 <entry>
+# Open chrome://inspect, Memory tab, take heap snapshot
+# Run the workload, take a second snapshot, diff retained sizes
+
+# Perf regression — capture timing baseline before fix
+hyperfine --warmup 3 'before-fix-cmd' --export-json before.json
+# After fix:
+hyperfine --warmup 3 'after-fix-cmd' --export-json after.json
+# Compare medians; flag regressions > 5%
+```
+
+For correctness bugs:
 
 1. **Write a failing test that reproduces the issue.** Simplest
    possible test that fails today and will pass once the fix lands.
@@ -218,3 +303,16 @@ before declaring it.
 Root cause named → fix is on the table
 Otherwise → stay in Phase 1 or raise it with the user
 ```
+
+## Changes
+
+- **0.2.0** — Added the "Triage by failure shape" table mapping
+  symptom → first probe → tooling, plus worked examples for
+  multi-layer boundary instrumentation and flake reproduction. Phase
+  3 step 1 now requires 3 to 5 ranked falsifiable hypotheses. Phase
+  4 prefaces memory/perf regressions with measurement-based
+  baselining (heap snapshots, hyperfine). Added v2 schema fields:
+  `type: semantic`, `side_effects: readonly`, `agency: deliberative`.
+  Driven by v3 Track C benchmark loss against
+  superpowers/systematic-debugging on specificity (3/3 cases).
+- **0.1.0** — Initial port from v1 skill catalog.

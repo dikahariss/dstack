@@ -1,0 +1,15 @@
+Stop. Three failed fixes is Phase 4.5 territory — the architecture is wrong, not the implementations. Don't try fix #4 yet.
+
+Your message got cut off after "Each one revealed" (looks like the /debugging skill body pasted in over the rest). Before I can name the architectural shape that's wrong, I need the specifics you were about to give me:
+
+1. **Each of the three fixes** — what did you change, and where (file/module)?
+2. **What new symptom each one revealed** — same leak migrated, different leak appeared, latency regression, etc.?
+3. **What's leaking** — RSS climbing, heap retained size growing, FD/handle count, event listeners, or something else? How did you measure (heap snapshot diff, `process.memoryUsage()`, external tool)?
+4. **The workload that triggers it** — long-lived server, batch job, test runner, CLI? What's the request/event pattern?
+
+The Phase 4.5 signs I'm watching for in your answers:
+- Each fix revealed coupling/shared-state somewhere else → likely a global cache, singleton, or module-level Map holding refs.
+- Each fix required "massive refactoring" → likely an event emitter / stream / subscription whose teardown isn't owned by anyone.
+- Each fix created a new symptom in a different layer → likely a closure capturing the wrong scope across a boundary.
+
+Paste the details and I'll work the architectural question with you — not propose another patch.

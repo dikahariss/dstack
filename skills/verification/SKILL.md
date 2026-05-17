@@ -9,8 +9,11 @@ description: |
 allowed-tools: Bash Read
 metadata:
   dstack:
-    version: 0.1.0
-    context_budget_tokens: 3000
+    version: 0.2.0
+    type: semantic
+    side_effects: local
+    agency: deliberative
+    context_budget_tokens: 3500
     triggers:
       - verify
       - prove it
@@ -79,6 +82,63 @@ Skipping any step is lying, not verifying.
 | Regression test works | Red-green-revert-red cycle verified | Test passes once |
 | Subagent completed | VCS diff shows the changes you requested | Subagent self-reports "success" |
 | Requirements met | Line-by-line checklist against the plan | Tests pass alone |
+
+## Default verification gate (use this when no CLAUDE.md rule applies)
+
+If the repo has its own gate (a CLAUDE.md "verification" section, a
+`make verify`, a `bun run check`, etc.) use that exact command. When
+unsure, the **default gate** is:
+
+```bash
+# Numbered gate. Stop at the first non-zero exit.
+
+# 1. Type system
+bun run typecheck              # exit 0 = pass
+
+# 2. Test suite
+bun test                       # exit 0 = pass; expected pass count visible
+
+# 3. Lint / validator (catalog-specific for dstack)
+bun run validate --strict      # exit 0 = pass
+
+# 4. The change-specific check
+# e.g., for a refactor: run the test most directly touched
+# e.g., for a bug fix: re-run the regression test
+bun test path/to/changed.test.ts
+```
+
+For a refactor touching the auth module specifically, the
+change-specific check might be:
+
+```bash
+bun test test/integration/auth   # the suite that exercises the refactor
+git diff --stat src/auth          # confirm the refactor scope is what was claimed
+```
+
+State the exit code of each step in the claim:
+
+> "Verified: typecheck exit 0, bun test 92/92 pass, validate --strict
+> exit 0, integration/auth 14/14 pass. Auth refactor complete."
+
+### Honest-claim shape
+
+| Wrong | Right |
+|---|---|
+| "Looks good, tests should pass." | "bun test: 92/92 pass, exit 0. Done." |
+| "I ran the tests." | "bun test path/to/file: 14/14 pass, exit 0. Done." |
+| "Everything works." | "typecheck 0, test 92/92, validate --strict 0. Done." |
+| "All set." | (run the gate; state the exit codes; then claim) |
+
+## Changes
+
+- **0.2.0** — Added the default verification gate (numbered bash
+  with explicit exit-code checks) and the honest-claim shape table
+  contrasting vague vs evidence-grounded claims. Added v2 schema
+  fields (`type: semantic`, `side_effects: local`, `agency:
+  deliberative`). Driven by v3 Track C benchmark case-1 loss against
+  superpowers/verification-before-completion on specificity +
+  groundedness.
+- **0.1.0** — Initial port from v1 skill catalog.
 
 ## Red flags — stop before claiming
 

@@ -9,8 +9,11 @@ description: |
 allowed-tools: Read Write Edit Bash
 metadata:
   dstack:
-    version: 0.1.0
-    context_budget_tokens: 4000
+    version: 0.2.0
+    type: semantic
+    side_effects: local
+    agency: deliberative
+    context_budget_tokens: 4500
     triggers:
       - tdd
       - test first
@@ -48,6 +51,39 @@ implement fresh from the test you write next.
 Thinking "skip TDD just this once"? That is rationalization. Write
 the test.
 
+## Fixing the "I write tests after the code" habit
+
+If the habit is the problem (not the discipline), here is the
+numbered drill. Do this for one week on a real task:
+
+1. **Pick a tiny feature.** A 10-line change at most. Smaller is
+   better — drill is about the habit, not the feature.
+2. **Open the test file before the source file.** Physically.
+   Different window or tab. The first keystroke goes in the test.
+3. **Write a degenerate test that can be passed by `return 0`** (or
+   the language equivalent — `return null`, `return ""`, etc.).
+   This is intentional, not weak. The point is to see red.
+4. **Run it. Watch it fail.** If it does not fail, the test is not
+   testing what you think; fix the test, not the source.
+5. **Add the minimum to make it pass — even if it is dumb.** Hardcode
+   the value if that is what the test allows.
+6. **Write the next test.** Now the test demands more than the
+   hardcoded value. Now the source has to generalise. This is where
+   real TDD takes over.
+
+### The honest-test diagnostic
+
+If you cannot tell whether you are doing TDD or just writing tests
+after, ask three questions for each test:
+
+| Question | Honest answer | Verdict |
+|---|---|---|
+| Did I write this test before the source change? | Yes | TDD |
+| Did this test fail when I first ran it? | Yes (red phase happened) | TDD |
+| Did I delete the source and re-implement from the test? | If no, the existing source is implicitly guiding the test → not TDD |
+
+Two "no" answers in a row → reset. Delete the source, start at step 1.
+
 ## The cycle: red → green → refactor
 
 1. **RED — write one failing test.** One behavior. Clear name.
@@ -75,6 +111,15 @@ the test.
 - **Real code** — exercises the actual production code path. Use
   mocks only when the alternative is impossible (external network,
   time, randomness).
+
+## Changes
+
+- **0.2.0** — Added the numbered habit-fix drill for "I write tests
+  after the code" plus the honest-test diagnostic table. Added v2
+  schema fields (`type: semantic`, `side_effects: local`, `agency:
+  deliberative`). Driven by v3 Track C benchmark case-2 loss against
+  superpowers/test-driven-development on specificity + procedure.
+- **0.1.0** — Initial port from v1 skill catalog.
 
 ### Good
 

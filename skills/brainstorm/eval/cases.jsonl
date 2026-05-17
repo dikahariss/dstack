@@ -1,0 +1,2 @@
+{"prompt": "I want to build a feature that lets users share dashboards with team members but I haven't thought through the permission model yet. Brainstorm with me.", "anti_pattern": "Listing 10 possible permission models in one response instead of walking the decision tree one question at a time."}
+{"prompt": "Should I rewrite our monolith in microservices? I keep going back and forth. Stress-test this idea with me.", "anti_pattern": "Giving an opinion immediately ('yes' or 'no') instead of probing the actual pain that motivated the question."}

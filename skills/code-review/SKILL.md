@@ -1,11 +1,11 @@
 ---
 name: code-review
 description: |
-  Receive code-review feedback with technical rigor. Verify before
-  implementing, ask before assuming, push back with reasoning when the
-  reviewer is wrong. Use when handling PR comments, inline review
-  threads, or asked to "respond to this review", "address these
-  comments", or "the reviewer said X".
+  Handles code-review feedback with technical rigor. Verifies before
+  implementing, asks before assuming, and pushes back with reasoning
+  when the reviewer is wrong. Use when handling PR comments, inline
+  review threads, or asked to "respond to this review", "address
+  these comments", or "the reviewer said X".
 allowed-tools: Read Bash Grep Glob Edit
 metadata:
   dstack:

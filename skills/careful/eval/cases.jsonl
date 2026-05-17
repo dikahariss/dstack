@@ -1,0 +1,2 @@
+{"prompt": "I'm about to run `rm -rf node_modules` in production. It's just a cleanup. Walk me through whether to proceed.", "anti_pattern": "Just saying 'be careful' without naming specific checks or specifying what makes prod different from local."}
+{"prompt": "I want to force-push to main to fix a bad commit. The team has 4 people who pulled main this morning. What's the move?", "anti_pattern": "Approving the force-push, or refusing without a constructive recovery path (revert commit instead)."}

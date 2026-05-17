@@ -1,0 +1,1 @@
+It looks like the question prompt didn't get a response (the tool returned an error rather than a user selection). Once you pick one of the four audience tiers, I'll walk the next branch — the auth model that fits — and keep going from there.

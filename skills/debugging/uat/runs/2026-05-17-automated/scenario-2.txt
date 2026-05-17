@@ -1,0 +1,11 @@
+Your message ends with "Error:" but the content that follows is the `/debugging` skill text, not the actual error. I can't start Phase 1 without the real evidence.
+
+This matches the **Single-user / single-tenant** row in the triage table — the first probe is to diff the failing input against working inputs at every layer. To do that I need:
+
+1. **The actual error** — full stack trace, error code, log line, request ID.
+2. **The user identifier** (or whatever identifies the one failing request) so we can pull their record.
+3. **A known-good user** with a similar profile, for the diff.
+4. **What changed recently** — last deploy, recent migrations, feature flags toggled.
+5. **Reproducibility** — does it 500 every time for this user, or intermittently?
+
+Paste the error/log and tell me which repo or service this is in (this working directory is `dstack`, a skill catalog renderer — it doesn't have a production API, so I assume the bug is in a different codebase). Once I have those, I'll run Phase 1 properly.

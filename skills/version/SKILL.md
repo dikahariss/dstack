@@ -1,6 +1,6 @@
 ---
 name: version
-description: Read or bump the project VERSION file deterministically. Use when the user asks to "show version", "bump version", "release X.Y.Z", or "what version are we on".
+description: Reads or bumps the project VERSION file deterministically. Use when the user asks to "show version", "bump version", "release X.Y.Z", or "what version are we on".
 allowed-tools: Bash Read
 metadata:
   dstack:
