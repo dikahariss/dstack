@@ -43,10 +43,10 @@ Optional shared Markdown lives in `skills/_shared/`. Files there can be
 referenced from `metadata.dstack.includes`. See "Includes" below. The
 `_shared/` folder is reserved — it is not treated as a skill directory.
 
-The legacy v1 layout (`skill.yaml` + `prompt.md`) is still accepted
-during the migration window. Loading a legacy skill emits a
-`legacy-source-format` warning. Run `dstack migrate-v2` to convert.
-See [ADR-0013](../adr/0013-single-file-skill-md.md).
+The legacy v1 layout (`skill.yaml` + `prompt.md`) is no longer loaded
+by the built-in parser. A legacy directory raises `SkillSpecError`
+pointing the user at `dstack migrate-v2`, which still ships and works
+on third-party catalogs. See [ADR-0013](../adr/0013-single-file-skill-md.md).
 
 ## The `SKILL.md` frontmatter
 

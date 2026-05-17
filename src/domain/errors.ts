@@ -85,6 +85,41 @@ export class DuplicateSkillIdError extends DomainError {
   }
 }
 
+export class SkillNotFoundError extends DomainError {
+  override readonly name = 'SkillNotFoundError';
+  constructor(readonly skillId: string) {
+    super(`skill not found: ${skillId}`);
+  }
+}
+
+/**
+ * Raised by the Skill aggregate when the SKILL.md body is empty. The
+ * invariant is "every skill carries a non-empty body the LLM can read."
+ */
+export class EmptySkillBodyError extends DomainError {
+  override readonly name = 'EmptySkillBodyError';
+  constructor(readonly skillId: string) {
+    super(`skill ${skillId}: SKILL.md body is empty`);
+  }
+}
+
+/**
+ * A skill declares a compatibility constraint (e.g. "Requires Bun 1.3+")
+ * that the current runtime does not meet. Raised by BuildSkill when the
+ * `compatibility` field carries a `Requires Bun X.Y+` clause and the
+ * running Bun version is older.
+ */
+export class CompatibilityError extends DomainError {
+  override readonly name = 'CompatibilityError';
+  constructor(
+    readonly skillId: string,
+    readonly requirement: string,
+    readonly actual: string,
+  ) {
+    super(`skill ${skillId}: requires ${requirement}, current runtime ${actual}`);
+  }
+}
+
 /**
  * The skill's path policy rejected a bundled file. Raised when a bundled
  * path uses `..`, an absolute prefix, or a symlink — see ADR-0017.

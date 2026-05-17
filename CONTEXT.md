@@ -10,9 +10,9 @@ A skill catalog renderer for Claude Code. Reads skill definitions from
 A folder under `skills/<id>/` containing a single `SKILL.md` (YAML
 frontmatter + Markdown body) plus optional bundled resources
 (`scripts/`, `references/`, `assets/`, free-form). One skill becomes
-one slash command in Claude Code. The legacy v1 layout
-(`skill.yaml + prompt.md`) is still accepted with a `legacy-source-format`
-warning; convert with `bun run dstack migrate-v2`.
+one slash command in Claude Code. The built-in parser no longer
+accepts the legacy v1 layout (`skill.yaml + prompt.md`); use
+`bun run dstack migrate-v2` to convert a third-party catalog.
 _Avoid_: command, capability, plugin, action.
 
 **Skill spec**:

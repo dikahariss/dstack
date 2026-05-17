@@ -152,6 +152,27 @@ that would unlock the item.
 - **Trigger to revisit.** Same as D17. They are likely a package.
 - **Estimated effort when triggered.** Included in the D17 budget.
 
+## D21 — Runtime output validation for schema-semantic skills
+
+- **Why deferred.** v2 renders the declared `output_schema` both as
+  YAML in frontmatter and as a Markdown table in the body (ADR-0015),
+  but dstack does not observe Claude's actual response — so the schema
+  is *guidance*, not *enforcement*. Closing the loop requires either
+  an MCP wrapper that validates Claude's tool-call output (sibling of
+  [D14](#d14-emit-mcp-tool-definitions-for-schema-semantic-skills))
+  or a post-call validator in the host harness. Both are out of
+  scope for a single-user single-host catalog tool.
+- **What is in place.** The schema is parsed and validated at build
+  time (real JSON Schema, Ajv-compatible — UAT-3 confirms this).
+  Author-side test of the schema is straightforward via `ajv` CLI;
+  runtime adherence depends on the model.
+- **Trigger to revisit.** A user reports that schema-semantic output
+  drifted in production, OR D14 is built (the MCP path provides the
+  natural enforcement hook).
+- **Estimated effort when triggered.** 1 to 2 days if piggybacking
+  D14; 1 week for a standalone validator inside a host runtime
+  adapter.
+
 ---
 
 # How to read this list

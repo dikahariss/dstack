@@ -42,10 +42,10 @@ const RESERVED_SUBDIRS = new Set(['_shared']);
  *     <any-other>/        — optional free-form subfolders
  *     LICENSE.txt         — optional
  *
- * Legacy v1 layout (`skill.yaml` + `prompt.md`) is still accepted while the
- * migration window is open. Loading a legacy skill produces a
- * `legacy-source-format` warning. ADR-0013 calls for a clean break once the
- * catalog finishes migrating.
+ * The legacy v1 layout (`skill.yaml` + `prompt.md`) is no longer loaded.
+ * Encountering one raises `SkillSpecError` directing the user to run
+ * `dstack migrate-v2`. The migrator (src/adapters/cli/migrate.ts) remains
+ * available for converting third-party catalogs.
  *
  * The repository is the only place YAML parsing happens. Domain code
  * receives already-validated SkillSpec objects plus a Skill aggregate that
@@ -100,13 +100,17 @@ export class FileSkillRepository implements SkillRepository {
     const dirName = basename(skillDir);
     const skillMdPath = join(skillDir, 'SKILL.md');
     const legacyYamlPath = join(skillDir, 'skill.yaml');
-    const legacyPromptPath = join(skillDir, 'prompt.md');
 
     if (existsSync(skillMdPath)) {
       return this.loadV2(skillDir, dirName, skillMdPath);
     }
-    if (existsSync(legacyYamlPath) && existsSync(legacyPromptPath)) {
-      return this.loadLegacy(skillDir, dirName, legacyYamlPath, legacyPromptPath);
+    if (existsSync(legacyYamlPath)) {
+      throw new SkillSpecError(
+        dirName,
+        'SKILL.md',
+        'legacy skill.yaml + prompt.md layout is no longer supported. Run `dstack migrate-v2` to convert.',
+        { file: skillMdPath },
+      );
     }
     throw new SkillSpecError(dirName, 'SKILL.md', 'file does not exist', {
       file: skillMdPath,
@@ -167,72 +171,10 @@ export class FileSkillRepository implements SkillRepository {
     return new Skill(spec, body, includesContent, [...warnings, ...includeWarnings], bundled);
   }
 
-  private loadLegacy(
-    skillDir: string,
-    dirName: string,
-    yamlPath: string,
-    promptPath: string,
-  ): Skill {
-    const yamlText = readFileSync(yamlPath, 'utf-8');
-    const lineCounter = new LineCounter();
-    const doc = parseDocument(yamlText, { lineCounter });
-
-    if (doc.errors.length > 0) {
-      const first = doc.errors[0]!;
-      const line = first.pos[0] !== undefined
-        ? lineCounter.linePos(first.pos[0]).line
-        : undefined;
-      throw new SkillSpecError(dirName, 'skill.yaml', first.message, {
-        file: yamlPath,
-        ...(line !== undefined ? { line } : {}),
-      });
-    }
-
-    const raw = doc.toJSON() as Record<string, unknown> | null;
-    if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) {
-      throw new SkillSpecError(dirName, 'skill.yaml', 'must be a YAML mapping', {
-        file: yamlPath,
-      });
-    }
-
-    const body = readFileSync(promptPath, 'utf-8');
-    const { spec, warnings } = this.parseSpec({
-      raw,
-      sourcePath: yamlPath,
-      dirName,
-      contents: doc.contents,
-      lineCounter,
-      lineOffset: 0,
-      body,
-      skillDir,
-    });
-
-    const { content: includesContent, warnings: includeWarnings } = this.resolveIncludes(
-      spec.id.value,
-      spec.includes,
-    );
-
-    const legacyWarning: Warning = {
-      kind: 'legacy-source-format',
-      message:
-        `${dirName}: using legacy skill.yaml + prompt.md layout. Run \`dstack migrate-v2\` ` +
-        `to convert to the single-file SKILL.md format (ADR-0013).`,
-    };
-
-    const bundled = this.walkBundled(skillDir, spec.id.value);
-    return new Skill(
-      spec,
-      body,
-      includesContent,
-      [legacyWarning, ...warnings, ...includeWarnings],
-      bundled,
-    );
-  }
-
   /**
-   * Walk every file under skillDir excluding SKILL.md, skill.yaml, prompt.md,
-   * and reserved subfolders. Returns bundled files with their relative path
-   * and content. Enforces the path policy from ADR-0017.
+   * Walk every file under skillDir excluding SKILL.md and reserved
+   * subfolders. Returns bundled files with their relative path and
+   * content. Enforces the path policy from ADR-0017.
    */
   private walkBundled(skillDir: string, skillId: string): readonly BundledFile[] {
     const files: BundledFile[] = [];
@@ -262,9 +204,7 @@ export class FileSkillRepository implements SkillRepository {
         }
 
         if (!lst.isFile()) continue;
-        if (dir === skillDir && (entry === 'SKILL.md' || entry === 'skill.yaml' || entry === 'prompt.md')) {
-          continue;
-        }
+        if (dir === skillDir && entry === 'SKILL.md') continue;
 
         const relPath = toRelativePosix(skillDir, fullPath);
         if (relPath.includes('..') || isAbsolute(relPath)) {
@@ -351,6 +291,7 @@ export class FileSkillRepository implements SkillRepository {
         this.locateField('description', sourcePath, contents, lineCounter, lineOffset),
       );
     }
+    const descriptionWordCount = description.trim().split(/\s+/).filter((s) => s.length > 0).length;
 
     const license = this.optionalString(raw, 'license', sourcePath, errId, contents, lineCounter, lineOffset);
     const compatibility = this.optionalString(raw, 'compatibility', sourcePath, errId, contents, lineCounter, lineOffset);
@@ -418,14 +359,22 @@ export class FileSkillRepository implements SkillRepository {
       bodyTokenCount,
     });
 
-    const warnings = this.typeStructureWarnings({
-      skillId: id.value,
-      declaredType,
-      resolvedType,
-      hasScripts,
-      bodyTokenCount,
-      hasOutputSchema: outputSchema !== undefined,
-    });
+    const warnings: Warning[] = [
+      ...this.typeStructureWarnings({
+        skillId: id.value,
+        declaredType,
+        resolvedType,
+        hasScripts,
+        bodyTokenCount,
+        hasOutputSchema: outputSchema !== undefined,
+      }),
+    ];
+    if (descriptionWordCount > 200) {
+      warnings.push({
+        kind: 'long-description',
+        message: `${id.value}: description is ${descriptionWordCount} words (>200). Consider trimming for skill-listing readability.`,
+      });
+    }
 
     const spec = SkillSpec.fromValidated({
       id,
@@ -468,16 +417,13 @@ export class FileSkillRepository implements SkillRepository {
     lineCounter: LineCounter,
     lineOffset: number,
   ): readonly string[] {
-    const allowed = raw['allowed-tools'];
-    const tools = raw['tools'];
-    const candidate = allowed ?? tools;
+    const candidate = raw['allowed-tools'];
     if (candidate === undefined) {
       throw new SkillSpecError(
         errId,
         'allowed-tools',
         'must be a space-separated string or array of tool names',
-        this.locateField('allowed-tools', sourcePath, contents, lineCounter, lineOffset)
-        ?? this.locateField('tools', sourcePath, contents, lineCounter, lineOffset),
+        this.locateField('allowed-tools', sourcePath, contents, lineCounter, lineOffset),
       );
     }
     if (typeof candidate === 'string') {
@@ -499,8 +445,7 @@ export class FileSkillRepository implements SkillRepository {
       errId,
       'allowed-tools',
       'must be a space-separated string or array of tool names',
-      this.locateField('allowed-tools', sourcePath, contents, lineCounter, lineOffset)
-      ?? this.locateField('tools', sourcePath, contents, lineCounter, lineOffset),
+      this.locateField('allowed-tools', sourcePath, contents, lineCounter, lineOffset),
     );
   }
 

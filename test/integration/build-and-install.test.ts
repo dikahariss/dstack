@@ -30,10 +30,9 @@ function writeFixtureSkill(skillsRoot: string, id: string, body: string): void {
   const dir = join(skillsRoot, id);
   mkdirSync(dir, { recursive: true });
   writeFileSync(
-    join(dir, 'skill.yaml'),
-    `name: ${id}\nversion: 0.1.0\ndescription: test skill ${id}\ntools:\n  - Read\ncontext_budget_tokens: 4000\n`,
+    join(dir, 'SKILL.md'),
+    `---\nname: ${id}\ndescription: test skill ${id}\nallowed-tools: Read\nmetadata:\n  dstack:\n    version: 0.1.0\n    context_budget_tokens: 4000\n---\n${body}\n`,
   );
-  writeFileSync(join(dir, 'prompt.md'), body);
 }
 
 describe('integration: build and install', () => {

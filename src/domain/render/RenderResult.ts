@@ -23,5 +23,4 @@ export type WarningKind =
   | 'include-cycle-broken'
   | 'token-near-budget'
   | 'comprehensive-skill'
-  | 'type-structure-mismatch'
-  | 'legacy-source-format';
+  | 'type-structure-mismatch';

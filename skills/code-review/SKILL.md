@@ -27,12 +27,19 @@ Respond to code-review feedback with technical rigor. Verify before
 implementing, ask before assuming, push back when the reviewer is
 wrong. Skip performative agreement entirely.
 
-## Fetch the diff first
+## Bundled scripts to run first
 
-Run `scripts/get_diff.sh` via the `Bash` tool to get the diff that
-needs review. The script picks the right source (GitHub PR, upstream
-tracking branch, or `origin/main` fallback). Read the diff before you
-reason about a single comment.
+Two scripts ship with this skill. Run them via the `Bash` tool before
+you reason about any single comment — they do the mechanical fetch so
+you can focus on judgement.
+
+| When | Script | Output |
+|---|---|---|
+| Always | `scripts/get_diff.sh` | The diff under review (GitHub PR if `GH_PR_NUMBER` set, else upstream tracking, else `origin/main`). |
+| When the review lives on a PR | `scripts/list_comments.sh <pr-number>` | JSONL: one `{author, file, line, body}` per review comment, top-level + inline. |
+
+Do not paraphrase what the scripts do — invoke them, read the
+output, then continue.
 
 ## The iron law
 

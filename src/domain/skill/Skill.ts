@@ -1,4 +1,5 @@
 import { Warning } from '@domain/render/RenderResult';
+import { EmptySkillBodyError } from '@domain/errors';
 import { SkillSpec } from './SkillSpec';
 import { BundledFile } from './BundledFile';
 
@@ -20,9 +21,7 @@ export class Skill {
     readonly bundled: readonly BundledFile[] = [],
   ) {
     if (prompt.length === 0) {
-      throw new Error(
-        `Skill ${spec.id}: prompt is empty. Every skill must have a non-empty SKILL.md body.`,
-      );
+      throw new EmptySkillBodyError(spec.id.value);
     }
   }
 }

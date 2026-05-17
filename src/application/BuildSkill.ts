@@ -7,6 +7,8 @@ import {
   UnknownToolError,
   DangerousCombinationError,
   MissingOutputSchemaError,
+  SkillNotFoundError,
+  CompatibilityError,
 } from '@domain/errors';
 import { Telemetry } from '@obs/Telemetry';
 
@@ -19,6 +21,7 @@ import { Telemetry } from '@obs/Telemetry';
  *   - body token count must fit the declared budget (ADR-0016)
  *   - schema-semantic skills must declare `output_schema` (ADR-0015)
  *   - the dangerous combination semantic+external+autonomous is rejected
+ *   - `compatibility` clauses like "Requires Bun 1.3+" must be satisfied
  *
  * Cross-skill validation (duplicate IDs, overlapping triggers) is the
  * caller's responsibility — typically `BuildCatalog`.
@@ -35,7 +38,7 @@ export class BuildSkill {
 
     const skill = await this.skills.loadById(skillId);
     if (skill === null) {
-      throw new Error(`skill not found: ${skillId}`);
+      throw new SkillNotFoundError(skillId.value);
     }
 
     for (const tool of skill.spec.tools) {
@@ -53,6 +56,10 @@ export class BuildSkill {
       skill.spec.agency === 'autonomous'
     ) {
       throw new DangerousCombinationError(skillId.value);
+    }
+
+    if (skill.spec.compatibility !== undefined) {
+      assertBunCompatible(skillId.value, skill.spec.compatibility);
     }
 
     const rendered = this.renderer.render({
@@ -79,5 +86,34 @@ export class BuildSkill {
     });
 
     return { rendered, bundled: skill.bundled };
+  }
+}
+
+/**
+ * Enforce `Requires Bun X.Y+` clauses inside `compatibility`. Other
+ * compatibility statements are treated as informational and pass
+ * through — the application only knows how to verify its own runtime.
+ */
+function assertBunCompatible(skillId: string, compatibility: string): void {
+  const match = compatibility.match(/Requires Bun (\d+)\.(\d+)(?:\.(\d+))?\+/i);
+  if (!match) return;
+  const required = {
+    major: Number(match[1]),
+    minor: Number(match[2]),
+    patch: Number(match[3] ?? 0),
+  };
+  const actualStr = (globalThis as { Bun?: { version: string } }).Bun?.version ?? '0.0.0';
+  const parts = actualStr.split('.').map(Number);
+  const actual = { major: parts[0] ?? 0, minor: parts[1] ?? 0, patch: parts[2] ?? 0 };
+
+  const fails =
+    actual.major < required.major ||
+    (actual.major === required.major && actual.minor < required.minor) ||
+    (actual.major === required.major &&
+      actual.minor === required.minor &&
+      actual.patch < required.patch);
+
+  if (fails) {
+    throw new CompatibilityError(skillId, `Bun ${match[0].replace(/^Requires /i, '')}`, `Bun ${actualStr}`);
   }
 }

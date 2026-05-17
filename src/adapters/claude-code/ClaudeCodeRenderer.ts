@@ -47,9 +47,12 @@ export class ClaudeCodeRenderer implements HostRenderer {
     const warnings: Warning[] = [...skill.includeWarnings];
 
     const frontmatter = this.buildFrontmatter(ctx.host, skill.spec);
-    const body = skill.includesContent.length > 0
-      ? skill.includesContent + '\n' + skill.prompt
-      : skill.prompt;
+    const schemaTable = skill.spec.type === 'schema-semantic'
+      ? renderSchemaTable(skill.spec.outputSchema)
+      : '';
+    const body = [skill.includesContent, schemaTable, skill.prompt]
+      .filter((s) => s.length > 0)
+      .join('\n');
     const content = frontmatter + '\n' + body;
     const tokenCount = approximateTokenCount(content);
 
@@ -83,8 +86,7 @@ export class ClaudeCodeRenderer implements HostRenderer {
     const lines: string[] = [
       '---',
       `name: ${spec.id.value}`,
-      'description: |',
-      ...spec.description.split('\n').map((l) => `  ${l}`),
+      ...renderDescription(spec.description),
     ];
     if (spec.license !== undefined) lines.push(`license: ${spec.license}`);
     if (spec.compatibility !== undefined) lines.push(`compatibility: ${spec.compatibility}`);
@@ -126,6 +128,100 @@ export class ClaudeCodeRenderer implements HostRenderer {
 function quoteScalar(value: string): string {
   if (/^[A-Za-z0-9 _.,()/\-]+$/.test(value)) return value;
   return JSON.stringify(value);
+}
+
+/**
+ * Emit the `description:` frontmatter field.
+ *
+ * Single-paragraph descriptions (no blank-line breaks) fold to one line —
+ * this matches anthropics-skills convention and produces cleaner output
+ * when consumers read frontmatter as JSON. Multi-paragraph descriptions
+ * fall back to a block scalar so paragraph breaks survive.
+ */
+function renderDescription(description: string): readonly string[] {
+  const trimmed = description.trim();
+  if (!trimmed.includes('\n\n')) {
+    const oneLine = trimmed.replace(/\s+/g, ' ');
+    return [`description: ${needsYamlQuoting(oneLine) ? JSON.stringify(oneLine) : oneLine}`];
+  }
+  return ['description: |', ...description.split('\n').map((l) => `  ${l}`)];
+}
+
+function needsYamlQuoting(value: string): boolean {
+  return /^[\s\-?:,\[\]{}#&*!|>'"%@`]/.test(value) || /:\s|\s#/.test(value);
+}
+
+/**
+ * Project the inline JSON Schema declared on a schema-semantic skill
+ * into a Markdown table the LLM reads inside the body.
+ *
+ * The skill's frontmatter still carries the full schema for downstream
+ * tooling; the table is a redundant but unambiguous representation
+ * embedded where the LLM is already reading — it raises the chance
+ * the model produces a valid output without separate runtime validation.
+ *
+ * Falls back to an empty string if the schema is not a JSON-Schema-shaped
+ * object — the renderer is not in the business of validating schemas.
+ */
+function renderSchemaTable(schema: unknown): string {
+  if (schema === null || typeof schema !== 'object' || Array.isArray(schema)) return '';
+  const obj = schema as Record<string, unknown>;
+  const properties = obj['properties'];
+  if (properties === null || typeof properties !== 'object' || Array.isArray(properties)) return '';
+
+  const required = new Set(Array.isArray(obj['required']) ? (obj['required'] as string[]) : []);
+  const rows: string[] = [
+    '## Output schema',
+    '',
+    'Emit a single JSON object matching this shape. Frontmatter carries the full schema.',
+    '',
+    '| Field | Type | Required | Constraints | Description |',
+    '|---|---|---|---|---|',
+  ];
+
+  for (const [name, valueRaw] of Object.entries(properties as Record<string, unknown>)) {
+    if (valueRaw === null || typeof valueRaw !== 'object' || Array.isArray(valueRaw)) continue;
+    const value = valueRaw as Record<string, unknown>;
+    rows.push(
+      `| \`${name}\` | ${schemaTypeLabel(value)} | ${required.has(name) ? 'yes' : 'no'} | ${schemaConstraints(value)} | ${schemaDescription(value)} |`,
+    );
+  }
+  rows.push('');
+  return rows.join('\n');
+}
+
+function schemaTypeLabel(value: Record<string, unknown>): string {
+  const type = value['type'];
+  if (type === 'array') {
+    const items = value['items'];
+    if (items && typeof items === 'object' && !Array.isArray(items)) {
+      const itemType = (items as Record<string, unknown>)['type'];
+      if (typeof itemType === 'string') return `array<${itemType}>`;
+    }
+    return 'array';
+  }
+  return typeof type === 'string' ? type : 'any';
+}
+
+function schemaConstraints(value: Record<string, unknown>): string {
+  const parts: string[] = [];
+  if (Array.isArray(value['enum'])) parts.push(`enum: ${(value['enum'] as unknown[]).map((v) => JSON.stringify(v)).join(', ')}`);
+  if (typeof value['minimum'] === 'number') parts.push(`>= ${value['minimum']}`);
+  if (typeof value['maximum'] === 'number') parts.push(`<= ${value['maximum']}`);
+  if (typeof value['minLength'] === 'number') parts.push(`len >= ${value['minLength']}`);
+  if (typeof value['maxLength'] === 'number') parts.push(`len <= ${value['maxLength']}`);
+  if (typeof value['pattern'] === 'string') parts.push(`pattern: \`${value['pattern']}\``);
+  const items = value['items'];
+  if (items && typeof items === 'object' && !Array.isArray(items)) {
+    const inner = items as Record<string, unknown>;
+    if (typeof inner['pattern'] === 'string') parts.push(`item pattern: \`${inner['pattern']}\``);
+  }
+  return parts.length === 0 ? '—' : parts.join('; ');
+}
+
+function schemaDescription(value: Record<string, unknown>): string {
+  const desc = value['description'];
+  return typeof desc === 'string' ? desc.replace(/\|/g, '\\|') : '';
 }
 
 function stringifyOutputSchema(schema: unknown): string {

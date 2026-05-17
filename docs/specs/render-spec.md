@@ -257,7 +257,6 @@ the end of the run, grouped by skill, via
 | `long-description` | Skill description is over 200 words. |
 | `type-structure-mismatch` | Declared `type` does not match the actual structure (e.g. `type: semantic` with a `scripts/` folder). |
 | `comprehensive-skill` | Skill ships four or more module folders. SkillsBench reports a ~2.9pp pass-rate hit at this size; consider splitting. |
-| `legacy-source-format` | Skill still uses v1 `skill.yaml + prompt.md`. Run `dstack migrate-v2` to convert. |
 
 ## Determinism testing
 
