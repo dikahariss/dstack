@@ -1,7 +1,9 @@
 import { Host } from '@domain/host/Host';
 import { HostRenderer } from '@domain/host/ports';
+import { Skill } from '@domain/skill/Skill';
 import { SkillRepository } from '@domain/skill/ports';
 import { SkillId } from '@domain/skill/SkillId';
+import { collectOverlappingTriggers } from '@domain/skill/triggerOverlap';
 import { Warning } from '@domain/render/RenderResult';
 import { Telemetry } from '@obs/Telemetry';
 import { BuildSkill } from './BuildSkill';
@@ -43,6 +45,19 @@ export class ValidateCatalog {
     const buildOne = new BuildSkill(this.skills, this.renderer, this.telemetry);
     const results: ValidationResult[] = [];
 
+    const loaded: Skill[] = [];
+    for (const idRaw of input.skillIds) {
+      try {
+        const s = await this.skills.loadById(SkillId.parse(idRaw));
+        if (s !== null) loaded.push(s);
+      } catch {
+        // Per-skill errors surface below; loading failures don't affect overlap analysis.
+      }
+    }
+    const overlapByIdRaw = collectOverlappingTriggers(loaded);
+    const overlapById = new Map<string, readonly Warning[]>();
+    for (const [id, warns] of overlapByIdRaw) overlapById.set(id, warns);
+
     for (const idRaw of input.skillIds) {
       let id: SkillId;
       try {
@@ -74,12 +89,13 @@ export class ValidateCatalog {
           host: input.host,
           now: input.now,
         });
+        const overlap = overlapById.get(id.value) ?? [];
         results.push({
           skillId: id.value,
           ok: true,
           tokenCount: rendered.rendered.tokenCount,
           tokenBudget: skill.spec.contextBudgetTokens,
-          warnings: rendered.rendered.warnings,
+          warnings: [...rendered.rendered.warnings, ...overlap],
         });
       } catch (err) {
         results.push({

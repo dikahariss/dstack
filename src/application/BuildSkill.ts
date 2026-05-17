@@ -114,6 +114,6 @@ function assertBunCompatible(skillId: string, compatibility: string): void {
       actual.patch < required.patch);
 
   if (fails) {
-    throw new CompatibilityError(skillId, `Bun ${match[0].replace(/^Requires /i, '')}`, `Bun ${actualStr}`);
+    throw new CompatibilityError(skillId, match[0].replace(/^Requires /i, ''), `Bun ${actualStr}`);
   }
 }

@@ -1,9 +1,8 @@
 import { Host } from '@domain/host/Host';
 import { HostRenderer, RenderedSkill } from '@domain/host/ports';
-import { Skill } from '@domain/skill/Skill';
 import { SkillRepository } from '@domain/skill/ports';
+import { collectOverlappingTriggers } from '@domain/skill/triggerOverlap';
 import { DuplicateSkillIdError } from '@domain/errors';
-import { Warning } from '@domain/render/RenderResult';
 import { Telemetry } from '@obs/Telemetry';
 import { BuildSkill } from './BuildSkill';
 
@@ -66,37 +65,4 @@ export class BuildCatalog {
 
     return results;
   }
-}
-
-/**
- * For each trigger phrase that appears in two or more skills, emit one
- * `overlapping-trigger` warning per affected skill. Returns a map of
- * skill id -> warnings to attach.
- */
-function collectOverlappingTriggers(skills: readonly Skill[]): Map<string, Warning[]> {
-  const phraseToSkills = new Map<string, string[]>();
-  for (const skill of skills) {
-    for (const phrase of skill.spec.triggers) {
-      const key = phrase.toLowerCase().trim();
-      if (key.length === 0) continue;
-      const list = phraseToSkills.get(key) ?? [];
-      if (!list.includes(skill.spec.id.value)) list.push(skill.spec.id.value);
-      phraseToSkills.set(key, list);
-    }
-  }
-
-  const warnings = new Map<string, Warning[]>();
-  for (const [phrase, ids] of phraseToSkills) {
-    if (ids.length < 2) continue;
-    const others = (id: string) => ids.filter((x) => x !== id).join(', ');
-    for (const id of ids) {
-      const list = warnings.get(id) ?? [];
-      list.push({
-        kind: 'overlapping-trigger',
-        message: `trigger "${phrase}" also declared by: ${others(id)}`,
-      });
-      warnings.set(id, list);
-    }
-  }
-  return warnings;
 }
