@@ -67,9 +67,14 @@ Each ADR has six sections. Aim for under 80 lines per ADR.
 | [0007](0007-browse-separate-process.md) | browse in its own process | Accepted | Moderate |
 | [0008](0008-sandbox-detection-at-adapter.md) | Sandbox detection in adapter | Accepted | Cheap |
 | [0009](0009-spec-driven-skills.md) | Skills ship a contract | Accepted | Cheap |
-| [0010](0010-context-budget.md) | Hard token budget per skill | Accepted | Cheap |
+| [0010](0010-context-budget.md) | Hard token budget per skill | Superseded by [0016](0016-per-tier-token-budget.md) | Cheap |
 | [0011](0011-import-path-aliases.md) | Import path aliases for cross-layer references | Accepted | Cheap |
 | [0012](0012-frontmatter-align-official.md) | Frontmatter alignment with official Agent Skills schema | Accepted | Cheap |
+| [0013](0013-single-file-skill-md.md) | Single-file `SKILL.md` source format | Accepted | Cheap |
+| [0014](0014-metadata-namespace.md) | `metadata.dstack.*` namespace for non-standard fields | Accepted | Cheap |
+| [0015](0015-type-taxonomy-adoption.md) | Adopt four-type computation taxonomy in skill schema | Accepted | Moderate |
+| [0016](0016-per-tier-token-budget.md) | Per-tier token budget (body ≤ 5000, bundled unlimited) | Accepted | Cheap |
+| [0017](0017-bundled-resources.md) | Bundled resources support (scripts/, references/, assets/) | Accepted | Moderate |
 
 ## How to add a new ADR
 

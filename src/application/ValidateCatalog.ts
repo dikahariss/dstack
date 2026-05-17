@@ -77,9 +77,9 @@ export class ValidateCatalog {
         results.push({
           skillId: id.value,
           ok: true,
-          tokenCount: rendered.tokenCount,
+          tokenCount: rendered.rendered.tokenCount,
           tokenBudget: skill.spec.contextBudgetTokens,
-          warnings: rendered.warnings,
+          warnings: rendered.rendered.warnings,
         });
       } catch (err) {
         results.push({

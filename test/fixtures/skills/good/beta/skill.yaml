@@ -1,8 +1,0 @@
-name: beta
-version: 0.1.0
-description: |
-  Second test fixture skill.
-tools:
-  - Bash
-  - Edit
-context_budget_tokens: 2000

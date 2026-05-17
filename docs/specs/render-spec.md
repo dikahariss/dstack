@@ -22,9 +22,9 @@ This spec is one of four. The others are:
 | Adapter | Concrete code that implements one or more ports. |
 | Frontmatter | A YAML block at the top of a Markdown file, between `---` fences. |
 | Token | The unit of text size LLMs use. About 1 token per 4 characters of English. |
-| Token budget | The maximum number of tokens a rendered output may contain. Declared in `skill.yaml`. See [skill-spec.md](skill-spec.md). |
+| Token budget | The maximum number of tokens the rendered body may contain. Declared via `metadata.dstack.context_budget_tokens`. Body-only — bundled resources are excluded. See [skill-spec.md](skill-spec.md) and [ADR-0016](../adr/0016-per-tier-token-budget.md). |
 | Deterministic | The same input always produces the same output. |
-| Include | A shared Markdown file referenced from `skill.yaml`. See [skill-spec.md](skill-spec.md). |
+| Include | A shared Markdown file referenced from `metadata.dstack.includes`. See [skill-spec.md](skill-spec.md). |
 
 ## Inputs
 
@@ -127,18 +127,30 @@ The result is the body.
 
 ### Step 3. Build the frontmatter
 
-Construct a YAML block in the shape Claude Code expects. See
-[host-spec.md](host-spec.md) for the full frontmatter contract.
+Construct a YAML block in the shape Claude Code expects. dstack-specific
+fields live under `metadata.dstack.*` so the agentskills.io top-level
+schema stays intact ([ADR-0014](../adr/0014-metadata-namespace.md)).
 
 For Claude Code, the block is:
 
 ```yaml
 ---
 name: <skill.spec.id>
-version: <skill.spec.version>
 description: |
-  <skill.spec.description, with each line indented by two spaces>
-allowed-tools: [<skill.spec.tools, comma-separated>]
+  <skill.spec.description, indented two spaces per line>
+license: <skill.spec.license>            # only when present
+compatibility: <skill.spec.compatibility> # only when present
+metadata:
+  dstack:
+    type: <skill.spec.type>
+    version: <skill.spec.version>
+    triggers:                             # only when non-empty
+      - <trigger>
+    context_budget_tokens: <number>
+    side_effects: <readonly | local | external>
+    agency: <reactive | deliberative | autonomous>
+    output_schema: <inline JSON or path>  # only for schema-semantic
+allowed-tools: <space-separated string>
 ---
 ```
 
@@ -170,8 +182,11 @@ Token counting uses an offline approximation
 `src/adapters/claude-code/tokens.ts`): characters divided by 4, plus a
 5% safety margin, rounded up. Empirically within ±10% of Anthropic's
 exact tokenizer, which is well inside the 10% margin between the
-warning threshold and the budget ceiling. See
-[ADR-0010](../adr/0010-context-budget.md) for the budget rules.
+warning threshold and the budget ceiling. The budget covers the body
+only — bundled resources under `scripts/`, `references/`, `assets/`,
+or any free-form subfolder are not counted (load on demand). See
+[ADR-0016](../adr/0016-per-tier-token-budget.md) and
+[ADR-0017](../adr/0017-bundled-resources.md).
 
 ### Final: return the result
 
@@ -215,10 +230,13 @@ useful message.
 
 | Error class | When raised |
 |---|---|
-| `SkillSpecError(skillId, field, problem, source?)` | A field in `skill.yaml` is invalid. `source` carries `{ file, line? }` so the message ends with `at <file>:<line>` when available. |
-| `IncludeNotFoundError(skillId, includePath)` | A file listed in `includes` does not exist. |
-| `TokenBudgetExceededError(skillId, actual, budget)` | The rendered output is larger than the declared budget. |
-| `UnknownToolError(skillId, toolName, knownTools)` | A tool name in `skill.yaml` is not in the host's tool registry. See [host-spec.md](host-spec.md). |
+| `SkillSpecError(skillId, field, problem, source?)` | A frontmatter field in `SKILL.md` is invalid. `source` carries `{ file, line? }` so the message ends with `at <file>:<line>` when available. |
+| `IncludeNotFoundError(skillId, includePath)` | A file listed in `metadata.dstack.includes` does not exist. |
+| `TokenBudgetExceededError(skillId, actual, budget)` | The rendered body exceeds the declared body-only budget. |
+| `UnknownToolError(skillId, toolName, knownTools)` | A tool name in `allowed-tools` is not in the host's tool registry. See [host-spec.md](host-spec.md). |
+| `MissingOutputSchemaError(skillId)` | `type: schema-semantic` declared without `metadata.dstack.output_schema`. |
+| `DangerousCombinationError(skillId)` | `type: semantic` + `side_effects: external` + `agency: autonomous` is rejected outright. |
+| `BundledResourceError(skillId, relativePath, reason)` | A bundled file is a symlink, contains `..`, or otherwise violates the bundled-resource policy in [ADR-0017](../adr/0017-bundled-resources.md). |
 
 Errors are caught at the application layer. The application layer
 aggregates errors and reports them with file and line context. A build
@@ -233,10 +251,13 @@ the end of the run, grouped by skill, via
 
 | Warning kind | When raised |
 |---|---|
-| `token-near-budget` | Token count is above 90% of the declared budget. |
+| `token-near-budget` | Token count is above 90% of the declared body budget. |
 | `overlapping-trigger` | Two skills declare the same trigger phrase. |
 | `include-cycle-broken` | A path appears more than once in one skill's `includes:` list. |
 | `long-description` | Skill description is over 200 words. |
+| `type-structure-mismatch` | Declared `type` does not match the actual structure (e.g. `type: semantic` with a `scripts/` folder). |
+| `comprehensive-skill` | Skill ships four or more module folders. SkillsBench reports a ~2.9pp pass-rate hit at this size; consider splitting. |
+| `legacy-source-format` | Skill still uses v1 `skill.yaml + prompt.md`. Run `dstack migrate-v2` to convert. |
 
 ## Determinism testing
 
@@ -264,19 +285,22 @@ larger than the same skill without them.
 
 ## Computation type and the renderer
 
-A skill's computation type — Deterministic, Open-ended Semantic, Hybrid,
-or Schema-constrained Semantic — does not change the renderer's behavior
-today. The renderer treats every skill the same way.
+A skill's computation type — `deterministic`, `semantic`, `hybrid`, or
+`schema-semantic` — is carried into the rendered frontmatter under
+`metadata.dstack.type`. The renderer treats every type the same way at
+the assembly layer; type-driven behavior lives in two earlier passes:
 
-If [skill-taxonomy.md](../skill-taxonomy.md) is later adopted in the
-schema, the renderer may gain behavior such as:
+- The parser ([ADR-0015](../adr/0015-type-taxonomy-adoption.md)) infers
+  a type from structure when one is not declared, and emits a
+  `type-structure-mismatch` warning when the declaration disagrees with
+  the folder layout.
+- `BuildSkill` rejects two combinations outright: `type: schema-semantic`
+  without an `output_schema`, and the dangerous trio `type: semantic` +
+  `side_effects: external` + `agency: autonomous`.
 
-- Embedding an output schema as instructions for Schema-constrained
-  Semantic skills.
-- Refusing to render Open-ended Semantic skills that are also
-  External-mutating and Autonomous.
-
-These are open design questions. They will be ADRs when they happen.
+Bundled resources for `hybrid` and `deterministic` skills are installed
+alongside `SKILL.md` by the Installer; the renderer itself does not see
+them and they are not counted against the body token budget.
 
 ## Cross-references
 

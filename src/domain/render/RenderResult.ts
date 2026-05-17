@@ -21,4 +21,7 @@ export type WarningKind =
   | 'long-description'
   | 'overlapping-trigger'
   | 'include-cycle-broken'
-  | 'token-near-budget';
+  | 'token-near-budget'
+  | 'comprehensive-skill'
+  | 'type-structure-mismatch'
+  | 'legacy-source-format';

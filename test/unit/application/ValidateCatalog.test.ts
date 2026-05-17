@@ -69,8 +69,8 @@ describe('ValidateCatalog', () => {
     expect(results.length).toBe(1);
     const r = results[0]!;
     expect(r.ok).toBe(false);
-    expect(r.error?.file).toContain('wrong-type/skill.yaml');
-    expect(r.error?.line).toBe(5);
+    expect(r.error?.file).toContain('wrong-type/SKILL.md');
+    expect(r.error?.line).toBe(4);
   });
 
   test('returns NotFound for an id whose directory does not exist', async () => {

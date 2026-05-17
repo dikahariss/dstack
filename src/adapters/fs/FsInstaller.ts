@@ -7,24 +7,32 @@ import {
   readdirSync,
   rmSync,
   statSync,
+  chmodSync,
 } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { Installer, InstallReport } from '@domain/host/ports';
-import { RenderResult } from '@domain/render/RenderResult';
+import { Installer, InstallReport, RenderedSkill } from '@domain/host/ports';
 import { assertAllowed } from './paths';
 
 /**
- * Writes RenderResult content to disk under outputRoot.
+ * Writes RenderedSkill content to disk under outputRoot.
  *
- * - Path policy enforced via `assertAllowed`.
- * - Per-file atomic via tmp + rename.
- * - "skipped" = file already exists with identical content; we leave it.
- * - "removed" = files under outputRoot that do not correspond to any
- *   result. Cleaned up after writes succeed so a transient build doesn't
- *   delete state.
+ * For each item:
+ *   - `rendered.path` (e.g. `alpha/SKILL.md`) is written atomically.
+ *   - Each `bundled` file is copied verbatim under `<skill-id>/<relativePath>`,
+ *     preserving the executable bit.
+ *
+ * Counters:
+ *   - "written" counts every newly-written or modified file (SKILL.md plus bundled).
+ *   - "skipped" counts files whose on-disk content already matches.
+ *   - "removed" counts top-level skill directories that no longer correspond
+ *     to any item; cleaned up after writes succeed so a transient build does
+ *     not delete state.
+ *
+ * Path policy enforced via `assertAllowed`. Bundled relative paths were
+ * already screened by the repository's path policy (ADR-0017).
  */
 export class FsInstaller implements Installer {
-  async install(outputRoot: string, results: readonly RenderResult[]): Promise<InstallReport> {
+  async install(outputRoot: string, items: readonly RenderedSkill[]): Promise<InstallReport> {
     const root = assertAllowed(outputRoot);
     mkdirSync(root, { recursive: true });
 
@@ -32,28 +40,56 @@ export class FsInstaller implements Installer {
     let skipped = 0;
 
     const expectedDirs = new Set<string>();
-    for (const r of results) {
-      const fullPath = assertAllowed(join(root, r.path));
-      const dir = dirname(fullPath);
-      mkdirSync(dir, { recursive: true });
-      expectedDirs.add(dir.substring(root.length + 1).split('/')[0] ?? '');
+    for (const item of items) {
+      const renderPath = assertAllowed(join(root, item.rendered.path));
+      mkdirSync(dirname(renderPath), { recursive: true });
+      expectedDirs.add(this.topDir(renderPath, root));
 
-      if (existsSync(fullPath)) {
-        const existing = readFileSync(fullPath, 'utf-8');
-        if (existing === r.content) {
-          skipped++;
-          continue;
-        }
+      const renderOutcome = this.writeText(renderPath, item.rendered.content);
+      if (renderOutcome === 'written') written++;
+      else skipped++;
+
+      const skillRoot = dirname(renderPath);
+      for (const bundled of item.bundled) {
+        const bundledPath = assertAllowed(join(skillRoot, bundled.relativePath));
+        mkdirSync(dirname(bundledPath), { recursive: true });
+        const outcome = this.writeBinary(bundledPath, bundled.content);
+        if (outcome === 'written') written++;
+        else skipped++;
+        if (bundled.executable) chmodSync(bundledPath, 0o755);
       }
-
-      const tmpPath = `${fullPath}.tmp.${process.pid}`;
-      writeFileSync(tmpPath, r.content, 'utf-8');
-      renameSync(tmpPath, fullPath);
-      written++;
     }
 
     const removed = this.removeOrphans(root, expectedDirs);
     return { outputRoot: root, written, skipped, removed };
+  }
+
+  private writeText(fullPath: string, content: string): 'written' | 'skipped' {
+    if (existsSync(fullPath)) {
+      const existing = readFileSync(fullPath, 'utf-8');
+      if (existing === content) return 'skipped';
+    }
+    const tmpPath = `${fullPath}.tmp.${process.pid}`;
+    writeFileSync(tmpPath, content, 'utf-8');
+    renameSync(tmpPath, fullPath);
+    return 'written';
+  }
+
+  private writeBinary(fullPath: string, content: Buffer): 'written' | 'skipped' {
+    if (existsSync(fullPath)) {
+      const existing = readFileSync(fullPath);
+      if (existing.equals(content)) return 'skipped';
+    }
+    const tmpPath = `${fullPath}.tmp.${process.pid}`;
+    writeFileSync(tmpPath, content);
+    renameSync(tmpPath, fullPath);
+    return 'written';
+  }
+
+  private topDir(fullPath: string, root: string): string {
+    const rest = fullPath.substring(root.length + 1);
+    const slash = rest.indexOf('/');
+    return slash === -1 ? rest : rest.slice(0, slash);
   }
 
   private removeOrphans(root: string, expectedDirs: Set<string>): number {

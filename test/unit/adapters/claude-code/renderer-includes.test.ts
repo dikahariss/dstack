@@ -22,6 +22,9 @@ function fixtureSpec(): SkillSpec {
     contextBudgetTokens: 4_000,
     triggers: [],
     includes: [],
+    type: 'semantic',
+    sideEffects: 'readonly',
+    agency: 'reactive',
   });
 }
 

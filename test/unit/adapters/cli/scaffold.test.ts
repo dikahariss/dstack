@@ -21,29 +21,35 @@ describe('scaffoldSkill', () => {
     rmSync(tmpRoot, { recursive: true, force: true });
   });
 
-  test('creates skill directory with two files', () => {
+  test('creates SKILL.md inside the skill directory', () => {
     const result = scaffoldSkill(tmpRoot, 'my-new-skill');
     expect(result.skillId).toBe('my-new-skill');
     expect(result.skillDir).toBe(join(tmpRoot, 'my-new-skill'));
-    expect(result.filesWritten).toHaveLength(2);
-    expect(existsSync(join(tmpRoot, 'my-new-skill', 'skill.yaml'))).toBe(true);
-    expect(existsSync(join(tmpRoot, 'my-new-skill', 'prompt.md'))).toBe(true);
+    expect(result.filesWritten).toHaveLength(1);
+    expect(existsSync(join(tmpRoot, 'my-new-skill', 'SKILL.md'))).toBe(true);
   });
 
-  test('skill.yaml contains the name and default budget', () => {
+  test('SKILL.md contains the name, version, budget, and allowed-tools', () => {
     scaffoldSkill(tmpRoot, 'alpha');
-    const yaml = readFileSync(join(tmpRoot, 'alpha', 'skill.yaml'), 'utf-8');
-    expect(yaml).toContain('name: alpha');
-    expect(yaml).toContain('context_budget_tokens: 4000');
-    expect(yaml).toContain('version: 0.1.0');
-    expect(yaml).toContain('tools:');
+    const md = readFileSync(join(tmpRoot, 'alpha', 'SKILL.md'), 'utf-8');
+    expect(md).toContain('name: alpha');
+    expect(md).toContain('context_budget_tokens: 4000');
+    expect(md).toContain('version: 0.1.0');
+    expect(md).toContain('allowed-tools:');
   });
 
-  test('prompt.md contains the slash-command heading', () => {
+  test('SKILL.md body contains the slash-command heading', () => {
     scaffoldSkill(tmpRoot, 'my-skill');
-    const md = readFileSync(join(tmpRoot, 'my-skill', 'prompt.md'), 'utf-8');
+    const md = readFileSync(join(tmpRoot, 'my-skill', 'SKILL.md'), 'utf-8');
     expect(md).toContain('# /my-skill');
     expect(md).toContain('When to use this skill');
+  });
+
+  test('hybrid scaffold creates a scripts/ folder with a placeholder', () => {
+    const result = scaffoldSkill(tmpRoot, 'hybrid-demo', 'hybrid');
+    expect(result.filesWritten.length).toBe(2);
+    expect(existsSync(join(tmpRoot, 'hybrid-demo', 'scripts'))).toBe(true);
+    expect(existsSync(join(tmpRoot, 'hybrid-demo', 'scripts', 'README.md'))).toBe(true);
   });
 
   test('rejects invalid skill id (uppercase)', () => {

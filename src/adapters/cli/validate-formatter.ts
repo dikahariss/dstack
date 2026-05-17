@@ -11,13 +11,17 @@ export function formatValidationResults(
   const lines: string[] = [];
   let anyError = false;
 
+  let warnCount = 0;
   for (const r of results) {
     if (r.ok) {
-      lines.push(`${r.skillId}: OK (${r.tokenCount}/${r.tokenBudget} tokens)`);
+      const suffix = r.warnings.length > 0 ? ` (${r.warnings.length} warnings)` : '';
+      lines.push(`${r.skillId}: OK (${r.tokenCount}/${r.tokenBudget} tokens)${suffix}`);
+      for (const w of r.warnings) {
+        lines.push(`  - ${w.kind}: ${w.message}`);
+        warnCount++;
+      }
       continue;
     }
-    // SkillSpecError.message already begins with `skill <id>: `; trim it so
-    // the per-line skill-id prefix is not duplicated.
     const raw = r.error?.message ?? 'unknown error';
     const prefix = `skill ${r.skillId}: `;
     const message = raw.startsWith(prefix) ? raw.slice(prefix.length) : raw;
@@ -28,7 +32,8 @@ export function formatValidationResults(
   const okCount = results.filter((r) => r.ok).length;
   const errCount = results.length - okCount;
   lines.push('');
-  lines.push(`${results.length} skills checked: ${okCount} OK, ${errCount} ERR`);
+  const warnPart = warnCount > 0 ? `, ${warnCount} warnings` : '';
+  lines.push(`${results.length} skills checked: ${okCount} OK, ${errCount} ERR${warnPart}`);
 
   return { lines, exitCode: anyError ? 1 : 0 };
 }

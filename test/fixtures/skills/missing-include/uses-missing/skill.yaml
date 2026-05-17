@@ -1,9 +1,0 @@
-name: uses-missing
-version: 1.0.0
-description: |
-  Fixture whose includes field points at a file that does not exist.
-tools:
-  - Read
-context_budget_tokens: 1000
-includes:
-  - _shared/does-not-exist.md

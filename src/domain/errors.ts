@@ -84,3 +84,46 @@ export class DuplicateSkillIdError extends DomainError {
     super(`duplicate skill id "${skillId}" at: ${paths.join(', ')}`);
   }
 }
+
+/**
+ * The skill's path policy rejected a bundled file. Raised when a bundled
+ * path uses `..`, an absolute prefix, or a symlink — see ADR-0017.
+ */
+export class BundledResourceError extends DomainError {
+  override readonly name = 'BundledResourceError';
+  constructor(
+    readonly skillId: string,
+    readonly relativePath: string,
+    readonly reason: string,
+  ) {
+    super(`skill ${skillId}: bundled resource "${relativePath}" rejected: ${reason}`);
+  }
+}
+
+/**
+ * A skill declares `metadata.dstack.type: schema-semantic` but did not
+ * declare `output_schema`. Required by ADR-0015's validator rule table.
+ */
+export class MissingOutputSchemaError extends DomainError {
+  override readonly name = 'MissingOutputSchemaError';
+  constructor(readonly skillId: string) {
+    super(
+      `skill ${skillId}: type is schema-semantic but metadata.dstack.output_schema is missing`,
+    );
+  }
+}
+
+/**
+ * The forbidden combination from `docs/skill-taxonomy.md` Part 3 final
+ * check: a semantic skill that mutates external state autonomously.
+ */
+export class DangerousCombinationError extends DomainError {
+  override readonly name = 'DangerousCombinationError';
+  constructor(readonly skillId: string) {
+    super(
+      `skill ${skillId}: type=semantic + side_effects=external + agency=autonomous is rejected ` +
+        `by ADR-0015. Demote at least one axis: require user confirmation (deliberative), ` +
+        `constrain output (schema-semantic), or remove external mutation.`,
+    );
+  }
+}

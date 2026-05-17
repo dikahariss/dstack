@@ -1,8 +1,9 @@
-# Skill specification
+# Skill specification (v2)
 
 This document defines what a skill is on disk: the directory layout, the
-`skill.yaml` schema, and the `prompt.md` rules. It also lists the
-validation rules the renderer applies before it processes a skill.
+`SKILL.md` frontmatter schema, the body rules, and the bundled-resource
+contract. It also lists the validation rules the parser and renderer
+apply before a skill is built.
 
 This spec is one of four. The others are:
 
@@ -14,122 +15,160 @@ This spec is one of four. The others are:
 
 | Term | Definition |
 |---|---|
-| Skill | A package of behavior that an AI agent (Claude Code) runs when the user types `/<skill-id>`. |
-| Renderer | The dstack component that reads a skill and writes the output file Claude Code consumes. The renderer's full contract is in [render-spec.md](render-spec.md). |
-| Frontmatter | A YAML block at the top of a Markdown file, between `---` fences. Claude Code reads frontmatter from `SKILL.md` files. |
+| Skill | A package of behavior an AI agent (Claude Code) runs when the user types `/<skill-id>`. |
+| SKILL.md | The single source file. YAML frontmatter (between `---` fences) plus a Markdown body. |
+| Frontmatter | The YAML block at the top of `SKILL.md`. Carries `name`, `description`, `allowed-tools`, optional `license` / `compatibility`, and a `metadata.dstack.*` namespace for dstack-specific fields. |
+| Bundled resources | Files under the skill folder (e.g. `scripts/`, `references/`, `assets/`) that ship alongside the prompt. Not included in the prompt body and not counted against the token budget. |
 | Tool | A capability the host (Claude Code) provides to the LLM. Examples: `Bash`, `Edit`, `Read`. Defined in [host-spec.md](host-spec.md). |
 | Token | The unit of text size that LLMs measure. About 1 token per 4 characters of English. |
 | Validation | Checking that a value meets the rules listed below. Failed validation causes the build to fail. |
-| Computation type | One of four ways a skill performs its work. Defined in [skill-taxonomy.md](../skill-taxonomy.md). |
+| Computation type | One of four ways a skill performs its work: `deterministic`, `semantic`, `hybrid`, `schema-semantic`. Defined in [skill-taxonomy.md](../skill-taxonomy.md). |
 
 ## On-disk layout
 
-Each skill lives in one directory under `skills/`. The directory
-contains exactly two files:
+Each skill lives in one directory under `skills/`. The directory must
+contain `SKILL.md` and may carry bundled resources:
 
 ```
 skills/<skill-id>/
-├── skill.yaml      # Required. Metadata and contract.
-└── prompt.md       # Required. The prompt body the LLM reads.
+├── SKILL.md            # Required. YAML frontmatter + Markdown body.
+├── scripts/            # Optional. Bundled helpers (executable bit preserved).
+├── references/         # Optional. Read-only context the body can point to.
+├── assets/             # Optional. Binary or large reference material.
+├── LICENSE.txt         # Optional. Copied verbatim to the install root.
+└── <free-form>/        # Optional. Any other subfolder ships verbatim.
 ```
 
-Optional shared content lives in `skills/_shared/`. Files there can be
-referenced from `skill.yaml`'s `includes` field. See "Includes" below.
+Optional shared Markdown lives in `skills/_shared/`. Files there can be
+referenced from `metadata.dstack.includes`. See "Includes" below. The
+`_shared/` folder is reserved — it is not treated as a skill directory.
 
-## The `skill.yaml` schema
+The legacy v1 layout (`skill.yaml` + `prompt.md`) is still accepted
+during the migration window. Loading a legacy skill emits a
+`legacy-source-format` warning. Run `dstack migrate-v2` to convert.
+See [ADR-0013](../adr/0013-single-file-skill-md.md).
 
-Each field is listed below. Required fields must be present in every
-`skill.yaml`. Optional fields may be omitted.
+## The `SKILL.md` frontmatter
 
 ```yaml
-# REQUIRED FIELDS
+# REQUIRED (top-level, spec-compatible with agentskills.io)
 
 name: string
   # Globally unique. Lowercase letters, digits, hyphens.
   # Must start with a letter. 1 to 64 characters.
   # Must match the directory name.
-  # Aligned with the official Agent Skills schema (ADR-0012).
-
-version: string
-  # Semantic version. Examples: "1.0.0", "0.2.1", "2.0.0".
-  # Bumped when the prompt or contract changes (see "Versioning rule" below).
 
 description: string
-  # One paragraph. Used in skill listings. Up to 200 words.
+  # One paragraph. Used in skill listings. Up to 1024 characters.
 
-tools: [list of tool names]
-  # The tools this skill is allowed to use.
-  # Each name must be in the host's tool registry.
-  # The Claude Code tool registry is defined in host-spec.md.
+allowed-tools: string | [string]
+  # Either a space-separated string ("Read Bash Edit") or a YAML list.
+  # Each name must be in the host's tool registry — see host-spec.md.
 
-context_budget_tokens: integer
-  # The maximum number of tokens the rendered output may contain.
-  # Default if omitted: 4000.
-  # Hard ceiling: 16000 (set by ADR-0010).
-
-# OPTIONAL FIELDS
+# OPTIONAL (top-level)
 
 license: string
-  # License name or pointer (e.g. "MIT", "Apache-2.0",
-  # "Proprietary. LICENSE.txt has complete terms").
-  # Forwarded into the rendered SKILL.md frontmatter. Aligned with the
-  # official Agent Skills schema (ADR-0012).
+  # License name or pointer (e.g. "MIT", "Apache-2.0").
+  # Forwarded verbatim. Aligned with the official Agent Skills schema.
 
 compatibility: string
-  # Environment requirement (e.g. "Requires Python 3.14+",
-  # "Designed for Claude Code"). Forwarded into the rendered SKILL.md
-  # frontmatter. Aligned with the official Agent Skills schema (ADR-0012).
+  # Environment requirement (e.g. "Requires Bun 1.3+").
+  # Forwarded verbatim. Aligned with the official Agent Skills schema.
 
-inputs:
-  # A list of values the skill expects from the caller (the user or another skill).
-  - name: string                 # snake_case
-    type: string | number | boolean | url | path
-    required: boolean            # default: false
-    default: any                 # only allowed if required is false
-    description: string          # optional, but recommended
+# REQUIRED (under metadata.dstack)
 
-outputs:
-  # A list of values the skill promises to produce.
-  - name: string
-    type: string | number | boolean | url | path | record
-    description: string
+metadata:
+  dstack:
+    version: string
+      # Semantic version: "1.0.0", "0.2.1", "2.0.0".
+      # Bumped on every behavior change. See "Versioning rule" below.
 
-triggers:
-  # A list of natural-language phrases. Hosts that support routing may
-  # use these to map a user's intent to this skill.
-  - string
+    context_budget_tokens: integer
+      # Body-only token ceiling. Default if omitted: 4000.
+      # Hard ceiling: 5000 (per ADR-0016). Bundled resources are not
+      # counted; they load on demand.
 
-includes:
-  # A list of shared Markdown files to include before the prompt body.
-  # Each path is relative to `skills/`.
-  - _shared/<filename>.md
+    # OPTIONAL (under metadata.dstack)
+
+    type: deterministic | semantic | hybrid | schema-semantic
+      # The computation type. If omitted, the parser infers from
+      # structure (see "Type inference" below).
+
+    side_effects: readonly | local | external
+      # What the skill is allowed to touch. Defaults to `readonly`.
+
+    agency: reactive | deliberative | autonomous
+      # How autonomously the skill acts. Defaults to `reactive`.
+
+    triggers: [string]
+      # Natural-language phrases the host may use for routing.
+
+    includes: [string]
+      # Relative paths under `skills/`. Each file is concatenated
+      # before the body. Cycles are broken with a warning.
+
+    output_schema: object | string
+      # Required iff `type: schema-semantic`. Inline JSON Schema or a
+      # relative path to a JSON Schema file in the skill folder.
 ```
 
-## The `prompt.md` file
+Custom frontmatter fields that are not part of the agentskills.io spec
+live under `metadata.dstack.*` so they survive Claude Code's
+frontmatter normalisation. See [ADR-0014](../adr/0014-metadata-namespace.md).
 
-`prompt.md` is plain Markdown. The renderer treats it as text. There is
-no template syntax. There is no `{{variable}}` substitution. There is no
-Handlebars or Mustache.
+## The body
 
-If a skill needs to mention one of its `inputs` in the prompt, it does
-so in plain prose:
+Everything after the closing `---` fence is plain Markdown. The renderer
+treats it as text. There is no template syntax, no `{{variable}}`
+substitution, no Handlebars.
+
+If a skill needs to reference a bundled script, do it in plain prose:
 
 ```markdown
-This skill expects an input called `base_branch`. If the caller did
-not provide it, detect the branch by running `gh pr view`.
+Run `scripts/get_diff.sh` via the Bash tool to fetch the diff.
 ```
 
-The renderer does not substitute `base_branch` anywhere. The host
-provides input values to the LLM through the host's own mechanism. See
-[render-spec.md](render-spec.md) for how the prompt is wrapped with
-frontmatter.
+The Installer copies the script verbatim under the skill folder, so the
+relative path the body mentions matches the path Claude sees at runtime.
+
+## Bundled resources
+
+Files inside `scripts/`, `references/`, `assets/`, and any other
+free-form subfolder ship alongside `SKILL.md` and load on demand. They
+are not part of the prompt body and not counted against
+`context_budget_tokens`. Per [ADR-0017](../adr/0017-bundled-resources.md):
+
+- Symlinks are rejected. Bundled files must be real files.
+- Paths that contain `..` or that resolve outside the skill folder are
+  rejected.
+- The executable bit is preserved on install.
+- Files under `_shared/` at any level are reserved for `includes:`
+  and are not copied as bundled resources of any individual skill.
+
+## Type inference
+
+If `metadata.dstack.type` is omitted, the parser infers a type from
+structure ([ADR-0015](../adr/0015-type-taxonomy-adoption.md)):
+
+1. `output_schema` declared → `schema-semantic`.
+2. `scripts/` folder present and body ≤ 500 tokens → `deterministic`.
+3. `scripts/` folder present → `hybrid`.
+4. Otherwise → `semantic` (the ecosystem default).
+
+When a declared type conflicts with the structure, the parser emits a
+`type-structure-mismatch` warning. Example: `type: semantic` plus a
+`scripts/` folder.
+
+The combination `type: semantic` + `side_effects: external` +
+`agency: autonomous` is rejected outright (`DangerousCombinationError`):
+an unconstrained LLM with external write access and no reactive gate.
 
 ## Includes
 
-A skill can declare an `includes` field listing shared Markdown files
-under `skills/_shared/`. The renderer concatenates the included files
-before the `prompt.md` body. See [render-spec.md](render-spec.md) for
-the exact ordering and cycle-detection rules.
+A skill can declare `metadata.dstack.includes` listing shared Markdown
+files under `skills/`. The renderer concatenates the included files
+before the body. See [render-spec.md](render-spec.md) for the exact
+ordering and cycle-detection rules.
 
 Use `includes` when:
 
@@ -138,86 +177,70 @@ Use `includes` when:
 
 Do not use `includes` to build a hidden preamble system. Each include
 must be referenced by name in the skill that uses it. See
-[ADR-0003](../adr/0003-skill-as-data.md) for the reasoning.
+[ADR-0003](../adr/0003-skill-as-data.md).
 
-## Validation rules (enforced by the renderer)
-
-The renderer fails the build if any rule below is broken. Severity
-"Error" means the build stops. Severity "Warning" means the build
-continues but prints a message.
+## Validation rules (enforced by the parser and renderer)
 
 | Rule | Severity | What happens if broken |
 |---|---|---|
-| `name` matches the directory name | Error | Build fails. |
+| `name` matches the directory name | Error | Parse fails. |
 | `name` is unique across all skills | Error | Build fails. |
-| `version` is valid semantic version | Error | Build fails. |
-| Every entry in `tools` is in the host's tool registry | Error | Build fails. See [host-spec.md](host-spec.md). |
-| `context_budget_tokens` is in the range (0, 16000] | Error | Build fails. The ceiling is set by [ADR-0010](../adr/0010-context-budget.md). |
-| Rendered output token count ≤ `context_budget_tokens` | Error | Build fails. |
-| `prompt.md` exists and is not empty | Error | Build fails. |
-| Each path in `includes` resolves to a real file | Error | Build fails. |
-| An input with `required: true` does not also have a `default` | Error | Build fails. |
-| Two skills declare overlapping `triggers` | Warning | Build continues. Warning is printed. |
-| `description` is more than 200 words | Warning | Build continues. Warning is printed. |
+| `metadata.dstack.version` is a non-empty string | Error | Parse fails. |
+| Every entry in `allowed-tools` is in the host's tool registry | Error | Build fails. |
+| `metadata.dstack.context_budget_tokens` is in (0, 5000] | Error | Parse fails. |
+| Rendered body token count ≤ `context_budget_tokens` | Error | Build fails. |
+| SKILL.md body is non-empty | Error | Parse fails. |
+| Each path in `includes` resolves to a real file | Error | Parse fails. |
+| `type: schema-semantic` requires `output_schema` | Error | Build fails (`MissingOutputSchemaError`). |
+| `type: semantic` + `side_effects: external` + `agency: autonomous` | Error | Build fails (`DangerousCombinationError`). |
+| Declared `type` does not match structure | Warning | Build continues. |
+| Body tokens > 90% of budget | Warning | Build continues. |
+| Skill ships ≥ 4 module folders (SkillsBench threshold) | Warning | Build continues. |
+| Legacy `skill.yaml + prompt.md` layout detected | Warning | Build continues; suggest `migrate-v2`. |
 
-## Computation type (not in the schema today)
+## Example: a real Hybrid skill
 
-A skill's computation type — Deterministic, Open-ended Semantic,
-Hybrid, or Schema-constrained Semantic — is described in
-[skill-taxonomy.md](../skill-taxonomy.md). The schema today does not
-encode this. Adding it would require:
-
-1. A new ADR proposing the addition.
-2. A new optional field in `skill.yaml`, for example: `type: hybrid`.
-3. Updates to the parser in `src/adapters/fs/FileSkillRepository.ts`.
-
-This is a known evolution path, not committed. See `docs/plans/v1/DEFERRED.md`
-for status.
-
-## Example: a real skill
-
-The `careful` skill in `skills/careful/` is the reference example. Its
-yaml file looks like this:
+`skills/code-review/SKILL.md` is the reference Hybrid example:
 
 ```yaml
-name: careful
-version: 0.2.0
-description: |
-  Safety guardrails for destructive commands. Reminds the user to pause before
-  rm -rf, DROP TABLE, force-push, git reset --hard, kubectl delete, and similar
-  destructive operations. Use when touching prod, debugging live systems, or
-  working in a shared environment. Use when asked to "be careful", "safety
-  mode", "prod mode", or "careful mode".
+---
+name: code-review
+description: Receive code-review feedback with technical rigor...
+allowed-tools: Read Bash Grep Glob Edit
+metadata:
+  dstack:
+    type: hybrid
+    version: 0.2.0
+    context_budget_tokens: 3500
+    side_effects: local
+    agency: deliberative
+    triggers:
+      - code review
+      - respond to review
+---
+# /code-review
 
-tools:
-  - Bash
-  - Read
+...body...
 
-context_budget_tokens: 1500
+## Fetch the diff first
 
-triggers:
-  - be careful
-  - warn before destructive
-  - safety mode
-  - prod mode
+Run `scripts/get_diff.sh` via the Bash tool to get the diff that needs
+review.
 ```
 
-The matching `prompt.md` carries the advisory text. See
-`skills/careful/prompt.md`.
+The matching `scripts/get_diff.sh` ships alongside `SKILL.md`.
 
 ## Versioning rule
 
-Bump the `version` field when:
+Bump `metadata.dstack.version` when:
 
-- The semantics of `prompt.md` change (not just typos).
-- The `tools` list changes.
-- The `inputs` or `outputs` schema changes.
+- The semantics of the body change (not just typos).
+- The `allowed-tools` list changes.
 - `context_budget_tokens` increases.
+- A bundled script's interface changes.
 
-Do not bump the version for:
-
-- Typo fixes that do not change meaning.
-- Formatting changes (whitespace, line breaks) in `prompt.md`.
+Do not bump the version for typo fixes that do not change meaning, or
+for whitespace-only edits.
 
 dstack uses semantic versioning:
 
@@ -227,23 +250,16 @@ dstack uses semantic versioning:
 
 ## Things not to do
 
-The following are anti-patterns. The renderer does not detect them
-automatically, but they are wrong.
-
-- **Putting prompt text inside `skill.yaml`.** The yaml file is for
-  metadata. The prompt is `prompt.md`. Do not mix them.
-- **Declaring a tool you do not use.** The point of the `tools` field
-  is to declare a true permission set. List only the tools the skill
-  actually uses.
-- **Setting `context_budget_tokens` to match whatever the prompt
-  happens to be.** Pick a budget first, then keep the prompt under it.
+- **Putting top-level dstack fields outside `metadata.dstack`.** They
+  get stripped from the rendered output. See ADR-0014.
+- **Declaring a tool you do not use.** `allowed-tools` is a permission
+  set. List only the tools the skill actually uses.
+- **Picking a budget that matches whatever the body currently is.**
   The budget is a constraint, not a measurement.
-- **Adding fields not in this schema.** If a new field is needed, write
-  an ADR proposing it. Do not invent fields.
+- **Adding bundled files that contain `..` or symlinks.** The
+  Installer rejects both.
 
 ## How to add a new field
-
-To add a new field to the schema:
 
 1. Write an ADR explaining the use case.
 2. Update this document.
@@ -253,16 +269,18 @@ To add a new field to the schema:
 
 ## Cross-references
 
-- [host-spec.md](host-spec.md) — the tool registry that `tools` is
-  validated against.
+- [host-spec.md](host-spec.md) — the tool registry that `allowed-tools`
+  is validated against.
 - [render-spec.md](render-spec.md) — what the renderer does with a
   parsed skill.
 - [install-spec.md](install-spec.md) — how the rendered output reaches
   disk.
 - [skill-taxonomy.md](../skill-taxonomy.md) — the design framework for
-  choosing how a skill works.
+  choosing a computation type.
 - [ADR-0003](../adr/0003-skill-as-data.md) — why skills are not
   template-engined.
-- [ADR-0009](../adr/0009-spec-driven-skills.md) — why skills declare a
-  contract.
-- [ADR-0010](../adr/0010-context-budget.md) — the token budget rule.
+- [ADR-0013](../adr/0013-single-file-skill-md.md) — single-file source format.
+- [ADR-0014](../adr/0014-metadata-namespace.md) — `metadata.dstack.*` namespace.
+- [ADR-0015](../adr/0015-type-taxonomy-adoption.md) — type / side_effects / agency.
+- [ADR-0016](../adr/0016-per-tier-token-budget.md) — body-only token budget.
+- [ADR-0017](../adr/0017-bundled-resources.md) — bundled-resource contract.

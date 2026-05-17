@@ -1,7 +1,0 @@
-name: orphan
-version: 1.0.0
-description: |
-  Has yaml but no prompt.md. Used to exercise the missing-file error path.
-tools:
-  - Read
-context_budget_tokens: 500

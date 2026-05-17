@@ -12,13 +12,15 @@ import { describe, test, expect, beforeEach, afterEach } from 'bun:test';
 import { mkdirSync, mkdtempSync, rmSync, existsSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
-import { Installer } from '@domain/host/ports';
-import { RenderResult } from '@domain/render/RenderResult';
+import { Installer, RenderedSkill } from '@domain/host/ports';
 
 const ALLOWED_PARENT = join(homedir(), '.dstack/skills');
 
-function result(path: string, content: string): RenderResult {
-  return { path, content, tokenCount: Math.ceil(content.length / 4), warnings: [] };
+function result(path: string, content: string): RenderedSkill {
+  return {
+    rendered: { path, content, tokenCount: Math.ceil(content.length / 4), warnings: [] },
+    bundled: [],
+  };
 }
 
 export function runInstallerContract(name: string, factory: () => Installer): void {

@@ -22,7 +22,7 @@ import { FileSkillRepository } from '@adapters/fs/FileSkillRepository';
 import { ClaudeCodeRenderer } from '@adapters/claude-code/ClaudeCodeRenderer';
 import { CLAUDE_CODE_TOOLS } from '@adapters/claude-code/tools';
 import { NoopTelemetry } from '@obs/NoopTelemetry';
-import { RenderResult } from '@domain/render/RenderResult';
+import { RenderedSkill } from '@domain/host/ports';
 
 const SKILL_NAME_RE = /^[a-z][a-z0-9-]{0,63}$/;
 
@@ -48,7 +48,7 @@ function extractFrontmatter(content: string): Frontmatter {
 }
 
 describe('Agent Skills schema compatibility', () => {
-  let results: readonly RenderResult[];
+  let results: readonly RenderedSkill[];
 
   beforeAll(async () => {
     const repo = new FileSkillRepository(resolve(import.meta.dir, '../../skills'));
@@ -65,13 +65,13 @@ describe('Agent Skills schema compatibility', () => {
 
   test('every skill renders parseable YAML frontmatter', () => {
     for (const r of results) {
-      expect(() => extractFrontmatter(r.content)).not.toThrow();
+      expect(() => extractFrontmatter(r.rendered.content)).not.toThrow();
     }
   });
 
   test('every skill carries a kebab-case name', () => {
     for (const r of results) {
-      const fm = extractFrontmatter(r.content);
+      const fm = extractFrontmatter(r.rendered.content);
       expect(typeof fm.name).toBe('string');
       expect(fm.name).toMatch(SKILL_NAME_RE);
     }
@@ -79,7 +79,7 @@ describe('Agent Skills schema compatibility', () => {
 
   test('every skill carries a non-empty description', () => {
     for (const r of results) {
-      const fm = extractFrontmatter(r.content);
+      const fm = extractFrontmatter(r.rendered.content);
       expect(typeof fm.description).toBe('string');
       expect((fm.description as string).length).toBeGreaterThan(0);
     }
@@ -87,7 +87,7 @@ describe('Agent Skills schema compatibility', () => {
 
   test('license, when present, is a string', () => {
     for (const r of results) {
-      const fm = extractFrontmatter(r.content);
+      const fm = extractFrontmatter(r.rendered.content);
       if (fm.license !== undefined) {
         expect(typeof fm.license).toBe('string');
       }
@@ -96,22 +96,21 @@ describe('Agent Skills schema compatibility', () => {
 
   test('compatibility, when present, is a string', () => {
     for (const r of results) {
-      const fm = extractFrontmatter(r.content);
+      const fm = extractFrontmatter(r.rendered.content);
       if (fm.compatibility !== undefined) {
         expect(typeof fm.compatibility).toBe('string');
       }
     }
   });
 
-  test('allowed-tools, when present, is an array of strings', () => {
+  test('allowed-tools, when present, is a space-separated string', () => {
     for (const r of results) {
-      const fm = extractFrontmatter(r.content);
+      const fm = extractFrontmatter(r.rendered.content);
       const tools = fm['allowed-tools'];
       if (tools !== undefined) {
-        expect(Array.isArray(tools)).toBe(true);
-        for (const t of tools as readonly unknown[]) {
-          expect(typeof t).toBe('string');
-        }
+        expect(typeof tools).toBe('string');
+        const parts = (tools as string).split(/\s+/).filter((s) => s.length > 0);
+        expect(parts.length).toBeGreaterThan(0);
       }
     }
   });

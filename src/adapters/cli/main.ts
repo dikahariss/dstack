@@ -36,6 +36,8 @@ import { formatWarnings, countWarnings } from './warning-formatter';
 import { formatValidationResults } from './validate-formatter';
 import { formatRowsTable, formatRowsJson } from './list-formatter';
 import { diagnose, formatDoctorReport } from './doctor';
+import { migrateLegacySkills, formatMigrationReport } from './migrate';
+import { isSkillType, SkillType } from '@domain/skill/SkillType';
 
 const PROJECT_ROOT = resolve(import.meta.dir, '../../..');
 const SKILLS_ROOT = join(PROJECT_ROOT, 'skills');
@@ -73,19 +75,20 @@ async function main(argv: readonly string[]): Promise<number> {
       const strict = rest.includes('--strict');
       const outputRoot = defaultOutputRoot(scope);
       const host = claudeHost(outputRoot);
-      const results = await new BuildCatalog(skills, renderer, telemetry).execute({
+      const items = await new BuildCatalog(skills, renderer, telemetry).execute({
         host,
         now: new Date(),
       });
       const report = await new InstallSkills(installer, telemetry).execute({
         outputRoot,
-        results,
+        results: items,
       });
-      const warningCount = countWarnings(results);
-      const summary = `built ${results.length} skills, wrote ${report.written}, skipped ${report.skipped}, removed ${report.removed}`;
+      const renderResults = items.map((i) => i.rendered);
+      const warningCount = countWarnings(renderResults);
+      const summary = `built ${items.length} skills, wrote ${report.written}, skipped ${report.skipped}, removed ${report.removed}`;
       console.log(warningCount > 0 ? `${summary} (${warningCount} warnings)` : summary);
       console.log(`output: ${report.outputRoot}`);
-      const warningOutput = formatWarnings(results);
+      const warningOutput = formatWarnings(renderResults);
       if (warningOutput) {
         console.log('');
         console.log(warningOutput);
@@ -106,7 +109,7 @@ async function main(argv: readonly string[]): Promise<number> {
         host,
         now: new Date(),
       });
-      process.stdout.write(result.content);
+      process.stdout.write(result.rendered.content);
       return 0;
     }
 
@@ -162,23 +165,37 @@ async function main(argv: readonly string[]): Promise<number> {
     }
 
     case 'new': {
-      const idRaw = rest[0];
+      const idRaw = rest.find((arg) => !arg.startsWith('--'));
       if (!idRaw) {
-        console.error('usage: dstack new <skill-id>');
+        console.error('usage: dstack new <skill-id> [--type=<deterministic|semantic|hybrid|schema-semantic>]');
         console.error('  skill-id: lowercase letters, digits, hyphens; must start with a letter');
         return 2;
       }
+      const typeArg = rest.find((arg) => arg.startsWith('--type='));
+      let type: SkillType = 'semantic';
+      if (typeArg) {
+        const value = typeArg.slice('--type='.length);
+        if (!isSkillType(value)) {
+          console.error(`dstack new: unknown type "${value}". Expected one of: deterministic, semantic, hybrid, schema-semantic.`);
+          return 2;
+        }
+        type = value;
+      }
       try {
-        const result = scaffoldSkill(SKILLS_ROOT, idRaw);
-        console.log(`created skill: ${result.skillId}`);
+        const result = scaffoldSkill(SKILLS_ROOT, idRaw, type);
+        console.log(`created skill: ${result.skillId} (type=${type})`);
         for (const file of result.filesWritten) {
           console.log(`  ${file}`);
         }
         console.log('');
         console.log('next steps:');
-        console.log(`  1. edit ${result.skillDir}/skill.yaml — set description, tools, triggers`);
-        console.log(`  2. edit ${result.skillDir}/prompt.md — write the instruction body`);
-        console.log(`  3. run \`bun run build\` to render and install`);
+        console.log(`  1. edit ${result.skillDir}/SKILL.md — set description, tools, triggers, body`);
+        if (type === 'hybrid' || type === 'deterministic') {
+          console.log(`  2. add helpers under ${result.skillDir}/scripts/`);
+          console.log(`  3. run \`bun run build\` to render and install`);
+        } else {
+          console.log(`  2. run \`bun run build\` to render and install`);
+        }
         return 0;
       } catch (err) {
         if (err instanceof ScaffoldError) {
@@ -187,6 +204,13 @@ async function main(argv: readonly string[]): Promise<number> {
         }
         throw err;
       }
+    }
+
+    case 'migrate-v2': {
+      const report = migrateLegacySkills(SKILLS_ROOT);
+      for (const line of formatMigrationReport(report)) console.log(line);
+      const anyFailed = report.outcomes.some((o) => o.status === 'failed');
+      return anyFailed ? 1 : 0;
     }
 
     case undefined:
@@ -198,10 +222,11 @@ async function main(argv: readonly string[]): Promise<number> {
       console.log('  dstack build [--global] [--strict]  render all skills and install');
       console.log('                            --strict exits 1 if any warning was emitted');
       console.log('  dstack render <skill-id>  render one skill to stdout');
-      console.log('  dstack new <skill-id>     scaffold a new skill from template');
-      console.log('  dstack list [--json]      list every skill with version, tokens, tools');
+      console.log('  dstack new <skill-id> [--type=<t>]  scaffold a new SKILL.md');
+      console.log('  dstack list [--json]      list every skill with version, type, tokens');
       console.log('  dstack validate           check every skill; exit 1 if any fails');
       console.log('  dstack doctor             diagnose source/install consistency');
+      console.log('  dstack migrate-v2         convert legacy skill.yaml + prompt.md to SKILL.md');
       console.log('');
       console.log('Env:');
       console.log('  DSTACK_LOG=debug          print structured events to stderr');

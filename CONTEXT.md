@@ -7,15 +7,21 @@ A skill catalog renderer for Claude Code. Reads skill definitions from
 ## Language
 
 **Skill**:
-A folder under `skills/<id>/` containing `skill.yaml` (metadata) plus
-`prompt.md` (the instruction text the LLM reads). One skill becomes one
-slash command in Claude Code.
+A folder under `skills/<id>/` containing a single `SKILL.md` (YAML
+frontmatter + Markdown body) plus optional bundled resources
+(`scripts/`, `references/`, `assets/`, free-form). One skill becomes
+one slash command in Claude Code. The legacy v1 layout
+(`skill.yaml + prompt.md`) is still accepted with a `legacy-source-format`
+warning; convert with `bun run dstack migrate-v2`.
 _Avoid_: command, capability, plugin, action.
 
 **Skill spec**:
-The parsed, validated form of `skill.yaml`. Always reaches the domain
-already validated — no half-parsed shapes exist downstream of
-`FileSkillRepository`.
+The parsed, validated form of `SKILL.md`'s frontmatter. Always reaches
+the domain already validated — no half-parsed shapes exist downstream
+of `FileSkillRepository`. dstack-specific fields live under
+`metadata.dstack.*` (type, version, context_budget_tokens, side_effects,
+agency, triggers, includes, output_schema); see
+[ADR-0014](docs/adr/0014-metadata-namespace.md).
 _Avoid_: skill config, metadata, manifest.
 
 **Skill id**:
@@ -73,10 +79,13 @@ keeps the dependency direction inward.
 _Avoid_: bootstrap, composition root, DI container, factory.
 
 **Token budget**:
-The hard maximum token count a skill is allowed at render time.
-Declared per-skill in `skill.yaml` as `context_budget_tokens`. The
-default is 4 000, the ceiling is 16 000. Enforced at build time via
-`TokenBudgetExceededError`. See [ADR-0010](docs/adr/0010-context-budget.md).
+The hard maximum token count for a skill's *body* at render time.
+Declared per-skill under `metadata.dstack.context_budget_tokens`. The
+default is 4 000, the ceiling is 5 000 ([ADR-0016](docs/adr/0016-per-tier-token-budget.md)
+supersedes ADR-0010's 16 000 total-output limit). Bundled resources
+(`scripts/`, `references/`, `assets/`, free-form subfolders) load on
+demand and are not counted. Enforced at build time via
+`TokenBudgetExceededError`.
 _Avoid_: token limit, context limit, prompt size cap.
 
 **Token counter**:
@@ -131,8 +140,8 @@ design; remote sinks are explicitly out of scope. See
 _Avoid_: logging, metrics, analytics.
 
 **Includes**:
-A skill's `includes:` directive in `skill.yaml`, pointing at shared
-snippets under `skills/_shared/*.md`. Parsed today but not resolved
+A skill's `metadata.dstack.includes` directive in `SKILL.md`, pointing
+at shared snippets under `skills/_shared/*.md`. Parsed today but not resolved
 yet — see [ROADMAP M3](docs/plans/v1/ROADMAP.md).
 _Avoid_: imports, partials, fragments.
 

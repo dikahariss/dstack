@@ -1,5 +1,4 @@
-import { Installer, InstallReport } from '@domain/host/ports';
-import { RenderResult } from '@domain/render/RenderResult';
+import { Installer, InstallReport, RenderedSkill } from '@domain/host/ports';
 import { Telemetry } from '@obs/Telemetry';
 
 /**
@@ -17,7 +16,7 @@ export class InstallSkills {
 
   async execute(input: {
     outputRoot: string;
-    results: readonly RenderResult[];
+    results: readonly RenderedSkill[];
   }): Promise<InstallReport> {
     const report = await this.installer.install(input.outputRoot, input.results);
 

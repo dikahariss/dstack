@@ -28,6 +28,9 @@ function buildSkill(overrides: { budget?: number; warnings?: Warning[] } = {}): 
     contextBudgetTokens: overrides.budget ?? CONTEXT_BUDGET_DEFAULT,
     triggers: [],
     includes: [],
+    type: 'semantic',
+    sideEffects: 'readonly',
+    agency: 'reactive',
   });
   return new Skill(spec, 'prompt body', '', overrides.warnings ?? []);
 }
@@ -65,9 +68,12 @@ export function runHostRendererContract(name: string, factory: () => HostRendere
       expect(closer).toBeGreaterThan(0);
       const doc = parseDocument(result.content.slice(opener + 3, closer));
       expect(doc.errors.length).toBe(0);
-      const fm = doc.toJS() as { name: string; version: string };
+      const fm = doc.toJS() as {
+        name: string;
+        metadata?: { dstack?: { version?: string } };
+      };
       expect(fm.name).toBe('alpha');
-      expect(fm.version).toBe('0.1.0');
+      expect(fm.metadata?.dstack?.version).toBe('0.1.0');
     });
 
     test('warnings from include resolution are forwarded into the result', () => {

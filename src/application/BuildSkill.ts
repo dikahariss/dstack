@@ -1,9 +1,13 @@
 import { Host } from '@domain/host/Host';
-import { HostRenderer } from '@domain/host/ports';
+import { HostRenderer, RenderedSkill } from '@domain/host/ports';
 import { SkillId } from '@domain/skill/SkillId';
 import { SkillRepository } from '@domain/skill/ports';
-import { RenderResult } from '@domain/render/RenderResult';
-import { TokenBudgetExceededError, UnknownToolError } from '@domain/errors';
+import {
+  TokenBudgetExceededError,
+  UnknownToolError,
+  DangerousCombinationError,
+  MissingOutputSchemaError,
+} from '@domain/errors';
 import { Telemetry } from '@obs/Telemetry';
 
 /**
@@ -11,8 +15,10 @@ import { Telemetry } from '@obs/Telemetry';
  * BuildCatalog as the per-skill step.
  *
  * Validation that does not require cross-skill knowledge happens here:
- * - tools must exist in the host's registry
- * - token count must fit budget
+ *   - tools must exist in the host's registry
+ *   - body token count must fit the declared budget (ADR-0016)
+ *   - schema-semantic skills must declare `output_schema` (ADR-0015)
+ *   - the dangerous combination semantic+external+autonomous is rejected
  *
  * Cross-skill validation (duplicate IDs, overlapping triggers) is the
  * caller's responsibility — typically `BuildCatalog`.
@@ -24,7 +30,7 @@ export class BuildSkill {
     private readonly telemetry: Telemetry,
   ) {}
 
-  async execute(input: { skillId: SkillId; host: Host; now: Date }): Promise<RenderResult> {
+  async execute(input: { skillId: SkillId; host: Host; now: Date }): Promise<RenderedSkill> {
     const { skillId, host, now } = input;
 
     const skill = await this.skills.loadById(skillId);
@@ -38,17 +44,28 @@ export class BuildSkill {
       }
     }
 
-    const result = this.renderer.render({
+    if (skill.spec.type === 'schema-semantic' && skill.spec.outputSchema === undefined) {
+      throw new MissingOutputSchemaError(skillId.value);
+    }
+    if (
+      skill.spec.type === 'semantic' &&
+      skill.spec.sideEffects === 'external' &&
+      skill.spec.agency === 'autonomous'
+    ) {
+      throw new DangerousCombinationError(skillId.value);
+    }
+
+    const rendered = this.renderer.render({
       host,
       skill,
       tokenBudget: skill.spec.contextBudgetTokens,
       now,
     });
 
-    if (result.tokenCount > skill.spec.contextBudgetTokens) {
+    if (rendered.tokenCount > skill.spec.contextBudgetTokens) {
       throw new TokenBudgetExceededError(
         skillId.value,
-        result.tokenCount,
+        rendered.tokenCount,
         skill.spec.contextBudgetTokens,
       );
     }
@@ -57,10 +74,10 @@ export class BuildSkill {
       kind: 'skill_rendered',
       skillId: skillId.value,
       host: host.name,
-      tokenCount: result.tokenCount,
+      tokenCount: rendered.tokenCount,
       tokenBudget: skill.spec.contextBudgetTokens,
     });
 
-    return result;
+    return { rendered, bundled: skill.bundled };
   }
 }

@@ -1,14 +1,15 @@
 import { Warning } from '@domain/render/RenderResult';
 import { SkillSpec } from './SkillSpec';
+import { BundledFile } from './BundledFile';
 
 /**
- * Skill is the aggregate: a validated spec plus the prompt body and any
- * resolved `includes` content.
+ * Skill is the aggregate: a validated spec plus the prompt body, resolved
+ * `includes` content, and any bundled resources shipped alongside SKILL.md.
  *
- * The aggregate boundary is "everything the renderer needs to produce
- * output for one skill." Include resolution happens in the repository
- * (where filesystem reads belong); the renderer receives the already
- * resolved text and any warnings collected during resolution.
+ * The aggregate boundary is "everything the installer needs to materialise
+ * one skill on disk." Include resolution and bundled-file collection happen
+ * in the repository (where filesystem reads belong); the renderer sees the
+ * resolved text and the installer copies the bundled files.
  */
 export class Skill {
   constructor(
@@ -16,10 +17,11 @@ export class Skill {
     readonly prompt: string,
     readonly includesContent: string,
     readonly includeWarnings: readonly Warning[],
+    readonly bundled: readonly BundledFile[] = [],
   ) {
     if (prompt.length === 0) {
       throw new Error(
-        `Skill ${spec.id}: prompt is empty. Every skill must have a non-empty prompt.md.`,
+        `Skill ${spec.id}: prompt is empty. Every skill must have a non-empty SKILL.md body.`,
       );
     }
   }

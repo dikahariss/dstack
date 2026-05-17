@@ -1,8 +1,9 @@
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { SkillId } from '@domain/skill/SkillId';
+import { SkillType } from '@domain/skill/SkillType';
 
-/** Scaffold `<root>/<skill-id>/{skill.yaml, prompt.md}`. Refuses to overwrite. */
+/** Scaffold `<root>/<skill-id>/SKILL.md`. Refuses to overwrite. */
 export interface ScaffoldResult {
   readonly skillId: string;
   readonly skillDir: string;
@@ -13,8 +14,12 @@ export class ScaffoldError extends Error {
   override readonly name = 'ScaffoldError';
 }
 
-export function scaffoldSkill(skillsRoot: string, idRaw: string): ScaffoldResult {
-  const id = SkillId.parse(idRaw, 'skill-id'); // throws SkillSpecError if invalid
+export function scaffoldSkill(
+  skillsRoot: string,
+  idRaw: string,
+  type: SkillType = 'semantic',
+): ScaffoldResult {
+  const id = SkillId.parse(idRaw, 'skill-id');
   const skillDir = join(skillsRoot, id.value);
 
   if (existsSync(skillDir)) {
@@ -25,43 +30,46 @@ export function scaffoldSkill(skillsRoot: string, idRaw: string): ScaffoldResult
   }
 
   mkdirSync(skillDir, { recursive: true });
+  const filesWritten: string[] = [];
 
-  const yamlPath = join(skillDir, 'skill.yaml');
-  const promptPath = join(skillDir, 'prompt.md');
+  const skillMdPath = join(skillDir, 'SKILL.md');
+  writeFileSync(skillMdPath, skillMdTemplate(id.value, type), 'utf-8');
+  filesWritten.push(skillMdPath);
 
-  writeFileSync(yamlPath, skillYamlTemplate(id.value), 'utf-8');
-  writeFileSync(promptPath, promptMdTemplate(id.value), 'utf-8');
+  if (type === 'hybrid' || type === 'deterministic') {
+    const scriptsDir = join(skillDir, 'scripts');
+    mkdirSync(scriptsDir);
+    const placeholder = join(scriptsDir, 'README.md');
+    writeFileSync(
+      placeholder,
+      `# scripts/\n\nDrop executable helpers here. Reference them from SKILL.md.\n`,
+      'utf-8',
+    );
+    filesWritten.push(placeholder);
+  }
 
-  return {
-    skillId: id.value,
-    skillDir,
-    filesWritten: [yamlPath, promptPath],
-  };
+  return { skillId: id.value, skillDir, filesWritten };
 }
 
-function skillYamlTemplate(skillId: string): string {
-  return `name: ${skillId}
-version: 0.1.0
-description: |
-  TODO: one or two sentences describing what this skill does and when to use
-  it. The description appears in Claude Code's slash-command list, so write
-  the trigger phrasing the user is most likely to think.
-
-tools:
-  - Read
-  - Bash
-
-context_budget_tokens: 4000
-
-triggers: []
-`;
-}
-
-function promptMdTemplate(skillId: string): string {
-  return `# /${skillId}
+function skillMdTemplate(skillId: string, type: SkillType): string {
+  const typeBlock = type === 'semantic' ? '' : `    type: ${type}\n`;
+  const hint = typeHint(type);
+  return `---
+name: ${skillId}
+description: TODO one or two sentences describing what this skill does and when to use it.
+allowed-tools: Read Bash
+metadata:
+  dstack:
+    version: 0.1.0
+    context_budget_tokens: 4000
+${typeBlock}    triggers: []
+---
+# /${skillId}
 
 TODO: write the instruction body. This is the text Claude reads when the
 user runs \`/${skillId}\`.
+
+${hint}
 
 ## When to use this skill
 
@@ -76,4 +84,17 @@ over paragraphs. The LLM follows what is written here literally.
 
 TODO: describe what the user sees when the skill finishes.
 `;
+}
+
+function typeHint(type: SkillType): string {
+  switch (type) {
+    case 'deterministic':
+      return '> **Type: deterministic.** The body should be brief; real work happens in `scripts/`.';
+    case 'hybrid':
+      return '> **Type: hybrid.** Combine narrative reasoning here with concrete helpers in `scripts/`.';
+    case 'schema-semantic':
+      return '> **Type: schema-semantic.** Add `output_schema` under `metadata.dstack` to constrain the output shape.';
+    case 'semantic':
+      return '> **Type: semantic.** Pure instructions — no scripts or schemas required.';
+  }
 }

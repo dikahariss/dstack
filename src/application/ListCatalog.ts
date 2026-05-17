@@ -9,6 +9,7 @@ import { BuildSkill } from './BuildSkill';
 export interface SkillRow {
   readonly id: string;
   readonly version: string;
+  readonly type?: string;
   readonly description: string;
   readonly tools: readonly string[];
   readonly tokenCount?: number;
@@ -64,9 +65,10 @@ export class ListCatalog {
         rows.push({
           id: id.value,
           version: skill.spec.version,
+          type: skill.spec.type,
           description: skill.spec.description,
           tools: skill.spec.tools,
-          tokenCount: rendered.tokenCount,
+          tokenCount: rendered.rendered.tokenCount,
           tokenBudget: skill.spec.contextBudgetTokens,
         });
       } catch (err) {

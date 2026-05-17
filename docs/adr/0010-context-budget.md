@@ -1,9 +1,15 @@
 # ADR-0010 — Hard token budget per rendered skill
 
-- **Status:** Accepted
+- **Status:** Superseded by [ADR-0016](0016-per-tier-token-budget.md)
 - **Date:** 2026-05-13
 - **Reversibility:** Cheap. The budget is enforced at one point (the
   renderer). Raising or lowering it is one yaml or constant edit.
+
+> **Note (v2):** This ADR is superseded by ADR-0016, which introduces
+> per-tier budgeting (body ≤ 5000 tokens, bundled resources
+> unlimited). The 16,000-token ceiling described below applies only
+> to v1. Read this file for the v1 record and the original
+> rationale; read ADR-0016 for the current rule.
 
 ## Terms used in this ADR
 

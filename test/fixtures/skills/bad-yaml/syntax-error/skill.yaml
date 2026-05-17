@@ -1,8 +1,0 @@
-name: syntax-error
-version: 1.0.0
-description: |
-  Has a YAML syntax error on line 7.
-tools:
-  - Read
-  - "unclosed string
-context_budget_tokens: 1000

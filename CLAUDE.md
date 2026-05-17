@@ -83,7 +83,7 @@ concrete adapters happens there and nowhere else.
 
 | You want to add… | Put it here | Then do this |
 |---|---|---|
-| A new skill | `bun run new <skill-id>` then edit `skills/<skill-id>/{skill.yaml,prompt.md}` | `bun run build` to verify. |
+| A new skill | `bun run new <skill-id> [--type=<t>]` then edit `skills/<skill-id>/SKILL.md` (and `scripts/` for hybrid/deterministic) | `bun run build` to verify. |
 | A new domain entity / value object | `src/domain/<area>/` | No IO. Add a unit test under `test/unit/domain/`. |
 | A new port | `src/domain/<area>/ports.ts` | Only if YAGNI rule passes (see above). Add a contract suite under `test/contract/`. |
 | A new adapter for an existing port | `src/adapters/<area>/` | Apply the existing contract suite to it. |

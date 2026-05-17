@@ -1,9 +1,0 @@
-name: uses-shared
-version: 1.0.0
-description: |
-  Fixture that pulls in shared content via the includes field.
-tools:
-  - Read
-context_budget_tokens: 1000
-includes:
-  - _shared/intro.md

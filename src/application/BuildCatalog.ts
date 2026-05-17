@@ -1,7 +1,6 @@
 import { Host } from '@domain/host/Host';
-import { HostRenderer } from '@domain/host/ports';
+import { HostRenderer, RenderedSkill } from '@domain/host/ports';
 import { SkillRepository } from '@domain/skill/ports';
-import { RenderResult } from '@domain/render/RenderResult';
 import { DuplicateSkillIdError } from '@domain/errors';
 import { Telemetry } from '@obs/Telemetry';
 import { BuildSkill } from './BuildSkill';
@@ -10,7 +9,7 @@ import { BuildSkill } from './BuildSkill';
  * Render every skill in the repository for one host.
  *
  * Cross-skill validation lives here:
- * - duplicate skill IDs are an error
+ *   - duplicate skill IDs are an error
  *
  * Per-skill validation is delegated to BuildSkill.
  */
@@ -21,7 +20,7 @@ export class BuildCatalog {
     private readonly telemetry: Telemetry,
   ) {}
 
-  async execute(input: { host: Host; now: Date }): Promise<readonly RenderResult[]> {
+  async execute(input: { host: Host; now: Date }): Promise<readonly RenderedSkill[]> {
     const all = await this.skills.loadAll();
 
     const seen = new Map<string, string[]>();
@@ -36,7 +35,7 @@ export class BuildCatalog {
     }
 
     const buildOne = new BuildSkill(this.skills, this.renderer, this.telemetry);
-    const results: RenderResult[] = [];
+    const results: RenderedSkill[] = [];
     for (const skill of all) {
       const result = await buildOne.execute({
         skillId: skill.spec.id,
