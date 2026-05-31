@@ -18,6 +18,7 @@ export const CLAUDE_CODE_TOOLS: readonly string[] = [
   'Grep',
   'NotebookEdit',
   'Read',
+  'Skill',
   'TaskCreate',
   'TaskGet',
   'TaskList',

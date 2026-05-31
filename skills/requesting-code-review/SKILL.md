@@ -1,103 +1,103 @@
 ---
 name: requesting-code-review
-description: Use when completing tasks, implementing major features, or before merging to verify work meets requirements
+description: |
+  Dispatch a code-review subagent with crafted context to catch issues
+  before they cascade. The reviewer sees the diff and what the work was
+  meant to do, never your session history. Use after finishing a task or
+  feature, before merging to main, or when stuck and a fresh read would
+  help — e.g. "request review", "get this reviewed", "review before merge".
+allowed-tools: Bash Read Grep Glob Agent
+metadata:
+  dstack:
+    version: 0.1.0
+    type: semantic
+    side_effects: readonly
+    agency: deliberative
+    context_budget_tokens: 2000
+    triggers:
+      - request code review
+      - get this reviewed
+      - review before merge
 ---
+# /requesting-code-review
 
-# Requesting Code Review
+Dispatch a reviewer subagent to catch issues before they compound. Give
+it precisely crafted context — the diff and what the work was meant to
+do — never your session's history. This keeps the reviewer on the work
+product and preserves your own context for continued work.
 
-Dispatch a code reviewer subagent to catch issues before they cascade. The reviewer gets precisely crafted context for evaluation — never your session's history. This keeps the reviewer focused on the work product, not your thought process, and preserves your own context for continued work.
+Core principle: review early, review often.
 
-**Core principle:** Review early, review often.
+This is the *requesting* side. Handling the feedback you get back is
+`/code-review`.
 
-## When to Request Review
+## When to request
 
-**Mandatory:**
-- After each task in subagent-driven development
-- After completing major feature
+Mandatory:
+
+- After each task in a multi-task plan
+- After a major feature
 - Before merge to main
 
-**Optional but valuable:**
-- When stuck (fresh perspective)
-- Before refactoring (baseline check)
-- After fixing complex bug
+Optional but valuable: when stuck (fresh perspective), before a refactor
+(baseline read), after fixing a subtle bug.
 
-## How to Request
+## How to request
 
-**1. Get git SHAs:**
+1. **Get the SHAs:**
+
 ```bash
-BASE_SHA=$(git rev-parse HEAD~1)  # or origin/main
+BASE_SHA=$(git rev-parse HEAD~1)   # or origin/main
 HEAD_SHA=$(git rev-parse HEAD)
 ```
 
-**2. Dispatch code reviewer subagent:**
+2. **Dispatch the reviewer** via the Agent tool, filling the template in
+   `code-reviewer.md`. Placeholders:
+   - `{DESCRIPTION}` — what you built, briefly
+   - `{PLAN_OR_REQUIREMENTS}` — what it should do
+   - `{BASE_SHA}` / `{HEAD_SHA}` — the commit range
 
-Use Task tool with `general-purpose` type, fill template at `code-reviewer.md`
-
-**Placeholders:**
-- `{DESCRIPTION}` - Brief summary of what you built
-- `{PLAN_OR_REQUIREMENTS}` - What it should do
-- `{BASE_SHA}` - Starting commit
-- `{HEAD_SHA}` - Ending commit
-
-**3. Act on feedback:**
-- Fix Critical issues immediately
-- Fix Important issues before proceeding
-- Note Minor issues for later
-- Push back if reviewer is wrong (with reasoning)
+3. **Act on the feedback:**
+   - Fix Critical immediately
+   - Fix Important before proceeding
+   - Note Minor for later
+   - Push back, with reasoning, if the reviewer is wrong
 
 ## Example
 
 ```
-[Just completed Task 2: Add verification function]
+[Finished Task 2: add verification function]
 
-You: Let me request code review before proceeding.
-
-BASE_SHA=$(git log --oneline | grep "Task 1" | head -1 | awk '{print $1}')
+BASE_SHA=$(git rev-parse HEAD~1)
 HEAD_SHA=$(git rev-parse HEAD)
 
-[Dispatch code reviewer subagent]
-  DESCRIPTION: Added verifyIndex() and repairIndex() with 4 issue types
-  PLAN_OR_REQUIREMENTS: Task 2 from docs/superpowers/plans/deployment-plan.md
-  BASE_SHA: a7981ec
-  HEAD_SHA: 3df7661
+[Dispatch reviewer via Agent]
+  DESCRIPTION: Added verifyIndex() and repairIndex(), 4 issue types
+  PLAN_OR_REQUIREMENTS: Task 2 from docs/plans/2026-05-31-deploy.md
+  BASE_SHA / HEAD_SHA: the range above
 
-[Subagent returns]:
-  Strengths: Clean architecture, real tests
-  Issues:
-    Important: Missing progress indicators
-    Minor: Magic number (100) for reporting interval
-  Assessment: Ready to proceed
+[Reviewer returns]
+  Important: missing progress indicator
+  Minor: magic number (100) for the report interval
+  Assessment: ready to proceed after the Important fix
 
-You: [Fix progress indicators]
-[Continue to Task 3]
+[Fix the indicator → continue to Task 3]
 ```
 
-## Integration with Workflows
+## Red flags
 
-**Subagent-Driven Development:**
-- Review after EACH task
-- Catch issues before they compound
-- Fix before moving to next task
+Never skip review because "it's simple", ignore a Critical issue,
+proceed with an unfixed Important issue, or argue with valid technical
+feedback.
 
-**Executing Plans:**
-- Review after each task or at natural checkpoints
-- Get feedback, apply, continue
+If the reviewer is wrong: push back with technical reasoning, show the
+code or tests that prove it works, or ask for clarification.
 
-**Ad-Hoc Development:**
-- Review before merge
-- Review when stuck
+See the dispatch template in `code-reviewer.md`.
 
-## Red Flags
+## Changes
 
-**Never:**
-- Skip review because "it's simple"
-- Ignore Critical issues
-- Proceed with unfixed Important issues
-- Argue with valid technical feedback
-
-**If reviewer wrong:**
-- Push back with technical reasoning
-- Show code/tests that prove it works
-- Request clarification
-
-See template at: requesting-code-review/code-reviewer.md
+- **0.1.0** — Ported from superpowers `requesting-code-review`. Adapted
+  to dstack: dispatch via the Agent tool, example plan path under
+  `docs/plans/`, cross-references `/code-review` for handling the
+  returned feedback.
