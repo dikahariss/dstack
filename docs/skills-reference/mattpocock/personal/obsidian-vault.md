@@ -16,6 +16,29 @@ Karena skill personal dengan path absolut yang hard-coded ke environment satu us
 - Sebagai template untuk membuat skill personal sendiri yang interact dengan vault Anda.
 - Frontmatter description: "Search, create, and manage notes in the Obsidian vault with wikilinks and index notes".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Cari note di vault saya tentang RAG."
+- "Buat note baru di Obsidian: 'Hallucination Mitigation'."
+- "Update RAG Index dengan note baru yang baru saya tulis."
+- Kata kunci kanonik (EN): `obsidian vault`, `create note`,
+  `find note`, `wikilinks`.
+
+Contoh task lengkap:
+
+> "Buat note baru di vault: 'Retrieval Augmented Generation
+> Caveats'. Isi: unit of learning tentang konteks window limit
+> dan chunk size tradeoff. Tambahkan wikilinks ke `[[RAG Index]]`,
+> `[[Hallucination]]`, dan `[[Evaluation Strategies]]`. Lalu
+> update `RAG Index.md` dengan link ke note baru ini."
+
+Yang terjadi: agent simpan file dengan Title Case ke
+`/mnt/d/Obsidian Vault/AI Research/`, tulis konten sebagai unit
+of learning, tambahkan `[[wikilinks]]` ke related notes di bagian
+bawah, lalu update index note yang relevan dengan link balik.
+
 ## Cara menggunakannya
 
 **Vault location**: `/mnt/d/Obsidian Vault/AI Research/`, mostly flat at root.

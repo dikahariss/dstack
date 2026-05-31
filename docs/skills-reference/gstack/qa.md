@@ -37,6 +37,30 @@ Tiga tier:
 
 Versi: `2.0.0`, `preamble-tier: 4`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Coba test fitur checkout ini, temukan dan perbaiki bugnya."
+- "QA staging dulu sebelum kita merge ke main."
+- "Ada yang aneh di halaman billing — cek dan fix ya."
+- Kata kunci kanonik (EN): `/qa`, `qa`, `test and fix`,
+  `find bugs`.
+
+Contoh task lengkap:
+
+> "/qa https://staging.maritimhub.com — fokus ke flow
+> pendaftaran kapal dan halaman dashboard. Tier standard.
+> Perbaiki semua bug critical dan high yang ditemukan."
+
+Yang terjadi: skill menjalankan 11-phase workflow — orient
+dengan browse daemon, explore tiap halaman interaktif,
+dokumentasi issue dengan screenshot before/after, hitung
+health score 0-100, lalu masuk fix loop: locate source,
+minimal fix, commit atomik `fix(qa): ISSUE-NNN`, tulis
+regression test, re-verify. Selesai dengan report + summary
+untuk `/ship`.
+
 ## Cara menggunakannya
 
 Workflow 11 phase:

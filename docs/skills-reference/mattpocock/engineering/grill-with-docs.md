@@ -16,6 +16,29 @@ Hasilnya: plan yang sudah pre-checked terhadap bahasa dan keputusan terdokumenta
 - Sebelum mulai implementasi besar yang menyentuh domain yang sudah punya glossarium dan ADR.
 - Frontmatter description: "stress-test a plan against their project's language and documented decisions".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Grill me with docs sebelum aku mulai implementasi fitur ini."
+- "Stress test plan ini terhadap CONTEXT.md dan ADR kita."
+- "Review plan saya dan tantang dengan glossarium domain."
+- Kata kunci kanonik (EN): `grill me with docs`,
+  `stress-test plan`, `challenge against CONTEXT.md`.
+
+Contoh task lengkap:
+
+> "Aku mau tambah fitur 'suspend subscription' — grill me with
+> docs. Cek dulu CONTEXT.md kita, lalu tanya satu per satu
+> sampai semua keputusan kristalisasi. Update CONTEXT.md inline
+> kalau ada term baru yang settled."
+
+Yang terjadi: agent membaca `CONTEXT.md` dan `docs/adr/` repo,
+lalu wawancarai user satu pertanyaan per giliran — setiap istilah
+yang ambigu langsung ditantang terhadap glossarium, term yang
+selesai ditulis ke `CONTEXT.md` saat itu juga, dan ADR ditawarkan
+hanya bila keputusan hard-to-reverse dan hasil real tradeoff.
+
 ## Cara menggunakannya
 
 1. **Wawancarai user tanpa henti** tentang plan; satu pertanyaan pada satu waktu; untuk tiap pertanyaan sajikan rekomendasi jawaban. Bila pertanyaan dapat dijawab dengan eksplorasi kode, eksplor kode dulu.

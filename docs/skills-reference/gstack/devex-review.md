@@ -17,6 +17,29 @@ Skill ini diperuntukkan untuk produk developer (CLI tool, SDK, API, dev platform
 - Saat metric adoption / TTHW menurun dan tidak tahu kenapa.
 - Tidak cocok untuk produk consumer biasa.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Audit developer experience dstack sebelum kita announce ke publik."
+- "Test onboarding flow SDK kita — ukur berapa menit sampai hello world."
+- "DX review produk ini, pakai browse dan bash, bukan cuma baca docs."
+- Kata kunci kanonik (EN): `/devex-review`, `live dx audit`,
+  `test developer experience`, `measure onboarding time`.
+
+Contoh task lengkap:
+
+> "Audit DX dstack sebagai developer product. Navigasi ke README,
+> jalankan `bun install` + `bun run build`, ukur TTHW, screenshot
+> error message kalau ada, score setiap dimensi (Usable, Findable,
+> dll), dan bandingkan dengan skor plan-devex-review sebelumnya."
+
+Yang terjadi: skill navigate docs via browse, menjalankan CLI command
+via bash, mengukur Time to Hello World aktual, meng-screenshot apa
+yang developer lihat, memberi skor 0-10 per dimensi DX berdasarkan
+evidence TESTED/INFERRED, lalu menyimpan hasil ke `gstack-review-log`
+dengan delta boomerang dari prior plan review.
+
 ## Cara menggunakannya
 
 Skill ini punya prinsip ketat: **DX First Principles** (8 laws termasuk "Zero friction at T0", "Show code in context", "Create magical moments") dan **Seven DX Characteristics** (Usable / Credible / Findable / Useful / Valuable / Accessible / Desirable) sebagai rubric scoring 0-10 dengan gold-standard examples (Stripe, Vercel, TypeScript, dll).

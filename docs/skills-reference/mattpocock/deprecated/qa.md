@@ -16,6 +16,28 @@ Skill ini di-deprecate karena alurnya tumpang tindih dengan `engineering/triage`
 - Sesi QA interaktif di mana user reporting bug ke agent secara conversational.
 - Frontmatter description menyebut "files GitHub issues" dan "QA session".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Ayo QA sambil aku coba — nanti aku lapor kalau ada yang aneh."
+- "Ada beberapa bug yang mau aku file, mulai sesi QA ya."
+- "Let's file issues for these — aku ceritakan satu per satu."
+- Kata kunci kanonik (EN): `QA session`, `file issues`,
+  `report bugs`, `let's file issues for these`.
+
+Contoh task lengkap:
+
+> "Mulai sesi QA. Bug pertama: di halaman `/checkout`, setelah
+> klik 'Bayar', spinner muncul terus dan tidak redirect ke halaman
+> konfirmasi — tapi transaksinya berhasil masuk ke DB."
+
+Yang terjadi: agent menanyakan 2–3 pertanyaan klarifikasi
+(konsisten? browser apa?), mengeksplorasi codebase di background
+untuk memahami domain language, lalu langsung menjalankan
+`gh issue create` tanpa meminta review — URL issue di-share dan
+sesi dilanjutkan ke laporan berikutnya.
+
 ## Cara menggunakannya
 
 1. **Listen and lightly clarify**: dengarkan deskripsi user. Maksimum 2–3 pertanyaan klarifikasi (expected vs actual, repro steps, konsistensi).

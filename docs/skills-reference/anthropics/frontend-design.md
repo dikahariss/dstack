@@ -24,6 +24,29 @@ Trigger dari frontmatter `description`:
 - Contoh: website, landing page, dashboard, React component, layout HTML/CSS.
 - User minta styling/beautify UI web yang sudah ada.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buatkan landing page untuk produk ini."
+- "Styling UI-nya supaya lebih berkarakter, jangan generik."
+- "Buat React component hero section yang memorable."
+- Kata kunci kanonik (EN): `build web component`, `landing page`,
+  `dashboard`, `styling web UI`.
+
+Contoh task lengkap:
+
+> "Buatkan landing page untuk studio tato lokal di Bandung —
+> target audiens anak muda 20-an. Pakai HTML/CSS/JS murni,
+> tidak ada framework. Buat yang benar-benar punya karakter,
+> bukan startup SaaS biasa."
+
+Yang terjadi: Claude memilih arah aestetik dulu (mis. zine
+underground atau brutalist raw), lalu mengeksekusi kode
+production-grade dengan tipografi berkarakter, color palette
+content-informed, layout asimetris, dan minimal satu elemen
+unforgettable — bukan default Inter + purple gradient.
+
 ## Cara menggunakannya
 
 Sebelum coding:

@@ -28,6 +28,30 @@ Trigger lain di field `triggers`: `markdown to pdf`, `generate pdf`, `make
 pdf`, `export pdf`. Pakai juga ketika user punya file `.md` terbuka dan minta
 "make it look nice" — usulkan `--cover --toc` lalu konfirmasi.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Jadikan file markdown ini PDF yang siap dikirim ke investor."
+- "Export proposal.md ke PDF dengan cover page dan TOC."
+- "Buat PDF dari essay ini, tambah watermark DRAFT."
+- Kata kunci kanonik (EN): `/make-pdf`, `make a pdf`,
+  `export to pdf`, `generate pdf`.
+
+Contoh task lengkap:
+
+> "/make-pdf q4-strategy.md — buat PDF dengan cover page
+> (author: Haris, title: Q4 Strategy Update), TOC clickable,
+> dan watermark DRAFT diagonal. Output simpan sebagai
+> q4-strategy-draft.pdf."
+
+Yang terjadi: skill memeriksa binary `make-pdf/dist/pdf`,
+lalu menjalankan `$P generate --cover --toc --author "Haris"
+--title "Q4 Strategy Update" --watermark DRAFT q4-strategy.md
+q4-strategy-draft.pdf`. Output: path PDF satu baris di stdout,
+progress di stderr. PDF memiliki halaman cover, TOC clickable,
+running header, nomor halaman, dan watermark DRAFT 10% opacity.
+
 ## Cara menggunakannya
 
 1. Invoke skill via `/make-pdf` (atau alias `/gstack-make-pdf` jika

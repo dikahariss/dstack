@@ -14,6 +14,30 @@ Pre-commit hook adalah safety net murah: format file otomatis, jalankan typechec
 - User ingin add Husky, configure lint-staged, atau add commit-time formatting/typechecking/testing.
 - Frontmatter description: "Set up Husky pre-commit hooks with lint-staged (Prettier), type checking, and tests".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Pasang pre-commit hook dengan Husky dan lint-staged."
+- "Setup Prettier otomatis jalan sebelum setiap commit."
+- "Tambahkan typecheck dan test ke pre-commit hook project ini."
+- Kata kunci kanonik (EN): `pre-commit hooks`, `husky`,
+  `lint-staged`, `Prettier`.
+
+Contoh task lengkap:
+
+> "Project ini pakai bun. Pasang pre-commit hook: format
+> dengan Prettier via lint-staged, lalu jalankan typecheck
+> dan test. Buat `.prettierrc` default jika belum ada.
+> Commit pertama sebagai smoke test."
+
+Yang terjadi: skill mendeteksi `bun.lockb`, menginstall
+`husky lint-staged prettier`, menginisialisasi Husky,
+membuat `.husky/pre-commit` dengan `bunx lint-staged` +
+`bun run typecheck` + `bun test`, membuat `.lintstagedrc`
+dan `.prettierrc` bila belum ada, lalu commit — sekaligus
+membuktikan hook bekerja.
+
 ## Cara menggunakannya
 
 1. **Detect package manager**: cek `package-lock.json` (npm), `pnpm-lock.yaml` (pnpm), `yarn.lock` (yarn), `bun.lockb` (bun). Default npm bila tidak jelas.

@@ -15,6 +15,30 @@ Saat kerja di production atau debug live system, dua resiko utama: (1) destructi
 - Saat session yang melibatkan migration script + edit kode terbatas.
 - Pair-programming dengan junior developer atau handoff session.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Guard mode — kita mau fix data di production DB."
+- "Full safety sekarang, batasi edits ke scripts/data-fix/ saja."
+- "Lock it down, ini session prod yang berisiko."
+- Kata kunci kanonik (EN): `/guard`, `full safety mode`,
+  `guard against mistakes`, `maximum safety`.
+
+Contoh task lengkap:
+
+> "Aktifkan guard mode untuk session fix data inconsistency di
+> production DB MaritimHub. Restrict edits ke `scripts/data-fix/`
+> — selebihnya block. Destructive command warnings harus on untuk
+> semua bash command."
+
+Yang terjadi: skill menanya path direktori via AskUserQuestion,
+mengaktifkan dua hook PreToolUse sekaligus — `check-careful.sh`
+untuk Bash (warn sebelum rm -rf, DROP TABLE, force-push, dll) dan
+`check-freeze.sh` untuk Edit/Write (deny hard di luar freeze dir)
+— lalu memberitahu user bahwa guard mode aktif dengan dua lapisan
+proteksi.
+
 ## Cara menggunakannya
 
 Invoke `/guard`. Skill ini ringan (87 baris) — reference hook scripts dari sibling `/careful` dan `/freeze` skill directories. Kedua skill harus terinstall (install bareng oleh gstack setup script).

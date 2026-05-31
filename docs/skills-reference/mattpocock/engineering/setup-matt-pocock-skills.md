@@ -22,6 +22,34 @@ Tanpa setup ini, skill akan menebak — bisa salah panggil CLI, salah apply labe
 - Bila skill lain tampak "missing context" tentang issue tracker, label, atau domain docs.
 - Saat berpindah issue tracker atau ingin restart konfigurasi from scratch.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Setup Matt Pocock skills untuk repo ini sebelum aku pakai
+  `/triage` dan `/to-issues`."
+- "Skill `/diagnose` tampak missing context tentang issue
+  tracker kita — setup dulu."
+- "Konfigurasi repo ini agar semua skill engineering tahu
+  issue tracker dan domain docs kita."
+- Kata kunci kanonik (EN): `setup matt pocock skills`,
+  `Agent skills block`, `AGENTS.md`, `CLAUDE.md`.
+
+Contoh task lengkap:
+
+> "Repo TypeScript baru ini belum dikonfigurasi untuk skill
+> engineering. Setup Matt Pocock skills: deteksi issue tracker
+> dari git remote, tanya tiga keputusan satu per satu (tracker,
+> label triage, domain docs layout), lalu tulis blok `## Agent
+> skills` ke `CLAUDE.md` dan tiga file `docs/agents/*.md`."
+
+Yang terjadi: agent mengeksplor repo (git remote, CLAUDE.md,
+CONTEXT.md, docs/adr/), mempresentasikan temuan, lalu menanyakan
+tiga keputusan satu per satu — setelah konfirmasi, menulis blok
+`## Agent skills` dan tiga file detail di `docs/agents/` agar
+semua skill engineering (`/triage`, `/to-issues`, `/diagnose`,
+dll.) langsung tahu konfigurasi repo.
+
 ## Cara menggunakannya
 
 1. **Explore**: cek `git remote -v`, `AGENTS.md`, `CLAUDE.md`, `CONTEXT.md`, `CONTEXT-MAP.md`, `docs/adr/`, `docs/agents/`, `.scratch/`.

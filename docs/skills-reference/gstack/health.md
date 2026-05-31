@@ -17,6 +17,31 @@ Kualitas kode bukan satu metrik — ia komposit dari type safety, lint cleanline
 - Sebelum onboard developer baru — show baseline quality.
 - Tidak cocok untuk fix issue — itu kerjaan developer per kategori.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Cek health codebase MaritimHub — berikan score composite."
+- "Quality dashboard sebelum onboard developer baru."
+- "Jalankan semua checks — typecheck, lint, test, dead code."
+- Kata kunci kanonik (EN): `/health`, `code health check`,
+  `quality dashboard`, `how healthy is codebase`.
+
+Contoh task lengkap:
+
+> "Run /health di MaritimHub. Auto-detect tools (tsc, biome, bun
+> test, knip, shellcheck), jalankan semua secara sequential, score
+> 0-10 per kategori dengan rubric eksplisit, tampilkan dashboard
+> tabel, bandingkan dengan run Senin lalu, dan tunjukkan regresi
+> kalau ada kategori yang turun."
+
+Yang terjadi: skill mendeteksi atau membaca Health Stack dari
+CLAUDE.md, menjalankan setiap tool dan merekam exit code + durasi,
+memberi skor composite weighted (typecheck 22%, test 28%, dll),
+menampilkan dashboard tabel dengan status CLEAN/WARNING/NEEDS WORK,
+menyimpan ke `health-history.jsonl`, dan menampilkan trend + rekomendasi
+berurutan by impact — tanpa memperbaiki satu pun issue.
+
 ## Cara menggunakannya
 
 1. **Step 1: Detect Health Stack** — baca CLAUDE.md cari `## Health Stack` section. Kalau ada, pakai itu. Kalau tidak, auto-detect:

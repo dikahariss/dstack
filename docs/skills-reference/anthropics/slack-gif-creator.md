@@ -24,6 +24,28 @@ Trigger dari frontmatter `description`:
 - User minta animated GIF untuk Slack.
 - Contoh: "make me a GIF of X doing Y for Slack".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buatkan GIF animasi bola api berputar untuk emoji Slack."
+- "Bikin Slack GIF yang pulse — logo kami bouncing."
+- "Saya butuh animated GIF untuk Slack, ukuran emoji, efek fade-in."
+- Kata kunci kanonik (EN): `animated GIF for Slack`, `make me a GIF`,
+  `Slack emoji GIF`.
+
+Contoh task lengkap:
+
+> "Buatkan GIF emoji Slack 128x128 — bintang kuning yang berputar
+> sambil blink (fade in/out), pakai easing agar motion natural.
+> Simpan ke `star_blink.gif`, validasi sudah Slack-ready."
+
+Yang terjadi: skill menulis script Python pakai `GIFBuilder` +
+`core.easing.interpolate` untuk spin + fade, meng-generate frames
+via PIL `ImageDraw.polygon`, save dengan `num_colors=48,
+optimize_for_emoji=True`, lalu run `validate_gif` untuk konfirmasi
+file lolos constraint Slack (dimensi, FPS, durasi, color count).
+
 ## Cara menggunakannya
 
 ### Core workflow

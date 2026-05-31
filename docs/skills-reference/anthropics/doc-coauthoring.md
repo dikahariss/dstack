@@ -27,6 +27,31 @@ Trigger dari frontmatter `description`:
 Saat trigger, **tawarkan dulu** workflow ini — jelaskan tiga tahap dan tanya apakah user
 mau coba atau prefer freeform. Hormati pilihan user.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Bantu saya menulis decision doc migrasi database."
+- "Saya mau draft RFC untuk sistem notifikasi baru."
+- "Tolong co-author PRD fitur onboarding bareng saya."
+- Kata kunci kanonik (EN): `write a doc`, `draft a proposal`,
+  `create a spec`, `decision doc`, `RFC`.
+
+Contoh task lengkap:
+
+> "Saya perlu nulis design doc untuk migrasi autentikasi dari
+> session cookie ke JWT. Audiensnya tim platform (8 orang).
+> Bantu saya dengan workflow co-authoring — saya siap dump
+> konteks dulu."
+
+Yang terjadi: agent menawarkan workflow tiga tahap (Context
+Gathering → Refinement & Structure → Reader Testing), lalu
+memandu user: 5 pertanyaan meta, info-dump bebas, 5-10
+clarifying questions, build section per section via brainstorm
++ curate + str_replace, dan akhirnya uji dokumen dengan
+sub-agent fresh (no context bleed) untuk menangkap blind spot
+sebelum dokumen dibagikan.
+
 ## Cara menggunakannya
 
 ### Stage 1: Context Gathering

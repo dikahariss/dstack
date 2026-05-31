@@ -34,6 +34,30 @@ out-of-scope (tulis skill terpisah atau parametrize via `args:`).
 
 Versi: `1.0.0`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Ambil daftar harga laptop dari tokopedia.com/laptops."
+- "Scrape top 10 stories Hacker News beserta score-nya."
+- "Pull semua nama kapal dari halaman direktori ini."
+- Kata kunci kanonik (EN): `/scrape`, `scrape`, `get data from`,
+  `extract from`, `pull from`.
+
+Contoh task lengkap:
+
+> "/scrape product names and prices from
+> store.maritimhub.com/equipment — output JSON, saya
+> akan pipe ke jq untuk filter harga di bawah 5 juta."
+
+Yang terjadi: skill cek match phase dulu (`$B skill list` +
+`$B skill show`) — jika ada browser-skill yang cocok untuk
+domain ini, langsung `$B skill run` dan selesai dalam ~200ms.
+Jika tidak ada, masuk prototype path: navigate, snapshot
+--text, parse selector, emit `{"items":[...],"count":N}` ke
+stdout. Selesai dengan nudge satu baris "/skillify to make
+this permanent" tanpa nag lebih lanjut.
+
 ## Cara menggunakannya
 
 1. **Step 1 Intent** — user request setelah `/scrape` jadi intent.

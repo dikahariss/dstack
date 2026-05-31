@@ -18,6 +18,30 @@ Output: file `DESIGN.md` di root repo berisi tokens (fonts, colors, spacing, lay
 - Mode update: kalau `DESIGN.md` ada, tanya **update** / **start fresh** / **cancel**.
 - Skill ini opsional dipakai sebagai prerequisite untuk `/design-shotgun`, `/design-html`, `/design-review` — tapi ketiganya bisa jalan tanpa DESIGN.md (fall back ke universal principles).
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buatkan design system untuk project ini dari awal."
+- "UI kita inconsistent, perlu design consultation dulu."
+- "Set up DESIGN.md — mau ada brand guidelines yang jelas."
+- Kata kunci kanonik (EN): `/design-consultation`,
+  `design system`, `create a brand`, `design from scratch`.
+
+Contoh task lengkap:
+
+> "/design-consultation untuk MaritimHub — B2B platform maritime
+> Indonesia, target ops manager di Surabaya. Research kompetitor
+> dulu (Marine Traffic, Vessel Finder), lalu propose design system
+> lengkap: typography, color palette, spacing scale, dan DESIGN.md."
+
+Yang terjadi: skill baca README dan office-hours output untuk
+pre-fill product context, tanya satu pertanyaan tunggal (termasuk
+"memorable thing forcing question"), opsional browse kompetitor
+dengan synthesis 3-layer, lalu propose sistem desain lengkap
+dengan reasoning — iterasi sampai user setuju, generate AI mockup
+jika `$D` tersedia, dan tulis `DESIGN.md` plus update taste profile.
+
 ## Cara menggunakannya
 
 1. **Phase 0: Pre-checks** — cek `DESIGN.md` / `design-system.md` di root. Gather product context (README, package.json, src/). Look for office-hours output di `~/.gstack/projects/$SLUG/*office-hours*`. Set up browse binary (`$B`, opsional untuk competitive research) dan design binary (`$D`, opsional untuk AI mockup generation).

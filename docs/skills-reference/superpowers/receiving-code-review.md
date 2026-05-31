@@ -34,6 +34,28 @@ Trigger praktis:
 - Feedback terlihat ambigu, teknis dipertanyakan, atau konflik dengan
   keputusan arsitektur sebelumnya.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Ini komentar PR, tanggapi satu-satu dengan kritis."
+- "Reviewer bilang kode ini race condition — bener gak?"
+- "Address review ini, tapi push back kalau ada yang keliru."
+- Kata kunci kanonik (EN): `respond to this review`, `address these
+  comments`, `the reviewer said X`.
+
+Contoh task lengkap:
+
+> "Reviewer di PR #142 minta `Promise.all` diganti loop sekuensial
+> karena 'lebih aman'. Menurutku itu malah memperlambat tanpa alasan.
+> Tanggapi review ini — verifikasi klaimnya dulu, dan kalau dia
+> keliru, push back dengan alasan teknis."
+
+Yang terjadi: agent membaca feedback tanpa langsung setuju,
+memverifikasi tiap klaim terhadap kenyataan codebase, lalu
+mengimplementasi yang benar atau menolak dengan penalaran — tanpa
+performative agreement dan tanpa implementasi buta.
+
 ## Cara menggunakannya
 
 Pattern respons 6 langkah:

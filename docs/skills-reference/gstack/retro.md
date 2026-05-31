@@ -37,6 +37,31 @@ Versi: `2.0.0`, `preamble-tier: 2`. Punya `gbrain:` context_queries
 yang otomatis load prior retros + recent timeline ketika gbrain
 aktif.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Retro minggu ini dong — apa yang sudah kita ship?"
+- "Buatkan weekly engineering retrospective untuk repo ini."
+- "Retro global semua project yang kukerjakan 7 hari ini."
+- Kata kunci kanonik (EN): `/retro`, `weekly retro`,
+  `what did we ship`, `engineering retrospective`.
+
+Contoh task lengkap:
+
+> "/retro global 7d — tampilkan shareable card dan deep
+> dive semua repo yang saya kerjakan minggu ini termasuk
+> maritimhub, gstack, dan dstack."
+
+Yang terjadi: skill menjalankan `gstack-global-discover`
+untuk menemukan semua repo aktif, aggregate commits/LOC/
+AI sessions per tool (Claude Code, Codex, Gemini), hitung
+shipping streak, lalu output ASCII box shareable personal
+card + global engineering retro deep dive dengan per-project
+breakdown dan 3 cross-project insights. Disimpan ke
+`~/.gstack/retros/global-<date>-N.json` untuk trend
+tracking berikutnya.
+
 ## Cara menggunakannya
 
 ### Mode repo-scoped (default)

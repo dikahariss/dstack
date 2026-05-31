@@ -2,7 +2,7 @@
 
 Dokumentasi referensi 17 skill resmi Anthropic dari repositori
 [`anthropics-skills`](https://github.com/anthropics/skills). Tiap halaman ringkas isi
-SKILL.md ke dalam: kenapa skill ini penting, kapan dipakai, cara pakai, contoh, dan
+SKILL.md ke dalam: kenapa skill ini penting, kapan dipakai, contoh prompt, cara pakai, studi kasus, dan
 kesimpulan padat.
 
 ## Daftar skill

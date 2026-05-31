@@ -17,6 +17,29 @@ Claude Code menjalankan banyak bash command otomatis. Sebagian besar aman: `ls`,
 - Saat menjalankan migration script atau database maintenance.
 - Default disarankan aktif setiap kali bekerja dengan kredensial produksi.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Aktifkan safety mode — aku mau debug di production."
+- "Be careful, kita lagi di shared database."
+- "Masuk prod mode sebelum jalankan migration script."
+- Kata kunci kanonik (EN): `/careful`, `be careful`, `safety mode`,
+  `prod mode`, `warn before destructive`.
+
+Contoh task lengkap:
+
+> "Aku mau debug schema migration di Postgres production. Aktifkan
+> `/careful` dulu supaya setiap command destructive seperti DROP
+> TABLE atau git reset --hard ditahan dan minta konfirmasi dariku
+> sebelum dijalankan."
+
+Yang terjadi: skill mengaktifkan hook PreToolUse yang mencegat
+setiap Bash command, mencocokkan dengan pola destructive (rm -rf,
+DROP TABLE, git push --force, kubectl delete, dll.), dan mengembalikan
+`permissionDecision: "ask"` plus peringatan — user bisa override
+per warning. Hook bersifat session-scoped.
+
 ## Cara menggunakannya
 
 Invoke `/careful`. Skill ini sangat ringan — hanya 63 baris — dan langsung mengaktifkan hook PreToolUse untuk session ini:

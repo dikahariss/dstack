@@ -33,6 +33,29 @@ implementasi.
 Versi: `1.0.0`, `preamble-tier: 3`, `interactive: true`,
 `benefits-from: [office-hours]`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Review arsitektur plan webhook receiver ini sebelum aku koding."
+- "Lock in plan implementasi — cek edge case dan failure mode-nya."
+- "Engineering review dulu sebelum mulai, cari landmine di plan ini."
+- Kata kunci kanonik (EN): `/plan-eng-review`, `engineering review`,
+  `review architecture`, `lock in the plan`.
+
+Contoh task lengkap:
+
+> "/plan-eng-review — plan: implement webhook receiver untuk Stripe
+> events di service Node.js. Cek idempotency, error handling, dan
+> N+1 query. Buat test plan untuk dipakai /qa nanti."
+
+Yang terjadi: skill jalan 4 section review (Architecture, Code
+Quality, Tests, Performance) — setiap finding satu AskUserQuestion
+dengan opsi labeled `(human: ~Xh / CC: ~Ymin)`. Output wajib: NOT
+in scope section, failure modes per codepath, worktree parallelization
+strategy, test plan file, dan entry di review log untuk dashboard
+`/ship`.
+
 ## Cara menggunakannya
 
 1. Skill jalan dengan 4 section review utama: Architecture, Code

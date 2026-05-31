@@ -23,6 +23,29 @@ Trigger dari frontmatter `description`:
 - Operasi PDF: read, extract text/table, merge, split, rotate, watermark, create,
   fill form, encrypt/decrypt, extract image, OCR.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Ekstrak semua tabel dari file laporan.pdf ini ke Excel."
+- "Gabungkan 5 PDF kontrak jadi satu file."
+- "PDF scan ini belum bisa di-search, tolong OCR-kan."
+- Kata kunci kanonik (EN): `pdf`, `merge PDF`, `extract
+  text`, `OCR`, `split PDF`, `watermark`.
+
+Contoh task lengkap:
+
+> "File `invoice_batch_april.pdf` berisi 47 halaman, tiap
+> halaman satu invoice. Pisahkan jadi file terpisah per
+> halaman, namakan `invoice_001.pdf` sampai `invoice_047.pdf`,
+> simpan di folder `invoices/`."
+
+Yang terjadi: Claude memilih `pypdf` (tool optimal untuk
+split), menghasilkan script Python yang membaca tiap page
+dan menulis file terpisah dengan nama zero-padded, siap
+dijalankan langsung — bukan `pdfplumber` yang overhead
+untuk tugas struktural ini.
+
 ## Cara menggunakannya
 
 ### Quick reference tabel

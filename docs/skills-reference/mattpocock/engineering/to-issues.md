@@ -17,6 +17,30 @@ Pembedaan penting: tiap slice ditandai HITL (human in the loop) atau AFK (away f
 - Setelah `improve-codebase-architecture` selesai dan refactor besar harus dipecah.
 - Prasyarat: `setup-matt-pocock-skills` sudah dijalankan supaya issue tracker dan label vocabulary terkonfigurasi.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Pecah PRD ini jadi issue-issue di tracker."
+- "Ubah plan subscription management menjadi tiket implementasi."
+- "Break down work ini ke vertical slices yang bisa dipick agent."
+- Kata kunci kanonik (EN): `convert a plan into issues`,
+  `break down work into issues`, `create implementation tickets`,
+  `tracer bullet`.
+
+Contoh task lengkap:
+
+> "PRD fitur 'Pengguna kelola subscription' sudah approve. Sekarang
+> pecah jadi issue-issue di GitHub — tandai mana yang HITL dan mana
+> yang AFK, susun dalam dependency order, dan buat acceptance
+> criteria checklist di tiap issue."
+
+Yang terjadi: agent draft vertical slices dari PRD, mempresentasikan
+numbered list dengan HITL/AFK + dependency, mengiterasi bersama
+user sampai disetujui, lalu publish issue ke tracker secara
+berurutan (blocker lebih dulu) dengan template Parent / What to
+build / Acceptance criteria / Blocked by.
+
 ## Cara menggunakannya
 
 1. **Gather context**: kerja dari konteks percakapan; bila user pass issue reference, fetch full body + comments dari tracker.

@@ -37,6 +37,28 @@ Scope check: jika spec mencakup beberapa subsistem independen,
 seharusnya sudah dipecah menjadi sub-project specs saat brainstorming.
 Kalau belum, suggest pemecahan sebelum menulis plan.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Tulis plan implementasi untuk fitur multi-step ini."
+- "Bikin rencana detail yang bisa dieksekusi engineer tanpa konteks."
+- "Pecah spec ini jadi langkah-langkah TDD sebelum ngoding."
+- Kata kunci kanonik (EN): `write a plan`, `write the implementation
+  plan`.
+
+Contoh task lengkap:
+
+> "Ini spec fitur 'undo/redo' untuk editor kami. Tulis plan
+> implementasinya — anggap yang mengeksekusi engineer tanpa konteks
+> apa pun: langkah kecil bergaya TDD, kode lengkap, tanpa placeholder
+> atau 'TODO'."
+
+Yang terjadi: agent menulis plan ke `docs/superpowers/plans/` untuk
+engineer zero-context — task bite-sized (2–5 menit), tiap step berisi
+kode/perintah/expected output aktual, siklus TDD per task, lalu
+self-review plan sebelum diserahkan.
+
 ## Cara menggunakannya
 
 Alur:

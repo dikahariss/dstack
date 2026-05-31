@@ -32,6 +32,28 @@ Supabase), atau setelah upgrade gstack yang butuh re-register MCP.
 
 Versi: `1.0.0`, `preamble-tier: 2`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Setup gbrain di Mac ini dari nol."
+- "Install dan konfigurasi gbrain untuk project ini."
+- "Hubungkan gbrain ke Supabase yang sudah ada."
+- Kata kunci kanonik (EN): `/setup-gbrain`, `setup gbrain`,
+  `install gbrain`, `connect gbrain`, `configure gbrain`.
+
+Contoh task lengkap:
+
+> "Mac baru, belum ada gbrain sama sekali. Jalankan /setup-gbrain
+> pilih PGLite local dulu, register MCP ke Claude Code, dan set
+> policy read-write untuk repo ~/KODING/maritimhub."
+
+Yang terjadi: skill menjalankan deteksi state, menawarkan pilihan
+engine (PGLite/Supabase/Remote MCP) via AskUserQuestion, install
+CLI, init brain, register MCP via `claude mcp add gbrain`, set
+per-repo trust policy, smoke test round-trip, lalu cetak verdict
+GREEN/YELLOW/RED per komponen.
+
 ## Cara menggunakannya
 
 Step utama (idempotent):

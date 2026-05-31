@@ -18,6 +18,29 @@ Skill gstack lain (`/investigate`, `/cso`, `/design-review`, dll) menulis "learn
 - Stats: `/learn stats` untuk lihat distribusi (per skill, per type).
 - Manual add: `/learn add` (jarang dipakai — biasanya skill lain auto-write).
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Tampilkan learnings terbaru project ini."
+- "Cari pattern yang pernah kita temukan soal rate limiting."
+- "Bersihkan learnings yang file referensinya sudah dihapus."
+- Kata kunci kanonik (EN): `/learn`, `show learnings`,
+  `what have we learned`, `prune stale learnings`.
+
+Contoh task lengkap:
+
+> "/learn search rate-limit — aku mau tahu apakah ada insight
+> dari session sebelumnya tentang implementasi rate limiting
+> di project maritimhub sebelum mulai kode baru."
+
+Yang terjadi: skill memanggil `gstack-learnings-search` dengan
+query yang diberikan, menampilkan hasil match (key, insight,
+confidence, age, source) dalam format tabel. Kalau ada entry
+yang relevan dari `/investigate` atau `/review` sebelumnya,
+ditampilkan dengan label "Prior learning applied". Read-only
+kecuali untuk `prune` dan `add`.
+
 ## Cara menggunakannya
 
 1. **Detect command** — parse user input:

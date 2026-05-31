@@ -54,6 +54,9 @@ Tiap dokumen mengikuti struktur konsisten:
   diselesaikan.
 - **Kapan menggunakannya** — trigger praktis + kutipan frontmatter
   `description` asli.
+- **Contoh prompt** — frasa pemicu singkat (BID + kata kunci kanonik
+  EN) plus satu contoh task lengkap, dengan catatan "Yang terjadi"
+  agar efek skill-nya jelas.
 - **Cara menggunakannya** — langkah ringkas + invokasi + file
   pendukung.
 - **Contoh / Studi kasus** — skenario konkret.

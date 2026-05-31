@@ -35,6 +35,28 @@ Bullet trigger praktis:
 - Saat skill `EnterPlanMode` hendak dipanggil — brainstorming
   mendahuluinya.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Bantu aku brainstorm fitur export laporan sebelum mulai ngoding."
+- "Tolong grill rencana migrasi database ini, cari celahnya."
+- "Stress test ide arsitektur multi-tenant ini sebelum diputuskan."
+- "Aku punya ide, interview aku sampai jelas."
+- Kata kunci kanonik (EN): `brainstorm`, `grill me`, `stress test
+  this plan`, `interview me`, `what do you think about this idea`.
+
+Contoh task lengkap:
+
+> "Aku mau menambah fitur 'export dashboard ke PDF'. Sebelum nulis
+> kode, brainstorm dulu sama aku — format apa, siapa yang akses,
+> batas ukuran file, dan edge case kalau datanya kosong."
+
+Yang terjadi: agent menelusuri intent dan constraint satu pertanyaan
+per pesan (memberi rekomendasi di tiap pertanyaan), menyusuri tiap
+cabang keputusan, dan baru berhenti setelah design disepakati — lalu
+menuliskannya sebagai spec untuk Anda setujui.
+
 ## Cara menggunakannya
 
 Skill ini terstruktur sebagai checklist 9 langkah (yang harus

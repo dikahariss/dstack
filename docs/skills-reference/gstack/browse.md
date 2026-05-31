@@ -18,6 +18,29 @@ Ini adalah dependensi inti untuk banyak skill gstack lain: `/qa`, `/design-revie
 - Visual evidence untuk bug report (annotated screenshot dengan @ref labels).
 - Tidak cocok untuk CAPTCHA, MFA, OAuth interactive — gunakan `handoff` ke user.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buka halaman login dan test flow-nya di browser."
+- "Ambil screenshot form upload di tablet dan desktop."
+- "Reproduce bug tombol delete yang tidak muncul konfirmasi."
+- Kata kunci kanonik (EN): `open in browser`, `test the site`,
+  `take a screenshot`, `dogfood this`, `headless browser`.
+
+Contoh task lengkap:
+
+> "Bug report: tombol 'Hapus Produk' di `/admin/products` tidak
+> memunculkan dialog konfirmasi. Reproduce dengan headless browser,
+> ambil screenshot annotated untuk attach ke issue, dan cek console
+> error-nya."
+
+Yang terjadi: skill menjalankan daemon headless Chromium (~100ms/
+command), `goto` ke URL, `snapshot -i` untuk identifikasi elemen
+dengan @ref, setup `dialog-accept`, klik tombol, lalu cek `dialog`
+dan `console --errors` untuk menemukan root cause dengan bukti
+screenshot annotated.
+
 ## Cara menggunakannya
 
 Pastikan browse binary ter-build dulu (~10 detik, sekali setup):

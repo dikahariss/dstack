@@ -36,6 +36,27 @@ Trigger praktis:
 - **Khususnya** saat under time pressure, saat "just one quick fix"
   terlihat obvious, atau setelah sudah mencoba beberapa fix.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Test ini flaky, debug sistematis sampai ke akar."
+- "Cari root cause kenapa upload gagal di production."
+- "Berhenti nebak — investigasi bug ini beneran dulu."
+- Kata kunci kanonik (EN): `debug`, `find the root cause`,
+  `investigate`, `stop guessing`.
+
+Contoh task lengkap:
+
+> "Endpoint /checkout kadang return 500 di production tapi gak pernah
+> kereproduce di lokal. Jangan langsung tambal — debug sistematis:
+> cari root cause-nya dulu, baru usulkan fix."
+
+Yang terjadi: agent menjalankan empat fase wajib (Root Cause → Pattern
+Analysis → Hypothesis → Implementation), mengumpulkan evidence sebelum
+menebak, dan tidak mengusulkan fix sebelum akar masalah terbukti; 3+
+fix gagal = stop dan pertanyakan arsitektur.
+
 ## Cara menggunakannya
 
 Empat fase wajib berurutan:

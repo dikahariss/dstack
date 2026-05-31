@@ -18,6 +18,29 @@ Skill ini berpasangan dengan `writing-fragments` (untuk mengumpulkan bahan menta
 - User bilang ingin pendekatan "journey" / "story" / "beats" alih-alih outline.
 - Frontmatter description: "Shape an article as a journey of beats, choose-your-own-adventure style".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Susun artikel ini sebagai journey of beats, bukan outline."
+- "Rakit raw material ini jadi narasi beat-by-beat."
+- "Mau nulis artikel story-style dari fragments ini."
+- Kata kunci kanonik (EN): `writing beats`, `beats`,
+  `choose-your-own-adventure`, `narrative journey`.
+
+Contoh task lengkap:
+
+> "Saya punya `fragments/microservices.md` berisi raw
+> material. Bantu susun jadi artikel naratif dengan
+> pendekatan beats — tawari 3 starting beat dulu, saya
+> pilih, baru tulis ke `articles/microservices-draft.md`.
+> Simpan satu beat per turn."
+
+Yang terjadi: skill menawarkan 2–3 kandidat starting beat
+dari raw material, user memilih satu, skill menulis tepat
+satu beat ke file artikel dan berhenti, lalu menawarkan
+2–3 arah next beat — loop terus sampai journey selesai.
+
 ## Cara menggunakannya
 
 1. **Konfirmasi path artikel**: bila user belum sebut tempat simpan, tanya sekali dan ingat untuk sesi ini.

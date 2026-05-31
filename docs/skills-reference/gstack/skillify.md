@@ -31,6 +31,30 @@ nudge satu line: "Say /skillify to make this a permanent skill
 
 Versi: `1.0.0`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Skillify scrape tadi supaya next time lebih cepat."
+- "Jadikan scrape ini permanen, simpan ke disk."
+- "Codify prototype scrape HN frontpage tadi."
+- Kata kunci kanonik (EN): `/skillify`, `skillify`, `codify this
+  scrape`, `save this scrape`, `make this permanent`.
+
+Contoh task lengkap:
+
+> "Tadi /scrape `product prices on store.example.com/laptops`
+> sukses dapat JSON. Sekarang /skillify supaya next call ke intent
+> yang sama jalan ~200ms, simpan di global tier, nama
+> `store-laptops`."
+
+Yang terjadi: skill menelusuri percakapan untuk menemukan prototype
+`/scrape` terakhir yang sukses, mensintesis `script.ts` +
+`script.test.ts` + fixture HTML, menjalankan test di staged dir,
+meminta approval via AskUserQuestion sebelum commit — jika test
+gagal setelah 2 retry, staged dir dibuang tanpa meninggalkan
+artefak di disk.
+
 ## Cara menggunakannya
 
 11 step:

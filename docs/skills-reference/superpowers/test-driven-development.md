@@ -39,6 +39,27 @@ code, configuration files.
 
 Berpikir "skip TDD just this once"? Stop. Itu rasionalisasi.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Implementasi validator email ini pakai TDD."
+- "Test-first ya — tulis test yang gagal dulu, baru kodenya."
+- "Perbaiki bug ini dengan red-green-refactor."
+- Kata kunci kanonik (EN): `do TDD`, `test-first`,
+  `red-green-refactor`, `write the test first`.
+
+Contoh task lengkap:
+
+> "Tambahkan fungsi `retryOperation` yang mengulang operasi gagal
+> maksimal 3 kali. Kerjakan dengan TDD — tulis test yang gagal dulu,
+> tunjukkan ke aku gagalnya, baru kode minimal yang membuatnya lulus."
+
+Yang terjadi: agent menulis satu test minimal, menjalankannya untuk
+memastikan ia GAGAL karena fitur belum ada (bukan typo), baru menulis
+kode seminimal mungkin agar lulus, lalu refactor tanpa menambah
+behavior — RED → GREEN → REFACTOR.
+
 ## Cara menggunakannya
 
 Siklus RED-GREEN-REFACTOR:

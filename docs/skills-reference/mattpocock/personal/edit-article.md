@@ -16,6 +16,29 @@ Ini skill personal — preferensi style penulis yang dijadikan repeatable workfl
 - User bilang "edit this article", "improve this draft", "tighten the prose".
 - Frontmatter description: "Edit and improve articles by restructuring sections, improving clarity, and tightening prose".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Edit artikel ini, perketat prosa-nya."
+- "Improve draft ini — struktur section-nya dulu."
+- "Tighten the prose, maksimal 240 karakter per paragraf."
+- Kata kunci kanonik (EN): `edit this article`, `improve this
+  draft`, `tighten the prose`.
+
+Contoh task lengkap:
+
+> "Edit artikel ini: 'Memahami TypeScript Generics'. Ada 6
+> section — Intro, Apa itu Generic, Type Parameter, Constraints,
+> Default, Use Cases. Cek urutan dependency-nya dulu, konfirmasi
+> ke aku, lalu rewrite tiap section dengan paragraf ≤240 karakter."
+
+Yang terjadi: agent memetakan artikel sebagai DAG informasi,
+mengusulkan urutan section yang menghormati dependency antar
+konsep, mengkonfirmasi ke user, lalu menulis ulang tiap section
+dengan paragraf keras maksimal 240 karakter — membuang filler
+dan memecah kalimat kompleks.
+
 ## Cara menggunakannya
 
 1. **Divide article into sections** berdasar heading yang ada. Identifikasi main point yang ingin dibuat di tiap section. Pertimbangkan information sebagai DAG — pieces of information bergantung pada pieces lain. Pastikan urutan section + isinya respect dependency.

@@ -17,6 +17,29 @@ Skill di-deprecate karena cakupannya bergerak ke arah pekerjaan arsitektur yang 
 - Sebelum mengunci kontrak port di hexagonal architecture.
 - Frontmatter description menyebut "Generate multiple radically different interface designs for a module using parallel sub-agents".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Design it twice — tunjukkan beberapa bentuk API yang berbeda."
+- "Coba beberapa desain interface modul ini sebelum kita putuskan."
+- "Spawning sub-agent paralel untuk eksplorasi interface."
+- Kata kunci kanonik (EN): `design it twice`, `design an interface`,
+  `explore interface options`, `compare module shapes`.
+
+Contoh task lengkap:
+
+> "Modul `SkillRepository` perlu interface baru untuk operasi
+> batch-load. Pakai design-it-twice: spawn 3 sub-agent paralel
+> dengan constraint berbeda (minimal method, maksimal fleksibel,
+> optimalkan untuk common case), lalu tunjukkan hasilnya
+> berurutan dan bandingkan trade-off-nya."
+
+Yang terjadi: agent spawn 3+ sub-agent paralel via Task tool,
+masing-masing menghasilkan interface dengan constraint berbeda;
+hasilnya ditampilkan berurutan lalu dibandingkan pada dimensi
+simplicity, depth, dan ease of correct use — tanpa implementasi.
+
 ## Cara menggunakannya
 
 1. **Gather requirements**: pahami problem yang diselesaikan modul, siapa caller-nya, operasi kunci, constraint (perf, kompatibilitas), apa yang harus disembunyikan vs diekspos.

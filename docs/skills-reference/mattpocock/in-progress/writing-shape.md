@@ -18,6 +18,30 @@ Berbeda dengan `writing-beats` yang lebih naratif/journey-style, `writing-shape`
 - Artikel akan argumentatif (thesis → support → kesimpulan), bukan narasi.
 - Frontmatter description: "Take a markdown file of raw material and shape it into an article through a conversational session".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Shape pile fragments ini jadi artikel yang bisa dipublish."
+- "Bantu saya rakit notes ini jadi tulisan argumentatif."
+- "Saya punya raw material, tolong bentuk jadi artikel dengan thesis jelas."
+- Kata kunci kanonik (EN): `writing shape`, `shape article`,
+  `raw material`, `shaping session`.
+
+Contoh task lengkap:
+
+> "File `writing/microservices-fragments.md` berisi 22
+> fragmen. Bentuk jadi artikel argumentatif di
+> `articles/microservices-final.md` — tawari 3 candidate
+> opening dulu, saya pilih, lalu kita tumbuhkan paragraf
+> demi paragraf. Argue format di setiap step."
+
+Yang terjadi: skill membaca pile end-to-end, menawarkan
+2–3 opening dengan thesis berbeda, setelah user memilih
+menumbuhkan artikel paragraf demi paragraf dari material
+pile — tiap format (prose, list, table, quote) diargue
+out loud — append ke file artikel per blok yang disepakati.
+
 ## Cara menggunakannya
 
 1. **Baca pile end-to-end** sebelum apa pun. Format pile tidak masalah.

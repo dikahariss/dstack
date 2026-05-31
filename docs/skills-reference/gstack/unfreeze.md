@@ -30,6 +30,27 @@ restart Claude Code.
 
 Versi: `0.1.0`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Unfreeze sekarang, mau edit file di luar scope billing."
+- "Hapus freeze boundary, perlu ubah logger juga."
+- "Buka kembali semua direktori untuk edit."
+- Kata kunci kanonik (EN): `/unfreeze`, `unfreeze edits`,
+  `unlock all directories`, `remove edit restrictions`.
+
+Contoh task lengkap:
+
+> "Tadi jalankan /freeze app/billing untuk debug. Sekarang mau
+> update juga app/utils/logger.ts yang related. Jalankan /unfreeze
+> supaya Edit ke luar app/billing tidak diblok."
+
+Yang terjadi: skill menghapus `~/.gstack/freeze-dir.txt` (state
+file yang dibaca hook `/freeze`), lalu mencetak konfirmasi direktori
+mana yang sebelumnya difreeze. Hook tetap terdaftar di sesi tapi
+sekarang membolehkan semua edit karena state file sudah hilang.
+
 ## Cara menggunakannya
 
 Eksekusi sangat singkat:

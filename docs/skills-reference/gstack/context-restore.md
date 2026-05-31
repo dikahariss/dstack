@@ -20,6 +20,29 @@ Defaultnya **lintas branch** — beda dengan `/context-save list` yang default k
   - `/context-restore <title-fragment>` — load context spesifik by title atau number.
   - `/context-restore list` — diarahkan ke `/context-save list`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Lanjutin kerja kemarin, aku lupa sampai mana."
+- "Restore context dari workspace sebelumnya dong."
+- "Di mana aku tadi? Load saved state yang terakhir."
+- Kata kunci kanonik (EN): `/context-restore`, `resume`,
+  `restore context`, `where was i`.
+
+Contoh task lengkap:
+
+> "/context-restore — baru pindah dari Conductor workspace
+> `feat/auth-refactor` ke `feat/db-migration`, perlu tahu
+> keputusan apa yang sudah dibuat dan next step yang tersisa
+> supaya bisa lanjut dari titik yang benar."
+
+Yang terjadi: skill scan `~/.gstack/projects/$SLUG/checkpoints/`
+lintas branch (tanpa filter branch), ambil file paling baru
+berdasarkan prefix `YYYYMMDD-HHMMSS`, tampilkan summary terstruktur
+(title, branch asal, decisions, remaining work, notes) — lalu
+tawarkan tiga opsi: lanjut, lihat file penuh, atau cukup baca saja.
+
 ## Cara menggunakannya
 
 1. Invoke `/context-restore`.

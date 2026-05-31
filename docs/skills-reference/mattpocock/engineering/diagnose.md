@@ -17,6 +17,29 @@ Investasi waktu paling besar ada di Fase 1: agresif, kreatif, refuse to give up 
 - Bug intermiten yang sulit di-reproduce.
 - Frontmatter description: "Disciplined diagnosis loop for hard bugs and performance regressions."
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Diagnose bug ini — order kadang dibilling dua kali."
+- "Debug ini, kenapa endpoint ini throwing 500 secara random?"
+- "Ada regresi performa setelah deploy kemarin, tolong diagnose."
+- Kata kunci kanonik (EN): `diagnose this`, `debug this`,
+  `broken`, `failing`, `performance regression`.
+
+Contoh task lengkap:
+
+> "Fitur checkout kadang gagal dengan error `idempotency key
+> collision` — terjadi sekitar 3% dari request. Diagnose: bangun
+> feedback loop, reproduce, buat ranked hypothesis, lalu fix
+> dengan regression test."
+
+Yang terjadi: agent membangun feedback loop deterministik (failing
+test, replay trace, atau differential loop), mereproduksi bug
+persis seperti dilaporkan, mempresentasikan 3–5 hypothesis ranked
+ke user sebelum instrumentasi, lalu fix + regression test sebelum
+cleanup dan post-mortem.
+
 ## Cara menggunakannya
 
 1. **Phase 1 — Build a feedback loop**. Coba (urutkan): failing test, curl script, CLI invocation dengan fixture, headless browser, replay captured trace, throwaway harness, property/fuzz, bisection harness, differential loop, HITL bash script. Iterate loop sampai fast, sharp, deterministic.

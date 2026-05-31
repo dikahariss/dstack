@@ -18,6 +18,30 @@ Di test code, sering kita perlu pass partial data ke function yang tipenya kaya 
 - Codebase punya test dengan banyak `as Type` / `as unknown as Type`.
 - Frontmatter description: "Migrate test files from `as` type assertions to @total-typescript/shoehorn".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Ganti semua `as Type` di test file dengan shoehorn."
+- "Migrasi assertion `as unknown as` di spec file ke fromAny."
+- "Pakai shoehorn untuk partial test data di suite ini."
+- Kata kunci kanonik (EN): `shoehorn`, `fromPartial`,
+  `replace as`, `partial test data`.
+
+Contoh task lengkap:
+
+> "Di `src/api/__tests__/user.spec.ts` ada banyak
+> `as Request` dan `as unknown as Request`. Migrasi ke
+> shoehorn — `fromPartial()` untuk data valid partial,
+> `fromAny()` untuk data yang sengaja salah. Install dulu
+> jika belum ada, lalu jalankan typecheck."
+
+Yang terjadi: skill menginstall `@total-typescript/shoehorn`,
+mencari semua `as` assertion di file test, mengganti pola
+`as Type` dengan `fromPartial()` dan `as unknown as Type`
+dengan `fromAny()`, menambah import yang diperlukan, lalu
+menjalankan typecheck untuk verifikasi.
+
 ## Cara menggunakannya
 
 1. **Gather requirements**: file test mana yang punya `as` assertion bermasalah? Apakah large object dengan few needed properties? Butuh pass intentionally wrong data untuk error testing?

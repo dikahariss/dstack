@@ -24,6 +24,32 @@ Trigger dari frontmatter `description`:
   log.
 - Pakai Playwright untuk automation.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Verifikasi form checkout di app React lokal saya pakai
+  Playwright."
+- "Test apakah halaman dashboard muncul error di console."
+- "Capture screenshot halaman login setelah submit, cek redirect
+  ke `/home`."
+- Kata kunci kanonik (EN): `test local webapp`, `Playwright`,
+  `verify frontend`, `browser screenshot`, `browser logs`.
+
+Contoh task lengkap:
+
+> "App Next.js saya jalan di port 3000 — verifikasi flow
+> registrasi: isi field `name`, `email`, `password`, klik
+> tombol Register, pastikan muncul halaman `/dashboard` dan
+> tidak ada console error."
+
+Yang terjadi: skill menjalankan `python scripts/with_server.py
+--help` dulu (black box), menulis script Playwright yang navigate
+ke `localhost:3000`, tunggu `networkidle`, screenshot untuk
+reconnaissance, isi form via selector yang ditemukan, submit,
+assert URL redirect, capture console log untuk verifikasi
+zero error — semua tanpa membaca source `with_server.py`.
+
 ## Cara menggunakannya
 
 ### Decision tree

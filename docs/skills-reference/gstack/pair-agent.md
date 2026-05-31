@@ -35,6 +35,28 @@ Pakai ketika user butuh OpenClaw, Hermes, Codex, atau Cursor untuk
 mengoperasikan browser yang sama (misalnya: agent B harus melanjutkan
 QA di tab tertentu setelah agent A login).
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Bagikan browser-ku ke OpenClaw di mesin yang sama."
+- "Hubungkan Codex ke browser gstack yang sudah berjalan."
+- "Saya ingin agent lain bisa pakai browser-ku untuk QA."
+- Kata kunci kanonik (EN): `/pair-agent`, `pair agent`,
+  `share browser`, `connect agent`.
+
+Contoh task lengkap:
+
+> "/pair-agent — saya sedang debugging di staging dengan Claude Code,
+> browser sudah running. OpenClaw di mesin yang sama harus jalankan
+> smoke test di tab terpisah tanpa ganggu sesi saya."
+
+Yang terjadi: skill tanya target agent (OpenClaw) dan lokasi (same
+machine), lalu jalankan `$B pair-agent --local openclaw`. Credentials
+ditulis ke `~/.openclaw/skills/gstack/browse-remote.json`. OpenClaw
+langsung bisa membuka tab baru di browser yang sama; setup key 5 menit
+tidak perlu di-copy-paste.
+
 ## Cara menggunakannya
 
 1. **Step 1** — `$B status` cek browse server, atau `$B goto about:blank`

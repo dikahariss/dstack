@@ -35,6 +35,27 @@ Trigger praktis (SELALU sebelum):
 - Pindah ke task berikutnya.
 - Delegasi ke agent.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Sebelum bilang selesai, verifikasi dulu beneran lulus."
+- "Pastikan test-nya hijau sebelum kita commit."
+- "Jangan klaim fixed sebelum ada bukti yang baru dijalankan."
+- Kata kunci kanonik (EN): `verify before done`, `evidence before
+  claim`.
+
+Contoh task lengkap:
+
+> "Kamu bilang bug-nya sudah fixed. Sebelum commit, jalankan dulu
+> test suite-nya sekarang, tunjukkan output-nya ke aku, baru
+> nyatakan selesai."
+
+Yang terjadi: agent menjalankan command verifikasi di message ini
+juga (fresh), membaca full output dan exit code, dan baru membuat
+klaim "selesai/lulus/fixed" setelah output mengonfirmasinya — bukan
+dari ingatan, asumsi, atau laporan subagent.
+
 ## Cara menggunakannya
 
 Gate function 5 langkah:

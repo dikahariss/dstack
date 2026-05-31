@@ -31,6 +31,32 @@ Skill **TIDAK** dipakai bila: file import `openai`/SDK provider lain, filename s
 `*-openai.py` / `*-generic.py`, kode provider-neutral, atau pertanyaan general
 programming/ML.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Tambahkan prompt caching ke aplikasi Python saya yang pakai SDK Anthropic."
+- "Migrate kode ini dari Sonnet 4.6 ke Opus 4.7 dengan adaptive thinking."
+- "Bantu saya setup Managed Agent dari nol untuk coding task."
+- Kata kunci kanonik (EN): `Claude API`, `Anthropic SDK`,
+  `prompt caching`, `Managed Agents`.
+
+Contoh task lengkap:
+
+> "Di `rag_pipeline.py` saya ada `import anthropic` dan pakai
+> `claude-sonnet-4-6`. Tolong migrasi ke Opus 4.7 dengan adaptive
+> thinking, tambahkan `cache_control` di prefix stabil (system +
+> tools), dan verifikasi cache hit via
+> `usage.cache_read_input_tokens`."
+
+Yang terjadi: agent scan file untuk marker non-Anthropic,
+deteksi bahasa (Python), baca dokumentasi bahasa-spesifik +
+`shared/prompt-caching.md`, lalu terapkan model string eksak
+`claude-opus-4-7`, `thinking: {type: "adaptive"}`, dan
+breakpoint caching di urutan `tools → system → messages` —
+output: kode SDK idiomatik yang tidak terjebak deprecated
+patterns.
+
 ## Cara menggunakannya
 
 Workflow tinggi-level:

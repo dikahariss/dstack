@@ -21,6 +21,31 @@ Output: **Security Posture Report** dengan finding terstruktur (severity rating,
 - Scope flags **mutually exclusive** — kalau dual, error immediately (security tooling jangan ignore user intent).
 - Phase 0, 1, 12, 13, 14 selalu jalan.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Audit security dulu sebelum go-live minggu depan."
+- "Cek ada API key yang bocor di git history tidak?"
+- "CSO review — mau pastikan supply chain dan CI/CD aman."
+- Kata kunci kanonik (EN): `/cso`, `security audit`,
+  `check for vulnerabilities`, `owasp review`.
+
+Contoh task lengkap:
+
+> "/cso --comprehensive di repo MaritimHub — audit lengkap
+> menjelang launch: cek secrets di git history, dependency
+> supply chain, webhook Stripe yang mungkin tanpa signature
+> check, dan skill supply chain di `.claude/skills/`."
+
+Yang terjadi: skill jalankan 15 phase (Phase 0–14) secara
+sistematis — dari stack detection, attack surface census,
+secrets archaeology di git history, dependency CVE scan, CI/CD
+pipeline audit, webhook trace, LLM security, hingga OWASP Top 10.
+Output adalah Security Posture Report berisi finding per severity
+(CRITICAL/HIGH/MEDIUM) dengan FP rules dan remediation plan.
+Tidak ada kode yang diubah — hanya laporan.
+
 ## Cara menggunakannya
 
 1. Pakai Grep tool (bukan raw bash grep) untuk semua code searches — proper permissions.

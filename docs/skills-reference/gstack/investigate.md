@@ -18,6 +18,30 @@ Skill juga lock scope via `/freeze` post-hypothesis supaya fix tidak creep ke fi
 - Setelah symptom muncul berulang kali — ada possibility arsitektur smell.
 - Tidak untuk typo / syntax error yang langsung jelas — itu langsung fix.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Ada bug di fitur auth, tolong investigate root cause-nya."
+- "Error ini muncul intermittent, debug dan cari penyebabnya."
+- "Kenapa fitur ini tiba-tiba tidak jalan? Investigate dulu."
+- Kata kunci kanonik (EN): `/investigate`, `debug this`,
+  `fix this bug`, `root cause analysis`.
+
+Contoh task lengkap:
+
+> "User kadang ter-redirect ke /login padahal sudah login.
+> Intermittent, terjadi di beberapa browser. Tolong investigate
+> root cause-nya — jangan langsung fix sebelum ketemu penyebab
+> pastinya."
+
+Yang terjadi: skill memulai alur 5 fase — collect symptom,
+trace code path, cek git log, form hypothesis, lock scope ke
+direktori terdampak, test hypothesis dengan log sementara,
+tulis regression test, lalu deliver DEBUG REPORT dengan
+root cause + evidence. Iron Law berlaku: tidak ada fix
+sebelum root cause dikonfirmasi.
+
 ## Cara menggunakannya
 
 1. **Phase 1: Root Cause Investigation**

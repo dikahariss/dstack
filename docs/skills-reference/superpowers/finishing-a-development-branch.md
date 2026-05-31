@@ -35,6 +35,27 @@ Trigger praktis:
   dan menyerahkan ke skill ini.
 - Pengguna meminta "selesaikan branch ini" / "merge ini" / "buat PR".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Fitur sudah jadi dan test hijau — selesaikan branch-nya."
+- "Aku harus apa dengan branch ini, merge atau bikin PR?"
+- "Bereskan dan rapikan worktree setelah kerjaan ini."
+- Kata kunci kanonik (EN): `finish the branch`, `wrap up this branch`.
+
+Contoh task lengkap:
+
+> "Implementasi OAuth login sudah selesai dan semua test lulus.
+> Selesaikan branch-nya — verifikasi dulu test-nya beneran hijau,
+> terus kasih aku opsi merge/PR/keep/discard, dan bersihkan
+> worktree-nya kalau sudah tidak perlu."
+
+Yang terjadi: agent memverifikasi test lebih dulu, mendeteksi
+environment (worktree / normal repo / detached HEAD), menyajikan 4
+opsi terstruktur (merge / buka PR / simpan / buang), mengeksekusi
+pilihan Anda, lalu cleanup worktree dengan provenance check.
+
 ## Cara menggunakannya
 
 Enam langkah berurutan:

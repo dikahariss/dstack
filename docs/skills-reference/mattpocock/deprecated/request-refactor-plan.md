@@ -16,6 +16,31 @@ Skill di-deprecate karena fungsinya sekarang lebih baik dibagi: `improve-codebas
 - Bila Anda tetap ingin alur "interview → plan → issue" tunggal yang spesifik untuk refactor RFC.
 - Frontmatter description menyebut "refactor plan with tiny commits via user interview".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buatkan refactor plan untuk modul billing yang tersebar ini."
+- "Mau refactor, tapi butuh rencana tiny commits dulu."
+- "Interview aku soal refactor ini, terus file ke GitHub."
+- Kata kunci kanonik (EN): `refactor plan`, `refactoring RFC`,
+  `tiny commits`, `plan a refactor`.
+
+Contoh task lengkap:
+
+> "Mau refactor `OrderService` — logicnya tersebar di tiga file
+> controller. Tolong interview aku, lock scope-nya, cek test
+> coverage, lalu pecah jadi tiny commits dan file sebagai GitHub
+> issue pakai template RFC yang ada."
+
+Yang terjadi: agent menginterview user soal problem, scope, dan
+opsi alternatif; mengeksplorasi repo untuk verifikasi asumsi dan
+cek test coverage; mengunci "out of scope" secara eksplisit; lalu
+memecah implementasi menjadi commit-commit kecil yang masing-masing
+meninggalkan codebase dalam keadaan working, dan mem-file GitHub
+issue dengan template lengkap (Problem Statement → Commits →
+Decision Document → Testing Decisions → Out of Scope).
+
 ## Cara menggunakannya
 
 1. Minta user mendeskripsikan masalah panjang lebar + ide solusi awal.

@@ -19,6 +19,29 @@ Skill mostly automated — tidak tanya konfirmasi tiap step kecuali ada stake ny
   - `/land-and-deploy #123` — specific PR.
   - `/land-and-deploy #123 <url>` — both.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "PR sudah siap, merge dan deploy ke prod sekarang."
+- "Land PR #347 dan verify di production URL ini."
+- "Ship ke production — jalankan land-and-deploy."
+- Kata kunci kanonik (EN): `/land-and-deploy`, `merge and deploy`,
+  `land the pr`, `ship to production`.
+
+Contoh task lengkap:
+
+> "/land-and-deploy #347 https://api.maritimhub.com — ini pertama
+> kali deploy project ini, pastikan infra terdeteksi dengan benar
+> sebelum merge."
+
+Yang terjadi: skill menjalankan pre-flight check (gh auth, PR
+state), lalu first-run dry-run: deteksi platform (fly.toml,
+vercel.json, dll), validasi CLI, cek staging. Setelah konfirmasi
+user, merge PR via squash, tunggu deploy workflow, jalankan
+canary verification di URL yang diberikan, lalu deliver final
+report HEALTHY atau DEGRADED dengan evidence lengkap.
+
 ## Cara menggunakannya
 
 Skill stop hanya untuk:

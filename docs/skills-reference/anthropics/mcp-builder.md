@@ -25,6 +25,30 @@ Trigger dari frontmatter `description`:
 - Stack Python (FastMCP) atau Node/TypeScript (MCP SDK).
 - User butuh panduan tool design, schema, error handling, pagination, evaluation.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Bantu saya buat MCP server untuk Notion API."
+- "Integrasikan Linear ke Claude via MCP, pakai TypeScript."
+- "Saya mau LLM agent bisa akses GitHub repo lewat MCP."
+- Kata kunci kanonik (EN): `MCP server`, `Model Context
+  Protocol`, `FastMCP`, `MCP SDK`, `external API integration`.
+
+Contoh task lengkap:
+
+> "Bangunkan MCP server untuk Jira API pakai TypeScript.
+> Yang dibutuhkan: list issues per project, create issue,
+> update status, search by assignee. Auth via API token.
+> Setelah jadi, buatkan juga 10 eval questions-nya."
+
+Yang terjadi: Claude melalui 4 fase — research (baca MCP
+spec + TypeScript SDK), implementasi (tools dengan Zod
+schema, prefix konsisten `jira_*`, error actionable,
+annotations readOnlyHint), review/test (MCP Inspector),
+lalu 10 eval questions read-only multi-step dalam format
+XML yang bisa dijalankan oleh eval script.
+
 ## Cara menggunakannya
 
 ### Fase 1: Deep Research & Planning

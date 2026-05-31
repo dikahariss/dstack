@@ -19,6 +19,29 @@ Pendek tapi load-bearing: skill ini adalah satu-baris prompt. Kekuatannya terlet
 - Frontmatter description: "Tell the agent to zoom out and give broader context or a higher-level perspective."
 - Prasyarat: `setup-matt-pocock-skills` agar tahu di mana `CONTEXT.md` dibaca.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Aku tidak familiar dengan area kode ini, beri gambaran besar."
+- "Sebelum refactor, tunjukkan semua caller dan downstream modul ini."
+- "/zoom-out"
+- Kata kunci kanonik (EN): `/zoom-out`, `zoom out`, `bigger picture`,
+  `higher-level perspective`.
+
+Contoh task lengkap:
+
+> "Aku sedang debug di `src/billing/refund.ts` tapi mulai kehilangan
+> gambaran. /zoom-out — tunjukkan siapa saja yang memanggil Refund
+> module ini dan apa yang ia panggil ke bawah, pakai term domain dari
+> CONTEXT.md."
+
+Yang terjadi: agent membaca CONTEXT.md untuk mendapat vocabulary
+domain proyek, mengidentifikasi modul yang sedang difokuskan, men-
+trace semua caller dan downstream dependency-nya, lalu menyajikan
+map singkat (satu level, bukan deep dive) menggunakan term domain —
+bukan nama class mentah.
+
 ## Cara menggunakannya
 
 Invoke skill dengan slash command. Konten skill itu sendiri:

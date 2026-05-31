@@ -24,6 +24,31 @@ Trigger dari frontmatter `description`:
 - User mau run eval atau benchmark skill.
 - User mau optimasi description untuk akurasi triggering.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Bantu saya buat skill baru untuk auto-format SQL."
+- "Skill saya masih sering tidak ter-trigger, tolong perbaiki."
+- "Mau benchmark skill ini — jalankan eval dan lihat hasilnya."
+- Kata kunci kanonik (EN): `create a skill`, `edit skill`,
+  `run evals`, `benchmark skill`, `optimize description`.
+
+Contoh task lengkap:
+
+> "Saya mau buat skill untuk mengubah schema JSON API jadi
+> dokumentasi Markdown otomatis. Input: file `.json` berisi
+> OpenAPI spec. Output: `docs/api-reference.md`. Bantu
+> saya dari draft sampai eval, termasuk description yang
+> akurat agar skill ini ter-trigger dengan benar."
+
+Yang terjadi: Claude menangkap intent, menulis draft
+SKILL.md, membuat 2-3 test prompt realistis, spawn run
+paralel (with-skill + baseline), draft assertions, lalu
+launch eval viewer HTML untuk review kualitatif +
+kuantitatif. Setelah iterasi puas, jalankan description
+optimization loop otomatis dan update frontmatter.
+
 ## Cara menggunakannya
 
 ### Loop utama

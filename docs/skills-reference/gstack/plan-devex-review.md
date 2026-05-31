@@ -37,6 +37,29 @@ CLI, SDK, library, platform, docs, Claude Code skill).
 Versi: `2.0.0`, `preamble-tier: 3`, `interactive: true`,
 `benefits-from: [office-hours]`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Lakukan DX review pada plan SDK Node.js payment API ini."
+- "Audit developer experience — apakah onboarding-nya sudah bagus?"
+- "Cek apakah CLI baru ini ramah developer sebelum kita rilis."
+- Kata kunci kanonik (EN): `/plan-devex-review`, `DX review`,
+  `developer experience audit`, `devex review`, `API design review`.
+
+Contoh task lengkap:
+
+> "/plan-devex-review — plan: rilis SDK Node.js untuk payment API
+> internal. Pakai mode DX POLISH. Target persona: backend dev yang
+> integrasi via cURL, prioritas TTHW < 5 menit, benchmark vs Stripe
+> dan Plaid."
+
+Yang terjadi: skill buat persona card, tulis empathy narrative first-
+person dari sudut developer, jalankan 3 WebSearch untuk data TTHW
+kompetitor, lalu review 8 dimensi (Getting Started, API ergonomics,
+Error quality, dst). Output: plan diupdate dengan score 0-10 per
+dimensi + gap ke score 10 untuk produk ini.
+
 ## Cara menggunakannya
 
 1. **PRE-REVIEW SYSTEM AUDIT** — git log, diff stat, baca plan file,

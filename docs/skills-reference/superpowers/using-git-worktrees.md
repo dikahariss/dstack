@@ -31,6 +31,26 @@ Trigger praktis:
 - Sebelum invoke `executing-plans` atau `subagent-driven-development`.
 - Pengguna meminta isolation eksplisit.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Bikin worktree terisolasi buat fitur baru ini."
+- "Aku mau kerja di branch lain tanpa ganggu workspace sekarang."
+- "Siapkan workspace terpisah sebelum eksekusi plan."
+- Kata kunci kanonik (EN): `use a worktree`, `isolated workspace`.
+
+Contoh task lengkap:
+
+> "Sebelum aku mulai garap fitur 'bulk import', siapkan workspace
+> terisolasi dulu biar gak nyampur dengan perubahan yang lagi jalan
+> di main. Pakai worktree."
+
+Yang terjadi: agent mendeteksi apakah Anda sudah di workspace
+terisolasi, memilih native worktree tool harness kalau tersedia, dan
+jatuh ke `git worktree add` hanya sebagai fallback terakhir — never
+fight the harness.
+
 ## Cara menggunakannya
 
 Empat langkah berurutan:

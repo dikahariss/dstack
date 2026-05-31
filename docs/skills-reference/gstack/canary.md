@@ -18,6 +18,29 @@ Kuncinya adalah relative comparison: 3 console error di baseline = oke; 1 error 
 - Mode `--quick` untuk single-pass health check tanpa loop monitoring.
 - Mode `--duration 5m` untuk customize window (1m sampai 30m).
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Monitor produksi 10 menit setelah deploy ini."
+- "Capture baseline sebelum aku push ke prod."
+- "Verify deploy — pastikan tidak ada error baru di /checkout."
+- Kata kunci kanonik (EN): `/canary`, `monitor deploy`, `post-deploy
+  check`, `watch production`, `verify deploy`.
+
+Contoh task lengkap:
+
+> "Sebelum merge PR pricing-v2: `/canary https://api.maritimhub.com
+> --baseline --pages /,/pricing,/checkout`. Setelah deploy selesai,
+> jalankan `/canary https://api.maritimhub.com --duration 10m` untuk
+> monitor dan alert kalau ada console error baru atau load time >2x."
+
+Yang terjadi: mode `--baseline` capture screenshot + console errors
++ perf tiap halaman lalu berhenti; mode monitoring loop tiap 60
+detik bandingkan terhadap baseline, alert CRITICAL/HIGH/MEDIUM/LOW
+hanya bila pola muncul 2+ check berurutan (anti-transient), dan
+laporan akhir mengeluarkan verdict HEALTHY/DEGRADED/BROKEN.
+
 ## Cara menggunakannya
 
 1. Browse daemon harus ter-build (SETUP check di skill).

@@ -33,6 +33,28 @@ penghapusan modul). Untuk auto-sync, ada `gbrain autopilot --install`
 
 Versi: `1.0.0`, `preamble-tier: 2`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Sync gbrain setelah refactor besar tadi."
+- "Gbrain search tidak menemukan modul auth yang baru, re-index dulu."
+- "Refresh gbrain untuk repo ini."
+- Kata kunci kanonik (EN): `/sync-gbrain`, `sync gbrain`,
+  `refresh gbrain`, `reindex repo`, `update gbrain`.
+
+Contoh task lengkap:
+
+> "Baru selesai tambah modul auth di `dikahariss-blog`. Jalankan
+> /sync-gbrain supaya `gbrain search 'auth handler'` return hasil
+> yang akurat, dan update CLAUDE.md guidance block."
+
+Yang terjadi: skill probe state gbrain, jalankan orchestrator
+3-stage (code → memory → brain-sync), cek page_count hasil index,
+lakukan capability round-trip write+search, lalu tulis atau hapus
+block `## GBrain Search Guidance` di CLAUDE.md sesuai hasil
+capability check, diakhiri verdict GREEN/YELLOW/RED.
+
 ## Cara menggunakannya
 
 Argument modes (parsed oleh skill, bukan dispatcher):

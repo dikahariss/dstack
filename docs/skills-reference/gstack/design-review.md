@@ -21,6 +21,31 @@ Skill ini diff-aware: kalau di feature branch tanpa URL, otomatis masuk **diff-a
   - `/design-review https://app.com` — specific URL.
   - Plus auth options: "Sign in as user@example.com", "Import cookies".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Design review sebelum PR ini di-merge, ada perubahan UI."
+- "Audit visual pricing page — ada yang inconsistent dengan DESIGN.md."
+- "Visual polish dulu, mau pastikan contrast dan spacing sudah benar."
+- Kata kunci kanonik (EN): `/design-review`, `visual design audit`,
+  `design qa`, `fix design issues`.
+
+Contoh task lengkap:
+
+> "/design-review --deep https://maritimhub.com/pricing —
+> calibrate ke DESIGN.md, fokus contrast CTA button, spacing
+> antar pricing cards, dan hover state pada feature checklist.
+> Fix tiap finding dengan atomic commit."
+
+Yang terjadi: skill pastikan working tree bersih, optionally
+bootstrap test framework, visit halaman via browse binary,
+screenshot + snapshot tiap halaman, audit terhadap standar
+typography/spacing/color/WCAG dan DESIGN.md — lalu per finding:
+edit file minimal, re-screenshot, run test, commit atomic
+`fix(design): <deskripsi>`. Report akhir berisi before/after
+screenshot dan status tiap finding (FIXED/SKIPPED/NEEDS_REVIEW).
+
 ## Cara menggunakannya
 
 1. **Setup**: parse parameters (URL, scope, depth, auth). Auto-detect CDP mode (kalau browse sudah connect ke real browser, skip cookie import). Cek `DESIGN.md` di root — semua finding di-calibrate ke sini.

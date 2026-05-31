@@ -16,6 +16,29 @@ Skill juga sengaja menumbuhkan basis pengetahuan `.out-of-scope/` (untuk feature
 - Maintainer "show me what needs attention" / "let's look at #42" / "move #42 to ready-for-agent".
 - Prasyarat: `setup-matt-pocock-skills` agar label mapping & issue tracker terkonfigurasi.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Triage issue #87 — bug crash timezone non-UTC."
+- "Tampilkan semua issue yang butuh perhatianku sekarang."
+- "Pindahkan #42 ke ready-for-agent."
+- Kata kunci kanonik (EN): `triage issues`, `create an issue`,
+  `ready-for-agent`, `manage issue workflow`.
+
+Contoh task lengkap:
+
+> "Ada issue baru #103: 'Filter date range crash saat timezone
+> Asia/Jakarta'. Triage ini — kategorikan, coba reproduce dengan
+> test pakai TZ=Asia/Jakarta, dan kalau repro sukses, siapkan agent
+> brief lengkap agar issue bisa langsung dipick AFK agent."
+
+Yang terjadi: agent membaca full issue body + komentar, menelusuri
+kode relevan dengan vocabulary glossarium domain, mencoba reproduce
+bug secara aktif, merekomendasikan kategori (`bug`) + state ke
+maintainer, lalu memposting agent brief ber-disclaimer AI dan
+memindahkan issue ke `ready-for-agent` setelah maintainer menyetujui.
+
 ## Cara menggunakannya
 
 1. **Setiap komentar / issue baru harus diawali disclaimer AI** (template di SKILL.md).

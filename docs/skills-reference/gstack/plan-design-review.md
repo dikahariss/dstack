@@ -32,6 +32,29 @@ visual live site, gunakan `/design-review` (bukan plan-design-review).
 
 Versi: `2.0.0`, `preamble-tier: 3`, `interactive: true`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Review desain di plan ini sebelum aku mulai koding."
+- "Cek keputusan UX di plan settings page — ada yang hilang?"
+- "Buat mockup untuk halaman notifikasi yang ada di plan."
+- Kata kunci kanonik (EN): `/plan-design-review`,
+  `design plan review`, `review ux plan`, `check design decisions`.
+
+Contoh task lengkap:
+
+> "/plan-design-review — plan-ku: settings page untuk user mengubah
+> preferensi notifikasi. Generate 3 variant mockup (minimal Linear-
+> style, dark mode), tampilkan comparison board, lalu update plan
+> dengan keputusan empty state, error state, dan mobile layout."
+
+Yang terjadi: skill generate 3 PNG via `$D variants`, jalankan quality
+check cross-model via `$D check`, serve comparison board di browser
+untuk user rating dan remix. Setelah iterasi, plan diupdate dengan
+keputusan desain yang sebelumnya hilang; mockup final disimpan di
+`~/.gstack/projects/<slug>/designs/`.
+
 ## Cara menggunakannya
 
 1. **PRE-REVIEW SYSTEM AUDIT** — baca plan file, CLAUDE.md, DESIGN.md

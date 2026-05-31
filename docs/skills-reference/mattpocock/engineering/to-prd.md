@@ -17,6 +17,30 @@ Kunci PRD yang baik di sini: user stories yang ekstensif (1..N), implementation 
 - Setelah `grill-me` / `grill-with-docs` selesai.
 - Prasyarat: `setup-matt-pocock-skills` agar issue tracker terkonfigurasi.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buat PRD dari diskusi kita barusan."
+- "Kondensasi sesi grilling ini jadi product requirements doc."
+- "To PRD — publish ke issue tracker."
+- Kata kunci kanonik (EN): `create a PRD`, `to PRD`,
+  `product requirements`, `ready-for-agent`.
+
+Contoh task lengkap:
+
+> "Kita sudah satu jam grilling fitur 'Pengguna kelola subscription'.
+> Sekarang buat PRD-nya: problem statement, user stories (panjang),
+> implementation decisions termasuk module `SubscriptionView` dan
+> kontrak interface-nya, testing decisions, dan out of scope (pause/
+> resume). Publish ke GitHub Issues dengan label ready-for-agent."
+
+Yang terjadi: agent menyintesis konteks percakapan yang sudah ada
+(tanpa interview ulang), mengeksplorasi repo untuk vocabulary domain,
+menulis PRD menggunakan template Problem/Solution/User Stories/
+Implementation Decisions/Testing Decisions/Out of Scope, lalu
+mempublishnya langsung ke issue tracker dengan label `ready-for-agent`.
+
 ## Cara menggunakannya
 
 1. **Explore repo** bila belum, untuk pakai glossarium domain di PRD dan respect ADR.

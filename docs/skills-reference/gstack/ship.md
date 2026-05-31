@@ -33,6 +33,29 @@ skill.**
 
 Versi: `1.0.0`, `preamble-tier: 4`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Ship fitur ini, buatkan PR ke main."
+- "Kodenya sudah siap, push dan buat PR sekarang."
+- "Deploy perubahan auth refactor ini ke production."
+- Kata kunci kanonik (EN): `/ship`, `ship it`, `create a pr`,
+  `push to main`, `deploy this`.
+
+Contoh task lengkap:
+
+> "Branch `feature/user-auth` sudah selesai. Jalankan /ship — run
+> tests, bump version, generate CHANGELOG, dan buat PR ke main
+> dengan title yang sesuai."
+
+Yang terjadi: skill menjalankan 20-step workflow — deteksi base
+branch, sync, run tests, cek review readiness dashboard, bump
+VERSION 4-digit, auto-generate CHANGELOG dari semua commit, commit
+bisectable, push, buat PR via `gh pr create`, dan persist ship
+metrics ke review log untuk downstream skill (`/retro`,
+`/land-and-deploy`).
+
 ## Cara menggunakannya
 
 Workflow 20 step:

@@ -17,6 +17,32 @@ Skill ini dipakai sebagai finishing layer setelah `/design-shotgun` (variant exp
 - Saat ada `finalized.html` dari session sebelumnya yang mau di-iterate (evolve mode).
 - Tidak cocok untuk implementasi production code — output adalah HTML reference, bukan React/Vue/Svelte component (itu kerjaan developer).
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Finalize design ini jadi HTML yang beneran, bukan mockup statis."
+- "Convert approved variant ke HTML, text harus reflow beneran."
+- "Build the design — pakai Pretext supaya layout-nya computed."
+- Kata kunci kanonik (EN): `/design-html`, `build the design`,
+  `finalize this design`, `turn this into HTML`.
+
+Contoh task lengkap:
+
+> "/design-html — approved variant `variant-3.png` dari
+> `/design-shotgun` landing page MaritimHub. Extract color dan
+> typography via `$D`, generate HTML dengan Pretext layout:
+> hero, sticky nav, feature grid 3-kolom, pricing table
+> yang reflow di mobile."
+
+Yang terjadi: skill detect input (approved.json, CEO plan, atau
+freeform), extract implementation spec via `$D prompt --image`
+atau Read tool, routing ke Pretext tier yang sesuai (simple
+layout vs card/grid vs editorial), lalu generate HTML di mana
+text benar-benar reflow, heights computed dari content, dan UX
+principles (billboard design, 44px touch target) diterapkan.
+Output disimpan ke `~/.gstack/projects/$SLUG/designs/`.
+
 ## Cara menggunakannya
 
 1. **Setup**: `$D` (design binary) dan `$B` (browse binary) dicek availability. `$D` opsional — fallback ke HTML wireframe approach.

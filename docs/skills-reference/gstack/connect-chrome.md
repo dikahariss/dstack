@@ -17,6 +17,29 @@ Cocok untuk pair-programming session di mana user ingin lihat "Claude sekarang k
 - Saat butuh sidebar chat (child Claude instance yang execute natural-language commands di browser).
 - Tidak perlu untuk QA headless biasa — pakai `/browse` langsung saja.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buka GStack Browser supaya aku bisa lihat Chrome-nya langsung."
+- "Connect ke Chrome headed, mau demo QA ke partner sekarang."
+- "Launch browser yang bisa keliatan, ada situs anti-bot yang perlu dicek."
+- Kata kunci kanonik (EN): `/connect-chrome`, `open gstack browser`,
+  `launch chrome`, `real browser`.
+
+Contoh task lengkap:
+
+> "/connect-chrome — mau pair session review fitur `ShipmentTracker`
+> di MaritimHub bersama partner. Pastikan Side Panel terbuka dan
+> aktifitas agent kelihatan di feed, lalu jalankan `/qa` supaya
+> partner bisa lihat setiap klik di Chrome window."
+
+Yang terjadi: skill kill proses browse lama, bersihkan Chromium
+lock, launch headed Chromium di port 34567 dengan extension sidebar,
+konfirmasi `Mode: headed`, minta user pin extension di toolbar, demo
+navigasi ke satu URL sambil memperlihatkan feed di Side Panel — lalu
+siap dipakai bersama skill QA lain dalam sesi yang sama.
+
 ## Cara menggunakannya
 
 1. Pastikan browse binary ter-build.

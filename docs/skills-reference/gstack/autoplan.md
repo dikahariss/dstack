@@ -16,6 +16,29 @@ Selain hemat waktu, skill ini juga menjaga rigor: dia tidak meringkas section re
 - Setelah scope plan jelas tapi belum disetujui — perlu CEO + Design + Eng + DX sekaligus.
 - Tidak cocok untuk eksplorasi awal (gunakan `/office-hours` dulu) atau plan trivial < 1 jam effort.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Jalankan full review pipeline untuk plan fitur ini."
+- "Review plan-ku secara otomatis, ambil semua keputusan rutin."
+- "Saya punya plan kasar, langsung /autoplan saja."
+- Kata kunci kanonik (EN): `/autoplan`, `auto review`, `run all
+  reviews`, `automatic review pipeline`.
+
+Contoh task lengkap:
+
+> "Plan untuk fitur bulk-upload dokumen di MaritimHub sudah
+> ada di `plans/bulk-upload.md`. Jalankan `/autoplan` — semua
+> keputusan mekanik auto-saja, tapi flagging premis dan taste
+> decision tetap ke aku."
+
+Yang terjadi: skill membaca SKILL.md CEO/Design/Eng/DX review
+dari disk, menjalankan keempatnya berurutan (Phase 1-3.5),
+meng-auto-decide pertanyaan mekanik dengan 6 prinsip, lalu
+menyimpan restore point dan menyurfaskan taste decision + User
+Challenge ke approval gate akhir.
+
 ## Cara menggunakannya
 
 1. Tulis plan kasar di file plan (host-controlled).

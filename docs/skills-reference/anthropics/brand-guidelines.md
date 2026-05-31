@@ -24,6 +24,29 @@ ke `python-pptx`, CSS, atau library design lainnya.
   post-processing, styling, brand colors, typography, Anthropic brand, visual formatting,
   visual design*.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buat slide ini sesuai brand Anthropic."
+- "Styling dokumen ini pakai warna dan font resmi Anthropic."
+- "Post-process deck ini supaya look-and-feel-nya Anthropic."
+- Kata kunci kanonik (EN): `branding`, `brand colors`,
+  `visual identity`, `Anthropic brand`.
+
+Contoh task lengkap:
+
+> "Buatkan pitch deck 4 halaman untuk demo produk kami dalam
+> python-pptx. Gunakan brand Anthropic: warna Dark/Light/accent,
+> Poppins untuk heading, Lora untuk body, dan accent cycling
+> orange → blue → green untuk shape non-teks."
+
+Yang terjadi: agent memuat spesifikasi brand (kode warna eksak,
+tipografi Poppins/Lora dengan fallback Arial/Georgia, aturan
+accent cycling) lalu mengaplikasikannya ke artefak via
+`RGBColor` atau CSS variables — hasilnya konsisten tanpa user
+perlu menyebut nilai hex.
+
 ## Cara menggunakannya
 
 Skill ini ringan — isi utama adalah referensi yang dimuat ke konteks. Workflow:

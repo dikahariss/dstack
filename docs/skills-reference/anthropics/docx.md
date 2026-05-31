@@ -29,6 +29,30 @@ Trigger dari frontmatter `description`:
 **Jangan** dipakai untuk PDF, spreadsheet, Google Docs, atau coding tugas tidak terkait
 dokumen.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buatkan memo Word dengan TOC dan tabel keuangan, format US Letter."
+- "Edit kontrak.docx ini — tambahkan tracked changes untuk klausul baru."
+- "Konversi laporan.doc lama ke .docx lalu insert logo di header."
+- Kata kunci kanonik (EN): `Word doc`, `.docx`, `tracked changes`,
+  `table of contents`.
+
+Contoh task lengkap:
+
+> "Buatkan `laporan-q2.docx` US Letter via docx-js: heading
+> 'Laporan Keuangan Q2' (Heading1), tabel 3 kolom (Periode /
+> Pendapatan / Margin) dengan lebar 9360 DXA, TOC otomatis,
+> footer halaman, lalu validasi dengan `validate.py`."
+
+Yang terjadi: agent pakai docx-js, set page size `12240 x 15840`
+DXA eksplisit (bukan A4 default), override `Heading1` dengan
+`outlineLevel: 0` (wajib untuk TOC), tabel dengan dual width
+(`columnWidths` + tiap cell) pakai `WidthType.DXA` dan
+`ShadingType.CLEAR`, lalu jalankan `validate.py` — kalau gagal:
+unpack XML, fix, repack.
+
 ## Cara menggunakannya
 
 Quick reference:

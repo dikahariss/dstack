@@ -23,6 +23,29 @@ Trigger dari frontmatter `description`:
 - User butuh "skin" cepat untuk artefak yang sudah jadi.
 - User sebut palette/tema (mis. "yang professional", "ocean themed", "cosmic").
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Terapkan tema yang konsisten ke presentasi annual report ini."
+- "Saya mau tema 'ocean' untuk slide deck-nya — pakai yang ada."
+- "Bikin tema custom untuk brand healthcare kami, warna warm tapi
+  profesional."
+- Kata kunci kanonik (EN): `apply theme`, `styling artifact`,
+  `color palette`, `font pairing`.
+
+Contoh task lengkap:
+
+> "Saya punya deck 12 slide untuk pitch investor — tolong
+> tampilkan semua pilihan tema, lalu terapkan tema yang paling
+> cocok untuk fintech startup (modern, trustworthy)."
+
+Yang terjadi: skill menampilkan `theme-showcase.pdf` supaya user
+bisa lihat semua 10 preset secara visual, menunggu konfirmasi
+pilihan, lalu membaca file tema terpilih dari folder `themes/`
+dan mengaplikasikan palette + font pairing secara konsisten ke
+seluruh slide (background, heading, body, accent, cover).
+
 ## Cara menggunakannya
 
 ### Workflow

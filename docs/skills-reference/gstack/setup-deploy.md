@@ -30,6 +30,27 @@ deploy berubah.
 
 Versi: `1.0.0`, `preamble-tier: 2`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Setup deploy untuk project ini pakai gstack."
+- "Konfigurasikan platform deploy agar /land-and-deploy bisa jalan otomatis."
+- "Tambahkan deploy config ke CLAUDE.md project ini."
+- Kata kunci kanonik (EN): `/setup-deploy`, `configure deploy`,
+  `setup deployment`, `set deploy platform`.
+
+Contoh task lengkap:
+
+> "Project ini deploy ke Fly.io, nama app-nya `maritimhub-api`.
+> Jalankan /setup-deploy supaya /land-and-deploy tahu URL produksi
+> dan cara cek health setelah merge."
+
+Yang terjadi: skill mendeteksi `fly.toml` otomatis, mengekstrak
+nama app, memverifikasi via `fly status`, menulis section
+`## Deploy Configuration` ke CLAUDE.md dengan URL, perintah status,
+dan health check — lalu mencetak ringkasan ASCII + next steps.
+
 ## Cara menggunakannya
 
 1. **Step 1 Detection** — cek file:

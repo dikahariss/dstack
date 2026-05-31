@@ -17,6 +17,31 @@ Output di-feed ke `/design-html` (untuk convert ke HTML reference), `/design-rev
 - Sebagai sub-step dari `/plan-design-review` (called via `$_DESIGN_BRIEF`).
 - Tidak cocok kalau user sudah punya mockup eksternal (Figma file existing) — langsung pakai `/design-html` dengan PNG.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Tunjukkan beberapa opsi desain untuk halaman pricing kita."
+- "Visual brainstorm dulu — aku tidak suka tampilan dashboard saat ini."
+- "Generate 4 variant desain untuk signup flow, lalu buka side-by-side."
+- Kata kunci kanonik (EN): `/design-shotgun`, `explore design variants`,
+  `show me design options`, `visual brainstorm`.
+
+Contoh task lengkap:
+
+> "Aku mau explorasi desain untuk signup flow MaritimHub. Persona:
+> freight forwarder owner 35-50 tahun. Job: register perusahaan agar
+> bisa quote rate. Form punya 12 field panjang. Generate 4 variant —
+> satu wizard step-by-step, satu two-column dengan ilustrasi, satu
+> compact modal, satu scroll-based — lalu buka comparison board di
+> browser."
+
+Yang terjadi: skill mengumpulkan context (persona, job, edge case),
+membaca taste profile sebelumnya, generate N variant PNG dengan `$D
+variants`, membuat comparison board HTML dan membukanya via `$B`,
+kemudian menunggu feedback user untuk iterasi atau approval —
+menyimpan `approved.json` dan memperbarui taste profile.
+
 ## Cara menggunakannya
 
 1. **Setup**: `$D` (design binary, untuk generate variants) dan `$B` (browse binary, untuk serve & visit comparison board). `$D` mandatory; tanpa itu fallback ke HTML wireframe sketch (limited).

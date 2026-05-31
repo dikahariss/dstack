@@ -27,6 +27,31 @@ di claude.ai atau browser tanpa server.
 Skill ini diniatkan untuk membuat karya **orisinal** — tidak meniru karya seniman yang
 ada (untuk menghindari pelanggaran hak cipta).
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buatkan generative art dari ide vortex matematis."
+- "Bikin algorithmic art flow field dengan seed reproducible."
+- "Saya mau particle system p5.js yang bisa di-explore."
+- Kata kunci kanonik (EN): `generative art`, `algorithmic art`,
+  `flow field`, `particle system`.
+
+Contoh task lengkap:
+
+> "Buatkan generative art bertema 'pertumbuhan akar tanaman' —
+> philosophy dulu, lalu HTML interaktif p5.js dengan seed navigation,
+> slider untuk particleCount dan noiseScale, tombol Regenerate dan
+> Download PNG."
+
+Yang terjadi: agent menulis manifesto algoritmik 4-6 paragraf
+(filosofi komputasional + nama gerakan), mendeduksi referensi
+konseptual halus dari tema, lalu membaca `templates/viewer.html`
+sebagai titik awal literal dan mengganti hanya bagian variabel
+(algoritma p5.js, parameter, kontrol sidebar) — output: satu
+HTML self-contained dengan seed navigation dan UI branding
+Anthropic (Poppins/Lora).
+
 ## Cara menggunakannya
 
 Workflow tiga tahap:

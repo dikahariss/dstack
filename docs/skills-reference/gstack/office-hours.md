@@ -41,6 +41,31 @@ Skill mendukung dua mode:
 Gunakan sebelum `/plan-ceo-review` atau `/plan-eng-review`. Skill ini
 explicit dideklarasikan `benefits-from` mereka.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Aku punya ide SaaS baru, minta pendapat kamu dulu."
+- "Office hours — mau validasi ide sebelum mulai bangun."
+- "Apakah ide manajer tugas untuk tim ops ini layak dibangun?"
+- Kata kunci kanonik (EN): `/office-hours`, `brainstorm this`,
+  `is this worth building`, `office hours`.
+
+Contoh task lengkap:
+
+> "/office-hours — aku mau build platform data catalog internal
+> untuk tim ops MaritimHub. Ada 43 aplikasi yang datanya tidak
+> terdokumentasi. Bantu aku validasi apakah ini worth building
+> sebelum commit ke development."
+
+Yang terjadi: skill menjalankan sesi YC-style dengan 6
+pertanyaan forcing (demand reality, status quo, narrowest
+wedge, dll), mendorong spesifisitas — tidak menerima jawaban
+vague. Sesi menghasilkan design doc di
+`~/.gstack/projects/<slug>/` berisi problem statement,
+recommended approach, success criteria, dan next steps konkret
+yang bisa langsung dibawa ke `/plan-ceo-review`.
+
 ## Cara menggunakannya
 
 1. Invoke `/office-hours` lalu deskripsikan ide secara bebas.

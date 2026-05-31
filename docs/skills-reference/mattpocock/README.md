@@ -14,7 +14,7 @@ Sumber utama: [`mattpocock/skills` (folder `skills/`)](https://github.com/mattpo
 ## Bagaimana membaca dokumen ini
 
 Tiap file membahas satu skill dengan struktur seragam: mengapa skill
-penting, kapan dipakai, cara dipakai, contoh konkret, kesimpulan.
+penting, kapan dipakai, contoh prompt, cara dipakai, studi kasus konkret, kesimpulan.
 Path sumber SKILL.md asli dicantumkan di header tiap file agar mudah
 dilacak balik. Penjelasan ditulis dalam Bahasa Indonesia teknis-netral.
 

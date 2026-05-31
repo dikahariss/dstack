@@ -27,6 +27,30 @@ maksimal visual, satu halaman per artefak (kecuali diminta), font dari folder
 Skill ini diniatkan untuk membuat karya **orisinal** — tidak meniru karya seniman yang
 ada (untuk menghindari pelanggaran hak cipta).
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buatkan poster pameran foto minimalis, museum-quality."
+- "Saya mau karya seni statis PDF gaya brutalist untuk konferensi."
+- "Buat desain visual abstract untuk cover majalah internal."
+- Kata kunci kanonik (EN): `poster`, `piece of art`, `design`,
+  `static`, `PDF visual`, `PNG art`.
+
+Contoh task lengkap:
+
+> "Buatkan poster PDF 1 halaman untuk peluncuran produk
+> 'Rangka' — tema industrial minimalis, palette netral dengan
+> satu accent gelap, tipografi dari `./canvas-fonts/`, teks
+> seminimal mungkin, sisanya negative space."
+
+Yang terjadi: agent menulis manifesto desain 4-6 paragraf (nama
+gerakan, filosofi space/form/color), mendeduksi referensi
+konseptual halus dari tema, lalu mengeksekusi kanvas PDF/PNG
+dengan font dari `./canvas-fonts/`, layout rapi tanpa overlap,
+dan langsung melakukan refinement pass kedua (bukan menambah
+elemen baru) sebelum menyerahkan output final.
+
 ## Cara menggunakannya
 
 Workflow tiga tahap (mirror dengan `algorithmic-art`, tapi statis bukan algoritmik):

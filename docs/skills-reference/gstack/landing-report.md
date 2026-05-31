@@ -17,6 +17,29 @@ Saat menjalankan 5-10 paralel Conductor workspaces atau tim dengan banyak PR ope
 - Saat workflow Conductor banyak — visibility ke sibling workspaces.
 - Aman dijalankan di plan mode (PLAN MODE EXCEPTION — read-only).
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Tampilkan version queue sebelum aku /ship."
+- "Cek landing report — ada collision tidak di PR yang open?"
+- "Versi mana yang akan aku claim kalau /ship sekarang?"
+- Kata kunci kanonik (EN): `/landing-report`, `landing report`,
+  `version queue`, `what version comes next`.
+
+Contoh task lengkap:
+
+> "/landing-report — aku lagi di workspace tokyo-v2 feat/pricing,
+> mau cek apakah ada PR lain yang sudah claim versi yang sama
+> sebelum aku jalankan /ship."
+
+Yang terjadi: skill membaca VERSION di base branch dan semua
+open PR, memanggil `bin/gstack-next-version` 4 kali (micro/
+patch/minor/major), lalu render dashboard tabel dengan daftar
+PR yang claim versi, sibling worktrees aktif (bertanda bintang),
+dan slot versi yang akan di-claim kalau `/ship` dijalankan kini.
+Read-only — tidak ada mutasi.
+
 ## Cara menggunakannya
 
 1. **Step 1: Detect platform + base branch** — `gh pr view --json baseRefName` atau `gh repo view --json defaultBranchRef`, fallback `main`.

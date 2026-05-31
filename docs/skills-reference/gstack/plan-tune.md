@@ -35,6 +35,30 @@ Trigger field: `tune questions`, `stop asking me that`,
 
 Versi: `1.0.0`, `preamble-tier: 2`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Gstack terlalu banyak tanya — stop tanya soal minor eng fix."
+- "Tampilkan profilku, mau lihat vibe developer-ku."
+- "Review pertanyaan apa saja yang pernah muncul dari plan-eng-review."
+- Kata kunci kanonik (EN): `/plan-tune`, `tune questions`,
+  `stop asking me that`, `show my profile`, `developer profile`.
+
+Contoh task lengkap:
+
+> "/plan-tune > review questions — tampilkan semua pertanyaan yang
+> muncul dari skill gstack minggu ini, lalu aku mau set `never-ask`
+> untuk konfirmasi minor fix yang sudah lebih dari 10 kali aku
+> override."
+
+Yang terjadi: skill baca `question-log.jsonl`, tampilkan tabel per
+question_id (count, skill, followed vs overridden), highlight kandidat
+`never-ask`. User bilang "stop asking me about X" → skill konfirmasi
+mapping, tulis preference via `gstack-question-preference --write`.
+Mulai sesi berikutnya, skill terkait AUTO_DECIDE finding itu dan
+melaporkan di akhir.
+
 ## Cara menggunakannya
 
 Interface fully conversational — tidak butuh subcommand:

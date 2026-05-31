@@ -28,6 +28,30 @@ Trigger dari frontmatter `description` (ekspansif sengaja):
 Bahkan kalau user hanya akan pakai konten untuk hal lain (email, summary), skill ini
 tetap dipanggil saat membuka file `.pptx`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buatkan deck pitch 10 slide untuk startup saya."
+- "Edit presentation.pptx ini — ganti semua placeholder."
+- "Ekstrak teks dari company_deck.pptx untuk saya rangkum."
+- Kata kunci kanonik (EN): `deck`, `slides`, `presentation`,
+  `.pptx`, `pitch deck`, `slide deck`.
+
+Contoh task lengkap:
+
+> "Buatkan deck company profile 8 slide untuk perusahaan
+> logistik maritim kami. Konten: overview, layanan (3
+> slide), keunggulan, klien, kontak. Pakai pptxgenjs,
+> desain yang profesional dan tidak generik."
+
+Yang terjadi: Claude memilih palette content-informed
+(mis. Ocean Gradient untuk tema maritim), menentukan visual
+motif konsisten, membuat tiap slide dengan elemen visual
+(bukan text-only), lalu menjalankan QA wajib — markitdown
+grep untuk placeholder + subagent inspect gambar — sebelum
+declare success. Tidak ada accent line di bawah judul.
+
 ## Cara menggunakannya
 
 ### Quick reference tabel

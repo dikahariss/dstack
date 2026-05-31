@@ -24,6 +24,34 @@ Trigger dari frontmatter `description`:
 - Multi-component React/TS app yang akan jadi single HTML artifact di claude.ai.
 - **BUKAN** untuk simple single-file HTML/JSX artifact (terlalu over-engineered).
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Bikin artifact claude.ai — kanban board multi-kolom dengan
+  drag-and-drop dan filter status."
+- "Saya butuh React app dengan routing dan shadcn/ui, bundle
+  jadi satu HTML artifact."
+- "Buat artifact kompleks: to-do app dengan state global,
+  kategori, dan animasi transisi."
+- Kata kunci kanonik (EN): `complex artifact`, `React artifact`,
+  `shadcn/ui`, `single HTML artifact`, `state management`.
+
+Contoh task lengkap:
+
+> "Bikin artifact claude.ai — expense tracker dengan tiga
+> halaman (Dashboard, Tambah Transaksi, Laporan), pakai
+> shadcn/ui Table dan Chart, state dikelola Zustand. Bundle
+> ke `bundle.html` dan tampilkan."
+
+Yang terjadi: skill menjalankan `bash scripts/init-artifact.sh
+expense-tracker`, mengembangkan komponen React + TypeScript
+dengan routing `react-router-dom`, shadcn/ui components, dan
+Zustand store, lalu menjalankan `bash scripts/bundle-artifact.sh`
+untuk menghasilkan `bundle.html` self-contained yang siap
+di-paste sebagai artifact di claude.ai — tanpa purple gradient
+atau Inter font.
+
 ## Cara menggunakannya
 
 ### Stack

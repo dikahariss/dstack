@@ -33,6 +33,29 @@ office-hours menjadi input ideal.
 
 Versi: `1.0.0`, `preamble-tier: 3`, `interactive: true`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Reviewlah plan ini dari sudut pandang CEO — apakah cukup ambisius?"
+- "Aku mau rethink scope-nya, jangan terlalu kecil."
+- "Tantang premise plan ini, cari versi yang 10x lebih baik."
+- Kata kunci kanonik (EN): `/plan-ceo-review`, `think bigger`,
+  `expand scope`, `strategy review`.
+
+Contoh task lengkap:
+
+> "/plan-ceo-review — plan-ku: tambahkan filter ke halaman dashboard
+> transaksi. Pakai mode SELECTIVE EXPANSION: pertahankan scope inti
+> tapi surface peluang tambahan satu per satu agar aku bisa pilih
+> mana yang layak masuk sprint ini."
+
+Yang terjadi: skill jalan melalui Step 0 (temporal interrogation jam
+1–6+, mode selection), lalu 11 section review secara interaktif —
+setiap finding muncul satu AskUserQuestion. Di akhir, CEO plan file
+ditulis ke `~/.gstack/projects/<slug>/ceo-plan-<date>.md` beserta
+entry di review log.
+
 ## Cara menggunakannya
 
 1. Invoke `/plan-ceo-review` pada plan file yang sudah ada (Eng review

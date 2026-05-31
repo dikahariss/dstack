@@ -16,6 +16,30 @@ Kuncinya **NEVER clobber CHANGELOG**: ada precedent agent yang replace existing 
 - Tidak untuk update CHANGELOG entry awal — itu `/ship` yang handle dari diff.
 - Voice trigger: "update docs", "document release", "doc audit pre-merge".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Update docs setelah ship fitur rate limiting ini."
+- "Sync dokumentasi — README, CLAUDE.md, CHANGELOG sudah ketinggalan."
+- "Document release sebelum PR merge."
+- Kata kunci kanonik (EN): `/document-release`, `update docs after ship`,
+  `post-ship docs`, `sync documentation`.
+
+Contoh task lengkap:
+
+> "Jalankan /document-release setelah /ship untuk fitur API rate
+> limiting di MaritimHub. Branch: feat/rate-limit. Diff menambah
+> `src/middleware/rate-limit.ts`, env var `RATE_LIMIT_MAX_REQUESTS`,
+> dan satu test baru. Update README features, CLAUDE.md env table,
+> ARCHITECTURE middleware section, polish CHANGELOG voice, dan
+> tandai TODOS item 'Add rate limiting' sebagai completed."
+
+Yang terjadi: skill membaca diff branch, mengaudit setiap file .md,
+langsung mengedit fakta sederhana (path, count, env var) tanpa tanya,
+polish wording CHANGELOG entry tanpa replace isinya, menandai TODOS
+selesai, dan membuat satu commit docs dengan summary per file.
+
 ## Cara menggunakannya
 
 1. **Step 1: Pre-flight & Diff Analysis** — abort kalau on base branch. Gather `git diff <base>...HEAD --stat`, `git log <base>..HEAD --oneline`, file changes. Discover doc files: `find . -maxdepth 2 -name "*.md" -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./.gstack/*" -not -path "./.context/*"`. Classify changes (new features / changed behavior / removed / infrastructure).

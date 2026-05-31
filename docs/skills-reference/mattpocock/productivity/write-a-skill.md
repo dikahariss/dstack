@@ -16,6 +16,29 @@ Insight inti: **description adalah satu-satunya yang agent lihat** saat memutusk
 - Sebagai template default tiap kali Anda menambah skill ke catalog.
 - Frontmatter description: "Create new agent skills with proper structure, progressive disclosure, and bundled resources".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buat skill baru untuk summarize PR ke standup bullet."
+- "Tulis skill yang auto-generate ADR dari diskusi arsitektur."
+- "Saya mau build skill baru — bantu saya."
+- Kata kunci kanonik (EN): `create a skill`, `write a skill`,
+  `build a new skill`.
+
+Contoh task lengkap:
+
+> "Buat skill baru bernama `summarize-pr`. Input: URL pull
+> request GitHub. Output: 5 bullet poin untuk daily standup —
+> apa yang berubah, kenapa, risk, status test, dan follow-up.
+> Pakai `gh pr view` untuk fetch data."
+
+Yang terjadi: agent gather requirements (task, use case, perlu
+script atau cukup instruksi), draft `SKILL.md` dengan frontmatter
+description yang punya trigger spesifik dan isi <100 baris,
+lalu review bersama user — apakah use case tercakup, ada yang
+missing, dan tiap section sudah cukup detail.
+
 ## Cara menggunakannya
 
 1. **Gather requirements**: task/domain apa? Use case spesifik? Butuh executable script atau cuma instruksi? Reference material untuk include?

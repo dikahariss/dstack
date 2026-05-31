@@ -34,6 +34,30 @@ me the browser`.
 Pakai ketika user ingin menonton agent bekerja real-time (presentasi,
 debugging UI bug yang sulit reproduce, atau hand-off ke remote agent).
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buka browser biar aku bisa lihat agent bekerja langsung."
+- "Launch gstack browser untuk demo ke klien."
+- "Tampilkan browser real — aku mau pantau QA secara visual."
+- Kata kunci kanonik (EN): `/open-gstack-browser`,
+  `open gstack browser`, `launch browser`, `show me the browser`.
+
+Contoh task lengkap:
+
+> "/open-gstack-browser — aku mau demo /qa ke klien sambil
+> mereka melihat langsung setiap step yang dijalankan di
+> browser, termasuk klik, screenshot, dan console error."
+
+Yang terjadi: skill membuild binary browse jika belum ada,
+membersihkan stale server dan Chromium lock, lalu menjalankan
+`$B connect` dalam headed mode di port 34567. Chromium terbuka
+dengan branding GStack Browser, sidebar extension auto-load,
+dan activity feed live tampil di panel kanan. Setiap command
+agent (`$B goto`, `$B snapshot`, dll) terlihat real-time di
+window tersebut.
+
 ## Cara menggunakannya
 
 Skill berjalan 6 langkah:

@@ -16,6 +16,31 @@ Kekuatan utama skill: glossarium arsitektur yang ketat (Module, Interface, Imple
 - Setelah `diagnose` selesai dan post-mortem menunjukkan absence of correct seam (cue: pindah ke skill ini).
 - Frontmatter description: "Find deepening opportunities in a codebase, informed by the domain language in CONTEXT.md and the decisions in docs/adr/".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Improve architecture codebase ini — terlalu susah di-test."
+- "Temukan refactor opportunity di modul order handling ini."
+- "Codebase makin becek, agent susah navigate. Apa yang bisa
+  dikonsolidasi?"
+- Kata kunci kanonik (EN): `improve architecture`,
+  `refactoring opportunities`, `testable`, `AI-navigable`.
+
+Contoh task lengkap:
+
+> "Di `src/orders/`, ada `OrderValidator.ts`,
+> `OrderEnricher.ts`, `OrderPersister.ts`, `OrderEmitter.ts`
+> — dipanggil berurutan dari 7 handler. Temukan deepening
+> opportunity: jalankan deletion test, present kandidat
+> bernomor, lalu grill saya sampai interface barunya jelas."
+
+Yang terjadi: agent mengeksplor codebase dengan deletion test
+dan heuristik depth/locality, mempresentasikan numbered list
+kandidat refactor dengan Problem + Solution + Benefits, lalu
+masuk ke grilling loop untuk satu kandidat yang dipilih user —
+setiap term domain baru langsung ditambahkan ke `CONTEXT.md`.
+
 ## Cara menggunakannya
 
 1. **Explore**: baca glossarium domain dan ADR area target. Pakai Agent tool (`subagent_type=Explore`) untuk jalan-jalan di codebase, catat friction: bouncing between many small modules, modul shallow, pure functions extracted untuk testability tapi tanpa locality, leaky seams, area untestable. Apply deletion test pada apa yang dicurigai shallow.

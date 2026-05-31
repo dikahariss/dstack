@@ -32,6 +32,24 @@ Trigger praktis:
 - Tidak berlaku untuk subagent yang di-dispatch dengan tugas
   spesifik (`<SUBAGENT-STOP>` di awal skill).
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Pakai superpowers untuk kerjaan ini."
+- "Skill mana yang relevan buat task ini? Cek dulu sebelum jawab."
+- (Otomatis: skill ini idealnya aktif di awal SETIAP percakapan.)
+- Kata kunci kanonik (EN): `use superpowers`.
+
+Contoh task lengkap:
+
+> "Aku mau mulai refactor besar di modul billing. Sebelum kamu jawab
+> apa pun, cek dulu skill superpowers mana yang relevan dan pakai."
+
+Yang terjadi: meta-skill ini mewajibkan agent meng-invoke Skill tool
+untuk menemukan skill relevan SEBELUM respons apa pun — termasuk
+sebelum bertanya klarifikasi. Aturan 1%: kalaupun ragu, invoke dulu.
+
 ## Cara menggunakannya
 
 Aturan inti: **Invoke relevant or requested skills BEFORE any

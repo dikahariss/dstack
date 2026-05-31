@@ -21,6 +21,28 @@ Filename pakai prefix `YYYYMMDD-HHMMSS-<slug>.md` untuk canonical ordering yang 
   - `/context-save list` — tampilkan saved contexts (default current branch, `--all` untuk lintas branch).
 - `/context-save resume` atau `restore` → diarahkan ke `/context-restore`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Save progress dulu sebelum aku tutup laptop."
+- "Simpan state sekarang, mau ganti task."
+- "Context save — catat keputusan dan sisa kerja yang belum selesai."
+- Kata kunci kanonik (EN): `/context-save`, `save progress`,
+  `save state`, `save my work`.
+
+Contoh task lengkap:
+
+> "/context-save auth refactor — session store layer done.
+> Catat bahwa handler `/login` belum diintegrasikan, middleware
+> belum dipasang, dan ada catatan kenapa JWT approach di-rollback."
+
+Yang terjadi: skill kumpulkan git state (branch, status, diff stat,
+log), generate 4-bagian summary (goal, decisions, remaining work,
+notes) dari conversation context, hitung durasi sesi, tulis file
+`YYYYMMDD-HHMMSS-<slug>.md` ke direktori `checkpoints/` — lalu
+konfirmasi path file ke user. Tidak menyentuh kode sama sekali.
+
 ## Cara menggunakannya
 
 1. Invoke `/context-save` atau `/context-save <title>`.

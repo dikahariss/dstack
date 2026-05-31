@@ -14,6 +14,29 @@ Claude Code dapat menjalankan command shell, dan beberapa command git bersifat d
 - Setelah accident "tertimpa" git push --force atau reset --hard.
 - Frontmatter description: "Set up Claude Code hooks to block dangerous git commands ... before they execute".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Pasang hook biar Claude tidak bisa git push --force."
+- "Blokir perintah git berbahaya di Claude Code."
+- "Setup guardrails supaya Claude tidak bisa reset --hard."
+- Kata kunci kanonik (EN): `block dangerous git`, `git push`,
+  `PreToolUse hook`, `git safety`.
+
+Contoh task lengkap:
+
+> "Setup git guardrails di project ini — scope project saja,
+> bukan global. Blokir `git push`, `git reset --hard`, dan
+> `git clean -fd`. Verifikasi dengan smoke test setelah
+> terpasang."
+
+Yang terjadi: skill menyalin script hook ke
+`.claude/hooks/block-dangerous-git.sh`, menambah konfigurasi
+`PreToolUse` ke `.claude/settings.json`, lalu menjalankan
+smoke test untuk memastikan command yang diblokir keluar
+dengan exit code 2 dan pesan BLOCKED ke stderr.
+
 ## Cara menggunakannya
 
 1. **Ask scope**: install untuk project saja (`.claude/settings.json`) atau semua project (`~/.claude/settings.json`)?

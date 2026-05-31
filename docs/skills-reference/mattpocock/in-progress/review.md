@@ -16,6 +16,30 @@ Code review yang dilakukan agent monolitik sering mencampuradukkan dua axis berb
 - Sebelum merge: dua axis dijalankan paralel agar tidak overlap.
 - Frontmatter description: "Review the changes since a fixed point ... along two axes — Standards and Spec".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Review perubahan di branch ini terhadap main."
+- "Cek apakah PR ini sudah sesuai spec dan coding standard."
+- "Review since commit abc123 — dua axis, standards dan spec."
+- Kata kunci kanonik (EN): `review branch`, `review since`,
+  `Standards and Spec`, `review PR`.
+
+Contoh task lengkap:
+
+> "Review semua perubahan sejak `main` di branch
+> `feat/cancel-subscription`. Spec ada di issue #142.
+> Standards dari `CLAUDE.md` dan `docs/adr/`. Jalankan
+> dua sub-agent paralel, laporkan side-by-side."
+
+Yang terjadi: skill menjalankan dua sub-agent paralel —
+satu membaca standar coding dan melaporkan pelanggaran
+per file/hunk, satu membaca spec issue dan melaporkan
+requirement yang hilang atau scope creep — lalu
+mengaggregasi dua report di bawah heading `## Standards`
+dan `## Spec` tanpa mencampurnya.
+
 ## Cara menggunakannya
 
 1. **Pin the fixed point**: apa pun yang user sebut — commit SHA, branch, tag, `main`, `HEAD~5`. Pass through, jangan opinionated. Bila user tidak sebut, tanya. Capture command: `git diff <fixed-point>...HEAD` (three-dot, comparison terhadap merge-base) + `git log <fixed-point>..HEAD --oneline`.

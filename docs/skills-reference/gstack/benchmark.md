@@ -18,6 +18,29 @@ Skill ini juga melacak tren historis — kalau bundle JS naik 50KB/minggu selama
 - Mode `--diff` membatasi audit hanya ke halaman yang terpengaruh oleh diff branch.
 - Mode `--trend` menampilkan grafik historis 5 benchmark terakhir.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Cek performa halaman setelah aku tambah library chart baru."
+- "Kok loading-nya lebih lama? Quick check dulu."
+- "Capture baseline sebelum aku mulai refactor SSR-nya."
+- Kata kunci kanonik (EN): `/benchmark`, `performance`, `web
+  vitals`, `bundle size`, `page speed`, `lighthouse`.
+
+Contoh task lengkap:
+
+> "Sebelum aku merge branch `feat/chart-integration`, capture
+> baseline dulu: `/benchmark https://app.staging.local --baseline`.
+> Nanti setelah merge jalankan `/benchmark https://app.staging.local`
+> untuk lihat apakah LCP atau JS bundle naik lebih dari 25%."
+
+Yang terjadi: skill mengumpulkan metrik nyata (TTFB, FCP, LCP,
+ukuran bundle JS/CSS) via `$B perf` dan `performance.getEntries()`,
+membandingkan dengan baseline, lalu melaporkan REGRESSION / WARNING /
+OK per metrik dengan threshold 50%/>500ms untuk timing dan 25%
+untuk bundle.
+
 ## Cara menggunakannya
 
 1. Pastikan browse daemon sudah ter-build (`$B` resolved via SETUP check).

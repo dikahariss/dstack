@@ -17,6 +17,28 @@ Cocok dipakai saat skill `/investigate` lock scope post-hypothesis, atau saat us
 - Saat call dari `/investigate` Phase 1.5 "Scope Lock" — lock ke narrowest containing dir.
 - Tidak untuk session general — terlalu restrictive untuk exploration.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Freeze — jangan edit file di luar src/auth/."
+- "Batasi perubahan hanya ke folder ini saja."
+- "Lock down edits ke src/payments/ selama debug ini."
+- Kata kunci kanonik (EN): `/freeze`, `freeze edits to directory`,
+  `restrict file changes`, `lock editing scope`.
+
+Contoh task lengkap:
+
+> "Aku debug bug session expiry di MaritimHub. Freeze edits ke
+> `src/auth/` — aku tidak mau Claude edit file lain di luar folder
+> itu, apapun yang dia notice."
+
+Yang terjadi: skill menanya path direktori via AskUserQuestion,
+meresolusi ke absolute path, menyimpan ke state file, lalu hook
+PreToolUse aktif — setiap Edit/Write ke file di luar `src/auth/`
+langsung di-deny (bukan cuma warn), sementara Read, Bash, Glob
+tidak terpengaruh.
+
 ## Cara menggunakannya
 
 Invoke `/freeze`. Skill (87 baris saja) trigger AskUserQuestion text input:

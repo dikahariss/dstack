@@ -17,6 +17,27 @@ Caveman mode bukan tentang kasar atau gaul — ini tentang fragmen, abbreviasi, 
 - Saat sesi panjang dan token budget jadi concern.
 - Frontmatter description: "Ultra-compressed communication mode. Cuts token usage ~75%".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Caveman mode, singkat saja dari sekarang."
+- "Pakai caveman, hemat token."
+- "Less tokens — bicara seperti caveman."
+- Kata kunci kanonik (EN): `caveman mode`, `talk like caveman`,
+  `less tokens`, `/caveman`.
+
+Contoh task lengkap:
+
+> "Aktifkan caveman mode. Saya mau debug race condition di
+> `AuthMiddleware` — token expiry check di `validateToken()`
+> kelihatannya salah operator. Tunjukkan bug-nya dan fix-nya."
+
+Yang terjadi: agent beralih ke mode ultra-compressed seketika
+dan tetap di mode itu sampai akhir sesi — jawaban berformat
+`[thing] [action] [reason]`, artikel dan filler dibuang, kode
+dan pesan error tetap exact. Mode tidak revert otomatis.
+
 ## Cara menggunakannya
 
 **Persistence**: aktif tiap response sekali triggered. Tidak revert. Tidak filler drift. Masih aktif bila ragu. Off hanya ketika user perintah eksplisit.

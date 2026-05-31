@@ -33,6 +33,27 @@ Trigger praktis:
   inline dibanding subagent-driven.
 - User menginginkan checkpoint manual antar fase.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Eksekusi plan di docs/plans/rate-limiter.md, task demi task."
+- "Jalankan rencana implementasi ini inline, tanpa subagent."
+- "Kerjakan plan ini, berhenti dan tanya aku kalau ada blocker."
+- Kata kunci kanonik (EN): `execute this plan`, `run the plan`.
+
+Contoh task lengkap:
+
+> "Ini plan-nya di docs/plans/2026-05-add-rate-limiter.md. Load,
+> review kritis dulu apakah masih masuk akal, lalu eksekusi
+> task-by-task. Stop dan tanya aku kalau ketemu blocker — jangan
+> nebak."
+
+Yang terjadi: agent memuat plan, me-review-nya secara kritis sebelum
+mulai, menjalankan task satu per satu dengan verifikasi tiap step,
+berhenti saat blocker, dan menyerahkan ke
+`finishing-a-development-branch` setelah semua task selesai.
+
 ## Cara menggunakannya
 
 Tiga langkah utama:

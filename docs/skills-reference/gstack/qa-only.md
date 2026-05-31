@@ -31,6 +31,30 @@ test-fix-verify loop, gunakan `/qa`.
 
 Versi: `1.0.0`, `preamble-tier: 4`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buatkan bug report dulu, jangan ubah kode apa pun."
+- "QA report saja sebelum handoff ke tim dev."
+- "Cek situs tapi jangan fix apa-apa, cukup dokumentasikan."
+- Kata kunci kanonik (EN): `/qa-only`, `just report bugs`,
+  `qa report only`, `test but don't fix`.
+
+Contoh task lengkap:
+
+> "/qa-only — saya di branch feature/billing-update, butuh
+> report untuk handoff ke tim. Diff-aware mode, fokus
+> halaman /billing dan /account/subscription."
+
+Yang terjadi: skill masuk diff-aware mode, analisis
+`git diff main...HEAD`, identifikasi halaman yang terpengaruh,
+test dengan browse daemon (screenshot, console errors, repro
+steps), hitung health score, simpan baseline.json — lalu
+berhenti tanpa menyentuh satu baris kode pun. Output berupa
+report terstruktur siap di-handoff atau dipakai sebagai
+baseline untuk `/qa` di sesi berikutnya.
+
 ## Cara menggunakannya
 
 Workflow 6 phase (subset dari `/qa`):

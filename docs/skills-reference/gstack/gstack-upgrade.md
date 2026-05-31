@@ -16,6 +16,29 @@ Skill ini juga punya **inline upgrade flow**: setiap skill gstack lain check `UP
 - Standalone: `/gstack-upgrade` cek + upgrade kalau ada update.
 - Setelah lihat changelog di rilis baru yang relevant.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Upgrade gstack ke versi terbaru."
+- "Ada update gstack — install sekarang."
+- "Get latest gstack, jalankan migration kalau ada."
+- Kata kunci kanonik (EN): `/gstack-upgrade`, `upgrade gstack`,
+  `update gstack version`, `get latest gstack`.
+
+Contoh task lengkap:
+
+> "Skill /investigate baru saja print UPGRADE_AVAILABLE 1.26.3
+> 1.27.0. Upgrade sekarang — detect install type, backup, fetch
+> + reset origin/main, jalankan ./setup, run migration v1.27.0.0.sh,
+> lalu lanjut workflow /investigate tadi."
+
+Yang terjadi: skill mendeteksi tipe install (global-git/vendored),
+stash local changes, fetch + reset ke origin/main, menjalankan
+migration scripts yang belum dijalankan, menulis marker
+`just-upgraded-from`, menampilkan "What's New" dari CHANGELOG 5-7
+bullets, lalu melanjutkan skill yang memicu upgrade.
+
 ## Cara menggunakannya
 
 **Inline upgrade flow** (referenced by all skill preambles when `UPGRADE_AVAILABLE` detected):

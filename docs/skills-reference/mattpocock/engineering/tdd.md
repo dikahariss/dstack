@@ -16,6 +16,29 @@ Filosofi inti: test harus memverifikasi behavior melalui public interface, bukan
 - Membangun fitur baru atau perbaikan bug di mana ada behavior baru yang dapat diobservasi via public interface.
 - Frontmatter description: "Test-driven development with red-green-refactor loop".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Kerjakan fitur ini dengan TDD ya, test-first."
+- "Tulis test yang gagal dulu sebelum implementasi."
+- "Red-green-refactor — satu behavior per cycle."
+- Kata kunci kanonik (EN): `TDD`, `red-green-refactor`, `test-first`,
+  `integration tests`.
+
+Contoh task lengkap:
+
+> "Tambahkan fungsi `applyCoupon(cart, coupon)` ke checkout service.
+> Kerjakan dengan TDD — mulai dari behavior paling penting dulu:
+> kupon valid mengurangi harga. Tunjukkan test merah dulu, baru
+> kode minimal yang membuatnya hijau, lalu kita lanjut ke behavior
+> berikutnya."
+
+Yang terjadi: agent mengonfirmasi prioritas behavior bersama user,
+menulis satu test untuk behavior pertama dan menjalankannya sampai
+RED, lalu menulis kode minimal agar GREEN — cycle diulang per
+behavior, refactor hanya dilakukan setelah semua test hijau.
+
 ## Cara menggunakannya
 
 1. **Planning**: pakai glossarium domain untuk nama test/interface; respect ADR area. Konfirmasi dengan user perubahan interface, behavior yang dites (dengan prioritas), opportunity untuk deep modules, desain interface yang testable. **Anda tidak bisa tes semuanya** — konfirmasi behavior mana yang paling penting.

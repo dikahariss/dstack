@@ -35,6 +35,29 @@ Lebih cocok daripada `executing-plans` saat platform mendukung
 subagent (Claude Code, Codex). Untuk parallel session yang berbeda,
 gunakan `executing-plans` sebagai gantinya.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Eksekusi plan ini pakai subagent per task plus review."
+- "Jalankan rencana ini dengan subagent-driven development."
+- "Kerjakan tiap task lewat subagent segar, review dua tahap."
+- Kata kunci kanonik (EN): `subagent-driven development`, `dispatch a
+  subagent per task`.
+
+Contoh task lengkap:
+
+> "Ini plan 6 task di docs/plans/inventory-sync.md, task-nya
+> independen. Eksekusi pakai subagent-driven development: subagent
+> segar per task, review spec dulu baru code quality, jalan terus
+> tanpa nanya aku kecuali blocker."
+
+Yang terjadi: agent meng-extract semua task, lalu per task
+men-dispatch implementer → spec reviewer → code-quality reviewer
+secara berurutan, dan memilih model termurah-yang-mampu per peran
+(task mekanik → model cepat-murah; integrasi → model standar;
+desain/review → model paling mampu).
+
 ## Cara menggunakannya
 
 Alur per task:

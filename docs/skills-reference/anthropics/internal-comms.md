@@ -23,6 +23,29 @@ Trigger dari frontmatter `description`:
 - Mention keyword: 3P updates, company newsletter, company comms, weekly update, faqs,
   common questions, updates, internal comms.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Tulis 3P update tim backend untuk minggu ini."
+- "Bikin FAQ tentang kebijakan lembur yang baru."
+- "Buat newsletter bulanan untuk seluruh karyawan."
+- Kata kunci kanonik (EN): `3P updates`, `company newsletter`,
+  `internal comms`, `weekly update`, `faqs`.
+
+Contoh task lengkap:
+
+> "Tulis 3P update tim platform untuk minggu ini. Progress:
+> deployment pipeline baru sudah live. Plans: mulai migrasi
+> service auth ke K8s minggu depan. Problems: alert false
+> positive masih tinggi, belum ketemu root cause."
+
+Yang terjadi: Claude mengidentifikasi tipe komunikasi (3P
+update), memuat panduan dari `examples/3p-updates.md`, lalu
+menghasilkan dokumen dengan format Progress/Plans/Problems
+— kalimat ringkas per poin, tone internal bukan marketing,
+siap dikirim ke Slack atau email.
+
 ## Cara menggunakannya
 
 Workflow tiga langkah:

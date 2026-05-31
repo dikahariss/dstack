@@ -38,6 +38,27 @@ Jangan gunakan saat:
 - Anda butuh memahami full system state dulu.
 - Agent-agent akan saling mengganggu (edit file yang sama).
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Jalankan ketiga audit ini paralel: security, performa, aksesibilitas."
+- "Cari pemakaian API lama di 4 service sekaligus, satu subagent per service."
+- "6 test gagal di 3 file berbeda — selidiki barengan."
+- Kata kunci kanonik (EN): `dispatch parallel agents`, `in parallel`,
+  `fan out`.
+
+Contoh task lengkap:
+
+> "Aku mau tahu dampak penghapusan kolom `legacy_status` di 5
+> microservice yang tidak saling bergantung. Sebar subagent paralel —
+> satu per service — lalu kumpulkan temuannya jadi satu ringkasan."
+
+Yang terjadi: agent mengelompokkan pekerjaan ke beberapa subagent
+berkonteks terisolasi yang berjalan bersamaan pada domain independen,
+menjaga main thread tetap ramping, lalu mensintesis hasil tiap
+subagent.
+
 ## Cara menggunakannya
 
 Empat langkah:

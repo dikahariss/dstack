@@ -17,6 +17,28 @@ Penting dibedakan: `/benchmark` mengukur performa halaman web (Core Web Vitals);
 - Untuk membenarkan migration cost: kalau Gemini lebih murah 5x dengan quality drop 1 poin, apakah worth?
 - Tidak cocok untuk task one-off; selalu ada cost API call nyata.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Model mana yang paling cocok untuk skill /investigate?"
+- "Bandingkan Claude vs GPT-5 untuk task code review."
+- "Mau model shootout sebelum aku pilih default model skill baru."
+- Kata kunci kanonik (EN): `/benchmark-models`, `compare models`,
+  `model shootout`, `which model is best`.
+
+Contoh task lengkap:
+
+> "Jalankan `/benchmark-models` — pilih skill `investigate` sebagai
+> prompt, sertakan semua provider yang ter-auth, dan aktifkan judge
+> supaya kualitas output juga terukur. Simpan hasilnya ke JSON."
+
+Yang terjadi: skill dry-run dulu untuk lihat status auth per
+provider, lalu menjalankan prompt yang sama paralel ke Claude,
+GPT (via Codex CLI), dan Gemini — membandingkan latency, cost,
+tokens, dan opsional quality score dari LLM judge (~$0.05/run),
+lalu menyimpan hasil ke `~/.gstack/benchmarks/<date>-<slug>.json`.
+
 ## Cara menggunakannya
 
 1. Pastikan `gstack-model-benchmark` binary terinstall (`~/.claude/skills/gstack/bin/gstack-model-benchmark`). Kalau hilang, run `./setup` di gstack install dir.

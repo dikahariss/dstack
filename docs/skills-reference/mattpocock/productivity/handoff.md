@@ -17,6 +17,29 @@ Aturan emas: **jangan duplikasi konten yang sudah ditangkap di artifact lain** (
 - User bilang "handoff this", "summarize for next session".
 - Frontmatter `argument-hint: "What will the next session be used for?"` — sertakan tujuan sesi berikutnya bila Anda tahu.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Handoff ini — saya mau ganti ke fresh agent."
+- "Summarize for next session, fokus ke implementasi payment."
+- "Buat handoff doc sebelum konteks habis."
+- Kata kunci kanonik (EN): `handoff this`, `summarize for next
+  session`, `/handoff`.
+
+Contoh task lengkap:
+
+> "/handoff 'implement subscription cancellation' — sesi ini
+> sudah selesai grilling dan nulis PRD di issue #142. Yang belum:
+> refund policy dan email template. Tolong rangkum dan sarankan
+> skill untuk sesi berikutnya."
+
+Yang terjadi: agent jalankan `mktemp -t handoff-XXXXXX.md`,
+tulis handoff document yang merangkum state saat ini (tanpa
+duplikasi artifact yang sudah ada), cantumkan path artifact
+relevan, dan rekomendasikan skill untuk sesi berikutnya.
+Path file di-share ke user.
+
 ## Cara menggunakannya
 
 1. **Buat path output**: `mktemp -t handoff-XXXXXX.md`. Baca file (kosong) sebelum write.

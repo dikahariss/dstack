@@ -38,6 +38,28 @@ sudah ter-dokumen baik di tempat lain, konvensi project-specific
 (taruh di CLAUDE.md), atau aturan mekanis yang bisa di-enforce
 dengan regex/validation.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Bikin skill baru untuk workflow deploy kami."
+- "Edit skill ini biar gak gampang di-bypass agent."
+- "Pressure test skill ini dulu sebelum dipakai."
+- Kata kunci kanonik (EN): `write a skill`, `create a skill`,
+  `edit this skill`.
+
+Contoh task lengkap:
+
+> "Aku mau bikin skill 'database-migration-safety' yang memaksa agent
+> backup sebelum migrasi destruktif. Susun skill-nya — pressure test
+> baseline dulu (apa yang agent lakukan tanpa skill), tulis versi
+> minimal, lalu tutup celah rasionalisasinya."
+
+Yang terjadi: agent menerapkan TDD pada dokumentasi proses — tulis
+pressure scenario (RED baseline tanpa skill), tulis skill minimal yang
+menutup rasionalisasi teramati (GREEN), iterasi sampai agent tak bisa
+merasionalisasi keluar dari aturan (REFACTOR).
+
 ## Cara menggunakannya
 
 Siklus TDD untuk skill:

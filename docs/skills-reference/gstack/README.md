@@ -72,10 +72,13 @@ Setiap file skill ikut template ketat:
 2. **Mengapa skill ini penting** — 1-2 paragraf narasi.
 3. **Kapan menggunakannya** — bullet trigger dari frontmatter
    `description` / `triggers`.
-4. **Cara menggunakannya** — langkah invokasi + flag + file
+4. **Contoh prompt** — frasa pemicu singkat (BID + kata kunci
+   kanonik EN) + satu contoh task lengkap, dengan catatan "Yang
+   terjadi".
+5. **Cara menggunakannya** — langkah invokasi + flag + file
    pendukung.
-5. **Contoh / Studi kasus** — skenario konkret minimal satu.
-6. **Kesimpulan** — paragraf padat penutup.
+6. **Contoh / Studi kasus** — skenario konkret minimal satu.
+7. **Kesimpulan** — paragraf padat penutup.
 
 Panjang 80-180 baris per file, Bahasa Indonesia natural-teknis,
 netral, no marketing voice.

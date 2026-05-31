@@ -31,6 +31,34 @@ Trigger dari frontmatter `description`:
 **Tidak** dipakai kalau deliverable primary adalah Word doc, HTML report, standalone
 Python script, database pipeline, atau Google Sheets API integration.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Buatkan DCF model 5-year di Excel untuk startup SaaS kami."
+- "Bersihkan file `sales_data.xlsx` — banyak baris malformed dan
+  header tidak konsisten."
+- "Tambahkan kolom growth rate YoY ke spreadsheet revenue ini,
+  pakai formula bukan hardcode."
+- Kata kunci kanonik (EN): `xlsx`, `spreadsheet`, `Excel formula`,
+  `financial model`, `clean messy data`.
+
+Contoh task lengkap:
+
+> "Buatkan P&L model 3-year di `pl_model.xlsx` — revenue dengan
+> asumsi growth rate 25% per tahun (blue text), COGS 60% dari
+> revenue (formula hitam), EBITDA margin dihitung otomatis.
+> Pakai color coding standar finansial dan pastikan zero error
+> setelah recalc."
+
+Yang terjadi: skill membuat workbook via openpyxl dengan sheet
+Assumptions (growth rate, COGS ratio di sel terpisah, blue text,
+yellow background untuk key assumption) dan sheet Model (formula
+`=Previous*(1+Assumptions!$B$2)` hitam, cross-sheet link hijau),
+number format `$#,##0;($#,##0);-` untuk currency dan `0.0%`
+untuk persentase, save, lalu jalankan `python scripts/recalc.py
+pl_model.xlsx` dan verifikasi JSON return `total_errors: 0`.
+
 ## Cara menggunakannya
 
 ### Requirement universal

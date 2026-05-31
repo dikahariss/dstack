@@ -19,6 +19,31 @@ Skill ini adalah hulu dari pipeline penulisan; hilirnya `writing-shape` (untuk m
 - Sebelum mencoba menulis artikel utuh — bangun stok dulu.
 - Frontmatter description: "mines the user for fragments ... appends them to a single document as raw material".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Gali ide-ide saya dulu sebelum nulis artikel, mode fragments."
+- "Saya mau ideate tentang topik ini, simpan sebagai raw material."
+- "Interview saya relentless, kumpulkan fragments untuk tulisan."
+- Kata kunci kanonik (EN): `fragments`, `ideate`,
+  `raw material`, `grilling session`.
+
+Contoh task lengkap:
+
+> "Saya ingin menulis tentang kenapa microservices itu
+> masalah organisasi bukan teknis. Gali saya dengan
+> pertanyaan, simpan tiap fragments ke
+> `writing/microservices-fragments.md`. Jangan impose
+> struktur dulu."
+
+Yang terjadi: skill menjalankan grilling session —
+menginterview user relentless, menangkap tiap nugget
+(klaim, vignette, kalimat tajam, half-thought) dan
+meng-append ke file markdown dengan separator `---`,
+tanpa heading, urutan, atau struktur — siap ditambang
+oleh `writing-shape` atau `writing-beats`.
+
 ## Cara menggunakannya
 
 1. **Run grilling session**: interview user relentlessly tentang topik. **Jangan impose phases, outline, atau structure** — itu out of scope.

@@ -14,6 +14,32 @@ AI Hero (kursus internal Matt Pocock) menggunakan struktur direktori yang ketat:
 - Hanya berguna di context repo AI Hero (atau setup serupa).
 - Frontmatter description: "Create exercise directory structures with sections, problems, solutions, and explainers that pass linting".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Scaffold section baru di kursus AI Hero dari plan ini."
+- "Buat stub exercise untuk section 06 beserta subfoldernya."
+- "Setup directory exercises sesuai plan, pastikan lulus lint."
+- Kata kunci kanonik (EN): `scaffold exercises`, `ai-hero-cli`,
+  `exercise stubs`, `section structure`.
+
+Contoh task lengkap:
+
+> "Scaffold section baru dari plan ini:
+> Section 06: Tool Use Patterns
+> - 06.01 Introduction to Tool Calls (explainer)
+> - 06.02 Parallel Tool Use (problem + solution)
+> - 06.03 Tool Result Handling (explainer + problem + solution)
+> Pastikan lulus `pnpm ai-hero-cli internal lint` setelah
+> dibuat, lalu commit."
+
+Yang terjadi: skill membuat direktori dengan format
+`06-tool-use-patterns/06.XX-exercise-name/{variant}/`,
+menulis stub `readme.md` minimal di tiap subfolder, menjalankan
+linter untuk validasi, memperbaiki error bila ada, lalu
+commit hasilnya.
+
 ## Cara menggunakannya
 
 1. **Parse the plan**: ekstrak section name, exercise name, variant types.

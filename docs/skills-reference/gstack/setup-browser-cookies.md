@@ -31,6 +31,33 @@ session existing.
 
 Versi: `1.0.0`, `preamble-tier: 1` (preamble minimal).
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Import cookies Chrome ke sesi headless sebelum QA."
+- "Setup authenticated session untuk test halaman admin."
+- "Login ke github.com dan vercel.com di browse daemon."
+- Kata kunci kanonik (EN): `/setup-browser-cookies`,
+  `import cookies`, `authenticate the browser`,
+  `setup authenticated session`.
+
+Contoh task lengkap:
+
+> "/setup-browser-cookies github.com vercel.com — saya
+> mau langsung QA dashboard Vercel yang butuh login,
+> skip UI picker, import langsung dua domain itu."
+
+Yang terjadi: skill cek CDP mode dulu (`$B status`) — jika
+sudah connected ke real browser via CDP, stop dengan pesan
+informatif (cookies sudah tersedia). Jika headless, untuk
+domain spesifik skip picker UI dan jalankan
+`$B cookie-import-browser comet --domain github.com`
+langsung per domain. Verifikasi dengan `$B cookies` dan
+tampilkan ringkasan (domain counts, tanpa nilai cookie).
+Sesi browse headless sekarang logged in dan siap untuk
+`/qa` atau `/scrape` di halaman authenticated.
+
 ## Cara menggunakannya
 
 1. **CDP mode check** — `$B status | grep "Mode: cdp"`. Jika true,

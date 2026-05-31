@@ -39,6 +39,31 @@ Proactive: ketika user akan merge atau land code changes.
 
 Versi: `1.0.0`, `preamble-tier: 4`.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Review diff ini sebelum saya merge ke main."
+- "Cek PR saya — ada potensi SQL injection atau secrets?"
+- "Pre-landing review branch feature/payment-gateway."
+- Kata kunci kanonik (EN): `/review`, `code review`,
+  `review this PR`, `check my diff`, `pre-landing review`.
+
+Contoh task lengkap:
+
+> "/review — branch feature/payment-gateway, diff sekitar
+> 350 baris. Cek SQL safety, LLM trust boundary, dan
+> hardcoded secrets sebelum saya buka PR."
+
+Yang terjadi: skill structured pass + Claude adversarial
+subagent (fresh context, attacker mindset) + Codex
+adversarial (jika tersedia). AUTO-FIX langsung untuk
+dead import/typo; ASK untuk finding critical. Diff >=200
+baris trigger Codex structured review dengan P1 gate.
+Semua findings dipersist ke review log; `/ship` membaca
+log ini untuk verifikasi diff sudah cleared sebelum
+landing.
+
 ## Cara menggunakannya
 
 1. **Detect base branch** + diff scope (`git diff origin/<base>`).

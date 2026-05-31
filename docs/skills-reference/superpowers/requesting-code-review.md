@@ -36,6 +36,26 @@ Opsional tapi berharga:
 - Sebelum refactor besar (baseline check).
 - Setelah memperbaiki bug kompleks.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Review dulu perubahan di branch ini sebelum merge."
+- "Minta code review untuk fitur yang baru kelar."
+- "Cek kualitas diff ini lewat reviewer terpisah."
+- Kata kunci kanonik (EN): `request code review`, `review my changes`.
+
+Contoh task lengkap:
+
+> "Aku baru kelar modul pembayaran (commit a1b2c3..d4e5f6). Sebelum
+> merge, minta code review — dispatch reviewer dengan scope diff itu
+> saja, fokus ke korrektness dan edge case."
+
+Yang terjadi: agent mengambil git SHA base/head, lalu men-dispatch
+subagent code-reviewer dengan konteks terkurasi (delta + scope
+spesifik, bukan histori sesi penuh) supaya isu tertangkap sebelum
+merge — sementara konteks Anda sendiri tetap bersih.
+
 ## Cara menggunakannya
 
 Tiga langkah:

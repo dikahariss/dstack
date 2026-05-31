@@ -17,6 +17,28 @@ Ini versi paling minimal dari pola grilling. Versi engineering yang lebih kaya (
 - Untuk repo yang belum punya `CONTEXT.md`/ADR, atau bila Anda hanya butuh grilling cepat tanpa dokumentasi side effect.
 - Frontmatter description: "Interview the user relentlessly about a plan or design until reaching shared understanding".
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Grill me tentang desain arsitektur ini."
+- "Stress test plan saya — interview saya habis-habisan."
+- "Interview saya soal rencana fitur ini, satu pertanyaan dulu."
+- Kata kunci kanonik (EN): `grill me`, `interview me`,
+  `stress test this plan`.
+
+Contoh task lengkap:
+
+> "Grill me. Saya mau tambah fitur multi-tenant ke aplikasi SaaS
+> yang sekarang single-tenant — database shared schema, belum
+> ada row-level security. Plan saya: tambah `tenant_id` ke semua
+> tabel dan filter di service layer."
+
+Yang terjadi: agent menjadi interviewer relentless — satu
+pertanyaan per turn, tiap pertanyaan disertai rekomendasi jawaban,
+dan bila jawabannya bisa ditemukan dari eksplorasi kode maka agent
+eksplor kode dulu, tidak menunggu jawaban user.
+
 ## Cara menggunakannya
 
 Konten skill itu sendiri sangat pendek:

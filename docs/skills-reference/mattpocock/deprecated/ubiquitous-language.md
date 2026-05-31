@@ -16,6 +16,30 @@ Skill di-deprecate karena fungsinya dilanjutkan oleh `engineering/grill-with-doc
 - Bila Anda ingin sekali jalan mengekstrak glossarium dari sesi diskusi panjang.
 - `disable-model-invocation: true` — skill ini dipanggil eksplisit, bukan otomatis.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Ekstrak ubiquitous language dari diskusi kita tadi."
+- "Buatkan glossarium domain dari percakapan ini."
+- "Terminologi kita ambiguous — bantu definisikan yang kanonik."
+- Kata kunci kanonik (EN): `ubiquitous language`, `domain model`,
+  `DDD`, `build a glossary`, `harden terminology`.
+
+Contoh task lengkap:
+
+> "Kita sudah diskusi panjang soal sistem shipping. Sekarang
+> ekstrak ubiquitous language-nya: scan percakapan, identifikasi
+> term ambigu (terutama 'shipment' vs 'delivery' vs 'order'),
+> pilih yang kanonik, dan tulis ke `UBIQUITOUS_LANGUAGE.md`
+> beserta tabel per grup, relationships, dan example dialogue."
+
+Yang terjadi: agent menscan percakapan untuk noun dan verb domain,
+memilih term kanonik secara opinionated, mencatat aliases to avoid,
+menulis `UBIQUITOUS_LANGUAGE.md` dengan format tabel per subdomain
++ Relationships + Example dialogue + Flagged ambiguities, lalu
+menampilkan summary inline.
+
 ## Cara menggunakannya
 
 1. **Scan percakapan** untuk noun, verb, konsep yang relevan ke domain.

@@ -18,6 +18,29 @@ Output Codex disampaikan **verbatim** (tidak diparafrase atau diringkas), supaya
 - Mode `--xhigh` untuk maximum reasoning effort (lambat tapi paling teliti).
 - Tidak cocok untuk task trivial — Codex call cost API real.
 
+## Contoh prompt
+
+Frasa pemicu singkat — kalimat yang membuat skill ini aktif:
+
+- "Minta second opinion dari Codex sebelum merge PR auth ini."
+- "Coba break kode ini — /codex challenge."
+- "Tanya Codex apakah ada timing attack di session handler ini."
+- Kata kunci kanonik (EN): `/codex`, `codex review`, `second
+  opinion`, `codex challenge`, `outside voice`.
+
+Contoh task lengkap:
+
+> "PR refactor auth flow sudah siap merge. Jalankan `/codex review`
+> terhadap diff branch ini — fokus ke security. Output Codex tampilkan
+> verbatim, dan kasih aku satu baris recommendation berdasarkan
+> finding spesifiknya."
+
+Yang terjadi: skill cek binary + auth Codex CLI, lalu jalankan
+`codex review` terhadap diff branch dengan reasoning effort `high`,
+parse marker `[P1]` untuk gate PASS/FAIL, tampilkan output verbatim
+dalam blok CODEX SAYS:, dan tutup dengan satu baris Recommendation
+yang mengikat ke finding spesifik.
+
 ## Cara menggunakannya
 
 1. Pastikan Codex CLI terinstall: `npm install -g @openai/codex`.
