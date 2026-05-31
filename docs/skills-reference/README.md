@@ -9,6 +9,10 @@ Tujuannya bukan menggantikan `SKILL.md` aslinya — itu tetap kanon. File
 di sini adalah peta cepat: scan dulu, lalu buka sumber asli kalau perlu
 detail eksekusi.
 
+> **Mulai dari peran Anda:** [PANDUAN-PERAN.md](PANDUAN-PERAN.md) — kurasi
+> skill *wajib* & rekomendasi yang dipetakan ke peran (SWE/Architect, Data,
+> Manajer/Leader, akademik tesis/disertasi), plus starter set minggu pertama.
+
 ## Daftar repo
 
 | Repo | Jumlah skill | Folder | Karakter |
@@ -25,9 +29,10 @@ Setiap file skill mengikuti struktur yang sama:
 
 1. **Mengapa skill ini penting** — masalah yang dipecahkan.
 2. **Kapan menggunakannya** — trigger spesifik (kutipan dari frontmatter `description` kalau ada).
-3. **Cara menggunakannya** — langkah ringkas + invokasi + file pendukung.
-4. **Contoh / Studi kasus** — minimal satu skenario konkret.
-5. **Kesimpulan** — ringkasan padat: apa skill ini, untuk siapa, hasil akhirnya apa.
+3. **Contoh prompt** — frasa pemicu singkat + satu contoh task lengkap, dengan catatan "Yang terjadi" agar efek skill-nya jelas.
+4. **Cara menggunakannya** — langkah ringkas + invokasi + file pendukung.
+5. **Contoh / Studi kasus** — minimal satu skenario konkret.
+6. **Kesimpulan** — ringkasan padat: apa skill ini, untuk siapa, hasil akhirnya apa.
 
 Header tiap file menyebutkan path absolut ke `SKILL.md` aslinya supaya
 mudah loncat ke sumber otoritatif.
