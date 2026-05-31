@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "description": "Skill catalog for Claude Code. v0 spec — see docs/ARCHITECTURE.md.",
+  "license": "Apache-2.0",
   "bin": {
     "dstack": "./src/adapters/cli/main.ts"
   },
