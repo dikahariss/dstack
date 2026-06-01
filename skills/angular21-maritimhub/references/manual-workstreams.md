@@ -89,8 +89,10 @@ big manual work is at the **v18→v19 Material 3 switch** (real SCSS rework, not
 The `destroy$ = new Subject<void>()` + `takeUntil(this.destroy$)` + `ngOnDestroy() { destroy$.next();
 destroy$.complete(); }` pattern (and bare `.unsubscribe()`) is the pre-signals teardown idiom — **no
 schematic.** Replace with `takeUntilDestroyed()`: in a field initializer it needs no argument;
-elsewhere pass `inject(DestroyRef)`. Where the value is only consumed in the template, prefer the
-`async` pipe or `toSignal()` and drop the manual subscription. Sequence this **after** the `inject`
+elsewhere pass `inject(DestroyRef)`. This keeps the stream **on RxJS** — it swaps only the teardown
+mechanism, not the Observable, so it is the right default for this RxJS-heavy codebase. Only where a
+value is purely displayed (no operators in the pipe) is `toSignal()` or the `async` pipe worth it; do
+not treat this workstream as a reason to de-RxJS working pipelines. Sequence this **after** the `inject`
 migration so `DestroyRef` resolves cleanly, and work module-by-module — on a large app this is
 thousands of call sites, not one pass. The audit's "Manual RxJS teardown" count is the worklist; the
 ADOPTION block's `takeUntilDestroyed()` count is your progress.

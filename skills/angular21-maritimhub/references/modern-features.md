@@ -11,8 +11,11 @@ with `"strictStandalone": true`. Move initializers to `provideAppInitializer`. D
 feature NgModules by hand after the schematic.
 
 ## Signals
-- `signal()` / `computed()` / `effect()` (stable v20). Use `signal()` for any template-bound
-  mutable state — this is the mindset that makes zoneless possible.
+- `signal()` / `computed()` / `effect()` (stable v20). Use signals for **simple, local, synchronous
+  UI state** — loading/disabled flags, selected tab, panel open/closed — and `computed()` for view
+  values derived from them. **Not** for HTTP results or multi-step async; those stay in RxJS (see
+  "Signals for simple state; RxJS for async" in SKILL.md). This is also the mindset that later makes
+  a zoneless move possible.
 - **Signal inputs:** `name = input<string>()` / `input.required<T>()`, with `transform` (e.g.
   `booleanAttribute`) and `alias`. Reads become calls: `this.name()`.
 - **`model()`** for two-way binding: `value = model<string>()` powers `[(value)]`.
@@ -21,7 +24,7 @@ feature NgModules by hand after the schematic.
   (writable state derived from other signals).
 - **`resource()` / `rxResource()` / `httpResource()`** — signal-based async with `value/status/
   error/isLoading` and auto-reload. **Experimental through v21 (API changes each minor)** — use for
-  new code, not wholesale rewrites.
+  isolated new reads, never to replace a working `HttpClient`-returns-`Observable<T>` service layer.
 - **`output()`** (stable v19) — `readonly done = output<T>()`; emit with `.emit()`. Signal-like but
   not itself a signal.
 

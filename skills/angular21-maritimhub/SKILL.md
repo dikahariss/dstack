@@ -134,6 +134,13 @@ only the build/test/lint run proves _behavior_ is intact. Both are required.
   But leave `provideAnimations()` in place if ng-zorro/PrimeNG/ngx-charts still need it, keep some
   routes eager on purpose, and don't migrate working reactive forms to experimental Signal
   Forms. Match the change to the project, not to a checklist.
+- **Signals for simple state; RxJS for async.** Use signals/`computed()` for local synchronous UI
+  state (flags, selections, toggles) and component `input()/output()`. Keep the data layer on RxJS —
+  `HttpClient` returning `Observable<T>`, and any pipeline with `switchMap`/`forkJoin`/`debounceTime`/
+  `catchError`. Don't rewrite working `Observable` services into experimental `httpResource()`/
+  `resource()`, and don't collapse RxJS pipelines into `effect()`. `toSignal()`/`async` pipe only at a
+  pure-display leaf, never for a pipeline with operators. (This codebase today: hundreds of RxJS
+  services, zero signals — modernize by putting *new* simple state on signals, not by de-RxJS-ing HTTP.)
 - **Respect "experimental."** `resource()/httpResource()` and Signal Forms still change
   shape between minors as of v21. Recommend them for greenfield code, not wholesale
   rewrites of working code.
