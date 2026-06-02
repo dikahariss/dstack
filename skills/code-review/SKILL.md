@@ -10,7 +10,7 @@ allowed-tools: Read Bash Grep Glob Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.2.0
+    version: 0.3.0
     context_budget_tokens: 3500
     side_effects: local
     agency: deliberative
@@ -234,6 +234,19 @@ Never:
 - "I pushed back because I thought…"  ← defending
 - "In hindsight…"  ← over-explaining
 
+## Replying on a GitHub PR
+
+When replying to inline review comments on a GitHub PR, post in the
+comment thread — not as a new top-level PR comment:
+
+```bash
+gh api repos/{owner}/{repo}/pulls/{pr}/comments/{id}/replies \
+  -f body="<your reply>"
+```
+
+`scripts/list_comments.sh <pr-number>` gives you each comment's `id`.
+Thread replies keep the response attached to the line under review.
+
 ## Common mistakes and their fixes
 
 | Mistake | Fix |
@@ -259,3 +272,12 @@ External feedback is a suggestion to evaluate, not an order to
 follow. Verify. Question. Then implement.
 
 No performative agreement. Technical rigor always.
+
+## Changes
+
+- **0.3.0** — Folded in the inline GitHub thread-reply guidance from
+  superpowers `receiving-code-review` (reply in-thread via
+  `gh api .../comments/{id}/replies`, not a top-level comment).
+  Evaluated `receiving-code-review` head-to-head and kept this skill as
+  the superset; the separate skill was not imported, to avoid duplicate
+  discovery triggers.
