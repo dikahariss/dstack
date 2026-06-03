@@ -75,6 +75,12 @@ Each ADR has six sections. Aim for under 80 lines per ADR.
 | [0015](0015-type-taxonomy-adoption.md) | Adopt four-type computation taxonomy in skill schema | Accepted | Moderate |
 | [0016](0016-per-tier-token-budget.md) | Per-tier token budget (body ≤ 5000, bundled unlimited) | Accepted | Cheap |
 | [0017](0017-bundled-resources.md) | Bundled resources support (scripts/, references/, assets/) | Accepted | Moderate |
+| [0024](0024-catalog-breadth-over-yagni.md) | Catalog breadth over strict YAGNI for proven reference skills | Accepted | Cheap |
+
+*Numbers 0018–0023 are reserved for v3 milestones (see
+[v3 ROADMAP](../plans/v3/ROADMAP.md), M41–M48/M59) and are not yet
+written. 0024 skips ahead to avoid colliding with those reservations,
+per the "do not renumber" rule above.*
 
 ## How to add a new ADR
 

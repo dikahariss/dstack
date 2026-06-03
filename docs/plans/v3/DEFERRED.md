@@ -158,6 +158,18 @@ unlock it.
 - **Estimated effort when triggered.** 1 to 2 hours for the shared
   reference; 4 to 6 hours plus a new ADR if catalog-level
   primitive is needed.
+- **Status (2026-06-02).** Trigger fired. Two shipped skills now carry
+  subagent-dispatch content — `dispatching-parallel-agents` and
+  `subagent-driven-development` (plus the latter's three
+  `references/*-prompt.md` templates) — imported under
+  [ADR-0024](../../adr/0024-catalog-breadth-over-yagni.md). Per this
+  entry's own guidance the fix is the **shared-reference** path
+  (`references/subagent-dispatch.md`), not a catalog primitive; it is
+  scheduled in [skill-hardening-plan.md](skill-hardening-plan.md). The
+  renderer-primitive rejection still stands: dstack renders no
+  orchestration. Importing prose skills that *describe* subagent use was
+  always permitted by the "What is in place" note above — that part was
+  never deferred.
 
 ## D27 — Multi-judge ensemble for benchmark reliability
 

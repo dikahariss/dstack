@@ -307,6 +307,24 @@ Same MoSCoW prioritization as [v1's ROADMAP](../v1/ROADMAP.md) and
   do not cover. v1 M17 was gated on "10+ skills"; M49 plus M47
   (`/write-a-skill`) takes dstack from 8 to 13, unlocking the
   bucket organisation in M55 with concrete catalog density.
+- **Status (2026-06-02).** Partially delivered ahead of validator
+  readiness, under [ADR-0024](../../adr/0024-catalog-breadth-over-yagni.md)
+  (catalog breadth over strict YAGNI for proven skills). `writing-plans`
+  (commit `0dbb54e`), `executing-plans`, and
+  `finishing-a-development-branch` (commit `ec982ad`) are imported as
+  adapted-but-not-yet-hardened skills. `receiving-code-review` was
+  **not** created as a separate skill: it was evaluated head-to-head
+  against the existing `code-review`, found to be a subset, and folded in
+  (the unique GitHub inline-thread-reply nugget was grafted; `code-review`
+  bumped to 0.3.0). Three further proven superpowers skills were imported
+  beyond this milestone's original scope —
+  `dispatching-parallel-agents`, `subagent-driven-development`,
+  `using-git-worktrees`. The full re-authoring to the dstack bar (voice,
+  required body structure, trigger de-confliction, cross-reference
+  wiring, and the D26 shared subagent-dispatch reference) is tracked in
+  [skill-hardening-plan.md](skill-hardening-plan.md). The
+  `eval/cases.jsonl` decision below ("yes for all four") is deferred
+  until M48 lands.
 - **Acceptance**:
   - `skills/writing-plans/SKILL.md` — type `semantic`,
     `agency: deliberative`, `side_effects: readonly`. Body covers:

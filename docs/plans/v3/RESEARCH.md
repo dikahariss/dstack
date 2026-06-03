@@ -269,6 +269,11 @@ Considered, not adopted:
 | Caveman compression | mattpocock | No | — | Host-level concern, not catalog |
 | MCP builder skill | anthropics-skills | No | — | Orthogonal to catalog mission |
 
+> **2026-06-02 update.** The "Subagent dispatch pattern" row above was
+> revisited under [ADR-0024](../../adr/0024-catalog-breadth-over-yagni.md):
+> the *skills* were imported (prose only), but the *renderer-primitive*
+> rejection still stands (DEFERRED D26). See the fourth-pass note below.
+
 ## Rejected ideas with rationale
 
 The audit surfaced ideas that look attractive in isolation but
@@ -358,7 +363,7 @@ claim "dstack is better" is unverifiable.
 
 ### Audit follow-up — first-pass second-pass third-pass review
 
-This RESEARCH document carries three layers of audit:
+This RESEARCH document carries four layers of audit:
 
 1. **First pass** — initial fan-out across the four cloned repos
    produced 14 adopted ideas mapped to M40–M58, primarily focused
@@ -380,10 +385,21 @@ This RESEARCH document carries three layers of audit:
    formalise the methodology. The v3 thesis was rewritten to
    replace assertion with falsifiable hypothesis. **Adopted count
    rose from 19 to 24.**
+4. **Fourth pass (2026-06-02)** — a different axis from the first
+   three. The user directed importing the remaining proven superpowers
+   skills as-is, relaxing YAGNI for skill *content* (now
+   [ADR-0024](../../adr/0024-catalog-breadth-over-yagni.md)). This
+   adopted the subagent-dispatch skills the audit had rejected — but
+   only as prose skills; the *renderer-primitive* rejection still stands
+   (DEFERRED D26). `receiving-code-review` (M49) was folded into the
+   existing `code-review` rather than shipped separately. Hardening all
+   imports to the dstack bar is tracked in
+   [skill-hardening-plan.md](skill-hardening-plan.md).
 
-Each pass narrowed the gap between "we believe v3 is better" and
-"here is the evidence." The third pass is what turns dstack v3 from
-an opinion into an experiment.
+The first three passes narrowed the gap between "we believe v3 is
+better" and "here is the evidence." The third pass is what turns dstack
+v3 from an opinion into an experiment. The fourth widened the catalog
+rather than sharpening the measurement.
 
 See [ROADMAP.md](ROADMAP.md) for the milestone list and the
 [DEFERRED.md](DEFERRED.md) for ideas held back with trigger

@@ -291,6 +291,7 @@ Read in number order if you want the full reasoning.
 | [0015](adr/0015-type-taxonomy-adoption.md) | Adopt four-type computation taxonomy in skill schema | Accepted |
 | [0016](adr/0016-per-tier-token-budget.md) | Per-tier token budget (body ≤ 5000, bundled unlimited) | Accepted |
 | [0017](adr/0017-bundled-resources.md) | Bundled resources support (scripts/, references/, assets/) | Accepted |
+| [0024](adr/0024-catalog-breadth-over-yagni.md) | Catalog breadth over strict YAGNI for proven reference skills | Accepted |
 
 "Accepted" means the decision is in force. If we change our minds, we
 write a new ADR that supersedes the old one. We do not edit accepted

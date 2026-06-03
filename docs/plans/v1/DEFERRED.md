@@ -21,7 +21,7 @@ listed "trigger to revisit" has actually happened.
 ## D1 — Multi-host renderer (Codex, Kiro, OpenCode, etc.)
 
 - **Why deferred.** One user, one AI host (Claude Code).
-  [ADR-0002](../../docs/adr/0002-single-host-v0.md) covers the
+  [ADR-0002](../../adr/0002-single-host-v0.md) covers the
   reasoning.
 - **What is in place.** The `HostRenderer` port is defined. Adding a
   host requires one new adapter file and one wiring line.
@@ -57,7 +57,7 @@ listed "trigger to revisit" has actually happened.
 
 ## D3 — LLM-judge evaluation harness
 
-- **Why deferred.** [ADR-0009](../../docs/adr/0009-spec-driven-skills.md)
+- **Why deferred.** [ADR-0009](../../adr/0009-spec-driven-skills.md)
   describes the reason. LLM evaluations matter when a second person
   is shipping skills that the original author cannot review by hand.
   Today, the same person writes and reviews. Self-judging is enough.
@@ -73,7 +73,7 @@ listed "trigger to revisit" has actually happened.
 
 - **Why deferred.** No v1 skill needs browser automation yet. Building
   the package before there is a real caller is speculation.
-  [ADR-0007](../../docs/adr/0007-browse-separate-process.md) keeps
+  [ADR-0007](../../adr/0007-browse-separate-process.md) keeps
   the boundary so that the port is mechanical when the need is real.
 - **What is in place.** `packages/browse/README.md` describes the
   planned layout and the contract for cross-package communication
@@ -86,7 +86,7 @@ listed "trigger to revisit" has actually happened.
 
 ## D5 — Remote telemetry endpoint
 
-- **Why deferred.** [ADR-0006](../../docs/adr/0006-telemetry-opt-in.md)
+- **Why deferred.** [ADR-0006](../../adr/0006-telemetry-opt-in.md)
   is explicit: telemetry is local only. Adding a remote endpoint
   would require a new ADR plus a major version bump plus an explicit
   user consent flow.
@@ -101,7 +101,7 @@ listed "trigger to revisit" has actually happened.
 ## D6 — Plugin or extension system
 
 - **Why deferred.** No external contributors today.
-  [ADR-0004](../../docs/adr/0004-no-template-engine-v0.md) (YAGNI
+  [ADR-0004](../../adr/0004-no-template-engine-v0.md) (YAGNI
   guard) applies here too.
 - **Trigger to revisit.** A second person wants to ship a skill that
   requires rendering behavior dstack does not have, AND the change
@@ -138,6 +138,12 @@ listed "trigger to revisit" has actually happened.
 - **Trigger to revisit.** dstack development moves into a multi-
   worktree setup AND we hit a real conflict.
 - **Estimated effort when triggered.** 1 to 2 hours.
+- **Status (2026-06-02).** Tangential, no action. A `using-git-worktrees`
+  *skill* was imported under
+  [ADR-0024](../../adr/0024-catalog-breadth-over-yagni.md), but this
+  entry concerns dstack's *own* development moving to a multi-worktree
+  setup — which has not happened. Shipping a worktree skill for the
+  user's general work does not fire this trigger.
 
 ## D10 — Team-mode install
 
@@ -194,7 +200,7 @@ These items are NOT in v1 and are unlikely to ever be in dstack.
 
 | Item | Why rejected |
 |---|---|
-| Template variable substitution in `prompt.md` (`{{var}}`) | [ADR-0003](../../docs/adr/0003-skill-as-data.md). The prompt is what the LLM sees. Variable substitution is the host's job, not the renderer's. |
+| Template variable substitution in `prompt.md` (`{{var}}`) | [ADR-0003](../../adr/0003-skill-as-data.md). The prompt is what the LLM sees. Variable substitution is the host's job, not the renderer's. |
 | A plugin marketplace | dstack is not a platform. |
 | Web UI for editing skills | Skills are text files. Edit them in a text editor. |
 | A daemon for hot-reloading the skill catalog | `dstack build` runs in under 1 second for 100 skills. Daemons add complexity for no real benefit. |
