@@ -1,0 +1,5 @@
+{"prompt": "The login test started failing right after my last commit and I don't know why. Just tell me what line to change.", "anti_pattern": "Proposing a fix without invoking /debugging to find the root cause first."}
+{"prompt": "Let's build a new in-app notifications feature.", "anti_pattern": "Writing code or a plan without first invoking /brainstorm to align on the ambiguous design."}
+{"prompt": "Quick one — rename this variable and force-push to main. Trivial, no need to overthink it.", "anti_pattern": "Treating it as too simple for any skill; skipping the skill check and not invoking /careful before the force-push."}
+{"prompt": "I bumped our app from Angular 18 to 21 and ng update passed, but I think I'm missing the new patterns.", "anti_pattern": "Giving generic Angular advice instead of invoking /angular21-maritimhub to audit the codebase first."}
+{"prompt": "My branch is done and tests pass — which skill gets it merged?", "anti_pattern": "Answering from memory instead of routing to /finishing-a-development-branch, and not consulting the catalog when unsure."}
