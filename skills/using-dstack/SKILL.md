@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -17,6 +17,9 @@ metadata:
       - which skill applies
       - find a skill
       - how do I use dstack skills
+      - which skill should I use
+      - route to the right skill
+      - when to call which skill
 ---
 # /using-dstack
 
@@ -55,6 +58,48 @@ questions.
 
 About to plan a creative change and not yet aligned? `/brainstorm` first.
 
+## Which skill — quick router
+
+Match the situation, then invoke that skill. When unsure, read
+`references/skill-catalog.md` (see "When to open the full catalog" below).
+
+| Situation | Skill |
+|---|---|
+| Ambiguous/creative plan or design, not aligned | `/brainstorm` |
+| Have a spec; need a step-by-step plan | `/writing-plans` |
+| Execute a written plan (separate session) | `/executing-plans` |
+| Execute plan tasks now via subagents + review | `/subagent-driven-development` |
+| 2+ independent problems, work in parallel | `/dispatching-parallel-agents` |
+| Bug / test failure / unexpected behavior | `/debugging` (then `/tdd`) |
+| New feature, bugfix, behavior change | `/tdd` |
+| About to claim done / fixed / passing | `/verification` |
+| Destructive or risky command, or prod | `/careful` |
+| Need an isolated workspace | `/using-git-worktrees` |
+| Work done — merge / PR / keep / discard | `/finishing-a-development-branch` |
+| Got PR or review feedback to address | `/code-review` |
+| Want a fresh review of your own work | `/requesting-code-review` |
+| Create / edit / verify a dstack skill | `/writing-skills` |
+| Angular v18–21 upgrade or modernization | `/angular21-maritimhub` |
+| Show or bump VERSION | `/version` |
+| Triage / classify a pasted issue | `/classify-issue` |
+
+**Common chains:**
+- Feature: `/brainstorm` → `/writing-plans` → `/subagent-driven-development`
+  (or `/executing-plans`) → `/verification` → `/finishing-a-development-branch`.
+- Bug: `/debugging` → `/tdd` → `/verification`.
+
+### When to open the full catalog
+
+Read `references/skill-catalog.md` when **any** of these is true — it carries the
+exact triggers, each skill's scope, and which skill to hand off to next:
+- the table above is not an obvious match for the request;
+- two skills seem to apply and you must choose one;
+- you need a skill's precise triggers or boundaries before committing;
+- you need the next step in a chain (what to invoke after the current skill).
+
+For Claude Code's built-in features (not dstack skills) — `/compact`, `/agents`,
+plan mode, hooks, MCP, effort/model — use `/help` or see code.claude.com/docs.
+
 ## Red flags — you are rationalizing
 
 | Thought | Reality |
@@ -83,8 +128,18 @@ About to plan a creative change and not yet aligned? `/brainstorm` first.
 
 The skill itself tells you which.
 
+## Bundled files
+
+- `references/skill-catalog.md` — full 18-skill catalog: triggers, scope, and
+  hand-off rules. Loads on demand; read it per the conditions above.
+
 ## Changes
 
+- **0.2.0** — Added an inline "Which skill" router (situation → skill) and
+  common chains, an explicit "when to open the full catalog" gate, and a bundled
+  `references/skill-catalog.md` with per-skill triggers and hand-off rules.
+  Added `eval/cases.jsonl` for routing. Body stays within budget; detail is
+  progressive-disclosure per ADR-0016/0017.
 - **0.1.0** — Ported from superpowers `using-superpowers` and renamed to
   `using-dstack`. Reduced to dstack's single host (Claude Code): removed
   the Copilot/Codex/Gemini platform-adaptation section and the
