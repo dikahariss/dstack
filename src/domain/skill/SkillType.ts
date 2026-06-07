@@ -35,6 +35,27 @@ export type Agency = 'reactive' | 'deliberative' | 'autonomous';
 
 export const AGENCY: readonly Agency[] = ['reactive', 'deliberative', 'autonomous'] as const;
 
+/**
+ * Freedom-calibration band (ADR-0025). How much freedom the prompt gives the
+ * agent — a separate axis from `type` (which is about code vs LLM at runtime).
+ *
+ * Defaults to `workflow` (~30% deterministic, the Hybrid default) when not
+ * declared. `type: deterministic` skills omit it. Moving off `workflow` is
+ * owner-decided; see ADR-0025 Governance.
+ */
+export type Calibration =
+  | 'deterministic-dominant'
+  | 'workflow'
+  | 'judgment-dominant'
+  | 'schema-meta';
+
+export const CALIBRATIONS: readonly Calibration[] = [
+  'deterministic-dominant',
+  'workflow',
+  'judgment-dominant',
+  'schema-meta',
+] as const;
+
 export function isSkillType(value: unknown): value is SkillType {
   return typeof value === 'string' && (SKILL_TYPES as readonly string[]).includes(value);
 }
@@ -45,6 +66,10 @@ export function isSideEffects(value: unknown): value is SideEffects {
 
 export function isAgency(value: unknown): value is Agency {
   return typeof value === 'string' && (AGENCY as readonly string[]).includes(value);
+}
+
+export function isCalibration(value: unknown): value is Calibration {
+  return typeof value === 'string' && (CALIBRATIONS as readonly string[]).includes(value);
 }
 
 /**

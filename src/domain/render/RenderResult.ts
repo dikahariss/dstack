@@ -23,4 +23,5 @@ export type WarningKind =
   | 'include-cycle-broken'
   | 'token-near-budget'
   | 'comprehensive-skill'
-  | 'type-structure-mismatch';
+  | 'type-structure-mismatch'
+  | 'missing-spine';

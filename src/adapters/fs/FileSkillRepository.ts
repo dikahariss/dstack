@@ -13,9 +13,11 @@ import {
   SkillType,
   SideEffects,
   Agency,
+  Calibration,
   isSkillType,
   isSideEffects,
   isAgency,
+  isCalibration,
   inferType,
 } from '@domain/skill/SkillType';
 import { BundledFile } from '@domain/skill/BundledFile';
@@ -349,6 +351,17 @@ export class FileSkillRepository implements SkillRepository {
     }
     const agency: Agency = (agencyRaw as Agency | undefined) ?? 'reactive';
 
+    const calibrationRaw = dstackMeta?.['calibration'] ?? raw['calibration'];
+    if (calibrationRaw !== undefined && !isCalibration(calibrationRaw)) {
+      throw new SkillSpecError(
+        errId,
+        'metadata.dstack.calibration',
+        `must be one of: deterministic-dominant, workflow, judgment-dominant, schema-meta (got "${String(calibrationRaw)}")`,
+        this.locateField('calibration', sourcePath, contents, lineCounter, lineOffset),
+      );
+    }
+    const calibration: Calibration = (calibrationRaw as Calibration | undefined) ?? 'workflow';
+
     const outputSchema = dstackMeta?.['output_schema'] ?? raw['output_schema'];
 
     const hasScripts = existsSync(join(skillDir, 'scripts'));
@@ -392,6 +405,7 @@ export class FileSkillRepository implements SkillRepository {
       ...(declaredType !== undefined ? { declaredType } : {}),
       sideEffects,
       agency,
+      calibration,
       ...(outputSchema !== undefined ? { outputSchema } : {}),
     });
     return { spec, warnings };

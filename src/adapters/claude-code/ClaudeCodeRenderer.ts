@@ -30,6 +30,7 @@ import { approximateTokenCount } from './tokens';
  *       context_budget_tokens: <n>
  *       side_effects: <...>
  *       agency: <...>
+ *       calibration: <...>         # ADR-0025 freedom band; always emitted
  *       output_schema: <...>       # optional, schema-semantic only
  *   allowed-tools: <space-separated>
  *   ---
@@ -74,6 +75,18 @@ export class ClaudeCodeRenderer implements HostRenderer {
       });
     }
 
+    const expectsSpine = skill.spec.type !== 'deterministic' &&
+      (skill.spec.calibration === 'workflow' || skill.spec.calibration === 'deterministic-dominant');
+    if (expectsSpine && !hasDeterministicSpine(skill.prompt)) {
+      warnings.push({
+        kind: 'missing-spine',
+        message:
+          `${skill.spec.id.value}: body has no ordered list, table, or checklist. ` +
+          `Hybrid-by-default (ADR-0025) wants a spine + a named judgment surface. ` +
+          `Add steps/a gate/a table, or set calibration: judgment-dominant/schema-meta if intended.`,
+      });
+    }
+
     return {
       path: `${skill.spec.id.value}/SKILL.md`,
       content,
@@ -104,6 +117,7 @@ export class ClaudeCodeRenderer implements HostRenderer {
     lines.push(`    context_budget_tokens: ${spec.contextBudgetTokens}`);
     lines.push(`    side_effects: ${spec.sideEffects}`);
     lines.push(`    agency: ${spec.agency}`);
+    lines.push(`    calibration: ${spec.calibration}`);
     if (spec.outputSchema !== undefined) {
       lines.push(`    output_schema: ${stringifyOutputSchema(spec.outputSchema)}`);
     }
@@ -128,6 +142,11 @@ export class ClaudeCodeRenderer implements HostRenderer {
 function quoteScalar(value: string): string {
   if (/^[A-Za-z0-9 _.,()/\-]+$/.test(value)) return value;
   return JSON.stringify(value);
+}
+
+/** ADR-0025: a body has a deterministic spine if it has an ordered list, a table, or a checklist. */
+function hasDeterministicSpine(body: string): boolean {
+  return /^\s*\d+\.\s/m.test(body) || /^\s*\|.*\|/m.test(body) || /- \[ \]/.test(body);
 }
 
 /**

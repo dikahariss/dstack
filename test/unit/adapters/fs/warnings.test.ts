@@ -48,6 +48,14 @@ describe('warning fixtures', () => {
     expect(kinds).toContain('long-description');
   });
 
+  test('missing-spine: emitted when a workflow body has no list/table/checklist', async () => {
+    const results = await new BuildCatalog(bucket('warnings-no-spine'), new ClaudeCodeRenderer(), new NoopTelemetry())
+      .execute({ host: HOST, now: new Date(0) });
+    expect(results.length).toBe(1);
+    const kinds = results[0]!.rendered.warnings.map((w) => w.kind);
+    expect(kinds).toContain('missing-spine');
+  });
+
   test('overlapping-trigger: cross-skill detection in BuildCatalog', async () => {
     const results = await new BuildCatalog(bucket('warnings-overlap'), new ClaudeCodeRenderer(), new NoopTelemetry())
       .execute({ host: HOST, now: new Date(0) });

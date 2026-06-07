@@ -25,6 +25,7 @@ function fixtureSpec(): SkillSpec {
     type: 'semantic',
     sideEffects: 'readonly',
     agency: 'reactive',
+    calibration: 'workflow',
   });
 }
 

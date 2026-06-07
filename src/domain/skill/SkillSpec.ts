@@ -1,5 +1,5 @@
 import { SkillId } from './SkillId';
-import { SkillType, SideEffects, Agency } from './SkillType';
+import { SkillType, SideEffects, Agency, Calibration } from './SkillType';
 
 /**
  * SkillSpec is the parsed, validated form of `SKILL.md` frontmatter.
@@ -46,6 +46,7 @@ export interface SkillSpecData {
   readonly declaredType?: SkillType;     // present iff the source declared one
   readonly sideEffects: SideEffects;     // defaults to 'readonly'
   readonly agency: Agency;                // defaults to 'reactive'
+  readonly calibration: Calibration;      // defaults to 'workflow' (ADR-0025)
   readonly outputSchema?: unknown;        // inline JSON Schema or relative path
 }
 
@@ -79,6 +80,7 @@ export class SkillSpec implements SkillSpecData {
   readonly declaredType?: SkillType;
   readonly sideEffects: SideEffects;
   readonly agency: Agency;
+  readonly calibration: Calibration;
   readonly outputSchema?: unknown;
 
   private constructor(data: SkillSpecData) {
@@ -97,6 +99,7 @@ export class SkillSpec implements SkillSpecData {
     if (data.declaredType !== undefined) this.declaredType = data.declaredType;
     this.sideEffects = data.sideEffects;
     this.agency = data.agency;
+    this.calibration = data.calibration;
     if (data.outputSchema !== undefined) this.outputSchema = data.outputSchema;
   }
 

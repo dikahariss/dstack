@@ -215,6 +215,27 @@ unlock it.
 
 ---
 
+## D29 — Machine-enforced hybrid-by-default (hard gate)
+
+- **Why deferred.** ADR-0025 enforces the doctrine lightly: docs +
+  `/writing-skills` + the optional `calibration` flag + a band-aware
+  `missing-spine` *warning*. A validate ERROR gate and a CI check that
+  `calibration: judgment-dominant` carries an evidence line were
+  deliberately NOT added (YAGNI).
+- **What is in place.** The `missing-spine` warning fires for
+  `workflow`/`deterministic-dominant` skills (non-`deterministic` type)
+  whose body has no ordered list, table, or checklist;
+  `judgment-dominant`, `schema-meta`, and `type: deterministic` are
+  exempt. It is a warning, not an error — the build still succeeds.
+- **Trigger to revisit.** ≥3 skills ship spine-less while the warning is
+  ignored, OR a skill is set to `judgment-dominant` without an evidence
+  line and ships, OR a second host needs the bands machine-enforced.
+- **Estimated effort when triggered.** 1 to 2 days. Write an ADR
+  superseding the light-enforcement clause of ADR-0025, promote
+  `missing-spine` to an error, and add the evidence-line CI check.
+
+---
+
 # How to read this list
 
 Same as v1 and v2: each entry is a **promise to revisit when the

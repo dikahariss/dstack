@@ -31,6 +31,7 @@ function buildSkill(overrides: { budget?: number; warnings?: Warning[] } = {}): 
     type: 'semantic',
     sideEffects: 'readonly',
     agency: 'reactive',
+    calibration: 'workflow',
   });
   return new Skill(spec, 'prompt body', '', overrides.warnings ?? []);
 }
