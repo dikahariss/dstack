@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Write Edit Bash Grep Glob Agent
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -78,6 +78,16 @@ Body, scaled to the skill:
 - **The pattern / steps** — tables and prose. Reserve a tiny inline
   flowchart for a genuinely non-obvious decision; dstack skills favor
   tables and numbered lists over diagrams.
+- **Spine + named judgment, then pick a band** (ADR-0025, playbook §1.15)
+  — the body needs a deterministic spine (steps + a gate + a
+  table/checklist; exact commands where applicable) AND one sentence
+  naming where the agent's judgment takes over. Then pick a calibration
+  band: `workflow` (~30% det, the default — omit the flag),
+  `judgment-dominant` (10–20%), `deterministic-dominant` (60–80%+), or
+  `schema-meta`. Set `metadata.dstack.calibration` only when NOT
+  `workflow`. Moving to `judgment-dominant` needs benchmark/UAT/test
+  evidence + owner approval (record in `## Changes`). Exemplar:
+  `skills/angular21-maritimhub` § "How the work is split".
 - **One excellent example** — complete, runnable, commented with WHY.
   Not five mediocre ones in five languages.
 - **Common mistakes** — what goes wrong and the fix.
@@ -161,13 +171,15 @@ official authoring guidance. Add a behavioral check under the skill's
 - **Workflow in the description** — see the discovery section above.
 - **Documenting a mechanical rule** — automate it instead.
 
-## Checklist (use TodoWrite)
+## Checklist (track one todo per item)
 
 - [ ] `bun run new <id>`; `name` equals the directory
 - [ ] Description: third person, "Use when…", triggers/symptoms, no workflow
 - [ ] `allowed-tools` lists only what the skill uses
 - [ ] `metadata.dstack` complete; body under budget
 - [ ] One excellent example; heavy reference moved to a sibling file
+- [ ] Spine present (steps + gate + table/checklist) AND judgment named in
+      one sentence; `calibration` band chosen (flag set if not `workflow`)
 - [ ] Discipline skill: baseline-tested with a subagent; rationalization
       table + red flags
 - [ ] `eval/` behavioral check added
@@ -176,6 +188,9 @@ official authoring guidance. Add a behavioral check under the skill's
 
 ## Changes
 
+- **0.2.0** — Encoded the hybrid-by-default doctrine (ADR-0025): spine +
+  named judgment + the four calibration bands and when to set the flag.
+  Fixed the `TodoWrite` heading to host-accurate phrasing.
 - **0.1.0** — Ported from superpowers `writing-skills`. Re-pointed at
   dstack's authoring path (`bun run new`, `docs/specs/skill-spec.md`,
   `metadata.dstack`, token budgets, `eval/`); replaced the graphviz

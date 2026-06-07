@@ -100,6 +100,12 @@ metadata:
     agency: reactive | deliberative | autonomous
       # How autonomously the skill acts. Defaults to `reactive`.
 
+    calibration: deterministic-dominant | workflow | judgment-dominant | schema-meta
+      # Freedom-calibration band (ADR-0025). Defaults to `workflow`.
+      # Independent of `type`. Rendered into output frontmatter so the
+      # consuming model sees the band. Moving off `workflow` is
+      # owner-decided; see ADR-0025 Governance.
+
     triggers: [string]
       # Natural-language phrases the host may use for routing.
 
@@ -163,6 +169,9 @@ The combination `type: semantic` + `side_effects: external` +
 `agency: autonomous` is rejected outright (`DangerousCombinationError`):
 an unconstrained LLM with external write access and no reactive gate.
 
+`calibration` is a separate axis from `type`; it is never inferred from
+`type` and never changes it (ADR-0025).
+
 ## Includes
 
 A skill can declare `metadata.dstack.includes` listing shared Markdown
@@ -193,7 +202,9 @@ must be referenced by name in the skill that uses it. See
 | Each path in `includes` resolves to a real file | Error | Parse fails. |
 | `type: schema-semantic` requires `output_schema` | Error | Build fails (`MissingOutputSchemaError`). |
 | `type: semantic` + `side_effects: external` + `agency: autonomous` | Error | Build fails (`DangerousCombinationError`). |
+| `calibration` is one of the four band values | Error | Parse fails. |
 | Declared `type` does not match structure | Warning | Build continues. |
+| `calibration: workflow` or `deterministic-dominant` (non-`deterministic` type) AND body has no list/table/checklist | Warning | `missing-spine` (band-aware; `judgment-dominant` and `schema-meta` exempt). |
 | Body tokens > 90% of budget | Warning | Build continues. |
 | Skill ships ≥ 4 module folders (SkillsBench threshold) | Warning | Build continues. |
 | Legacy `skill.yaml + prompt.md` layout detected | Warning | Build continues; suggest `migrate-v2`. |
@@ -282,5 +293,6 @@ dstack uses semantic versioning:
 - [ADR-0013](../adr/0013-single-file-skill-md.md) — single-file source format.
 - [ADR-0014](../adr/0014-metadata-namespace.md) — `metadata.dstack.*` namespace.
 - [ADR-0015](../adr/0015-type-taxonomy-adoption.md) — type / side_effects / agency.
+- [ADR-0025](../adr/0025-hybrid-by-default-doctrine.md) — the `calibration` axis.
 - [ADR-0016](../adr/0016-per-tier-token-budget.md) — body-only token budget.
 - [ADR-0017](../adr/0017-bundled-resources.md) — bundled-resource contract.

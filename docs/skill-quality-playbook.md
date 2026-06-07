@@ -306,6 +306,32 @@ The Anthropic skill-creator skill operationalises this with:
 dstack's `scripts/benchmark.sh` mirrors this by spawning both skills
 in pairwise comparison plus a judge call.
 
+### 1.15 Hybrid by default — spine + named judgment, on a calibration spectrum (dstack)
+
+> **Rule:** every skill body has a deterministic spine (steps + a gate +
+> a constraining table/checklist; exact commands where applicable) AND one
+> explicit sentence naming where the agent decides and makes the final
+> call. How much spine is set by a band; 30% deterministic is only the
+> DEFAULT.
+> — dstack ADR-0025; consistent with §1.3 (match specificity to fragility).
+
+The deterministic share is a spectrum, not one number:
+
+| Band (`metadata.dstack.calibration`) | Det. share | Example |
+|---|---|---|
+| `judgment-dominant` | 10–20% | `brainstorm` |
+| `workflow` (default, omit the flag) | ~30% | `debugging` |
+| `deterministic-dominant` | 60–80%+ | `careful`, `verification` |
+| `schema-meta` | n/a | `classify-issue` |
+
+This is a *calibration* axis, separate from `type` (ADR-0015). A
+`type: semantic` skill is the normal carrier: no runtime code, but its
+prompt still has a spine. Default is `workflow`. Move a skill to
+`judgment-dominant` only with empirical evidence (benchmark/UAT/test) that
+the default over-constrains it, plus owner approval; moving to more rails
+needs only a rationale. Record both in `## Changes`. Exemplar:
+`skills/angular21-maritimhub/SKILL.md` § "How the work is split".
+
 ---
 
 ## §2 — Anti-patterns (cited)
@@ -507,7 +533,7 @@ four cloned reference repos.)
 | TDD / testing | `superpowers/skills/test-driven-development`; `mattpocock-skills/skills/engineering/tdd` |
 | Verification / completion-gate | `superpowers/skills/verification-before-completion` |
 | Code review (giver) | `gstack/.claude/skills/review` (long; isolate prose body) |
-| Code review (receiver) | `superpowers/skills/receiving-code-review` or `superpowers/skills/requesting-code-review` |
+| Code review (receiver) | `superpowers/skills/requesting-code-review` (dstack folded the receiver role into `/code-review`; `/requesting-code-review` covers the dispatch side) |
 | Brainstorm / stress-test | `mattpocock-skills/skills/productivity/grill-me`; `superpowers/skills/brainstorming` |
 | Plan writing | `superpowers/skills/writing-plans` |
 | Plan execution | `superpowers/skills/executing-plans` |

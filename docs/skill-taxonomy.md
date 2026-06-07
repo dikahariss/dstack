@@ -76,10 +76,8 @@ The skill uses both code and LLM in coordination. Code prepares input
 and validates output; the LLM does the reasoning in the middle.
 
 - Pattern: `code reads state → LLM reasons → code validates → code acts`.
-- Examples: a `/ship` skill that reads git status (code), decides on a
-  commit message (LLM), bumps the version (code), and pushes the result
-  (code). A `/qa` skill that loads a webpage (code), evaluates the UX
-  (LLM), and writes a report (code).
+- Example: `/code-review` reads the diff with a script (code), reasons
+  about each review comment (LLM), then edits files and replies (code).
 - Most production skills fall into this type.
 
 ### Type 4: Schema-constrained Semantic
@@ -107,13 +105,22 @@ LLM produces the structured data directly.
 | Skill or code path | Type |
 |---|---|
 | A CLI command that reads or writes a config file | Deterministic |
-| `/freeze`, `/unfreeze` (set a flag file) | Deterministic |
-| `/office-hours` (interrogate a product idea, generate a plan) | Open-ended Semantic |
-| `/retro` (write a weekly reflection) | Open-ended Semantic |
-| `/ship` (read git, reason, bump version, write CHANGELOG, push) | Hybrid |
-| `/qa` (load URL, reason about UX, write report) | Hybrid |
-| A classifier that outputs `{ label, confidence }` | Schema-constrained Semantic |
+| `/version` (read or bump the VERSION file) | Deterministic |
+| `/brainstorm` (interview the user, walk the decision tree) | Open-ended Semantic |
+| `/debugging` (root-cause investigation, no fixed output shape) | Open-ended Semantic |
+| `/code-review` (script fetches the diff, LLM reasons, code edits) | Hybrid |
+| `/classify-issue` (emit a structured triage record) | Schema-constrained Semantic |
 | A prompt-injection classifier with a fixed label set | Schema-constrained Semantic |
+
+### Computation type is not the calibration doctrine
+
+The four types answer *how work runs* (code vs LLM). They are distinct
+from the **calibration** axis ([ADR-0025](adr/0025-hybrid-by-default-doctrine.md)):
+how much freedom the prompt gives the agent (judgment-dominant → workflow
+→ deterministic-dominant → schema-meta). A `type: semantic` skill normally
+still has a deterministic spine. Do not set `type: hybrid` to satisfy the
+doctrine; the doctrine is satisfied by body structure + the `calibration`
+flag, not the type enum.
 
 ---
 
@@ -141,9 +148,9 @@ When and for how long the skill runs.
 | Choice | Meaning |
 |---|---|
 | One-shot synchronous | The user invokes the skill. It runs to completion in one turn. Then it stops. |
-| Multi-turn conversational | The skill runs across several turns of user-skill dialog. Example: `/office-hours`. |
+| Multi-turn conversational | The skill runs across several turns of user-skill dialog. Example: `/brainstorm`. |
 | Asynchronous | The skill starts, returns immediately, and delivers its result later. |
-| Continuous loop | The skill runs in the background indefinitely. Example: `/canary` monitoring after deploy. |
+| Continuous loop | The skill runs in the background indefinitely. Example: a background deploy monitor (hypothetical; dstack ships none). |
 | Event-driven | The skill activates automatically when some other event fires. Example: a PreToolUse hook on `/careful` that activates before each Bash tool call (not yet supported in dstack — see DEFERRED.md D2). |
 
 ### Axis C — Coordination pattern
@@ -154,7 +161,7 @@ How the skill works with other skills or agents.
 |---|---|
 | Solo | The skill runs by itself. |
 | Pipeline | A sequence of skills runs in order. Output of A becomes input of B, then B's output becomes input of C. |
-| Fan-out | The skill spawns several sub-agents in parallel. It waits for all to finish, then aggregates results. Example: `/autoplan` runs CEO review, design review, and engineering review in parallel. |
+| Fan-out | The skill spawns several sub-agents in parallel. It waits for all to finish, then aggregates results. Example: `/dispatching-parallel-agents` runs one sub-agent per independent failure in parallel. |
 | Sub-agent delegation | The skill spawns one sub-agent with limited context. Used when the sub-task should not see the parent's full context, for security or focus reasons. |
 
 ### Axis D — Statefulness
@@ -183,13 +190,14 @@ What the skill changes in the world.
 
 | Choice | Meaning |
 |---|---|
-| Read-only | The skill changes nothing. It only reads and reports. Examples: `/review`, `/qa-only`. |
-| Local mutating | The skill changes files in the current project. Example: `/ship` edits CHANGELOG.md and VERSION. |
+| Read-only | The skill changes nothing. It only reads and reports. Examples: `/verification`, `/classify-issue`. |
+| Local mutating | The skill changes files in the current project. Example: `/version` edits the VERSION file. |
 | External mutating | The skill changes state outside the project. Examples: pushing a pull request to GitHub, deploying to production, calling an external API. |
 
-### Worked example: skill `/ship`
+### Worked example: skill `/ship` (hypothetical)
 
-The `/ship` skill picks one choice on each of the seven axes.
+`/ship` is a hypothetical skill — not in the dstack catalog — used here
+only to show all seven axes decided at once. It picks one choice per axis.
 
 | Axis | Choice for `/ship` |
 |---|---|
@@ -410,9 +418,11 @@ the if/else cannot handle.
 
 ## Part 6 — Implications for dstack architecture
 
-This section describes what would change if the taxonomy were adopted
-formally. None of these changes are committed yet. Each requires a new
-ADR before implementation.
+Section 6.1 (the `type`/`side_effects`/`agency` fields) has since been
+adopted by [ADR-0015](adr/0015-type-taxonomy-adoption.md) and is live in
+[skill-spec.md](specs/skill-spec.md). The `calibration` field
+([ADR-0025](adr/0025-hybrid-by-default-doctrine.md)) is a separate axis,
+also live. Subsections 6.2–6.5 remain proposals; each needs its own ADR.
 
 ### 6.1 New fields in `skill.yaml`
 
