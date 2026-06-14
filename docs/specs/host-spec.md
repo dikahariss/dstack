@@ -138,33 +138,16 @@ dstack ships one host adapter: Claude Code.
 
 ### Claude Code tool registry
 
-The current list, defined in
-`src/adapters/claude-code/tools.ts`:
+The authoritative list is `CLAUDE_CODE_TOOLS` in
+`src/adapters/claude-code/tools.ts` — 35 first-party harness tools as of
+2026-06-14 (`Agent`, `Bash`, `Read`, `Write`, `Edit`, `Grep`, `Glob`,
+`Skill`, `Workflow`, the `Task*` family, `Web*`, and the
+plan/worktree/cron/monitor tools). MCP tools (`mcp__<server>__<tool>`)
+are excluded: they are user/server-specific, not first-party host tools.
 
-```typescript
-export const CLAUDE_CODE_TOOLS = [
-  'Agent',
-  'AskUserQuestion',
-  'Bash',
-  'Edit',
-  'Glob',
-  'Grep',
-  'NotebookEdit',
-  'Read',
-  'Skill',
-  'TaskCreate',
-  'TaskGet',
-  'TaskList',
-  'TaskUpdate',
-  'WebFetch',
-  'WebSearch',
-  'Workflow',
-  'Write',
-];
-```
-
-When Anthropic adds new tools to Claude Code's harness, update this
-list. When tools are renamed, update this list.
+That file is the single source of truth — this spec does not duplicate
+the list. When Anthropic adds, renames, or removes a first-party tool,
+update `tools.ts`.
 
 ## How to add a new host
 
