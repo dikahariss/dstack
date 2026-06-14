@@ -1,5 +1,9 @@
 # Skill hardening plan — the five copy-as-is superpowers imports
 
+> **Superseded by [docs/plans/v4/skill-hybrid-by-default-plan.md](../v4/skill-hybrid-by-default-plan.md).**
+> The five-skill hardening items below are folded into that plan's Track D
+> + Track E so each file is touched once. Kept for the per-skill gap detail.
+
 This plan brings the five superpowers skills imported as-is (commit
 `ec982ad`, under [ADR-0024](../../adr/0024-catalog-breadth-over-yagni.md))
 up to the same quality bar as dstack's already-adapted skills. It is the

@@ -10,7 +10,7 @@ description: |
 allowed-tools: Agent Bash Read
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -31,25 +31,20 @@ When you have multiple unrelated failures (different test files, different subsy
 
 **Core principle:** Dispatch one agent per independent problem domain. Let them work concurrently.
 
-## When to Use
+Deciding the failures are truly independent — no shared state, no
+"fixing one may fix another" coupling — is your judgment call. The rails
+below only tell you how to dispatch once you have decided.
 
-```dot
-digraph when_to_use {
-    "Multiple failures?" [shape=diamond];
-    "Are they independent?" [shape=diamond];
-    "Single agent investigates all" [shape=box];
-    "One agent per problem domain" [shape=box];
-    "Can they work in parallel?" [shape=diamond];
-    "Sequential agents" [shape=box];
-    "Parallel dispatch" [shape=box];
+## When to use
 
-    "Multiple failures?" -> "Are they independent?" [label="yes"];
-    "Are they independent?" -> "Single agent investigates all" [label="no - related"];
-    "Are they independent?" -> "Can they work in parallel?" [label="yes"];
-    "Can they work in parallel?" -> "Parallel dispatch" [label="yes"];
-    "Can they work in parallel?" -> "Sequential agents" [label="no - shared state"];
-}
-```
+Walk this decision table top to bottom:
+
+| Situation | Action |
+|---|---|
+| Multiple failures, but related (fixing one may fix others) | One agent investigates all |
+| Multiple failures, independent, no shared state | One agent per domain, dispatched in parallel |
+| Independent but share state (same files/resources) | Sequential agents, not parallel |
+| Single failure, or you don't yet know what's broken | Investigate directly first (no dispatch) |
 
 **Use when:**
 - 3+ test files failing with different root causes
@@ -62,9 +57,9 @@ digraph when_to_use {
 - Need to understand full system state
 - Agents would interfere with each other
 
-## The Pattern
+## The pattern
 
-### 1. Identify Independent Domains
+### 1. Identify independent domains
 
 Group failures by what's broken:
 - File A tests: Tool approval flow
@@ -73,7 +68,7 @@ Group failures by what's broken:
 
 Each domain is independent - fixing tool approval doesn't affect abort tests.
 
-### 2. Create Focused Agent Tasks
+### 2. Create focused agent tasks
 
 Each agent gets:
 - **Specific scope:** One test file or subsystem
@@ -81,7 +76,7 @@ Each agent gets:
 - **Constraints:** Don't change other code
 - **Expected output:** Summary of what you found and fixed
 
-### 3. Dispatch in Parallel
+### 3. Dispatch in parallel
 
 ```typescript
 // In Claude Code: dispatch via the Agent tool, multiple in one message
@@ -91,7 +86,7 @@ Agent("Fix tool-approval-race-conditions.test.ts failures")
 // All three run concurrently
 ```
 
-### 4. Review and Integrate
+### 4. Review and integrate
 
 When agents return:
 - Read each summary
@@ -99,7 +94,7 @@ When agents return:
 - Run full test suite
 - Integrate all changes
 
-## Agent Prompt Structure
+## Agent prompt structure
 
 Good agent prompts are:
 1. **Focused** - One clear problem domain
@@ -127,28 +122,23 @@ Do NOT just increase timeouts - find the real issue.
 Return: Summary of what you found and what you fixed.
 ```
 
-## Common Mistakes
+## Common mistakes
 
-**❌ Too broad:** "Fix all the tests" - agent gets lost
-**✅ Specific:** "Fix agent-tool-abort.test.ts" - focused scope
+| Mistake | Instead |
+|---|---|
+| Too broad: "Fix all the tests" — agent gets lost | Specific: "Fix agent-tool-abort.test.ts" — focused scope |
+| No context: "Fix the race condition" — agent doesn't know where | Paste the error messages and test names |
+| No constraints: agent might refactor everything | "Do NOT change production code" / "Fix tests only" |
+| Vague output: "Fix it" — you don't know what changed | "Return a summary of root cause and changes" |
 
-**❌ No context:** "Fix the race condition" - agent doesn't know where
-**✅ Context:** Paste the error messages and test names
-
-**❌ No constraints:** Agent might refactor everything
-**✅ Constraints:** "Do NOT change production code" or "Fix tests only"
-
-**❌ Vague output:** "Fix it" - you don't know what changed
-**✅ Specific:** "Return summary of root cause and changes"
-
-## When NOT to Use
+## When NOT to use
 
 **Related failures:** Fixing one might fix others - investigate together first
 **Need full context:** Understanding requires seeing entire system
 **Exploratory debugging:** You don't know what's broken yet
 **Shared state:** Agents would interfere (editing same files, using same resources)
 
-## Real Example
+## Real example
 
 **Scenario:** 6 test failures across 3 files after major refactoring
 
@@ -175,7 +165,7 @@ Agent 3 → Fix tool-approval-race-conditions.test.ts
 
 **Time saved:** 3 problems solved in parallel vs sequentially
 
-## Key Benefits
+## Key benefits
 
 1. **Parallelization** - Multiple investigations happen simultaneously
 2. **Focus** - Each agent has narrow scope, less context to track
@@ -190,8 +180,27 @@ After agents return:
 3. **Run full suite** - Verify all fixes work together
 4. **Spot check** - Agents can make systematic errors
 
+Run the integrate-time gate in this turn before claiming done:
+
+```bash
+<project test command>   # e.g. bun test / pytest — expect 0 failures, exit 0
+git diff --stat          # confirm only intended files changed, no overlap
+```
+
+## Cross-references
+
+- `/subagent-driven-development` — the sibling dispatch skill for
+  plan-driven tasks worked sequentially in one session (this skill is for
+  independent, parallel investigations with no plan).
+- `/debugging` — run it inside each agent to root-cause its own domain.
+- `/verification` — the integrate-time gate above.
+
 ## Changes
 
+- **0.2.0** — Named the judgment (deciding failures are truly independent)
+  and added an integrate-time verify command. Hardening (v3 plan):
+  converted the graphviz when-to-use block and the ❌/✅ mistakes to tables;
+  added Cross-references; normalised headings to dstack voice.
 - **0.1.0** — Imported from superpowers `dispatching-parallel-agents`.
   Adapted to dstack: added frontmatter/`metadata.dstack`; dispatch
   examples use the Claude Code `Agent` tool instead of `Task`; dropped

@@ -9,7 +9,7 @@ description: |
 allowed-tools: Agent Read Bash
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -29,25 +29,21 @@ Execute plan by dispatching fresh subagent per task, with two-stage review after
 
 **Continuous execution:** Do not pause to check in with the user between tasks. Execute all tasks from the plan without stopping. The only reasons to stop are: BLOCKED status you cannot resolve, ambiguity that genuinely prevents progress, or all tasks complete. "Should I continue?" prompts and progress summaries waste their time — they asked you to execute the plan, so execute it.
 
-## When to Use
+Your judgment is which context each subagent needs (you construct it; they
+never inherit your history) and whether a BLOCKED status means the plan is
+wrong versus the model is too weak. The rails fix the loop; those two calls
+are yours.
 
-```dot
-digraph when_to_use {
-    "Have implementation plan?" [shape=diamond];
-    "Tasks mostly independent?" [shape=diamond];
-    "Stay in this session?" [shape=diamond];
-    "subagent-driven-development" [shape=box];
-    "executing-plans" [shape=box];
-    "Manual execution or brainstorm first" [shape=box];
+## When to use
 
-    "Have implementation plan?" -> "Tasks mostly independent?" [label="yes"];
-    "Have implementation plan?" -> "Manual execution or brainstorm first" [label="no"];
-    "Tasks mostly independent?" -> "Stay in this session?" [label="yes"];
-    "Tasks mostly independent?" -> "Manual execution or brainstorm first" [label="no - tightly coupled"];
-    "Stay in this session?" -> "subagent-driven-development" [label="yes"];
-    "Stay in this session?" -> "executing-plans" [label="no - parallel session"];
-}
-```
+Walk this decision table:
+
+| Have a plan? | Tasks mostly independent? | Stay in this session? | Use |
+|---|---|---|---|
+| No | — | — | Manual execution, or `/brainstorm` first |
+| Yes | No (tightly coupled) | — | Manual execution, or `/brainstorm` first |
+| Yes | Yes | Yes | `/subagent-driven-development` (this skill) |
+| Yes | Yes | No (parallel session) | `/executing-plans` |
 
 **vs. Executing Plans (parallel session):**
 - Same session (no context switch)
@@ -55,54 +51,29 @@ digraph when_to_use {
 - Two-stage review after each task: spec compliance first, then code quality
 - Faster iteration (no human-in-loop between tasks)
 
-## The Process
+## The process
 
-```dot
-digraph process {
-    rankdir=TB;
+1. **Set up.** Read the plan once. Extract all tasks with full text and
+   context. Create one todo per task.
+2. **Per task, in order:**
+   1. Dispatch the implementer subagent (`references/implementer-prompt.md`).
+   2. If it asks questions, answer them and provide context, then let it
+      proceed (re-dispatch if needed).
+   3. The implementer implements, tests, commits, and self-reviews.
+   4. Dispatch the spec reviewer (`references/spec-reviewer-prompt.md`).
+      If it finds gaps, the implementer fixes them and you re-review —
+      loop until spec-compliant.
+   5. Only once spec is ✅, dispatch the code-quality reviewer
+      (`references/code-quality-reviewer-prompt.md`). If it does not
+      approve, the implementer fixes the issues and you re-review — loop
+      until approved.
+   6. Mark the task's todo complete.
+3. **Next task.** Repeat step 2 until no tasks remain.
+4. **Final pass.** Dispatch one code reviewer for the entire
+   implementation.
+5. **Wrap up.** Use `/finishing-a-development-branch`.
 
-    subgraph cluster_per_task {
-        label="Per Task";
-        "Dispatch implementer subagent (references/implementer-prompt.md)" [shape=box];
-        "Implementer subagent asks questions?" [shape=diamond];
-        "Answer questions, provide context" [shape=box];
-        "Implementer subagent implements, tests, commits, self-reviews" [shape=box];
-        "Dispatch spec reviewer subagent (references/spec-reviewer-prompt.md)" [shape=box];
-        "Spec reviewer subagent confirms code matches spec?" [shape=diamond];
-        "Implementer subagent fixes spec gaps" [shape=box];
-        "Dispatch code quality reviewer subagent (references/code-quality-reviewer-prompt.md)" [shape=box];
-        "Code quality reviewer subagent approves?" [shape=diamond];
-        "Implementer subagent fixes quality issues" [shape=box];
-        "Mark task complete in TodoWrite" [shape=box];
-    }
-
-    "Read plan, extract all tasks with full text, note context, create TodoWrite" [shape=box];
-    "More tasks remain?" [shape=diamond];
-    "Dispatch final code reviewer subagent for entire implementation" [shape=box];
-    "Use /finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
-
-    "Read plan, extract all tasks with full text, note context, create TodoWrite" -> "Dispatch implementer subagent (references/implementer-prompt.md)";
-    "Dispatch implementer subagent (references/implementer-prompt.md)" -> "Implementer subagent asks questions?";
-    "Implementer subagent asks questions?" -> "Answer questions, provide context" [label="yes"];
-    "Answer questions, provide context" -> "Dispatch implementer subagent (references/implementer-prompt.md)";
-    "Implementer subagent asks questions?" -> "Implementer subagent implements, tests, commits, self-reviews" [label="no"];
-    "Implementer subagent implements, tests, commits, self-reviews" -> "Dispatch spec reviewer subagent (references/spec-reviewer-prompt.md)";
-    "Dispatch spec reviewer subagent (references/spec-reviewer-prompt.md)" -> "Spec reviewer subagent confirms code matches spec?";
-    "Spec reviewer subagent confirms code matches spec?" -> "Implementer subagent fixes spec gaps" [label="no"];
-    "Implementer subagent fixes spec gaps" -> "Dispatch spec reviewer subagent (references/spec-reviewer-prompt.md)" [label="re-review"];
-    "Spec reviewer subagent confirms code matches spec?" -> "Dispatch code quality reviewer subagent (references/code-quality-reviewer-prompt.md)" [label="yes"];
-    "Dispatch code quality reviewer subagent (references/code-quality-reviewer-prompt.md)" -> "Code quality reviewer subagent approves?";
-    "Code quality reviewer subagent approves?" -> "Implementer subagent fixes quality issues" [label="no"];
-    "Implementer subagent fixes quality issues" -> "Dispatch code quality reviewer subagent (references/code-quality-reviewer-prompt.md)" [label="re-review"];
-    "Code quality reviewer subagent approves?" -> "Mark task complete in TodoWrite" [label="yes"];
-    "Mark task complete in TodoWrite" -> "More tasks remain?";
-    "More tasks remain?" -> "Dispatch implementer subagent (references/implementer-prompt.md)" [label="yes"];
-    "More tasks remain?" -> "Dispatch final code reviewer subagent for entire implementation" [label="no"];
-    "Dispatch final code reviewer subagent for entire implementation" -> "Use /finishing-a-development-branch";
-}
-```
-
-## Model Selection
+## Model selection
 
 Use the least powerful model that can handle each role to conserve cost and increase speed.
 
@@ -117,7 +88,7 @@ Use the least powerful model that can handle each role to conserve cost and incr
 - Touches multiple files with integration concerns → standard model
 - Requires design judgment or broad codebase understanding → most capable model
 
-## Handling Implementer Status
+## Handling implementer status
 
 Implementer subagents report one of four statuses. Handle each appropriately:
 
@@ -135,20 +106,20 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 
 **Never** ignore an escalation or force the same model to retry without changes. If the implementer said it's stuck, something needs to change.
 
-## Prompt Templates
+## Prompt templates
 
 - `references/implementer-prompt.md` - Dispatch implementer subagent
 - `references/spec-reviewer-prompt.md` - Dispatch spec compliance reviewer subagent
 - `references/code-quality-reviewer-prompt.md` - Dispatch code quality reviewer subagent
 
-## Example Workflow
+## Example workflow
 
 ```
 You: I'm using Subagent-Driven Development to execute this plan.
 
 [Read plan file once: docs/plans/feature-plan.md]
 [Extract all 5 tasks with full text and context]
-[Create TodoWrite with all tasks]
+[Create a todo per task]
 
 Task 1: Hook installation script
 
@@ -249,7 +220,7 @@ Done!
 - Review loops add iterations
 - But catches issues early (cheaper than debugging later)
 
-## Red Flags
+## Red flags
 
 **Never:**
 - Start implementation on main/master branch without explicit user consent
@@ -280,7 +251,7 @@ Done!
 - Dispatch fix subagent with specific instructions
 - Don't try to fix manually (context pollution)
 
-## Integration
+## Cross-references
 
 **Required workflow skills:**
 - `/using-git-worktrees` - Ensures isolated workspace (creates one or verifies existing)
@@ -296,6 +267,11 @@ Done!
 
 ## Changes
 
+- **0.2.0** — Named the judgment (which context each subagent needs;
+  reading a BLOCKED status as plan-wrong vs model-too-weak). Hardening
+  (v3 plan): converted both graphviz blocks to a decision table and a
+  numbered process; replaced TodoWrite with host-accurate phrasing;
+  normalised headings to dstack voice.
 - **0.1.0** — Imported from superpowers `subagent-driven-development`.
   Adapted to dstack: added frontmatter/`metadata.dstack`; `superpowers:`
   sub-skill references rewritten as `/skill` (`/tdd` replaces

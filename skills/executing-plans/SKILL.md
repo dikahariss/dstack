@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Edit Write Bash
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -34,15 +34,31 @@ the `Agent` tool — when subagents are available, prefer
 skill when executing a plan in a separate session with review
 checkpoints.
 
-## The Process
+## When to use
 
-### Step 1: Load and Review Plan
+- You have a written plan and are executing it in a **separate** session
+  with review checkpoints.
+
+## When NOT to use
+
+- Executing in the **current** session — use `/subagent-driven-development`
+  (one subagent per task).
+- No written plan yet — use `/writing-plans` first.
+
+Your judgment enters at one place: the critical plan review in Step 1,
+where you push back on or override the plan before executing. After that
+you follow the steps exactly; completion is gated by `/verification`
+(mandatory) and wrapped up by `/finishing-a-development-branch`.
+
+## The process
+
+### Step 1: Load and review the plan
 1. Read plan file
 2. Review critically - identify any questions or concerns about the plan
 3. If concerns: Raise them with the user before starting
-4. If no concerns: Create TodoWrite and proceed
+4. If no concerns: create a todo per task and proceed
 
-### Step 2: Execute Tasks
+### Step 2: Execute tasks
 
 For each task:
 1. Mark as in_progress
@@ -50,14 +66,14 @@ For each task:
 3. Run verifications as specified
 4. Mark as completed
 
-### Step 3: Complete Development
+### Step 3: Complete development
 
 After all tasks complete and verified:
 - Announce: "Using finishing-a-development-branch to complete this work."
 - **REQUIRED SUB-SKILL:** Use `/finishing-a-development-branch`
 - Follow that skill to verify tests, present options, execute choice
 
-## When to Stop and Ask for Help
+## When to stop and ask for help
 
 **STOP executing immediately when:**
 - Hit a blocker (missing dependency, test fails, instruction unclear)
@@ -67,7 +83,7 @@ After all tasks complete and verified:
 
 **Ask for clarification rather than guessing.**
 
-## When to Revisit Earlier Steps
+## When to revisit earlier steps
 
 **Return to Review (Step 1) when:**
 - The user updates the plan based on your feedback
@@ -83,15 +99,21 @@ After all tasks complete and verified:
 - Stop when blocked, don't guess
 - Never start implementation on main/master branch without explicit user consent
 
-## Integration
+## Cross-references
 
 **Required workflow skills:**
 - `/using-git-worktrees` - Ensures isolated workspace (creates one or verifies existing)
 - `/writing-plans` - Creates the plan this skill executes
+- `/verification` - Mandatory completion gate after each task and at the end
 - `/finishing-a-development-branch` - Complete development after all tasks
 
 ## Changes
 
+- **0.2.0** — Named the judgment (the Step 1 plan review) and made
+  `/verification` an explicit, mandatory completion gate. Hardening
+  (v3 plan): added When to use / When NOT to use; replaced TodoWrite with
+  host-accurate phrasing; added the `/verification` cross-reference;
+  normalised headings to dstack voice.
 - **0.1.0** — Imported from superpowers `executing-plans`. Adapted to
   dstack: added frontmatter/`metadata.dstack`; `superpowers:` sub-skill
   references rewritten as `/skill`; "your human partner" → "the user";

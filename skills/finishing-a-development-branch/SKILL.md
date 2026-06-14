@@ -9,10 +9,11 @@ description: |
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: semantic
     side_effects: external
     agency: deliberative
+    calibration: deterministic-dominant
     context_budget_tokens: 3500
     triggers:
       - finish branch
@@ -31,9 +32,9 @@ Guide completion of development work by presenting clear options and handling ch
 
 **Announce at start:** "Using finishing-a-development-branch to complete this work."
 
-## The Process
+## The process
 
-### Step 1: Verify Tests
+### Step 1: Verify tests
 
 **Before presenting options, verify tests pass:**
 
@@ -55,7 +56,7 @@ Stop. Don't proceed to Step 2.
 
 **If tests pass:** Continue to Step 2.
 
-### Step 2: Detect Environment
+### Step 2: Detect environment
 
 **Determine workspace state before presenting options:**
 
@@ -72,7 +73,7 @@ This determines which menu to show and how cleanup works:
 | `GIT_DIR != GIT_COMMON`, named branch | Standard 4 options | Provenance-based (see Step 6) |
 | `GIT_DIR != GIT_COMMON`, detached HEAD | Reduced 3 options (no merge) | No cleanup (externally managed) |
 
-### Step 3: Determine Base Branch
+### Step 3: Determine the base branch
 
 ```bash
 # Try common base branches
@@ -81,7 +82,10 @@ git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null
 
 Or ask: "This branch split from main - is that correct?"
 
-### Step 4: Present Options
+Confirming the base branch when `merge-base` is ambiguous is the one
+judgment call in this skill; everything else follows the protocol exactly.
+
+### Step 4: Present options
 
 **Normal repo and named-branch worktree — present exactly these 4 options:**
 
@@ -110,9 +114,9 @@ Which option?
 
 **Don't add explanation** - keep options concise.
 
-### Step 5: Execute Choice
+### Step 5: Execute the choice
 
-#### Option 1: Merge Locally
+#### Option 1: Merge locally
 
 ```bash
 # Get main repo root for CWD safety
@@ -136,7 +140,7 @@ Then: Cleanup worktree (Step 6), then delete branch:
 git branch -d <feature-branch>
 ```
 
-#### Option 2: Push and Create PR
+#### Option 2: Push and create a PR
 
 ```bash
 # Push branch
@@ -155,7 +159,7 @@ EOF
 
 **Do NOT clean up worktree** — user needs it alive to iterate on PR feedback.
 
-#### Option 3: Keep As-Is
+#### Option 3: Keep as-is
 
 Report: "Keeping branch <name>. Worktree preserved at <path>."
 
@@ -186,7 +190,7 @@ Then: Cleanup worktree (Step 6), then force-delete branch:
 git branch -D <feature-branch>
 ```
 
-### Step 6: Cleanup Workspace
+### Step 6: Clean up the workspace
 
 **Only runs for Options 1 and 4.** Options 2 and 3 always preserve the worktree.
 
@@ -209,7 +213,7 @@ git worktree prune  # Self-healing: clean up any stale registrations
 
 **Otherwise:** The host environment (harness) owns this workspace. Do NOT remove it. If your platform provides a workspace-exit tool, use it. Otherwise, leave the workspace in place.
 
-## Quick Reference
+## Quick reference
 
 | Option | Merge | Push | Keep Worktree | Cleanup Branch |
 |--------|-------|------|---------------|----------------|
@@ -218,7 +222,7 @@ git worktree prune  # Self-healing: clean up any stale registrations
 | 3. Keep as-is | - | - | yes | - |
 | 4. Discard | - | - | - | yes (force) |
 
-## Common Mistakes
+## Common mistakes
 
 **Skipping test verification**
 - **Problem:** Merge broken code, create failing PR
@@ -248,7 +252,7 @@ git worktree prune  # Self-healing: clean up any stale registrations
 - **Problem:** Accidentally delete work
 - **Fix:** Require typed "discard" confirmation
 
-## Red Flags
+## Red flags
 
 **Never:**
 - Proceed with failing tests
@@ -268,8 +272,21 @@ git worktree prune  # Self-healing: clean up any stale registrations
 - `cd` to main repo root before worktree removal
 - Run `git worktree prune` after removal
 
+## Cross-references
+
+- `/verification` — the quality gate (tests/typecheck/build) you run in
+  Step 1 before offering any option. This skill is the wrap-up *decision*,
+  not the gate.
+- `/using-git-worktrees` — the counterpart that sets up the isolated
+  workspace this skill tears down.
+- `/code-review` — request a review before choosing merge or PR.
+
 ## Changes
 
+- **0.2.0** — calibration: deterministic-dominant (ADR-0025; side_effects
+  external, the exact bash is the value). Named the bounded judgment
+  (confirm the base branch when `merge-base` is ambiguous). Hardening
+  (v3 plan): added Cross-references; normalised headings to dstack voice.
 - **0.1.0** — Imported from superpowers `finishing-a-development-branch`.
   Adapted to dstack: added frontmatter/`metadata.dstack`; reworded the
   worktree-provenance note (`~/.config/superpowers/worktrees/` retained

@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Grep Glob Write
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -56,6 +56,10 @@ Before writing tasks, map the files to create or modify and the one
 responsibility of each. Files that change together live together; split
 by responsibility, not by layer. In an existing codebase, follow the
 established patterns rather than restructuring on the side.
+
+Deciding the file split and the task ordering is your design call — the
+templates below fix the *format* of a task, not *which* tasks or in *what*
+order. That sequencing is the judgment this skill exists to apply.
 
 ## Bite-sized tasks
 
@@ -148,6 +152,9 @@ dispatch a fresh subagent per task and review between tasks.
 
 ## Changes
 
+- **0.2.0** — Named the judgment surface (the file split + task ordering is
+  the design call; the templates fix only a task's format). Workflow band
+  (ADR-0025; flag omitted as the default).
 - **0.1.0** — Ported from superpowers `writing-plans`. Adapted to
   dstack: Bun/TypeScript task examples, plans saved under `docs/plans/`,
   handoff points to dstack skills (`/tdd`, `/verification`,

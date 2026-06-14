@@ -5,10 +5,11 @@ allowed-tools: Read
 metadata:
   dstack:
     type: schema-semantic
-    version: 0.1.0
+    version: 0.2.0
     context_budget_tokens: 1500
     side_effects: readonly
     agency: deliberative
+    calibration: schema-meta
     triggers:
       - triage this
       - classify issue
@@ -50,6 +51,10 @@ Read the issue text the user pasted (or pointed at) and emit a single
 JSON object matching the schema in this skill's frontmatter. Do not
 add commentary outside the JSON.
 
+The schema constrains the *shape* of the answer; `kind`, `severity`, and
+`area` remain your judgment call — the format is fixed, the classification
+is yours.
+
 ## Procedure
 
 1. Read the issue body carefully. If important context is missing,
@@ -70,6 +75,15 @@ add commentary outside the JSON.
 6. List related issues in `duplicates` only when you actually
    recognised them — never speculate.
 
+## Misclassification traps
+
+| Looks like | Actually | Why |
+|---|---|---|
+| Feature request phrased as a bug ("X is broken, it won't Y") | `feature` | Y never existed; it is a new capability, not a defect. |
+| Worked before, stopped after a change | `regression` | A defect that used to pass is a regression — note the suspected cause. |
+| "How do I…" with no defect | `question` | No code change is implied; do not file as `bug`. |
+| One-off maintenance (bump dep, rename) | `chore` | No user-visible behavior change. |
+
 ## Output
 
 Emit exactly one JSON object. No prose before or after. Example
@@ -88,3 +102,11 @@ shape:
 If the JSON is invalid against the schema, the downstream tooling
 will reject it. Triple-check enum values and `area` length before
 returning.
+
+## Changes
+
+- **0.2.0** — calibration: schema-meta (ADR-0025; determinism is the
+  output schema, not a procedure). Named the judgment (kind/severity/area
+  are your call; the schema fixes the shape). Added a misclassification
+  traps table.
+- **0.1.0** — Initial schema-semantic triage skill.

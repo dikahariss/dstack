@@ -4,9 +4,11 @@ description: "Modernize an Angular codebase that has already been version-bumped
 allowed-tools: Read Edit Bash Grep Glob
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: hybrid
     context_budget_tokens: 4500
+    side_effects: local
+    agency: deliberative
   license: Apache-2.0
 ---
 
@@ -168,3 +170,15 @@ only the build/test/lint run proves _behavior_ is intact. Both are required.
 - `references/pwa-ssr-spa.md` — shipping one source as SPA + SSR + PWA: the dual-mode build,
   CommonEngine vs AngularNodeAppEngine, mandatory hydration (event replay, incremental), and the
   service-worker/manifest setup with its SSR caveats. The audit's DELIVERY MODES block maps to this.
+
+## Changes
+
+- **0.3.0** — Declared `side_effects: local` + `agency: deliberative` (it
+  edits files and runs schematics). This skill is the workflow-band
+  exemplar (ADR-0025): its "How the work is split" section already states
+  the ~30% deterministic / ~70% semantic split, so the calibration flag is
+  omitted (workflow is the default).
+- **0.2.0** — Bounded the signals-vs-RxJS guidance (signals for simple
+  local state; keep the data layer on RxJS; don't de-RxJS working HTTP).
+- **0.1.0** — Initial Angular 21 modernization skill (audit + schematic
+  harness + semantic workstreams).

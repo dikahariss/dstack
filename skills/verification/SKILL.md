@@ -9,10 +9,11 @@ description: |
 allowed-tools: Bash Read
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: semantic
     side_effects: local
     agency: deliberative
+    calibration: deterministic-dominant
     context_budget_tokens: 3500
     triggers:
       - verify
@@ -131,6 +132,9 @@ State the exit code of each step in the claim:
 
 ## Changes
 
+- **0.3.0** — calibration: deterministic-dominant (ADR-0025; discipline
+  gate, the rails are the value). Judgment stays bounded: identify the
+  command that proves THIS claim — no "research the latest, your call."
 - **0.2.0** — Added the default verification gate (numbered bash
   with explicit exit-code checks) and the honest-claim shape table
   contrasting vague vs evidence-grounded claims. Added v2 schema

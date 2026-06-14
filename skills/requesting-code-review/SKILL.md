@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read Grep Glob Agent
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -27,6 +27,11 @@ do — never your session's history. This keeps the reviewer on the work
 product and preserves your own context for continued work.
 
 Core principle: review early, review often.
+
+Your judgment is what context to craft: the description and requirements
+you hand the reviewer set the review's ceiling — a vague brief yields a
+vague review. The procedure fixes *how* to dispatch; deciding *what* the
+reviewer needs to see is your call.
 
 This is the *requesting* side. Handling the feedback you get back is
 `/code-review`.
@@ -97,6 +102,9 @@ See the dispatch template in `code-reviewer.md`.
 
 ## Changes
 
+- **0.2.0** — Named the judgment surface (crafting the reviewer's context
+  sets the review's ceiling); workflow band (ADR-0025; flag omitted as the
+  default).
 - **0.1.0** — Ported from superpowers `requesting-code-review`. Adapted
   to dstack: dispatch via the Agent tool, example plan path under
   `docs/plans/`, cross-references `/code-review` for handling the

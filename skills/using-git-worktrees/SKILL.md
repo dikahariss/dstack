@@ -10,10 +10,11 @@ description: |
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: semantic
     side_effects: local
     agency: deliberative
+    calibration: deterministic-dominant
     context_budget_tokens: 3500
     triggers:
       - git worktree
@@ -29,9 +30,19 @@ Ensure work happens in an isolated workspace. Prefer your platform's native work
 
 **Core principle:** Detect existing isolation first. Then use native tools. Then fall back to git. Never fight the harness.
 
+The one judgment call: when the harness has no native worktree tool,
+choosing to fall back to `git worktree` is yours. Detection, the
+ignore-check, and project setup all follow the protocol below.
+
 **Announce at start:** "Using using-git-worktrees to set up an isolated workspace."
 
-## Step 0: Detect Existing Isolation
+## When NOT to use
+
+- You are already in an isolated workspace (Step 0 detects this) — work in place.
+- The user has declined a worktree, or declared a work-in-place preference.
+- The task is a quick read-only inspection that mutates nothing.
+
+## Step 0: Detect existing isolation
 
 **Before creating anything, check if you are already in an isolated workspace.**
 
@@ -62,11 +73,11 @@ Has the user already indicated their worktree preference in your instructions? I
 
 Honor any existing declared preference without asking. If the user declines consent, work in place and skip to Step 3.
 
-## Step 1: Create Isolated Workspace
+## Step 1: Create the isolated workspace
 
 **You have two mechanisms. Try them in this order.**
 
-### 1a. Native Worktree Tools (preferred)
+### 1a. Native worktree tools (preferred)
 
 The user has asked for an isolated workspace (Step 0 consent). Do you already have a way to create a worktree? It might be a tool with a name like `EnterWorktree`, `WorktreeCreate`, a `/worktree` command, or a `--worktree` flag. If you do, use it and skip to Step 3.
 
@@ -74,11 +85,11 @@ Native tools handle directory placement, branch creation, and cleanup automatica
 
 Only proceed to Step 1b if you have no native worktree tool available.
 
-### 1b. Git Worktree Fallback
+### 1b. Git worktree fallback
 
 **Only use this if Step 1a does not apply** — you have no native worktree tool available. Create a worktree manually using git.
 
-#### Directory Selection
+#### Directory selection
 
 Follow this priority order. Explicit user preference always beats observed filesystem state.
 
@@ -100,7 +111,7 @@ Follow this priority order. Explicit user preference always beats observed files
 
 4. **If there is no other guidance available**, default to `.worktrees/` at the project root.
 
-#### Safety Verification (project-local directories only)
+#### Safety verification (project-local directories only)
 
 **MUST verify directory is ignored before creating worktree:**
 
@@ -114,7 +125,7 @@ git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/d
 
 Global directories (`~/.config/superpowers/worktrees/`) need no verification.
 
-#### Create the Worktree
+#### Create the worktree
 
 ```bash
 project=$(basename "$(git rev-parse --show-toplevel)")
@@ -129,7 +140,7 @@ cd "$path"
 
 **Sandbox fallback:** If `git worktree add` fails with a permission error (sandbox denial), tell the user the sandbox blocked worktree creation and you're working in the current directory instead. Then run setup and baseline tests in place.
 
-## Step 3: Project Setup
+## Step 3: Project setup
 
 Auto-detect and run appropriate setup:
 
@@ -148,7 +159,7 @@ if [ -f pyproject.toml ]; then poetry install; fi
 if [ -f go.mod ]; then go mod download; fi
 ```
 
-## Step 4: Verify Clean Baseline
+## Step 4: Verify the clean baseline
 
 Run tests to ensure workspace starts clean:
 
@@ -169,7 +180,7 @@ Tests passing (<N> tests, 0 failures)
 Ready to implement <feature-name>
 ```
 
-## Quick Reference
+## Quick reference
 
 | Situation | Action |
 |-----------|--------|
@@ -187,7 +198,7 @@ Ready to implement <feature-name>
 | Tests fail during baseline | Report failures + ask |
 | No package.json/Cargo.toml | Skip dependency install |
 
-## Common Mistakes
+## Common mistakes
 
 ### Fighting the harness
 
@@ -214,7 +225,7 @@ Ready to implement <feature-name>
 - **Problem:** Can't distinguish new bugs from pre-existing issues
 - **Fix:** Report failures, get explicit permission to proceed
 
-## Red Flags
+## Red flags
 
 **Never:**
 - Create a worktree when Step 0 detects existing isolation
@@ -232,8 +243,20 @@ Ready to implement <feature-name>
 - Auto-detect and run project setup
 - Verify clean test baseline
 
+## Cross-references
+
+- `/finishing-a-development-branch` — the wrap-up counterpart that tears
+  down the worktree this skill creates.
+- `/executing-plans` — set up isolation here before executing a plan.
+- `/verification` — run the clean-baseline gate (Step 4) through it.
+
 ## Changes
 
+- **0.2.0** — calibration: deterministic-dominant (ADR-0025; deterministic
+  by design — detection + exact bash). Named the bounded judgment (the
+  native-vs-`git worktree` fallback choice). Hardening (v3 plan): added
+  "When NOT to use" + Cross-references; normalised headings to dstack
+  voice; consolidated the `superpowers/worktrees` back-compat note.
 - **0.1.0** — Imported from superpowers `using-git-worktrees`. Adapted to
   dstack: added frontmatter/`metadata.dstack`. The native-tool guidance
   matches Claude Code's `EnterWorktree`/`ExitWorktree`; legacy

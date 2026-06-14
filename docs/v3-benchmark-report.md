@@ -1,5 +1,12 @@
 # dstack v3 — Benchmark + UAT Report
 
+> **Point-in-time artifact (2026-05-17).** This report measured the
+> 8-skill v3 catalog. The catalog has since grown to **18 skills** (10
+> imported under [ADR-0024](adr/0024-catalog-breadth-over-yagni.md)). For
+> current state run `bun run validate`. The hybrid-by-default rollout over
+> all 18 is tracked in
+> [docs/plans/v4/skill-hybrid-by-default-plan.md](plans/v4/skill-hybrid-by-default-plan.md).
+
 **Date**: 2026-05-17  
 **Iteration**: 2 (multi-pass eval-driven authoring loop completed)  
 **Scope**: head-to-head measurement of dstack catalog skills against

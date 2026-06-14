@@ -9,8 +9,12 @@ description: |
 allowed-tools: Bash Read
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
+    type: semantic
     context_budget_tokens: 1500
+    side_effects: readonly
+    agency: reactive
+    calibration: deterministic-dominant
     triggers:
       - be careful
       - warn before destructive
@@ -45,6 +49,14 @@ do, and confirm with the user.
 These are build-artifact directories. Removing them is reversible — the
 next build recreates them. Treat them as cache, not data.
 
+## The table is a floor, not a whitelist
+
+The only judgment here: is a destructive command NOT in the table (e.g.
+`terraform destroy`, `flyctl apps destroy`, `gh repo delete`, `bq rm`)
+still destructive? If it is irreversible or hits shared/prod state, run
+the pause protocol as if it were listed. Do not improvise a faster path.
+The call to pause is yours; everything else follows the protocol.
+
 ## The pause protocol
 
 When you see a pattern from the table, before sending the command:
@@ -70,3 +82,9 @@ A future dstack ADR will decide whether to add hooks. The trade-off
 is real: hooks are powerful, but they also add runtime complexity
 dstack has so far avoided. See `docs/plans/v1/DEFERRED.md` entry D2
 for the current status of hook support.
+
+## Changes
+
+- **0.3.0** — Declared type/side_effects/agency + calibration:
+  deterministic-dominant (ADR-0025; safety guardrail, high failure cost).
+  Named the bounded judgment (the table is a floor, not a whitelist).

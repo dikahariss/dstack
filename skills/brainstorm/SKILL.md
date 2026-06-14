@@ -10,10 +10,11 @@ description: |
 allowed-tools: AskUserQuestion Read Grep Glob
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: semantic
     side_effects: readonly
     agency: deliberative
+    calibration: judgment-dominant
     context_budget_tokens: 2500
     triggers:
       - brainstorm
@@ -40,6 +41,11 @@ reason**. Only then does the question follow. A turn that asks
 without recommending is failing the skill. If you cannot recommend,
 you do not yet understand the question well enough to ask it — read
 more of the codebase, the ADRs, the recent commits first.
+
+This skill is intentionally judgment-dominant (ADR-0025): the spine is
+only recommendation-first + the keep/stop gates; which branch to walk and
+what to recommend is your judgment — research the code and latest context
+freely.
 
 ### What this looks like in one sentence
 
@@ -209,6 +215,9 @@ uses it as the brief for the implementation.
 
 ## Changes
 
+- **0.3.0** — calibration: judgment-dominant (ADR-0025). Evidence: v3
+  benchmark — /brainstorm loses to mattpocock/grill-me when over-structured
+  (docs/v3-benchmark-report.md). Owner-approved 2026-06-04.
 - **0.2.0** — Reframed the core rule from "ONE QUESTION AT A TIME"
   to "RECOMMENDATION FIRST → ONE QUESTION SECOND" because earlier
   benchmark losses against mattpocock/grill-me showed Claude

@@ -8,10 +8,11 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: semantic
     side_effects: readonly
     agency: reactive
+    calibration: schema-meta
     context_budget_tokens: 1800
     triggers:
       - which skill applies
@@ -27,6 +28,9 @@ Invoke relevant or requested skills **before** any response or action.
 Even a real-but-small chance a skill applies means you invoke it to
 check. If an invoked skill turns out wrong for the situation, you do not
 have to use it — but you do have to look.
+
+Deciding whether a borderline skill applies is your judgment — bias toward
+invoking, but the call is yours.
 
 ## Instruction priority
 
@@ -135,6 +139,9 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.3.0** — calibration: schema-meta (ADR-0025; meta/router — the spine
+  is the invoke-before-acting rule). Named the judgment: deciding whether a
+  borderline skill applies is yours.
 - **0.2.0** — Added an inline "Which skill" router (situation → skill) and
   common chains, an explicit "when to open the full catalog" gate, and a bundled
   `references/skill-catalog.md` with per-skill triggers and hand-off rules.
