@@ -56,6 +56,11 @@ describe('calibration field (ADR-0025)', () => {
     expect(result.content).toContain('calibration: workflow');
   });
 
+  test('renderer omits the band for type: deterministic (the type conveys it)', async () => {
+    const result = await render('calib-deterministic');
+    expect(result.content).not.toContain('calibration:');
+  });
+
   test('rejects an unknown band at parse time', async () => {
     let caught: unknown;
     try {

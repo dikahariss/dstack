@@ -30,7 +30,7 @@ import { approximateTokenCount } from './tokens';
  *       context_budget_tokens: <n>
  *       side_effects: <...>
  *       agency: <...>
- *       calibration: <...>         # ADR-0025 freedom band; always emitted
+ *       calibration: <...>         # ADR-0025 freedom band; omitted when type: deterministic
  *       output_schema: <...>       # optional, schema-semantic only
  *   allowed-tools: <space-separated>
  *   ---
@@ -117,7 +117,12 @@ export class ClaudeCodeRenderer implements HostRenderer {
     lines.push(`    context_budget_tokens: ${spec.contextBudgetTokens}`);
     lines.push(`    side_effects: ${spec.sideEffects}`);
     lines.push(`    agency: ${spec.agency}`);
-    lines.push(`    calibration: ${spec.calibration}`);
+    // ADR-0025: type: deterministic already conveys the ~100% end, so a
+    // calibration band would contradict it. Emit the band for every other
+    // type, including the workflow default.
+    if (spec.type !== 'deterministic') {
+      lines.push(`    calibration: ${spec.calibration}`);
+    }
     if (spec.outputSchema !== undefined) {
       lines.push(`    output_schema: ${stringifyOutputSchema(spec.outputSchema)}`);
     }

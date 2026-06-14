@@ -103,8 +103,10 @@ metadata:
     calibration: deterministic-dominant | workflow | judgment-dominant | schema-meta
       # Freedom-calibration band (ADR-0025). Defaults to `workflow`.
       # Independent of `type`. Rendered into output frontmatter so the
-      # consuming model sees the band. Moving off `workflow` is
-      # owner-decided; see ADR-0025 Governance.
+      # consuming model sees the band — except for `type: deterministic`,
+      # where the type already conveys the ~100% end and the band is
+      # omitted. Moving off `workflow` is owner-decided; see ADR-0025
+      # Governance.
 
     triggers: [string]
       # Natural-language phrases the host may use for routing.
