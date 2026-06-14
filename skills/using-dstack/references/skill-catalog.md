@@ -47,6 +47,7 @@ approach a task and come first; implementation skills execute.
 | Skill | Use when | Hand off |
 |---|---|---|
 | `angular21-maritimhub` | Upgrading/modernizing Angular across v18–21: standalone, new control flow, signals, inject(), zoneless, NgModule removal, functional guards, Vitest move, Material 3 — even if only ONE is named. Also post-upgrade audits. | → `tdd`/`verification` for the edits it sequences. |
+| `pdf-to-rag-markdown` | Converting PDF(s) into retrieval-ready (RAG) Markdown — scanned/OCR'd, image/flowchart (bagan alur), table-heavy, or Indonesian gov/legal docs (Permenhub, Inpres, Juknis, UU). "pdf to rag", "konversi PDF", "siapkan untuk RAG", OCR garble, scrambled tables. | → `verification` before claiming RAG-ready. |
 
 ## Utility
 

@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.3.1
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -134,19 +134,19 @@ The skill itself tells you which.
 
 ## Bundled files
 
-- `references/skill-catalog.md` — full 18-skill catalog: triggers, scope, and
+- `references/skill-catalog.md` — full skill catalog: triggers, scope, and
   hand-off rules. Loads on demand; read it per the conditions above.
 
 ## Changes
 
+- **0.3.1** — Registered `pdf-to-rag-markdown` in the catalog; dropped the
+  brittle "18-skill" count from the bundled-files note.
 - **0.3.0** — calibration: schema-meta (ADR-0025; meta/router — the spine
   is the invoke-before-acting rule). Named the judgment: deciding whether a
   borderline skill applies is yours.
-- **0.2.0** — Added an inline "Which skill" router (situation → skill) and
-  common chains, an explicit "when to open the full catalog" gate, and a bundled
-  `references/skill-catalog.md` with per-skill triggers and hand-off rules.
-  Added `eval/cases.jsonl` for routing. Body stays within budget; detail is
-  progressive-disclosure per ADR-0016/0017.
+- **0.2.0** — Added an inline "Which skill" router + common chains, a
+  full-catalog gate, the bundled `references/skill-catalog.md`, and
+  `eval/cases.jsonl`. Progressive-disclosure per ADR-0016/0017.
 - **0.1.0** — Ported from superpowers `using-superpowers` and renamed to
   `using-dstack`. Reduced to dstack's single host (Claude Code): removed
   the Copilot/Codex/Gemini platform-adaptation section and the
