@@ -13,10 +13,11 @@ allowed-tools: Agent Read Write
 metadata:
   dstack:
     type: hybrid
-    version: 0.1.0
+    version: 0.1.1
     context_budget_tokens: 3000
     side_effects: local
     agency: deliberative
+    calibration: deterministic-dominant
     triggers:
       - data catalog
       - kamus data
@@ -160,6 +161,13 @@ the pipeline order, the schema, or the naming rules.
 
 ## Changes
 
+- **0.1.1** — Set `calibration: deterministic-dominant` (ADR-0025).
+  Rationale: the spine is rigid — prefilter regex, fixed 3-stage pipeline
+  order, mandatory output schemas, and fixed naming rules — while judgment
+  is bounded to three named areas (GREY classification, cross-app
+  conformance, gold design). Spine strength matches the `careful` /
+  `verification` exemplars. Owner-approved (governance: more rails needs
+  rationale + owner sign-off, not empirical evidence).
 - **0.1.0** — Initial. Three-stage medallion-cataloging orchestrator
   (per-app inventory → silver conform barrier → per-domain gold),
   hybrid prefilter for IN/OUT classification. Subagent dispatch per the
