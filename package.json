@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Skill catalog for Claude Code. v0 spec — see docs/ARCHITECTURE.md.",
+  "description": "Raise individual performance via AI skills + evidence-based content. Skill catalog renderer for Claude Code; see docs/ARCHITECTURE.md.",
   "license": "Apache-2.0",
   "bin": {
     "dstack": "./src/adapters/cli/main.ts"

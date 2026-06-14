@@ -67,7 +67,8 @@ and how to add a new ADR.
 ### `hpi-riset/` — Research & book drafts (non-skill performance work)
 
 dstack's goal is to raise individual performance, with AI skills *or*
-other means. [`hpi-riset/`](hpi-riset/) is the "other means" track: the
+other means ([ADR-0026](adr/0026-broaden-project-purpose.md)).
+[`hpi-riset/`](hpi-riset/) is the "other means" track: the
 research corpus and chapter drafts for an evidence-based self-development
 book (*Sistem Operasi Diri* / High Performing Individual). It is content,
 not code — the renderer never touches it.

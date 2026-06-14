@@ -1,9 +1,16 @@
 # dstack
 
-dstack is a small TypeScript project. It builds a catalog of AI agent
-workflows ("skills") for Claude Code. dstack reads skill definitions from
-disk, validates them, and writes the result in the format Claude Code
-expects.
+dstack exists to raise individual performance — on two tracks. The first
+is **AI skills**: agent workflows rendered for Claude Code. The second is
+**non-skill performance content**: evidence-based research and writing on
+high performance (today, the *Sistem Operasi Diri* book research in
+[`docs/hpi-riset/`](docs/hpi-riset/)).
+
+The **software** in this repo serves the first track only. It is a skill
+catalog renderer: it reads skill definitions from disk, validates them,
+and writes the result in the format Claude Code expects. Non-skill content
+is static — the renderer never touches it (see
+[ADR-0026](docs/adr/0026-broaden-project-purpose.md)).
 
 This project is a rewrite of [gstack](../gstack/) for a single user and a
 single AI host (Claude Code). The goal is to keep today's solution simple,

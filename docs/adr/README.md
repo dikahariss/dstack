@@ -77,6 +77,7 @@ Each ADR has six sections. Aim for under 80 lines per ADR.
 | [0017](0017-bundled-resources.md) | Bundled resources support (scripts/, references/, assets/) | Accepted | Moderate |
 | [0024](0024-catalog-breadth-over-yagni.md) | Catalog breadth over strict YAGNI for proven reference skills | Accepted | Cheap |
 | [0025](0025-hybrid-by-default-doctrine.md) | Hybrid by default: spine + judgment + calibration flag | Accepted | Cheap |
+| [0026](0026-broaden-project-purpose.md) | Broaden project purpose: skills + non-skill content | Accepted | Cheap |
 
 *Numbers 0018–0023 are reserved for v3 milestones (see
 [v3 ROADMAP](../plans/v3/ROADMAP.md), M41–M48/M59) and are not yet

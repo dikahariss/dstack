@@ -1,8 +1,16 @@
 # dstack — Agent instructions
 
-dstack is a skill catalog renderer for Claude Code. One user, one
-host. TypeScript on Bun. Hexagonal architecture, ADR-driven, YAGNI
-strict.
+dstack exists to raise individual performance, on two tracks: AI
+**skills** rendered for Claude Code, and non-skill **performance
+content** (today: the *Sistem Operasi Diri* book research in
+`docs/hpi-riset/`). The software is the first track's tool — a skill
+catalog renderer. One user, one host. TypeScript on Bun. Hexagonal
+architecture, ADR-driven, YAGNI strict.
+
+The wider purpose grants no feature license: the renderer's scope stays
+frozen and every DEFERRED item stands ([ADR-0026](docs/adr/0026-broaden-project-purpose.md)).
+When working in `src/`, dstack *is* the renderer; non-skill content is
+static and never enters the pipeline.
 
 This file is the entry point for AI agents working in this repo.
 Read top to bottom before doing anything. The rules here are tight;

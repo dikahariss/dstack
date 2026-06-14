@@ -123,9 +123,9 @@ listed "trigger to revisit" has actually happened.
 
 ## D8 — Sidebar, Chrome extension, integrated browser product
 
-- **Why deferred.** Out of scope. dstack is a skill catalog renderer,
-  not a product surface. A browser-integrated sidebar belongs in a
-  separate tool, not in dstack.
+- **Why deferred.** Out of scope. The dstack tool is a skill catalog
+  renderer, not a product surface (ADR-0026). A browser-integrated
+  sidebar belongs in a separate tool, not in dstack.
 - **Trigger to revisit.** Probably never. If the user wants a
   sidebar, the answer is to use a separate tool, not to rebuild it
   inside dstack.
