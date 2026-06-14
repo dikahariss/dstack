@@ -1,7 +1,10 @@
 # Workflow & helper scripts
 
-Proven on 7 real docs. Copy these into the working dir, adapt the config, and run
-via the `Workflow` tool. Prompts come from `vision-prompts.md`.
+Proven on 7 real docs. The deterministic helpers ship as runnable files in
+`../scripts/` (run via Bash). The `Workflow` orchestration below stays here as
+templates the orchestrator inlines (or passes via the `Workflow` `scriptPath`/
+`args`): a `Workflow` script runs sandboxed — no filesystem — so it cannot read
+a sibling `.js` or a prompt file at runtime. Prompts come from `vision-prompts.md`.
 
 ## Phase 0 — triage (Bash)
 ```bash
@@ -15,6 +18,7 @@ for p in $(seq 1 $TOTAL); do pdfimages -list -f $p -l $p IN.pdf | tail -n +3 | w
 ```
 Detect **scrambled** pages on the *output* after a draft: ≥45% of non-pipe lines
 shorter than 25 chars → that page is a vector flowchart/table → send to vision.
+(`../scripts/measure_rag.py` reports this `garble_ratio` for a finished doc.)
 
 ## Phase 1 — render (Bash)
 ```bash
@@ -37,45 +41,35 @@ const results = await pipeline(ITEMS, (it)=>
     .then(r=> r?{...r,doc:it.doc,page:it.page}:null))
 return results.filter(Boolean)
 ```
-`PROMPT(it)` branches on `it.profile` → govdoc / flowchart prompt from `vision-prompts.md`.
+`PROMPT(it)` branches on `it.profile` → govdoc / flowchart prompt from
+`vision-prompts.md`. Embed the chosen prompt text in the script (or pass it via
+`args`); the sandbox cannot read `vision-prompts.md` at runtime.
 
-## Phase 3 — assemble / splice (py)
-- **assemble** (no L1 base, fully scanned): write YAML frontmatter, then per page
-  `"<!-- page N -->\n\n{markdown}\n\n"` sorted by page.
-- **splice** (replace specific pages in an existing md): for each result, find the
-  `^<!-- page N -->$` marker and replace its block up to the next marker.
-```python
-MARKER=re.compile(r"^<!-- page (\d+) -->$",re.M)
-def replace_page(text,page,new_md):
-    ms=list(MARKER.finditer(text))
-    for i,m in enumerate(ms):
-        if int(m.group(1))==page:
-            end=ms[i+1].start() if i+1<len(ms) else len(text)
-            return text[:m.end()]+f"\n{new_md.rstrip()}\n\n"+text[end:],True
-    return text,False
+## Phase 3 — assemble / splice → `../scripts/splice.py`
+Write the per-page vision results to `pages.json` (a list of `{page, markdown}`,
+or a `Workflow` task-output object whose `result` holds that list) and run:
+```bash
+# fully scanned (no digital base): build from scratch
+python3 ../scripts/splice.py assemble --results pages.json --frontmatter fm.txt --out doc.md
+# replace specific re-transcribed pages inside an existing doc
+python3 ../scripts/splice.py splice   --doc doc.md --results pages.json --out doc.md
 ```
-Read the Workflow result from its task-output JSON: `data["result"]` (may be a
-JSON string → `json.loads` again).
+Both are keyed on the `^<!-- page N -->$` marker; splice leaves every other page
+byte-for-byte untouched.
 
 ## Phase 4 — fix_chunks.js (one agent per ~6-page chunk)
 Split each doc on page markers into `work/<slug>/in_NNN.md` (preserve frontmatter
 separately). Workflow: each agent Reads `in_NNN.md`, writes `out_NNN.md` (fix-pass
-prompt), returns `{idx,wrote,notes}`. Same `pipeline()` shape as phase 2.
+prompt from `vision-prompts.md`), returns `{idx,wrote,notes}`. Same `pipeline()`
+shape as phase 2.
 
-## Phase 5 — anti-drift gate (py) — the safety net
-Reassemble from `out_NNN.md`, but **revert** any chunk whose letter/digit stream
-drifted from `in_NNN.md` (de-wrapping & headings add 0 letters; hallucination adds,
-content-loss removes).
-```python
-def stream(t):  # ignore whitespace, markdown, '#', page markers
-    t=re.sub(r"<!-- page \d+ -->"," ",t); return re.sub(r"[^a-z0-9]+","",t.lower())
-def drift(a,b):
-    a,b=stream(a),stream(b); add=rem=0
-    for tag,i1,i2,j1,j2 in difflib.SequenceMatcher(None,a,b,autojunk=False).get_opcodes():
-        if tag in("insert","replace"): add+=j2-j1
-        if tag in("delete","replace"): rem+=i2-i1
-    return add,rem
-# revert chunk if add>40 or rem>0.06*len(stream(orig)); else accept fixed
+## Phase 5 — anti-drift gate → `../scripts/anti_drift_gate.py` (the safety net)
+Reassemble from `out_NNN.md`, **reverting** any chunk whose letter/digit stream
+drifted from `in_NNN.md` (de-wrapping & headings add 0 letters; hallucination
+adds, content-loss removes):
+```bash
+python3 ../scripts/anti_drift_gate.py --in-dir work/<slug> --frontmatter fm.txt --out final.md
+# thresholds (proven defaults): revert if added letters >40, or removed >6% of source
 ```
 If a chunk reverts because an agent tried to **reconstruct scrambled flowchart
 text**, that page belongs in vision (phase 2, flowchart profile) — not the fix
@@ -89,10 +83,11 @@ unsupported sentence/cell; for L1/agent docs compares to `pdftotext -layout -f N
 -l N`. **Tell the reviewer to score CONVERSION quality and treat source-faithful
 typos as non-defects**, or the source's own typos drag the score down.
 
-## Other helpers
+## Other helpers (`../scripts/`)
 - `polish_tables.py` — pad ragged pipe rows to the block's column count; unify
-  table-header separators. `measure_rag.py` — words, garble %, headings, page
-  markers, table empty-cell %.
+  table-header separators. Run after the gate; never changes cell text.
+- `measure_rag.py` — report words, garble %, headings, page markers, table
+  empty-cell %. Read-only; use it as a quick RAG-readiness gauge.
 - Strip catchwords deterministically: drop lines matching `^\s*/.*(\.\.\.|…)\s*$`.
 
 ## Cost recap

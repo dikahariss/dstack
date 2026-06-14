@@ -8,13 +8,12 @@ description: >
   "siapkan/sempurnakan untuk RAG", "konversi PDF", "extract this regulation",
   scanned pages, OCR garble, scrambled tables, word-splits, missing heading
   structure, or when an earlier deterministic extractor (pdf2md, plain pdftotext)
-  produced garbled output. AI-vision + parallel subagents are the engine, not a
-  deterministic script. Assumes a Claude Max plan (fan out freely).
-allowed-tools: Bash Read Write Edit Workflow Agent Grep Glob
+  produced garbled output. Assumes a Claude Max plan (fan out subagents freely).
+allowed-tools: Bash Read Write Edit Workflow Grep Glob
 metadata:
   dstack:
-    type: semantic
-    version: 0.1.0
+    type: hybrid
+    version: 0.3.0
     triggers:
       - convert pdf to markdown
       - pdf to rag
@@ -31,7 +30,7 @@ metadata:
       - peraturan
     context_budget_tokens: 3500
     side_effects: local
-    agency: deliberative
+    agency: autonomous
 ---
 # /pdf-to-rag-markdown
 
@@ -40,6 +39,20 @@ subagent Workflows** as the primary engine. The AI reads the page; deterministic
 tools only triage and assemble. Built for a **Claude Max plan** — fan out many
 agents in parallel; the constraint is fidelity, not token cost. This supersedes
 the deterministic `pdf2md` script for RAG conversion.
+
+## Run autonomously — do not checkpoint
+Finish end-to-end in one go. The user is on Max and optimizes for speed +
+fidelity, not approval gates. One PDF must not cost an hour of back-and-forth.
+- **AI-semantic first (≤30% deterministic).** Vision (an image-reading model)
+  reads each non-pristine page AND emits the corrected Markdown in one pass —
+  read-and-fix together. Deterministic work is only the rails: triage, assembly,
+  the anti-drift gate.
+- **Don't pilot, don't ask which approach, don't ask before fanning out.** Pick
+  the AI path and run the whole pipeline.
+- **Fix findings automatically.** When the grounding pass flags a page, re-vision
+  or correct it directly — never report-and-wait.
+- **Ask only on a real blocker** (missing file; genuinely ambiguous which PDF or
+  where to write). Default scope = the whole document, fully grounded.
 
 ## When to use
 - Turning PDF(s) into Markdown for a RAG / knowledge base.
@@ -76,9 +89,9 @@ is enough); non-PDF sources.
 | 0 | Triage | `pdfinfo`/`pdfimages`/`pdftotext` per page: scanned? digital? scrambled? | Bash |
 | 1 | Render | `pdftoppm -png -r 200` the pages that need vision | Bash |
 | 2 | Transcribe | one vision agent per page → `{page, markdown, kind}` (profiles: govdoc / flowchart) | N (pipeline) |
-| 3 | Assemble | build/splice md by `<!-- page N -->` marker + YAML frontmatter | py |
+| 3 | Assemble | `scripts/splice.py`: build/splice md by `<!-- page N -->` marker + YAML frontmatter | py |
 | 4 | Fix | one agent per ~6-page chunk: de-wrap, add headings, tidy tables, strip noise — VERBATIM | M (pipeline) |
-| 5 | Gate | letter-stream anti-drift reassembly; revert hallucinated/lossy chunks | py |
+| 5 | Gate | `scripts/anti_drift_gate.py`: letter-stream reassembly; revert hallucinated/lossy chunks | py |
 | 6 | Review | adversarial: score RAG-readiness + ground-check suspect pages vs PNG | per-doc + verify |
 
 Default = vision every page that is not pristine digital prose. For long
@@ -111,13 +124,17 @@ simple table; flowchart = any bagan alur / swimlane / scrambled diagram.
   never trips the revert.
 
 ## Example
-The full, proven Workflow scripts and prompts live in the bundled references:
+Everything ships bundled and ready to run:
+- `scripts/` — the deterministic spine as runnable, dependency-free helpers:
+  `anti_drift_gate.py` (phase-5 safety net), `splice.py` (phase-3 assemble/splice),
+  `polish_tables.py`, `measure_rag.py`. Run via Bash; each prints `--help`.
 - `references/vision-prompts.md` — faithful **govdoc** + **flowchart-swimlane** transcription prompts.
-- `references/workflows.md` — `vision_transcribe.js`, `fix_chunks.js`, the
-  letter-stream **anti-drift gate**, `review_workflow.js`, and the splice/measure helpers.
+- `references/workflows.md` — the parallel **Workflow** orchestration templates
+  (`vision_transcribe.js`, `fix_chunks.js`, `review_workflow.js`) the orchestrator
+  inlines, plus the phase-0/1 triage + render commands.
 
-These references were developed and proven against 7 real Indonesian
-government documents (scanned, vector flowchart, and table-heavy).
+The vision method and these helpers were developed and proven against 7 real
+Indonesian government documents (scanned, vector flowchart, and table-heavy).
 
 ## Common mistakes
 | Mistake | Fix |
@@ -133,6 +150,21 @@ government documents (scanned, vector flowchart, and table-heavy).
 
 ## Changes
 
+- **0.3.0** — Added the "Run autonomously — do not checkpoint" directive and set
+  `agency: autonomous`: default to AI-semantic, finish end-to-end without piloting,
+  scope questions, or report-and-wait; fix grounding findings automatically.
+  Owner feedback after a 279-page run that took ~1h of back-and-forth — the staging
+  and asking, not the compute, was the cost. Calibration stays `workflow` (≤30%
+  deterministic: triage, assembly, anti-drift gate only).
+- **0.2.0** — Extracted the deterministic spine into runnable `scripts/`
+  (`anti_drift_gate.py`, `splice.py`) and implemented the two previously
+  named-only helpers (`polish_tables.py`, `measure_rag.py`); all four are
+  stdlib-only and smoke-tested. `type: semantic → hybrid` (a `scripts/` folder is
+  now present; calibration stays `workflow`). The `Workflow` orchestration
+  templates + vision prompts stay in `references/` because `Workflow` scripts run
+  sandboxed and cannot read sibling files at runtime. Dropped unused `Agent` from
+  `allowed-tools` (fan-out is via `Workflow`). Tightened the description to
+  triggers-only per /writing-skills.
 - **0.1.0** — Imported into the dstack catalog. Made self-contained:
   dropped a dangling pointer to an external repo's sample docs; the
   bundled `references/` carry the proven Workflow scripts and vision
