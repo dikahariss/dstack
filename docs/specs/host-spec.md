@@ -158,6 +158,7 @@ export const CLAUDE_CODE_TOOLS = [
   'TaskUpdate',
   'WebFetch',
   'WebSearch',
+  'Workflow',
   'Write',
 ];
 ```

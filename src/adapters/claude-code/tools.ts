@@ -25,5 +25,6 @@ export const CLAUDE_CODE_TOOLS: readonly string[] = [
   'TaskUpdate',
   'WebFetch',
   'WebSearch',
+  'Workflow',
   'Write',
 ] as const;
