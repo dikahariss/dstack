@@ -13,7 +13,7 @@ allowed-tools: Bash Read Write Edit Workflow Grep Glob
 metadata:
   dstack:
     type: hybrid
-    version: 0.3.0
+    version: 0.4.0
     triggers:
       - convert pdf to markdown
       - pdf to rag
@@ -40,19 +40,29 @@ tools only triage and assemble. Built for a **Claude Max plan** — fan out many
 agents in parallel; the constraint is fidelity, not token cost. This supersedes
 the deterministic `pdf2md` script for RAG conversion.
 
-## Run autonomously — do not checkpoint
-Finish end-to-end in one go. The user is on Max and optimizes for speed +
-fidelity, not approval gates. One PDF must not cost an hour of back-and-forth.
-- **AI-semantic first (≤30% deterministic).** Vision (an image-reading model)
-  reads each non-pristine page AND emits the corrected Markdown in one pass —
-  read-and-fix together. Deterministic work is only the rails: triage, assembly,
-  the anti-drift gate.
-- **Don't pilot, don't ask which approach, don't ask before fanning out.** Pick
-  the AI path and run the whole pipeline.
-- **Fix findings automatically.** When the grounding pass flags a page, re-vision
-  or correct it directly — never report-and-wait.
-- **Ask only on a real blocker** (missing file; genuinely ambiguous which PDF or
-  where to write). Default scope = the whole document, fully grounded.
+## Run autonomously — one overlapped pass (default)
+Finish end-to-end in one go. Staging (pilot → ask → phase → wait → phase) is what
+makes a doc take an hour — not the compute. Go straight to the full fan-out. The
+user is on Max and optimizes for speed + fidelity, not approval gates.
+
+1. **Deterministic prep (Bash, seconds):** triage → render non-pristine pages →
+   `pdftotext -layout` draft → `scripts/splice.py assemble`.
+2. **Clean-digital prose → `scripts/dewrap.py` (~10 ms, not AI):** de-wrap +
+   promote BAB/Bagian/Paragraf/Pasal, letter-neutral. Proven word-identical to
+   per-chunk AI fix-agents (added=0 / removed=0 across 245 pages) — so the AI
+   budget goes to vision + grounding, not mechanical de-wrap. Use AI fix-agents
+   only as a fallback when dewrap mis-structures an irregular doc.
+3. **One Workflow, overlapped:** `pipeline(chartPages, transcribe, ground)` — each
+   chart is grounded the instant it is read, pages keep flowing, and ALL chart
+   pages ground in this single pass (never sample → ask → rest). Don't pilot.
+4. **Deterministic finish (Bash):** splice charts in → `anti_drift_gate.py` →
+   `polish_tables.py` → `measure_rag.py`.
+5. **Auto-fix** any `grounded=false` page in place; re-verify only those — never
+   report-and-wait. Ask only on a real blocker (missing file; ambiguous target).
+
+Measured: a 279-page Permenhub dropped ~1h → ~6 min projected, identical output.
+≤30% deterministic still holds — de-wrap/triage/assembly/gate are rails; vision
+and grounding (all the judgment) stay AI.
 
 ## When to use
 - Turning PDF(s) into Markdown for a RAG / knowledge base.
@@ -80,8 +90,9 @@ is enough); non-PDF sources.
 4. **Structure for chunking.** Promote real headings (BAB / Bagian / Pasal /
    Paragraf; dictum KESATU…/PERTAMA…; lettered A./B. Lampiran sections), keep a
    `<!-- page N -->` marker per page, and emit valid rectangular tables.
-5. **Fix-agents change STRUCTURE only, words verbatim.** Gate every fixed chunk
-   with a letter-stream diff that reverts any chunk that added or lost letters.
+5. **Structure-only, words verbatim.** Whether prose is de-wrapped by `dewrap.py`
+   or by AI fix-agents, change only structure; the anti-drift gate reverts any
+   chunk that added or lost letters.
 
 ## Pipeline (parallel via Workflow)
 | # | Phase | What | Agents |
@@ -90,13 +101,14 @@ is enough); non-PDF sources.
 | 1 | Render | `pdftoppm -png -r 200` the pages that need vision | Bash |
 | 2 | Transcribe | one vision agent per page → `{page, markdown, kind}` (profiles: govdoc / flowchart) | N (pipeline) |
 | 3 | Assemble | `scripts/splice.py`: build/splice md by `<!-- page N -->` marker + YAML frontmatter | py |
-| 4 | Fix | one agent per ~6-page chunk: de-wrap, add headings, tidy tables, strip noise — VERBATIM | M (pipeline) |
+| 4 | Prose | `scripts/dewrap.py`: de-wrap + promote BAB/Bagian/Paragraf/Pasal (letter-neutral, ~10 ms). AI fix-agents only as fallback for irregular docs | py |
 | 5 | Gate | `scripts/anti_drift_gate.py`: letter-stream reassembly; revert hallucinated/lossy chunks | py |
-| 6 | Review | adversarial: score RAG-readiness + ground-check suspect pages vs PNG | per-doc + verify |
+| 6 | Review | adversarial ground-check vs PNG — **pipelined with phase 2** (`pipeline(pages, transcribe, ground)`), one pass over all chart pages | verify |
 
-Default = vision every page that is not pristine digital prose. For long
-pristine-prose docs a `pdftotext` draft + phase-4 AI de-wrap is an allowed
-shortcut — but **scanned, diagram, and table pages always go through vision.**
+Default = vision every page that is not pristine digital prose; clean-digital
+prose runs through `scripts/dewrap.py` (phase 4), not vision. Phases 2 and 6
+pipeline together (transcribe → ground) and run concurrently with phase 4 —
+**scanned, diagram, and table pages always go through vision.**
 
 ## Deciding which pages need vision
 | Signal | Verdict |
@@ -126,8 +138,9 @@ simple table; flowchart = any bagan alur / swimlane / scrambled diagram.
 ## Example
 Everything ships bundled and ready to run:
 - `scripts/` — the deterministic spine as runnable, dependency-free helpers:
-  `anti_drift_gate.py` (phase-5 safety net), `splice.py` (phase-3 assemble/splice),
-  `polish_tables.py`, `measure_rag.py`. Run via Bash; each prints `--help`.
+  `dewrap.py` (phase-4 prose de-wrap+headings), `anti_drift_gate.py` (phase-5
+  safety net), `splice.py` (phase-3 assemble/splice), `polish_tables.py`,
+  `measure_rag.py`. Run via Bash; each prints `--help`.
 - `references/vision-prompts.md` — faithful **govdoc** + **flowchart-swimlane** transcription prompts.
 - `references/workflows.md` — the parallel **Workflow** orchestration templates
   (`vision_transcribe.js`, `fix_chunks.js`, `review_workflow.js`) the orchestrator
@@ -150,6 +163,14 @@ Indonesian government documents (scanned, vector flowchart, and table-heavy).
 
 ## Changes
 
+- **0.4.0** — Speed pass (same quality). (1) `scripts/dewrap.py`: deterministic
+  de-wrap + heading promotion for clean-digital prose — benchmarked word-identical
+  to the per-chunk AI fix-agents (added=0/removed=0 over 245 pages) at ~10 ms vs
+  ~8.6 min, so prose no longer burns AI agents. (2) One overlapped pass:
+  `pipeline(pages, transcribe, ground)` grounds each chart as it is read and grounds
+  ALL pages in a single run (was 3 staged runs); no pilot. Projected ~1h → ~6 min on
+  the 279-page benchmark. AI stays the engine for vision + grounding (the judgment);
+  rationale-backed move of mechanical de-wrap to a rail (ADR-0025, owner-approved).
 - **0.3.0** — Added the "Run autonomously — do not checkpoint" directive and set
   `agency: autonomous`: default to AI-semantic, finish end-to-end without piloting,
   scope questions, or report-and-wait; fix grounding findings automatically.

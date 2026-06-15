@@ -6,6 +6,33 @@ templates the orchestrator inlines (or passes via the `Workflow` `scriptPath`/
 `args`): a `Workflow` script runs sandboxed — no filesystem — so it cannot read
 a sibling `.js` or a prompt file at runtime. Prompts come from `vision-prompts.md`.
 
+## Fast one-pass orchestration (default)
+Do NOT run phases 2→6 as separate Workflow calls with human waits between — that
+staging, not the compute, is what made the 279-page run take ~1h. After the
+deterministic prep (triage, render PNGs, `pdftotext -layout` draft, `splice.py
+assemble`, and **`dewrap.py` on the digital-prose pages**), send ONLY the chart
+pages through ONE pipelined Workflow that transcribes and grounds in the same pass:
+
+```js
+export const meta = { name:'pdf-charts', description:'transcribe + ground each chart in one pipelined pass', phases:[{title:'Transcribe'},{title:'Ground'}] }
+const cfg = typeof args==='string'?JSON.parse(args):args            // {png_dir, pages:[..]}
+const pad = n => String(n).padStart(3,'0')
+const T = {type:'object',required:['page','markdown','kind'],properties:{page:{type:'integer'},markdown:{type:'string'},kind:{type:'string'},blank:{type:'boolean'}}}
+const G = {type:'object',required:['page','grounded'],properties:{page:{type:'integer'},grounded:{type:'boolean'},invented_units:{type:'array',items:{type:'string'}},missing_units:{type:'array',items:{type:'string'}},notes:{type:'string'}}}
+const items = cfg.pages.map(p => ({page:p, png:`${cfg.png_dir}/p${pad(p)}.png`}))
+const results = await pipeline(items,
+  it => agent(TRANSCRIBE(it.png,it.page), {label:`p${it.page}`,  phase:'Transcribe', schema:T}).then(r => ({...r, page:it.page, png:it.png})),
+  r  => agent(GROUND(r.png,r.markdown,r.page), {label:`g${r.page}`, phase:'Ground', schema:G}).then(g => ({...r, grounded:g.grounded, issues:g})))
+return results.filter(Boolean)
+```
+`pipeline()` has NO barrier between stages: page B transcribes while page A grounds,
+so all charts transcribe AND ground in ~one chart-pass of wall-clock (not transcribe
+THEN ground). `TRANSCRIBE`/`GROUND` are the prompts from `vision-prompts.md`, embedded
+in the script. Prose is already done by `dewrap.py` (instant) on the host, so the
+wall-clock is just this chart pass. After it returns: `splice.py` the chart markdown
+in → `anti_drift_gate.py` → then auto-fix any `grounded:false` page with one tiny
+re-vision Workflow on just those pages. **No pilot, no sample-then-rest, no waits.**
+
 ## Phase 0 — triage (Bash)
 ```bash
 # scanned vs digital + empty pages
@@ -57,11 +84,18 @@ python3 ../scripts/splice.py splice   --doc doc.md --results pages.json --out do
 Both are keyed on the `^<!-- page N -->$` marker; splice leaves every other page
 byte-for-byte untouched.
 
-## Phase 4 — fix_chunks.js (one agent per ~6-page chunk)
-Split each doc on page markers into `work/<slug>/in_NNN.md` (preserve frontmatter
-separately). Workflow: each agent Reads `in_NNN.md`, writes `out_NNN.md` (fix-pass
-prompt from `vision-prompts.md`), returns `{idx,wrote,notes}`. Same `pipeline()`
-shape as phase 2.
+## Phase 4 — prose: `../scripts/dewrap.py` (default) — fix_chunks.js (fallback only)
+Clean-digital prose:
+```bash
+python3 ../scripts/dewrap.py --in draft.md --out clean.md   # ~10 ms, not AI
+```
+Deterministic de-wrap + BAB/Bagian/Paragraf/Pasal promotion, letter-neutral.
+Benchmarked **word-identical** to the AI fix-agents (added=0/removed=0 over 245
+pages) — so do NOT spend agents on clean prose. Verify cheaply: heading counts and
+`measure_rag.py` garble; if dewrap clearly mis-structured an **irregular** doc
+(heading counts wrong, big garble), fall back to AI fix-agents for the bad region —
+split on page markers into `work/<slug>/in_NNN.md`, each agent Reads `in_NNN.md` and
+writes `out_NNN.md` (fix-pass prompt), then the same anti-drift gate applies.
 
 ## Phase 5 — anti-drift gate → `../scripts/anti_drift_gate.py` (the safety net)
 Reassemble from `out_NNN.md`, **reverting** any chunk whose letter/digit stream
@@ -75,7 +109,11 @@ If a chunk reverts because an agent tried to **reconstruct scrambled flowchart
 text**, that page belongs in vision (phase 2, flowchart profile) — not the fix
 pass. Detect such pages on the output and re-do them with vision.
 
-## Phase 6 — review_workflow.js (adversarial)
+## Phase 6 — grounding (adversarial) — pipeline it WITH phase 2
+Default: fold grounding into the phase-2 chart pass (see "Fast one-pass
+orchestration" above) so every chart is verified the instant it is transcribed, in
+ONE run over ALL chart pages — not a sample-then-ask-then-rest sequence. The
+standalone reviewer below is for a whole-doc quality score when you want one.
 `pipeline(DOCS, review→verify)`. Review agent (use `agentType:'Explore'`) greps
 headings, samples 6 pages, flags garble + suspect pages, scores 0–100. Verify
 agent: for vision docs Reads the suspect-page PNGs and sets `grounded=false` on any
