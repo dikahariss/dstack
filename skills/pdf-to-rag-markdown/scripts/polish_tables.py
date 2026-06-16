@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Pad ragged Markdown pipe tables into valid rectangles (phase 6 tidy).
+"""Pad ragged Markdown pipe tables into valid rectangles (QA tidy).
 
 For each contiguous block of pipe-table rows, find the widest row and pad every
 other row to that column count with empty cells, then ensure exactly one

@@ -5,12 +5,12 @@ FAST PATH for clean-digital prose pages (a real `pdftotext -layout` text layer).
 A Peraturan/UU/Permen is regular enough to de-wrap and promote headings without
 an LLM. This is LETTER-NEUTRAL: it only joins wrapped lines (drops the newline,
 inserts a space), strips page-number noise, and prefixes heading markers — it
-never adds, drops, or reorders words. Pair it with the anti-drift gate plus an
-AI grounding sample as the safety net. For scanned/garbled/vector pages, use
-vision instead (this script is for the digital-prose pages only).
+never adds, drops, or reorders words. Pair it with the anti-drift gate as the
+safety net for the digital fix-pass (grounding guards vision output, not dewrapped
+prose). For scanned/garbled/vector pages use vision (this script is digital-only).
 
-Input: a draft from `splice.py assemble` (YAML frontmatter + per-page
-`<!-- page N -->` markers + raw `pdftotext -layout` text).
+Input: a `pdftotext -layout` draft (YAML frontmatter + per-page `<!-- page N -->`
+markers + raw layout text; built per workflows.md Phase 3).
 Output: same, with prose de-wrapped and BAB/Bagian/Paragraf/Pasal promoted.
 
 Usage: python3 dewrap.py --in draft.md --out clean.md
