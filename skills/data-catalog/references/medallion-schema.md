@@ -1,56 +1,72 @@
-# Medallion target — naming + silver/gold/meta
+# Medallion target — layers + naming
 
-The schema the catalog conforms toward. Bronze → Silver → Gold, plus a
-`meta` catalog schema. Single database, one schema per layer/domain.
+The schema the catalog conforms toward: Bronze → Silver → Gold, plus a
+`meta` catalog schema. The defining split is **silver = normalized,
+gold = dimensional**.
 
-## Naming rules
+## Layers
 
-| Layer | Schema | Tables |
-|---|---|---|
-| Bronze | `bronze_<source_system>` | preserve original source table names (1:1 raw mirror) |
-| Silver | `silver` (single, unified) | `dim_<entity>`, `fct_<event>`, `ref_<lookup>`, `brd_<relationship>` |
-| Gold | `gold_<domain>` | business-friendly names, **no** technical prefixes |
-| Meta | `meta` | the catalog itself (see below) |
+| Layer | Schema | Shape | Tables |
+|---|---|---|---|
+| Bronze | `bronze_{source_system}` | raw 1:1 mirror | preserve original source table names |
+| Silver | `silver_{domain}` | **3NF normalized**, conformed | clean entity & transaction names, **no** technical prefix |
+| Gold | `gold_{domain}` | **dimensional / aggregated**, consumption | star (`dim_`/`fct_`/`ref_`/`brd_`) or business-named marts |
+| Meta | `meta` | the catalog itself | see below |
 
-General: lowercase, `snake_case`, singular nouns, no reserved words,
-≤ 63 chars, self-documenting (no `d_vsl`).
+General naming: lowercase, `snake_case`, singular nouns, no reserved
+words, ≤ 63 chars, self-documenting (no `d_cust`). Full rules:
+`standardization-checklist.md`.
 
-## Silver — dimensional model (conform target)
+## Silver — the conform target (3NF)
 
-The barrier conforms cross-app entities into these. Prefixes:
+The barrier conforms cross-source entities into **normalized** tables.
+This is where the standardization + normalization checklists apply in
+full.
 
-- `dim_` — describes who/what (master/entity): `dim_vessel`,
-  `dim_seafarer`, `dim_port`, `dim_terminal`, `dim_employee`,
-  `dim_company`, `dim_date`.
-- `fct_` — events/measurements: `fct_port_clearance`,
-  `fct_vessel_movement`, `fct_seafarer_certification`, `fct_revenue`,
-  `fct_government_payment`.
-- `ref_` — small lookups: `ref_vessel_type`, `ref_country`,
-  `ref_certificate_type`.
-- `brd_` — M:N bridges: `brd_vessel_seafarer`, `brd_vessel_company`.
+- **Master / entity tables** — one per real entity: `customer`, `product`,
+  `company`, `employee`. Clean attributes, a natural business key, **no**
+  lookups denormalized in.
+- **Transaction / event tables** — one per event: `order`, `shipment`,
+  `payment`. Hold **only FKs** (`fk_customer_id`) to masters plus the
+  event's own measures and timestamps — never a master's attributes.
+- **Reference / lookup tables** — small code lists: `product_category`,
+  `country`, `currency`. Referenced by FK, never inlined as code+name pairs.
+- Tables are partitioned by domain into `silver_{domain}` schemas.
+- Every table carries the mandatory audit columns (`created_at`,
+  `updated_at`, `ingested_at`, `processed_at`).
+- History over time (SCD-2) is built in the **gold** dimensional layer, not
+  by denormalizing silver.
 
-Dimensions carry a surrogate key (`<entity>_key`), the natural/business
-key, descriptive attributes, and SCD-2 columns (`effective_from`,
-`effective_to`, `is_current`) where history matters. Facts reference
-dimension keys and carry measurements.
+Silver is verified by the three anomaly tests in
+`normalization-checklist.md`: a master inserts without a transaction; a
+transaction deletes without touching its masters; a master updates in one
+row.
 
-## Gold — business marts (per domain)
+## Gold — the dimensional / mart layer (per domain)
 
-Five domains. Tables are denormalized, aggregated, business-named.
+Built from silver, per business domain. **Denormalization and aggregation
+live here, never in silver.** Two table styles, used as the consumer needs:
 
-| Domain | Schema | Example tables |
-|---|---|---|
-| Operations | `gold_operations` | `vessel_online_status`, `daily_vessel_movements`, `port_clearance_summary` |
-| Finance | `gold_finance` | `monthly_revenue_by_port`, `pnbp_collection_trends`, `revenue_vs_target` |
-| HR | `gold_hr` | `seafarer_certification_status`, `employee_headcount_by_department` |
-| Safety | `gold_safety` | `vessel_inspection_status`, `compliance_score_by_vessel` |
-| Licensing | `gold_licensing` | `active_permits_by_type`, `license_renewal_pipeline` |
+- **Dimensional star** — conformed `dim_<entity>` (denormalized descriptive
+  attributes, SCD-2 where history matters), `fct_<event>` (FKs to dims +
+  measures), `ref_<lookup>`, `brd_<relationship>` (M:N bridges). This is
+  where `dim_`/`fct_` naming belongs.
+- **Aggregated business marts** — denormalized, business-named tables for
+  direct dashboard use, **no** technical prefix (e.g. `monthly_revenue_by_region`).
+
+Dimensions carry a surrogate key (`<entity>_key`), the natural key, and
+SCD-2 columns (`effective_from`, `effective_to`, `is_current`) where
+history matters. Facts reference dimension keys and carry measures.
+
+The **domain list is a parameter of the engagement**, not a fixed set.
+Derive it from the actual estate (the classification rubric's Domain tag).
+See `example-maritimhub.md` for a five-domain instance.
 
 ## Meta — the catalog schema (Stage-1 output lands here)
 
 | Table | Holds |
 |---|---|
-| `meta.source_system_catalog` | one row per app: name, engine, bronze schema, owner, active |
+| `meta.source_system_catalog` | one row per source: name, engine, bronze schema, owner, active |
 | `meta.table_catalog` | one row per table: schema, table, row count, size, scope, disposition, domain, data role |
 | `meta.column_catalog` | one row per column: table, column, type, nullable, null %, distinct, description |
 | `meta.transformation_lineage` | bronze → silver → gold mappings |
@@ -58,4 +74,4 @@ Five domains. Tables are denormalized, aggregated, business-named.
 The data dictionary is a view over `information_schema` joined with
 `meta.*` descriptions. Stage 1 fills `source_system_catalog`,
 `table_catalog`, `column_catalog`; the barrier fills lineage as it maps
-sources into silver.
+sources into silver; Stage 2 extends lineage silver → gold.

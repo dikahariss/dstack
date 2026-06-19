@@ -1,8 +1,9 @@
 # Classification rubric
 
-Two axes per table: **scope** (does it proceed) and **disposition**
-(how much work to migrate it). Run the deterministic prefilter first;
-reason only over what is left.
+The **Analyst**'s rubric for one app (Stage 1b), applied to the technical
+inventory the Engineer returns. Two axes per table: **scope** (does it
+proceed) and **disposition** (how much work to migrate it). Run the
+deterministic prefilter first; reason only over what is left.
 
 ## Step A — deterministic prefilter (the script)
 
@@ -39,8 +40,9 @@ For each GREY table, decide scope, then disposition.
 
 ## Domain + Data Role tags (every IN table)
 
-- **Domain** — the business area: `operations`, `finance`, `hr`,
-  `safety`, `licensing` (extend per the actual estate).
+- **Domain** — the business area. The domain set is a **parameter of the
+  engagement** — derive it from the actual estate (e.g. `sales`, `finance`,
+  `hr`, `operations`), do not assume a fixed list.
 - **Data Role** — one of: `business-core` (transactional entities),
   `reference` (lookups), `audit` (history/log), `bridge` (M:N link).
 
@@ -60,6 +62,6 @@ hits and your GREY calls:
 
 ## Sign-off gate
 
-OUT-of-scope and DROP decisions are **proposals**. Data Owners (the 5
-Direktorat) sign off before anything is treated as final. Emit them as a
-review list; never silently drop a table.
+OUT-of-scope and DROP decisions are **proposals**. The engagement's data
+owners sign off before anything is treated as final. Emit them as a review
+list; never silently drop a table.
