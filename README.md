@@ -153,6 +153,40 @@ The CLI entry point is `src/adapters/cli/main.ts`. It carries a
 `#!/usr/bin/env bun` shebang and the executable bit, so it can also
 be invoked directly: `./src/adapters/cli/main.ts <command>`.
 
+### Installing skills into Claude config dirs (incl. alternate model setups)
+
+`bun run build` renders every skill to `./.claude/skills/` (the per-project
+install). To make the skills available in a user Claude config dir — the default
+`~/.claude` and alternate model setups such as `~/.claude-zai` (Z.ai / GLM) and
+`~/.claude-kimi` (Moonshot Kimi) — copy each rendered skill into that dir's
+`skills/` folder:
+
+```bash
+bun run build                                   # render to ./.claude/skills/
+
+# Install/update every dstack skill into each config dir you use
+for DIR in ~/.claude ~/.claude-zai ~/.claude-kimi; do
+  [ -d "$DIR" ] || continue                      # skip a config dir you don't have
+  mkdir -p "$DIR/skills"                          # ensure skills/ exists on first install
+  for s in .claude/skills/*/; do
+    id=$(basename "$s")
+    rm -rf "$DIR/skills/$id" && cp -r "$s" "$DIR/skills/$id"
+  done
+done
+```
+
+This updates and adds every dstack skill in each dir and leaves your other
+(non-dstack) skills untouched. When a skill is **deleted** from the repo, remove
+it from each dir by hand:
+
+```bash
+for DIR in ~/.claude ~/.claude-zai ~/.claude-kimi; do rm -rf "$DIR/skills/<skill-id>"; done
+```
+
+> `dstack build --global` installs to `~/.claude/skills/dstack/` instead; the
+> manual copy above targets the flat `~/.claude/skills/<id>/` layout and the
+> alternate config dirs, which `--global` does not reach.
+
 ## Configuration (optional)
 
 dstack runs with defaults and needs no configuration. The only opt-in

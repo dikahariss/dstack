@@ -330,7 +330,7 @@ prompt still has a spine. Default is `workflow`. Move a skill to
 `judgment-dominant` only with empirical evidence (benchmark/UAT/test) that
 the default over-constrains it, plus owner approval; moving to more rails
 needs only a rationale. Record both in `## Changes`. Exemplar:
-`skills/angular21-maritimhub/SKILL.md` § "How the work is split".
+`skills/code-review/SKILL.md` (the reference hybrid: deterministic spine + named judgment).
 
 ---
 

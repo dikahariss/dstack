@@ -97,12 +97,6 @@ approach a task and come first; implementation skills execute.
 | `code-review` | Handling code-review FEEDBACK: PR comments, inline threads. "respond to this review", "address these comments". Verify before implementing; push back when the reviewer is wrong. | — |
 | `requesting-code-review` | DISPATCH a fresh-eyes review subagent after finishing work, before merge, or when stuck. "request review", "get this reviewed". | The reviewer's findings → `code-review`. |
 
-## Domain
-
-| Skill | Use when | Hand off |
-|---|---|---|
-| `angular21-maritimhub` | Upgrading/modernizing Angular across v18–21: standalone, new control flow, signals, inject(), zoneless, NgModule removal, functional guards, Vitest move, Material 3 — even if only ONE is named. Also post-upgrade audits. | → `tdd`/`verification` for the edits it sequences. |
-
 ## Utility
 
 | Skill | Use when | Hand off |
@@ -175,7 +169,6 @@ Match the situation, then invoke that skill. When unsure, read
 | Got PR or review feedback to address | `/code-review` |
 | Want a fresh review of your own work | `/requesting-code-review` |
 | Create / edit / verify a dstack skill | `/writing-skills` |
-| Angular v18–21 upgrade or modernization | `/angular21-maritimhub` |
 | Show or bump VERSION | `/version` |
 | Triage / classify a pasted issue | `/classify-issue` |
 
@@ -250,7 +243,7 @@ max) and re-run.
 {"prompt": "The login test started failing right after my last commit and I don't know why. Just tell me what line to change.", "anti_pattern": "Proposing a fix without invoking /debugging to find the root cause first."}
 {"prompt": "Let's build a new in-app notifications feature.", "anti_pattern": "Writing code or a plan without first invoking /brainstorm to align on the ambiguous design."}
 {"prompt": "Quick one — rename this variable and force-push to main. Trivial, no need to overthink it.", "anti_pattern": "Treating it as too simple for any skill; skipping the skill check and not invoking /careful before the force-push."}
-{"prompt": "I bumped our app from Angular 18 to 21 and ng update passed, but I think I'm missing the new patterns.", "anti_pattern": "Giving generic Angular advice instead of invoking /angular21-maritimhub to audit the codebase first."}
+{"prompt": "I want to add a new skill to dstack for triaging support tickets.", "anti_pattern": "Hand-writing a SKILL.md instead of invoking /writing-skills to get the format, description rules, and budget right."}
 {"prompt": "My branch is done and tests pass — which skill gets it merged?", "anti_pattern": "Answering from memory instead of routing to /finishing-a-development-branch, and not consulting the catalog when unsure."}
 ```
 

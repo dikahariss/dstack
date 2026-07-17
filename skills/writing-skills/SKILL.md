@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Write Edit Bash Grep Glob Agent
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.2.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -87,7 +87,7 @@ Body, scaled to the skill:
   `schema-meta`. Set `metadata.dstack.calibration` only when NOT
   `workflow`. Moving to `judgment-dominant` needs benchmark/UAT/test
   evidence + owner approval (record in `## Changes`). Exemplar:
-  `skills/angular21-maritimhub` § "How the work is split".
+  `skills/code-review` (the reference hybrid: deterministic spine + named judgment).
 - **One excellent example** — complete, runnable, commented with WHY.
   Not five mediocre ones in five languages.
 - **Common mistakes** — what goes wrong and the fix.
@@ -188,6 +188,8 @@ official authoring guidance. Add a behavioral check under the skill's
 
 ## Changes
 
+- **0.2.1** — Repointed the calibration exemplar to `code-review` (the reference
+  hybrid: deterministic spine + named judgment).
 - **0.2.0** — Encoded the hybrid-by-default doctrine (ADR-0025): spine +
   named judgment + the four calibration bands and when to set the flag.
   Fixed the `TodoWrite` heading to host-accurate phrasing.

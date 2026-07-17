@@ -1,11 +1,11 @@
 # v4 RESEARCH — where a literal 30/70 hybrid default is sub-optimal
 
 **Question.** If "hybrid by default = 30% deterministic / 70% AI
-semantic" is applied as a *uniform* default across all 18 skills, which
+semantic" is applied as a *uniform* default across all 17 skills, which
 skills become sub-optimal, and why?
 
 **TL;DR.** A literal 30/70 fits about **half** the catalog (the
-workflow-shaped skills). The other **9 of 18 deviate — 5 strongly.**
+workflow-shaped skills). The other **9 of 17 deviate — 5 strongly.**
 30/70 is a *workflow-shaped* ratio; it mis-serves three other skill
 shapes:
 
@@ -28,7 +28,7 @@ The ratio encodes one skill *shape*: a **workflow with ground truth** —
 a multi-step task where roughly a third of the value is in the rails
 (ordered procedure, gates, tables, verification commands) and two-thirds
 is in the reasoning (diagnosis, design, the final call). `debugging`,
-`code-review`, `writing-plans`, and `angular21-maritimhub` are exactly
+`code-review`, and `writing-plans` are exactly
 this shape. For them 30/70 is right.
 
 The default breaks whenever a skill's *ideal* calibration point sits far
@@ -44,7 +44,7 @@ the right two buckets for the skill.
 | **M1 — under-constrains** | Safety/consistency-critical skills need 60–100% determinism. Capping rails at ~30% (or *framing* the skill as "70% AI judgment") invites the exact failure the skill exists to prevent. | needs **more** det. |
 | **M2 — over-constrains** | Judgment-dominant skills (relentless interview) are *weakened* by a rigid 30% spine. Empirically measured, not hypothetical. | needs **less** det. |
 | **M3 — structural mismatch** | For schema-semantic and meta/router skills, "deterministic" is not a *procedural spine* (steps/gates/verify-command). It is the output schema, or a routing rule. The 30/70 framing and the spine-element checklist misfire. | ratio is the **wrong model** |
-| **M4 — the "free to research the latest" clause backfires** | The doctrine's "70% AI semantic, free to research the latest, final decision is the AI's" is *good* for `angular21` (latest Angular APIs) but a **liability** for fixed-protocol skills, where you explicitly do NOT want the agent improvising a "better" procedure. | wrong *message* |
+| **M4 — the "free to research the latest" clause backfires** | The doctrine's "70% AI semantic, free to research the latest, final decision is the AI's" is *good* for skills tracking fast-moving external APIs but a **liability** for fixed-protocol skills, where you explicitly do NOT want the agent improvising a "better" procedure. | wrong *message* |
 
 M4 is the subtle one. "Hybrid by default" carries two payloads: a ratio
 *and* a posture ("trust the agent's judgment, let it research"). The
@@ -78,9 +78,8 @@ current quality.
 | **executing-plans** | semantic | 30–45% | ✓ | — | Router into `/verification` + `/finishing`; judgment = plan critique. |
 | **subagent-driven-development** | semantic | 35–45% | ✓ | — | Workflow; judgment = context per subagent + blocker reading. |
 | **requesting-code-review** | semantic | 35–45% | ✓ | — | Mechanical dispatch + judgment = what context to craft. |
-| **angular21-maritimhub** | hybrid | ~30% | ✓ exemplar | — | Literally "Deterministic (~30%) / Semantic (~70%)". The shape the default is named after. |
 
-**Count: 9 fit cleanly, 9 deviate (5 strong, 4 mild).** A uniform 30/70
+**Count: 8 fit cleanly, 9 deviate (5 strong, 4 mild).** A uniform 30/70
 is correct for half the catalog and wrong for the other half.
 
 ---
@@ -169,7 +168,7 @@ The deterministic share is a dial: **10% → 20% → 30% (default) → up to ~80
 | Band (`calibration`) | Det. share | Skills | Note |
 |---|---|---|---|
 | `judgment-dominant` | 10–20% | brainstorm | Tiny spine on purpose. The rule is the spine; the rest is the interview. |
-| `workflow` **(default, omit flag)** | ~30% | debugging, code-review, tdd, writing-plans, writing-skills, dispatching-parallel-agents, executing-plans, subagent-driven-development, requesting-code-review, angular21-maritimhub | Where 30/70 is the default. |
+| `workflow` **(default, omit flag)** | ~30% | debugging, code-review, tdd, writing-plans, writing-skills, dispatching-parallel-agents, executing-plans, subagent-driven-development, requesting-code-review | Where 30/70 is the default. |
 | `deterministic-dominant` | 60–80%+ | careful, verification, finishing-a-development-branch, using-git-worktrees | Rails dominate. Judgment is small + *bounded*. Do NOT tell these "research the latest, the call is yours." |
 | `schema-meta` | n/a as a % | classify-issue, using-dstack | "Determinism" is the schema or routing rule, not steps. |
 

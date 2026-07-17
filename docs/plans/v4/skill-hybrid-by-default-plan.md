@@ -140,10 +140,9 @@ skills may have only (a) + (b).
 
 ### Part 7 — exemplar and the two-axis reminder
 
-`skills/angular21-maritimhub/SKILL.md` § "How the work is split" already
-states the split as **"Deterministic (~30%, the scripts) / Semantic
-(~70%, you)."** It is the `workflow`-band template. Point new authors
-there.
+`skills/code-review/SKILL.md` is the reference hybrid: a deterministic
+spine (the review spine + script) paired with a named judgment surface.
+It is the `workflow`-band template. Point new authors there.
 
 | Concept | Axis | Source | This plan |
 |---|---|---|---|
@@ -183,17 +182,16 @@ Two independent labels per skill:
 | `executing-plans` | P1 | `workflow` | Workflow router |
 | `subagent-driven-development` | P2 | `workflow` | Workflow |
 | `requesting-code-review` | P1 | `workflow` | Workflow |
-| `angular21-maritimhub` | P1 | `workflow` | The workflow exemplar |
 
 **Bands:** 4 deterministic-dominant, 1 judgment-dominant, 2 schema-meta,
-10 workflow (default), 1 via `type: deterministic`. Only the **7
-non-default** skills need the flag *set*; the 10 workflow skills may omit
+9 workflow (default), 1 via `type: deterministic`. Only the **7
+non-default** skills need the flag *set*; the 9 workflow skills may omit
 it (the renderer still emits `calibration: workflow`).
 
 Current token usage (`bun run validate`, for headroom planning):
 
 ```
-angular21-maritimhub 2776/4500   brainstorm 2052/2500   careful 801/1500
+brainstorm 2052/2500   careful 801/1500
 classify-issue 927/1500   code-review 2300/3500   debugging 3474/4500
 dispatching-parallel-agents 1847/3000   executing-plans 821/1500
 finishing-a-development-branch 2040/3500   requesting-code-review 803/2000
@@ -421,7 +419,7 @@ prompt still has a spine. Default is `workflow`. Move a skill to
 `judgment-dominant` only with empirical evidence (benchmark/UAT/test) that
 the default over-constrains it, plus owner approval; moving to more rails
 needs only a rationale. Record both in `## Changes`. Exemplar:
-`skills/angular21-maritimhub/SKILL.md` § "How the work is split".
+`skills/code-review/SKILL.md`.
 ```
 
 - [ ] **Step 2 — verify.** Run: `bun run validate` → `18 OK, 0 ERR`.
@@ -491,8 +489,7 @@ flag, not the type enum.
   `deterministic-dominant` (60–80%+), or `schema-meta`. Set
   `metadata.dstack.calibration` only when NOT `workflow`. Moving to
   `judgment-dominant` needs benchmark/UAT/test evidence + owner approval
-  (record in `## Changes`). Exemplar: `skills/angular21-maritimhub` §
-  "How the work is split".
+  (record in `## Changes`). Exemplar: `skills/code-review`.
 ```
 
 - [ ] **Step 2 — add a checklist item** after "One excellent example…":
@@ -871,10 +868,6 @@ Set `calibration: schema-meta` + a rationale.
 - [ ] **`requesting-code-review`** — name the judgment ("deciding what
   context to craft for the reviewer is your call and sets the review's
   ceiling"). Budget 2000 (used 803).
-- [ ] **`angular21-maritimhub`** — structural: add `side_effects: local` +
-  `agency: deliberative` (it edits files / runs schematics). Body is the
-  workflow exemplar; optional small "never auto-flip zoneless / never
-  de-RxJS working HTTP" red-flags table. Budget 4500 (used 2776).
 
 ### Task D6: the `workflow` P2 skills (conformance)
 

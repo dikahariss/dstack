@@ -8,12 +8,12 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.3.1
+    version: 0.3.3
     type: semantic
     side_effects: readonly
     agency: reactive
     calibration: schema-meta
-    context_budget_tokens: 1800
+    context_budget_tokens: 2000
     triggers:
       - which skill applies
       - find a skill
@@ -83,7 +83,11 @@ Match the situation, then invoke that skill. When unsure, read
 | Got PR or review feedback to address | `/code-review` |
 | Want a fresh review of your own work | `/requesting-code-review` |
 | Create / edit / verify a dstack skill | `/writing-skills` |
-| Angular v18–21 upgrade or modernization | `/angular21-maritimhub` |
+| Inventory/classify many DBs into a data dictionary + medallion schema | `/data-catalog` |
+| Convert PDF(s) to retrieval-ready Markdown (scanned/regulation) | `/pdf-to-rag-markdown` |
+| Harvest citations → RIS from an academic database (SLR/bibliometric) | `/literature-search` |
+| A RIS/BibTeX corpus → research-topic trends + diagrams | `/literature-trends` |
+| Download open-access PDFs for a citation corpus | `/literature-fulltext` |
 | Show or bump VERSION | `/version` |
 | Triage / classify a pasted issue | `/classify-issue` |
 
@@ -91,6 +95,7 @@ Match the situation, then invoke that skill. When unsure, read
 - Feature: `/brainstorm` → `/writing-plans` → `/subagent-driven-development`
   (or `/executing-plans`) → `/verification` → `/finishing-a-development-branch`.
 - Bug: `/debugging` → `/tdd` → `/verification`.
+- Literature review: `/literature-search` → `/literature-trends` → `/literature-fulltext`.
 
 ### When to open the full catalog
 
@@ -139,15 +144,16 @@ The skill itself tells you which.
 
 ## Changes
 
-- **0.3.1** — Registered `pdf-to-rag-markdown` in the catalog; dropped the
-  brittle "18-skill" count from the bundled-files note.
-- **0.3.0** — calibration: schema-meta (ADR-0025; meta/router — the spine
-  is the invoke-before-acting rule). Named the judgment: deciding whether a
-  borderline skill applies is yours.
-- **0.2.0** — Added an inline "Which skill" router + common chains, a
-  full-catalog gate, the bundled `references/skill-catalog.md`, and
-  `eval/cases.jsonl`. Progressive-disclosure per ADR-0016/0017.
-- **0.1.0** — Ported from superpowers `using-superpowers` and renamed to
-  `using-dstack`. Reduced to dstack's single host (Claude Code): removed
-  the Copilot/Codex/Gemini platform-adaptation section and the
-  `references/` tool mappings; examples point to dstack skills.
+- **0.3.3** — Registered the literature-review pipeline (`literature-search` →
+  `literature-trends` → `literature-fulltext`) in the router, catalog, and chains;
+  added `data-catalog` to the router and catalog.
+- **0.3.2** — Added `pdf-to-rag-markdown` to the inline router (already in the
+  catalog); removed an unused domain skill from the router + catalog.
+- **0.3.1** — Registered `pdf-to-rag-markdown` in the catalog; dropped the brittle
+  "18-skill" count.
+- **0.3.0** — calibration: schema-meta (ADR-0025; meta/router). The judgment:
+  deciding whether a borderline skill applies.
+- **0.2.0** — Inline "Which skill" router + common chains + bundled
+  `references/skill-catalog.md` + `eval/cases.jsonl` (ADR-0016/0017).
+- **0.1.0** — Ported from superpowers `using-superpowers`; reduced to dstack's
+  single host (Claude Code).

@@ -46,8 +46,11 @@ approach a task and come first; implementation skills execute.
 
 | Skill | Use when | Hand off |
 |---|---|---|
-| `angular21-maritimhub` | Upgrading/modernizing Angular across v18–21: standalone, new control flow, signals, inject(), zoneless, NgModule removal, functional guards, Vitest move, Material 3 — even if only ONE is named. Also post-upgrade audits. | → `tdd`/`verification` for the edits it sequences. |
+| `data-catalog` | Inventory/profile many source apps or DBs into a data dictionary (kamus data) + IN/OUT scope, or conform a medallion schema across sources (3NF silver, dimensional gold). "data catalog", "kamus data", "silver schema", "inventory and classify tables", "medallion architecture". Not for one small DB — read it directly. | → `dispatching-parallel-agents` for the fan-out; `verification` per returned catalog. |
 | `pdf-to-rag-markdown` | Converting PDF(s) into retrieval-ready (RAG) Markdown — scanned/OCR'd, image/flowchart (bagan alur), table-heavy, or Indonesian gov/legal docs (Permenhub, Inpres, Juknis, UU). "pdf to rag", "konversi PDF", "siapkan untuk RAG", OCR garble, scrambled tables. | → `verification` before claiming RAG-ready. |
+| `literature-search` | Harvest bibliographic records from an academic database's web search (ScienceDirect primary; Emerald/Springer via adapters) for an SLR / bibliometric study — boolean concept-block query, year/type/subject/OA filters, export to RIS, PRISMA logging. "SLR search", "cari literatur", "export RIS", "boolean query", "harvest citations". Not for an official query API — call the API. | → `literature-trends` (analyze) / `literature-fulltext` (OA PDFs). |
+| `literature-trends` | Turn an exported RIS/BibTeX corpus into research-topic TRENDS + categories — dedup, categorize, per-year/per-topic bibliometrics, ranking, diagrams. "analisis tren", "bibliometric", "kelompokan topik", "research trends", "peta tren". Draws charts via `/dataviz`. | ← after `literature-search`; → `literature-fulltext`. |
+| `literature-fulltext` | Download OPEN-ACCESS full-text PDFs for a corpus via Unpaywall — OA-only (no paywall bypass), rate-limited, license manifest. "download OA PDF", "unduh artikel", "unpaywall", "open access download". | ← after `literature-search`/`literature-trends`. |
 
 ## Utility
 
@@ -64,6 +67,8 @@ approach a task and come first; implementation skills execute.
 - **Bug:** `debugging` (root cause) → `tdd` (failing test → minimal fix) →
   `verification`.
 - **Authoring a skill:** `writing-skills` (+ `brainstorm` if the shape is fuzzy).
+- **Literature review:** `literature-search` (harvest → RIS) → `literature-trends`
+  (dedup + topic trends + diagrams) → `literature-fulltext` (open-access PDFs).
 - **Any time:** `careful` before a destructive command; `verification` before
   claiming done.
 
