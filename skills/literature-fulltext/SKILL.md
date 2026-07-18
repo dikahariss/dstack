@@ -5,14 +5,16 @@ description: >
   corpus — resolving open-access availability by DOI via Unpaywall or the
   database's own OA flag, fetching ONLY legitimately open-access or
   institution-licensed content, politely rate-limited, with a license manifest.
-  Stage 3 after /literature-search and /literature-trends. Triggers: "download OA
-  PDF", "fetch full text", "unduh artikel", "unpaywall", "download articles for
-  these DOIs", "open access download", "get the PDFs", "download open access".
+  Covers the no-DOI path too: browser-driven OA download of ProQuest
+  dissertations. Stage 3 after /literature-search and /literature-trends. Triggers:
+  "download OA PDF", "fetch full text", "unduh artikel", "unpaywall", "download
+  articles for these DOIs", "open access download", "get the PDFs", "download open
+  access", "download dissertation PDF", "ProQuest full text".
 allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.1.0
+    version: 0.2.0
     context_budget_tokens: 2500
     side_effects: external
     agency: deliberative
@@ -24,6 +26,8 @@ metadata:
       - download articles
       - open access download
       - get the pdfs
+      - download dissertation pdf
+      - proquest full text
 ---
 # /literature-fulltext
 
@@ -68,6 +72,18 @@ a text-and-data-mining agreement.
 whether an institution session legitimately grants access, and how to treat an
 ambiguous or missing license (default: record it, don't redistribute).
 
+## No-DOI OA: ProQuest dissertations (browser-driven)
+The Unpaywall spine assumes a DOI — **dissertations rarely have one.** For a
+ProQuest Dissertations & Theses corpus (from the `/literature-search` ProQuest
+adapter), OA is decided by **ProQuest's own flag** (the `docview/<id>` page says
+*"published as open access"* + shows a **"Download PDF"** button; "Preview
+Available"/"Order a copy" = not OA → skip), **not** Unpaywall. The PDF is fetched
+**through the logged-in browser** — its URL carries session tokens, so `oa_fetch.py`
+**cannot** reach it. The legal gate, scope-first rule, PDF verification, and license
+manifest still apply (license = "ProQuest Open Access Dissertation, author-retained").
+Full procedure + the Chrome "multiple downloads" guard + docid-mapping:
+**`references/proquest-fulltext.md`**.
+
 ## Checklist (before a bulk fetch)
 - [ ] Scope stated (count, hosts, est. size) and user approved.
 - [ ] Unpaywall email set; rate limit ≥1s; back-off on errors.
@@ -79,6 +95,9 @@ ambiguous or missing license (default: record it, don't redistribute).
 - `scripts/oa_fetch.py` — given a RIS/DOI list + `--email`, resolve OA via
   Unpaywall and download the open-access PDFs, rate-limited, writing a manifest
   CSV. Skips closed DOIs. `--help`.
+- `references/proquest-fulltext.md` — the **no-DOI** path: browser-driven OA PDF
+  download for ProQuest dissertations (OA flag, session-token URLs, the Chrome
+  multiple-downloads guard, docid mapping, manifest). Read before a PQDT fetch.
 
 ## Common mistakes
 | Mistake | Fix |
@@ -89,8 +108,15 @@ ambiguous or missing license (default: record it, don't redistribute).
 | Saving the DOI landing page as "the PDF" | Verify `Content-Type: application/pdf` before saving |
 | Not recording the license | Log `license` per file; do not redistribute unknown-license PDFs |
 | Bulk-fetching without asking | External side effect — state scope, get approval first |
+| Treating a ProQuest "Preview"/"Order a copy" as OA | Not OA — skip; only "published as open access" + a real "Download PDF" button qualifies |
+| Trying to `curl`/`oa_fetch` a ProQuest PDF URL | It carries session tokens — fetch via the logged-in browser only (see `references/proquest-fulltext.md`) |
 
 ## Changes
+- **0.2.0** — Added the **no-DOI ProQuest dissertation** path
+  (`references/proquest-fulltext.md`): OA read from ProQuest's own flag (not
+  Unpaywall), browser-driven PDF download (session-token URLs, the Chrome
+  "multiple downloads" guard, mtime→docid mapping, PQDT license). Same legal gate.
+  Empirically measured on a 30-PDF fetch. Triggers + mistakes rows added.
 - **0.1.0** — Initial. OA-only full-text fetch via Unpaywall with a hard legal/
   ethical gate, polite rate-limiting, and a license manifest. Stage 3 of the
   literature pipeline.

@@ -6,15 +6,17 @@ description: >
   bibliometric/trend study — designing a boolean concept-block query, applying
   year / article-type / subject / open-access filters, exporting results to RIS,
   and logging hit counts for PRISMA. Primary tested database is
-  ScienceDirect (Elsevier); Emerald, Springer Nature and others plug in as
-  per-vendor adapters. Triggers: "SLR search", "cari literatur", "search string",
-  "boolean query", "literature keyword strategy", "export/download RIS", "harvest citations",
-  "ScienceDirect search", "build a reference corpus".
+  ScienceDirect (Elsevier); ProQuest Dissertations & Theses (guest/public — a
+  scrape-not-export adapter) is also tested; Emerald, Springer Nature and others
+  plug in as per-vendor adapters. Triggers: "SLR search", "cari literatur", "search
+  string", "boolean query", "literature keyword strategy", "export/download RIS",
+  "harvest citations", "ScienceDirect search", "ProQuest search", "ProQuest
+  dissertations", "harvest dissertations", "build a reference corpus".
 allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.1.0
+    version: 0.2.0
     context_budget_tokens: 3500
     side_effects: local
     agency: deliberative
@@ -29,6 +31,9 @@ metadata:
       - download ris
       - harvest citations
       - sciencedirect search
+      - proquest search
+      - proquest dissertations
+      - harvest dissertations
 ---
 # /literature-search
 
@@ -103,16 +108,26 @@ and fill every slot **empirically** (run the probe tests in that template).
 
 | Database | Adapter | Status |
 |---|---|---|
-| ScienceDirect (Elsevier) | `references/sciencedirect.md` | primary — empirically tested |
+| ScienceDirect (Elsevier) | `references/sciencedirect.md` | primary — empirically tested (RIS export) |
+| ProQuest (guest / public) | `references/proquest.md` | empirically tested — **scrape-not-export** (no RIS in guest mode; build it from detail pages) |
 | Emerald Insight | copy `references/adding-a-vendor.md` | not yet built |
 | Springer Nature | copy `references/adding-a-vendor.md` | not yet built |
+
+> **Two adapter shapes.** Most databases *export* RIS (ScienceDirect). Some — e.g.
+> **ProQuest guest** — have **no export**; you scrape each detail page and **build**
+> the RIS yourself. The adapter says which shape applies; a scrape adapter documents
+> the detail-page field set, an anti-bot pace, and a local RIS/CSV/JSONL build step
+> instead of an export recipe.
 
 ## Driving the web UI
 Drive the browser with the **`/claude-in-chrome`** skill (load its tools via
 ToolSearch first). Prefer composing the search as a **URL** with the adapter's
-params (reproducible, scriptable) over manual clicking. Export by following the
+params (reproducible, scriptable) over manual clicking — **unless** the adapter
+says results URLs are session-hashed (e.g. ProQuest), in which case log the
+**recipe** (query + each facet + count) instead of a link. Export by following the
 adapter's recipe; downloaded files land in the browser's download directory —
-move each to a named file per search before the next export.
+move each to a named file per search before the next export. For a **scrape-not-
+export** adapter, `get_page_text` each detail page and build the RIS locally.
 
 ## Checklist (before trusting a harvest)
 - [ ] Every multi-word phrase quoted; concept blocks parenthesized; connectors ≤ adapter limit.
@@ -126,6 +141,10 @@ move each to a named file per search before the next export.
 - `references/sciencedirect.md` — the ScienceDirect web engine: hard limits,
   operators, filters, export flow, pagination — measured on the live site. Read
   before any ScienceDirect search.
+- `references/proquest.md` — ProQuest **guest** engine: no export → scrape
+  `docview/<id>` detail pages and build RIS/CSV/JSONL; session-hashed result URLs,
+  20/page cap, `localStorage`+`get_page_text` exfiltration, anti-bot pace. Read
+  before any ProQuest harvest.
 - `references/adding-a-vendor.md` — adapter template + the live-site probe method
   for a new database.
 - `scripts/ris_merge_dedup.py` — merge N RIS files → dedup by DOI (fallback
@@ -142,6 +161,11 @@ move each to a named file per search before the next export.
 | Chasing every synonym | Stop at diminishing returns — new term, no new relevant hits |
 
 ## Changes
+- **0.2.0** — Added the **ProQuest (guest)** adapter (`references/proquest.md`) — a
+  **scrape-not-export** shape (no RIS in guest mode): session-hashed result URLs,
+  20/page cap, `localStorage`+`<article>`/`get_page_text` exfiltration, browser PDF
+  handoff. Introduced the "two adapter shapes" note; registered ProQuest in the
+  table, bundled files, and triggers. Empirically measured on a 674-record harvest.
 - **0.1.0** — Initial. Database-agnostic SLR harvest method + adapter contract;
   ScienceDirect as the primary empirically-tested adapter (ported from a
   field-tested guide); RIS merge/dedup script. Stage 1 of the
