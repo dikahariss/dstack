@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.5.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -77,6 +77,8 @@ Match the situation, then invoke that skill. When unsure, read
 | Bug / test failure / unexpected behavior | `/debugging` (then `/test-driven-development`) |
 | New feature, bugfix, behavior change | `/test-driven-development` |
 | About to claim done / fixed / passing | `/verifying-before-done` |
+| Acceptance-test a RUNNING app via browser (UAT) | `/running-uat` |
+| One artifact, several expert points of view | `/multi-persona-review` |
 | Destructive or risky command, or prod | `/guarding-destructive-commands` |
 | Need an isolated workspace | `/using-git-worktrees` |
 | Work done — merge / PR / keep / discard | `/finishing-development-branch` |
@@ -94,6 +96,8 @@ Match the situation, then invoke that skill. When unsure, read
 - Feature: `/brainstorm` → `/writing-plans` → `/subagent-driven-development`
   (or `/executing-plans`) → `/verifying-before-done` → `/finishing-development-branch`.
 - Bug: `/debugging` → `/test-driven-development` → `/verifying-before-done`.
+- Shipping a UI change: tests green → `/running-uat` (browser, per point of view)
+  → fix → `/finishing-development-branch`.
 - Literature review: `/literature-search` → `/literature-trends` → `/literature-fulltext`.
 
 ### When to open the full catalog
@@ -143,6 +147,9 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.5.0** — Registered `running-uat` (acceptance-testing a running app)
+  and `multi-persona-review` (one artifact, several expert points of view)
+  in the router, catalog, and chains.
 - **0.4.0** — Repointed the router, catalog, and chains at the five renamed
   skills (`test-driven-development`, `responding-to-review`, `guarding-
   destructive-commands`, `verifying-before-done`, `managing-version`).

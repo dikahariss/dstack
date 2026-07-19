@@ -61,6 +61,26 @@ Phase 2 work toward v1. Not yet tagged.
 
 ### Added
 
+- **`/running-uat`** — acceptance-tests a *running* application against frozen
+  acceptance criteria, driven through a real browser. Carries an entry gate
+  (criteria enumerated, unit/e2e green, app up, data seeded, scope frozen), a
+  ranked evidence rule (a PASS needs a DOM assertion **plus** a network response
+  or a post-reload re-read; screenshots corroborate only), a twelve-row
+  false-PASS guard table, confirmation-plus-regression after every fix, and a
+  3-attempt cap. Its shape comes from 70 real UAT requests in this user's
+  history; its guards come from ISTQB's definitions and the 2025–2026 web-agent
+  literature, where ~30% of LLM-judged successes are false positives and
+  prompt-based mitigation is measurably weak — so the guards are structural.
+- **`/multi-persona-review`** — reviews one artifact from several expert points
+  of view to raise *issue coverage*. Blind parallel reviewers, each with its own
+  criteria checklist, failure catalogue, out-of-scope list, and a mandatory
+  objection; findings reconcile by **union** (never majority vote, which would
+  delete the single-reviewer finding that is the whole point); one arbiter pass
+  with at most one rebuttal round; a unique-finding-rate diagnostic that tells
+  you when a persona is decorative. The skill states plainly that personas do
+  **not** improve factual accuracy — the evidence there is negative — and points
+  at the cheaper alternative when accuracy, not coverage, is the goal.
+
 - **Five new skills land under `skills/`** (ROADMAP M1):
   - `/tdd` — red-green-refactor discipline, adapted from
     `superpowers/test-driven-development`. ~1.7 k tokens.
