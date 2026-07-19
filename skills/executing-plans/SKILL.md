@@ -47,8 +47,8 @@ checkpoints.
 
 Your judgment enters at one place: the critical plan review in Step 1,
 where you push back on or override the plan before executing. After that
-you follow the steps exactly; completion is gated by `/verification`
-(mandatory) and wrapped up by `/finishing-a-development-branch`.
+you follow the steps exactly; completion is gated by `/verifying-before-done`
+(mandatory) and wrapped up by `/finishing-development-branch`.
 
 ## The process
 
@@ -69,8 +69,8 @@ For each task:
 ### Step 3: Complete development
 
 After all tasks complete and verified:
-- Announce: "Using finishing-a-development-branch to complete this work."
-- **REQUIRED SUB-SKILL:** Use `/finishing-a-development-branch`
+- Announce: "Using finishing-development-branch to complete this work."
+- **REQUIRED SUB-SKILL:** Use `/finishing-development-branch`
 - Follow that skill to verify tests, present options, execute choice
 
 ## When to stop and ask for help
@@ -104,15 +104,15 @@ After all tasks complete and verified:
 **Required workflow skills:**
 - `/using-git-worktrees` - Ensures isolated workspace (creates one or verifies existing)
 - `/writing-plans` - Creates the plan this skill executes
-- `/verification` - Mandatory completion gate after each task and at the end
-- `/finishing-a-development-branch` - Complete development after all tasks
+- `/verifying-before-done` - Mandatory completion gate after each task and at the end
+- `/finishing-development-branch` - Complete development after all tasks
 
 ## Changes
 
 - **0.2.0** — Named the judgment (the Step 1 plan review) and made
-  `/verification` an explicit, mandatory completion gate. Hardening
+  `/verifying-before-done` an explicit, mandatory completion gate. Hardening
   (v3 plan): added When to use / When NOT to use; replaced TodoWrite with
-  host-accurate phrasing; added the `/verification` cross-reference;
+  host-accurate phrasing; added the `/verifying-before-done` cross-reference;
   normalised headings to dstack voice.
 - **0.1.0** — Imported from superpowers `executing-plans`. Adapted to
   dstack: added frontmatter/`metadata.dstack`; `superpowers:` sub-skill

@@ -188,7 +188,7 @@ Examples from agentskills.io's documentation:
 >   to the same value."
 
 dstack equivalent: the "Triage by failure shape" table in
-`/debugging`, the "Default verification gate" in `/verification`,
+`/debugging`, the "Default verification gate" in `/verifying-before-done`,
 the "honest-claim shape" table — these are all gotchas-as-tables.
 
 ### 1.7 Use templates, checklists, and validation loops for
@@ -321,7 +321,7 @@ The deterministic share is a spectrum, not one number:
 |---|---|---|
 | `judgment-dominant` | 10–20% | `brainstorm` |
 | `workflow` (default, omit the flag) | ~30% | `debugging` |
-| `deterministic-dominant` | 60–80%+ | `careful`, `verification` |
+| `deterministic-dominant` | 60–80%+ | `guarding-destructive-commands`, `verifying-before-done` |
 | `schema-meta` | n/a | `classify-issue` |
 
 This is a *calibration* axis, separate from `type` (ADR-0015). A
@@ -330,7 +330,7 @@ prompt still has a spine. Default is `workflow`. Move a skill to
 `judgment-dominant` only with empirical evidence (benchmark/UAT/test) that
 the default over-constrains it, plus owner approval; moving to more rails
 needs only a rationale. Record both in `## Changes`. Exemplar:
-`skills/code-review/SKILL.md` (the reference hybrid: deterministic spine + named judgment).
+`skills/responding-to-review/SKILL.md` (the reference hybrid: deterministic spine + named judgment).
 
 ---
 
@@ -530,18 +530,18 @@ four cloned reference repos.)
 | dstack skill type | Best reference candidates |
 |---|---|
 | Debugging / investigation | `superpowers/skills/systematic-debugging`; `mattpocock-skills/skills/engineering/diagnose`; `gstack/.claude/skills/investigate` (note: gstack version is heavy on operational scaffold — isolate the prose body before comparing) |
-| TDD / testing | `superpowers/skills/test-driven-development`; `mattpocock-skills/skills/engineering/tdd` |
+| TDD / testing | `superpowers/skills/test-driven-development`; `mattpocock-skills/skills/engineering/test-driven-development` |
 | Verification / completion-gate | `superpowers/skills/verification-before-completion` |
 | Code review (giver) | `gstack/.claude/skills/review` (long; isolate prose body) |
-| Code review (receiver) | `superpowers/skills/requesting-code-review` (dstack folded the receiver role into `/code-review`; `/requesting-code-review` covers the dispatch side) |
+| Code review (receiver) | `superpowers/skills/requesting-code-review` (dstack folded the receiver role into `/responding-to-review`; `/requesting-code-review` covers the dispatch side) |
 | Brainstorm / stress-test | `mattpocock-skills/skills/productivity/grill-me`; `superpowers/skills/brainstorming` |
 | Plan writing | `superpowers/skills/writing-plans` |
 | Plan execution | `superpowers/skills/executing-plans` |
-| Branch wrap-up | `superpowers/skills/finishing-a-development-branch` |
+| Branch wrap-up | `superpowers/skills/finishing-development-branch` |
 | Skill authoring (meta) | `anthropics-skills/skills/skill-creator`; `superpowers/skills/writing-skills` |
 | Careful / destructive ops | `gstack/.claude/skills/careful` |
 
-For deterministic or schema-semantic skills (e.g. `/version`,
+For deterministic or schema-semantic skills (e.g. `/managing-version`,
 `/classify-issue`), no equivalent exists in the four reference
 catalogs. SkillsBench §4.1.4 notes that 16 of 84 tasks in their
 benchmark showed *negative* deltas — not every skill type benefits
@@ -779,8 +779,8 @@ literature, **at the level of one anecdote**:
 | dstack pattern that helped | What changed | Internal verdict |
 |---|---|---|
 | Triage tables (`/debugging` v0.2.0) | Added 6-row symptom → probe → tooling table | 0/3 wins → 2/3 wins + 1 tie |
-| Numbered drills + honest-X tables (`/tdd` v0.2.0) | Added 6-step habit drill + 3-question diagnostic | 1/2 wins → 2/2 wins |
-| Repo-grounded commands + wrong-vs-right (`/verification` v0.2.0) | Added default gate with bun commands + honest-claim shape | 1/2 wins → 2/2 wins |
+| Numbered drills + honest-X tables (`/test-driven-development` v0.2.0) | Added 6-step habit drill + 3-question diagnostic | 1/2 wins → 2/2 wins |
+| Repo-grounded commands + wrong-vs-right (`/verifying-before-done` v0.2.0) | Added default gate with bun commands + honest-claim shape | 1/2 wins → 2/2 wins |
 | Recommendation-first reframe (`/brainstorm` v0.2.0) | Iron law changed; worked example added | 0/2 wins → 0/2 wins (still loses; scope mismatch) |
 
 The first three are predicted by the literature (concise, procedural,

@@ -97,7 +97,7 @@ included as an example. See `docs/plans/v1/` for the roadmap to version 1.
 - Architecture overview: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Architecture Decision Records (ADRs): [docs/adr/](docs/adr/)
 - Skill schema: [docs/specs/skill-spec.md](docs/specs/skill-spec.md)
-- Example skill: [skills/careful/](skills/careful/)
+- Example skill: [skills/guarding-destructive-commands/](skills/guarding-destructive-commands/)
 - v1 roadmap: [docs/plans/v1/ROADMAP.md](docs/plans/v1/ROADMAP.md)
 
 ## How to run
@@ -170,17 +170,35 @@ for DIR in ~/.claude ~/.claude-zai ~/.claude-kimi; do
   mkdir -p "$DIR/skills"                          # ensure skills/ exists on first install
   for s in .claude/skills/*/; do
     id=$(basename "$s")
-    rm -rf "$DIR/skills/$id" && cp -r "$s" "$DIR/skills/$id"
+    rsync -a --exclude='__pycache__' "$s" "$DIR/skills/$id/"
   done
 done
 ```
 
+The copy is **additive on purpose** — no `rm -rf`, no `rsync --delete`. A skill
+folder in a config dir can accumulate files the repo does not have: run output,
+scratch work, a `work/` directory a skill wrote. Wiping the folder to "get a
+clean copy" destroys that silently. Renamed and deleted skills leave an orphan
+folder instead, which you remove deliberately (below) after looking at it.
+
 This updates and adds every dstack skill in each dir and leaves your other
-(non-dstack) skills untouched. When a skill is **deleted** from the repo, remove
-it from each dir by hand:
+(non-dstack) skills untouched. When a skill is **deleted or renamed** in the
+repo, deal with its orphan folder in two steps — **look first, then remove**:
 
 ```bash
-for DIR in ~/.claude ~/.claude-zai ~/.claude-kimi; do rm -rf "$DIR/skills/<skill-id>"; done
+# 1. List what the orphan holds. Anything the repo does not ship is yours.
+for DIR in ~/.claude ~/.claude-zai ~/.claude-kimi; do
+  find "$DIR/skills/<old-id>" -type f 2>/dev/null
+done
+
+# 2. On a RENAME, move that payload into the new folder before deleting.
+#    (A real case: pdf-to-rag-markdown/work/ held converted documents.)
+for DIR in ~/.claude ~/.claude-zai ~/.claude-kimi; do
+  [ -d "$DIR/skills/<old-id>/work" ] && rsync -a "$DIR/skills/<old-id>/work" "$DIR/skills/<new-id>/"
+done
+
+# 3. Only now remove the orphan.
+for DIR in ~/.claude ~/.claude-zai ~/.claude-kimi; do rm -rf "$DIR/skills/<old-id>"; done
 ```
 
 > `dstack build --global` installs to `~/.claude/skills/dstack/` instead; the

@@ -10,6 +10,55 @@ and the version scheme follows [Semantic Versioning](https://semver.org/)
 
 Phase 2 work toward v1. Not yet tagged.
 
+### Changed
+
+- **Seven skills renamed; every id is now ≤3 words**
+  ([ADR-0027](docs/adr/0027-skill-naming-convention.md)). A skill id names
+  the activity it performs, in at most three hyphen-separated words —
+  no bare abbreviation, adjective, or generic noun. `tdd` →
+  `test-driven-development`, `code-review` → `responding-to-review`,
+  `careful` → `guarding-destructive-commands`, `verification` →
+  `verifying-before-done`, `version` → `managing-version`,
+  `pdf-to-rag-markdown` → `pdf-to-rag`, `finishing-a-development-branch`
+  → `finishing-development-branch`. The old ids are kept as trigger
+  keywords, so "do TDD" / "be careful" / "pdf to rag" still route.
+  Already-clear names were deliberately left alone. Entries above that
+  predate the rename keep the ids that were true when written.
+- **`/test-driven-development` now demands unbiased coverage.** A new
+  "Cover more than the happy path" section names four test classes —
+  happy, edge/boundary, invalid/error, and **chaos / failure injection**
+  (dependency down, timeout, retry exhausted, duplicate or concurrent
+  delivery) — plus the bias rule: derive cases from the contract, not
+  from the implementation you just wrote, then ask whether the set would
+  still pass against a knowingly wrong implementation. The verification
+  checklist enforces it.
+- **Skills no longer assume one language.** `/test-driven-development`
+  carries a stack-agnostic run-command table (Bun, npm, Angular, .NET,
+  Python, Go, Rust, PHP) and states that its examples' language is
+  incidental. Prompted by an audit of the owner's repos: 277 `.csproj`,
+  167 `package.json`, 106 Python manifests, plus Go, Rust, Angular and
+  PHP — while the skill named only TypeScript tooling.
+- **The install procedure in `README.md` is now additive** (`rsync`, no
+  `rm -rf`/`--delete`). The previous loop wiped each skill folder before
+  copying, which destroys files a skill wrote into its own folder in a
+  config dir — observed on a real `pdf-to-rag/work/` directory.
+  Renamed or deleted skills now leave an orphan folder you remove
+  deliberately after inspecting it.
+
+### Fixed
+
+- **`literature-fulltext` dropped open-access records** — `oa_fetch.py`
+  read only `best_oa_location.url_for_pdf`, so a gold-OA DOI whose best
+  location exposes no direct PDF was logged as closed. Measured on
+  `10.7554/eLife.00005`: reported closed, while `oa_locations[1]` served
+  a 22-page PDF. It now falls back to the first OA location carrying a
+  PDF, and keeps the best location's license when that copy declares
+  none (a blank license reads as "unknown → don't redistribute").
+- **`subagent-driven-development` promised TDD it did not instruct** —
+  the body claimed subagents "follow TDD naturally" while the bundled
+  implementer prompt said "following TDD *if task says to*". The prompt
+  now invokes `/test-driven-development` and `/verifying-before-done`.
+
 ### Added
 
 - **Five new skills land under `skills/`** (ROADMAP M1):

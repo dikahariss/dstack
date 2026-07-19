@@ -1,5 +1,5 @@
 ---
-name: verification
+name: verifying-before-done
 description: |
   Evidence-before-claim gate. Before declaring work complete, fixed, or
   passing — run the verification command in this turn, read the output,
@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.4.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -21,7 +21,7 @@ metadata:
       - before declaring done
       - evidence before claim
 ---
-# /verification
+# /verifying-before-done
 
 Evidence before claim. Before saying work is done, run the
 verification command in **this** turn, read the output, and only
@@ -132,6 +132,9 @@ State the exit code of each step in the claim:
 
 ## Changes
 
+- **0.4.0** — Renamed `verification` → `verifying-before-done`. The bare
+  noun did not say *when* to reach for it; the gerund encodes the trigger
+  moment. The "verify"/"prove it" triggers are kept.
 - **0.3.0** — calibration: deterministic-dominant (ADR-0025; discipline
   gate, the rails are the value). Judgment stays bounded: identify the
   command that proves THIS claim — no "research the latest, your call."
@@ -182,7 +185,7 @@ Claim: "All tests pass — 34 passed, 0 failed (bun test)."
 Not: "Should pass now." Not: "Looks correct."
 ```
 
-**Regression test (red-green-revert discipline — same as `/tdd`).**
+**Regression test (red-green-revert discipline — same as `/test-driven-development`).**
 
 ```
 Write the test → run it → fails for the right reason.
@@ -251,10 +254,10 @@ limitation?
 
 ## Cross-references
 
-- `/tdd` — the green-verification step is the same gate. Re-run
+- `/test-driven-development` — the green-verification step is the same gate. Re-run
   the test, do not say "should pass now".
 - `/debugging` — Phase 4 step 3 ("verify the fix") is this gate.
-- `/code-review` — when applying review fixes, each implemented
+- `/responding-to-review` — when applying review fixes, each implemented
   item is gated by running the test, not by "fixed".
 
 ## Bottom line

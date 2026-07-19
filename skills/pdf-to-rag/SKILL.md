@@ -1,5 +1,5 @@
 ---
-name: pdf-to-rag-markdown
+name: pdf-to-rag
 description: >
   Use when converting one or more PDFs into retrieval-ready (RAG) Markdown —
   especially scanned/OCR'd, image- or flowchart-heavy (bagan alur), table-heavy,
@@ -32,7 +32,7 @@ metadata:
     side_effects: local
     agency: autonomous
 ---
-# /pdf-to-rag-markdown
+# /pdf-to-rag
 
 Convert PDFs into retrieval-ready Markdown with **Claude vision + parallel subagent
 Workflows** as the primary engine. The AI reads the page; deterministic tools triage,

@@ -76,7 +76,7 @@ The skill uses both code and LLM in coordination. Code prepares input
 and validates output; the LLM does the reasoning in the middle.
 
 - Pattern: `code reads state → LLM reasons → code validates → code acts`.
-- Example: `/code-review` reads the diff with a script (code), reasons
+- Example: `/responding-to-review` reads the diff with a script (code), reasons
   about each review comment (LLM), then edits files and replies (code).
 - Most production skills fall into this type.
 
@@ -105,10 +105,10 @@ LLM produces the structured data directly.
 | Skill or code path | Type |
 |---|---|
 | A CLI command that reads or writes a config file | Deterministic |
-| `/version` (read or bump the VERSION file) | Deterministic |
+| `/managing-version` (read or bump the VERSION file) | Deterministic |
 | `/brainstorm` (interview the user, walk the decision tree) | Open-ended Semantic |
 | `/debugging` (root-cause investigation, no fixed output shape) | Open-ended Semantic |
-| `/code-review` (script fetches the diff, LLM reasons, code edits) | Hybrid |
+| `/responding-to-review` (script fetches the diff, LLM reasons, code edits) | Hybrid |
 | `/classify-issue` (emit a structured triage record) | Schema-constrained Semantic |
 | A prompt-injection classifier with a fixed label set | Schema-constrained Semantic |
 
@@ -151,7 +151,7 @@ When and for how long the skill runs.
 | Multi-turn conversational | The skill runs across several turns of user-skill dialog. Example: `/brainstorm`. |
 | Asynchronous | The skill starts, returns immediately, and delivers its result later. |
 | Continuous loop | The skill runs in the background indefinitely. Example: a background deploy monitor (hypothetical; dstack ships none). |
-| Event-driven | The skill activates automatically when some other event fires. Example: a PreToolUse hook on `/careful` that activates before each Bash tool call (not yet supported in dstack — see DEFERRED.md D2). |
+| Event-driven | The skill activates automatically when some other event fires. Example: a PreToolUse hook on `/guarding-destructive-commands` that activates before each Bash tool call (not yet supported in dstack — see DEFERRED.md D2). |
 
 ### Axis C — Coordination pattern
 
@@ -190,8 +190,8 @@ What the skill changes in the world.
 
 | Choice | Meaning |
 |---|---|
-| Read-only | The skill changes nothing. It only reads and reports. Examples: `/verification`, `/classify-issue`. |
-| Local mutating | The skill changes files in the current project. Example: `/version` edits the VERSION file. |
+| Read-only | The skill changes nothing. It only reads and reports. Examples: `/verifying-before-done`, `/classify-issue`. |
+| Local mutating | The skill changes files in the current project. Example: `/managing-version` edits the VERSION file. |
 | External mutating | The skill changes state outside the project. Examples: pushing a pull request to GitHub, deploying to production, calling an external API. |
 
 ### Worked example: skill `/ship` (hypothetical)

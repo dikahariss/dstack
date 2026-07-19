@@ -245,10 +245,10 @@ Ready to implement <feature-name>
 
 ## Cross-references
 
-- `/finishing-a-development-branch` — the wrap-up counterpart that tears
+- `/finishing-development-branch` — the wrap-up counterpart that tears
   down the worktree this skill creates.
 - `/executing-plans` — set up isolation here before executing a plan.
-- `/verification` — run the clean-baseline gate (Step 4) through it.
+- `/verifying-before-done` — run the clean-baseline gate (Step 4) through it.
 
 ## Changes
 

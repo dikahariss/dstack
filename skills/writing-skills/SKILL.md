@@ -9,11 +9,11 @@ description: |
 allowed-tools: Read Write Edit Bash Grep Glob Agent
 metadata:
   dstack:
-    version: 0.2.1
+    version: 0.3.0
     type: semantic
     side_effects: local
     agency: deliberative
-    context_budget_tokens: 2500
+    context_budget_tokens: 3000
     triggers:
       - write a skill
       - create a skill
@@ -38,6 +38,17 @@ bun run new <skill-id>     # creates skills/<skill-id>/ from the template
 bun run validate           # check schema + token budget
 bun run build --strict     # render; fail on any warning
 ```
+
+**Name it for the activity, in at most three words** (ADR-0027): prefer a
+gerund — `verifying-before-done`, not `verification`. No bare abbreviation
+(`tdd`), adjective (`careful`), or generic noun (`version`). Three
+hyphen-separated words is a hard ceiling: drop articles first
+(`finishing-a-development-branch` → `finishing-development-branch`), then the
+least load-bearing noun (`pdf-to-rag-markdown` → `pdf-to-rag` — the output
+format belongs in the description). **Still ambiguous at three words? The skill
+does too much — split it.** When two skills act on the same object, encode the
+direction (`requesting-` ↔ `responding-to-`). Renaming an existing skill? Keep
+the old id as a trigger keyword so discovery survives.
 
 `<skill-id>` is kebab-case and starts with a letter. The `name` in
 frontmatter must equal the directory name.
@@ -87,7 +98,7 @@ Body, scaled to the skill:
   `schema-meta`. Set `metadata.dstack.calibration` only when NOT
   `workflow`. Moving to `judgment-dominant` needs benchmark/UAT/test
   evidence + owner approval (record in `## Changes`). Exemplar:
-  `skills/code-review` (the reference hybrid: deterministic spine + named judgment).
+  `skills/responding-to-review` (the reference hybrid: deterministic spine + named judgment).
 - **One excellent example** — complete, runnable, commented with WHY.
   Not five mediocre ones in five languages.
 - **Common mistakes** — what goes wrong and the fix.
@@ -121,7 +132,7 @@ Bundled files under the skill folder do not count and load on demand.
 
 - Move heavy reference (API dumps, long tables) into a sibling file and
   point to it in prose: "See `pptxgenjs.md` for the full API."
-- Reference other skills by name (`/tdd`); do not paste their content.
+- Reference other skills by name (`/test-driven-development`); do not paste their content.
 - Cut redundant examples; one pattern, shown once.
 
 `bun run validate` reports `<tokens>/<budget>` per skill; `bun run list`
@@ -131,8 +142,8 @@ shows the whole catalog.
 
 A skill you only read is a skill you have not tested.
 
-**Discipline skills** — rules that must hold under pressure, like `/tdd`
-and `/verification`:
+**Discipline skills** — rules that must hold under pressure, like `/test-driven-development`
+and `/verifying-before-done`:
 
 1. Run a pressure scenario with a subagent **without** the skill. Record
    the exact rationalizations it uses (verbatim).
@@ -174,6 +185,7 @@ official authoring guidance. Add a behavioral check under the skill's
 ## Checklist (track one todo per item)
 
 - [ ] `bun run new <id>`; `name` equals the directory
+- [ ] Name states the activity, **≤3 words** (gerund; no abbreviation/adjective/generic noun)
 - [ ] Description: third person, "Use when…", triggers/symptoms, no workflow
 - [ ] `allowed-tools` lists only what the skill uses
 - [ ] `metadata.dstack` complete; body under budget
@@ -188,7 +200,11 @@ official authoring guidance. Add a behavioral check under the skill's
 
 ## Changes
 
-- **0.2.1** — Repointed the calibration exemplar to `code-review` (the reference
+- **0.3.0** — Encoded the skill-naming convention (ADR-0027): name the
+  activity, gerund preferred, no bare abbreviation/adjective/generic noun,
+  encode direction for paired skills, and keep the old id as a trigger when
+  renaming. Added a checklist row.
+- **0.2.1** — Repointed the calibration exemplar to `responding-to-review` (the reference
   hybrid: deterministic spine + named judgment).
 - **0.2.0** — Encoded the hybrid-by-default doctrine (ADR-0025): spine +
   named judgment + the four calibration bands and when to set the flag.
@@ -197,5 +213,5 @@ official authoring guidance. Add a behavioral check under the skill's
   dstack's authoring path (`bun run new`, `docs/specs/skill-spec.md`,
   `metadata.dstack`, token budgets, `eval/`); replaced the graphviz
   tooling with dstack's tables-and-prose convention; cross-references
-  `/tdd`. Kept the TDD-for-skills method and the rationalization-table
+  `/test-driven-development`. Kept the TDD-for-skills method and the rationalization-table
   technique.

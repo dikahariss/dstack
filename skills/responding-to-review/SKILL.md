@@ -1,5 +1,5 @@
 ---
-name: code-review
+name: responding-to-review
 description: |
   Handles code-review feedback with technical rigor. Verifies before
   implementing, asks before assuming, and pushes back with reasoning
@@ -10,7 +10,7 @@ allowed-tools: Read Bash Grep Glob Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.3.0
+    version: 0.4.0
     context_budget_tokens: 3500
     side_effects: local
     agency: deliberative
@@ -21,7 +21,7 @@ metadata:
       - reviewer said
       - handle review feedback
 ---
-# /code-review
+# /responding-to-review
 
 Respond to code-review feedback with technical rigor. Verify before
 implementing, ask before assuming, push back when the reviewer is
@@ -261,7 +261,7 @@ Thread replies keep the response attached to the line under review.
 
 ## Cross-references
 
-- `/verification` — every implemented fix is gated by running the
+- `/verifying-before-done` — every implemented fix is gated by running the
   test and reading the output, not by "should work now".
 - `/debugging` — when the reviewer flags a bug, the response is to
   reproduce and trace, not to patch the line they pointed at.
@@ -275,6 +275,10 @@ No performative agreement. Technical rigor always.
 
 ## Changes
 
+- **0.4.0** — Renamed `code-review` → `responding-to-review`. The old
+  name read as "perform a review" while the skill actually handles review
+  feedback you *received*, and it collided with `requesting-code-review`.
+  The pair now reads request ↔ respond. Trigger keywords unchanged.
 - **0.3.0** — Folded in the inline GitHub thread-reply guidance from
   superpowers `receiving-code-review` (reply in-thread via
   `gh api .../comments/{id}/replies`, not a top-level comment).

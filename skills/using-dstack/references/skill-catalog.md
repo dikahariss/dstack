@@ -20,56 +20,55 @@ approach a task and come first; implementation skills execute.
 
 | Skill | Use when | Hand off |
 |---|---|---|
-| `debugging` | A test failure, prod bug, unexpected behavior, perf regression, or build break whose cause is not obvious. "debug", "find the root cause", "stop guessing". | → `tdd` once the cause is known (write the failing test, then fix). |
-| `tdd` | Implementing a new feature, fixing a bug, or refactoring with behavior change. "do TDD", "test-first", "red-green-refactor". | ← after `debugging`; → `verification` before "done". |
-| `verification` | About to declare work complete, fixed, or passing — before commit/PR/"done", or after a subagent reports success. | Gate before `finishing-a-development-branch`. |
-| `careful` | About to run a destructive/risky command (rm -rf, DROP TABLE, force-push, reset --hard, kubectl delete) or touch prod/shared infra. "be careful", "prod mode". | Use inline at the risky step; no successor. |
+| `debugging` | A test failure, prod bug, unexpected behavior, perf regression, or build break whose cause is not obvious. "debug", "find the root cause", "stop guessing". | → `test-driven-development` once the cause is known (write the failing test, then fix). |
+| `test-driven-development` | Implementing a new feature, fixing a bug, or refactoring with behavior change. "do TDD", "test-first", "red-green-refactor". | ← after `debugging`; → `verifying-before-done` before "done". |
+| `verifying-before-done` | About to declare work complete, fixed, or passing — before commit/PR/"done", or after a subagent reports success. | Gate before `finishing-development-branch`. |
+| `guarding-destructive-commands` | About to run a destructive/risky command (rm -rf, DROP TABLE, force-push, reset --hard, kubectl delete) or touch prod/shared infra. "be careful", "prod mode". | Use inline at the risky step; no successor. |
 
 ## Execution / orchestration
 
 | Skill | Use when | Hand off |
 |---|---|---|
-| `executing-plans` | You have a written plan to execute in a separate session with review checkpoints. "execute plan", "run the plan". | → `verification`, `finishing-a-development-branch`. |
+| `executing-plans` | You have a written plan to execute in a separate session with review checkpoints. "execute plan", "run the plan". | → `verifying-before-done`, `finishing-development-branch`. |
 | `subagent-driven-development` | Executing a plan's independent tasks in THIS session: fresh subagent per task + two-stage review (spec, then quality). "subagent-driven development". | Pairs with `requesting-code-review` between tasks. |
-| `dispatching-parallel-agents` | 2+ INDEPENDENT problems (different root causes / subsystems), no shared state. "parallel agents", "fan out". | Each agent may use `debugging`/`tdd`. |
+| `dispatching-parallel-agents` | 2+ INDEPENDENT problems (different root causes / subsystems), no shared state. "parallel agents", "fan out". | Each agent may use `debugging`/`test-driven-development`. |
 | `using-git-worktrees` | Feature work needs isolation from the current workspace, or before executing a plan. "git worktree", "isolated workspace". | → execution skill inside the worktree. |
-| `finishing-a-development-branch` | Implementation done, tests pass; decide merge / PR / keep / discard. "finish the branch", "wrap up", "merge or PR". | ← after `verification`. |
+| `finishing-development-branch` | Implementation done, tests pass; decide merge / PR / keep / discard. "finish the branch", "wrap up", "merge or PR". | ← after `verifying-before-done`. |
 
 ## Review
 
 | Skill | Use when | Hand off |
 |---|---|---|
-| `code-review` | Handling code-review FEEDBACK: PR comments, inline threads. "respond to this review", "address these comments". Verify before implementing; push back when the reviewer is wrong. | — |
-| `requesting-code-review` | DISPATCH a fresh-eyes review subagent after finishing work, before merge, or when stuck. "request review", "get this reviewed". | The reviewer's findings → `code-review`. |
+| `responding-to-review` | Handling code-review FEEDBACK: PR comments, inline threads. "respond to this review", "address these comments". Verify before implementing; push back when the reviewer is wrong. | — |
+| `requesting-code-review` | DISPATCH a fresh-eyes review subagent after finishing work, before merge, or when stuck. "request review", "get this reviewed". | The reviewer's findings → `responding-to-review`. |
 
 ## Domain
 
 | Skill | Use when | Hand off |
 |---|---|---|
-| `data-catalog` | Inventory/profile many source apps or DBs into a data dictionary (kamus data) + IN/OUT scope, or conform a medallion schema across sources (3NF silver, dimensional gold). "data catalog", "kamus data", "silver schema", "inventory and classify tables", "medallion architecture". Not for one small DB — read it directly. | → `dispatching-parallel-agents` for the fan-out; `verification` per returned catalog. |
-| `pdf-to-rag-markdown` | Converting PDF(s) into retrieval-ready (RAG) Markdown — scanned/OCR'd, image/flowchart (bagan alur), table-heavy, or Indonesian gov/legal docs (Permenhub, Inpres, Juknis, UU). "pdf to rag", "konversi PDF", "siapkan untuk RAG", OCR garble, scrambled tables. | → `verification` before claiming RAG-ready. |
-| `literature-search` | Harvest bibliographic records from an academic database's web search (ScienceDirect primary; Emerald/Springer via adapters) for an SLR / bibliometric study — boolean concept-block query, year/type/subject/OA filters, export to RIS, PRISMA logging. "SLR search", "cari literatur", "export RIS", "boolean query", "harvest citations". Not for an official query API — call the API. | → `literature-trends` (analyze) / `literature-fulltext` (OA PDFs). |
-| `literature-trends` | Turn an exported RIS/BibTeX corpus into research-topic TRENDS + categories — dedup, categorize, per-year/per-topic bibliometrics, ranking, diagrams. "analisis tren", "bibliometric", "kelompokan topik", "research trends", "peta tren". Draws charts via `/dataviz`. | ← after `literature-search`; → `literature-fulltext`. |
-| `literature-fulltext` | Download OPEN-ACCESS full-text PDFs for a corpus via Unpaywall — OA-only (no paywall bypass), rate-limited, license manifest. "download OA PDF", "unduh artikel", "unpaywall", "open access download". | ← after `literature-search`/`literature-trends`. |
+| `pdf-to-rag` | Converting PDF(s) into retrieval-ready (RAG) Markdown — scanned/OCR'd, image/flowchart (bagan alur), table-heavy, or Indonesian gov/legal docs (Permenhub, Inpres, Juknis, UU). "pdf to rag", "konversi PDF", "siapkan untuk RAG", OCR garble, scrambled tables. | → `verifying-before-done` before claiming RAG-ready. |
+| `literature-search` | Harvest bibliographic records from an academic database's web search for an SLR / bibliometric study — boolean concept-block query, year/type/subject/OA filters, export to RIS, PRISMA logging. Tested adapters: ScienceDirect, Taylor & Francis (Atypon), Springer (export-poor), ProQuest guest (scrape-not-export), Neliti (no operators); Emerald via the vendor template. "SLR search", "cari literatur", "export RIS", "boolean query", "harvest citations", "tandfonline", "ProQuest dissertations", "Neliti", "perpusnas e-resources". Not for an official query API — call the API. | → `literature-trends` (analyze) / `literature-fulltext` (OA PDFs). |
+| `literature-trends` | Turn an exported RIS corpus (convert BibTeX to RIS first) into research-topic TRENDS + categories — dedup, categorize, per-year/per-topic bibliometrics, ranking, diagrams. Database-agnostic; year trends come from the per-year POPULATION counts, not the capped corpus. "analisis tren", "bibliometric", "kelompokan topik", "research trends", "peta tren". Draws charts via `/dataviz`. | ← after `literature-search`; → `literature-fulltext`. |
+| `literature-fulltext` | Download OPEN-ACCESS full-text PDFs for a corpus — Unpaywall by DOI, plus the no-DOI paths (ProQuest dissertations via the browser, Neliti self-hosted PDFs). OA-only (no paywall bypass), rate-limited, license manifest. "download OA PDF", "unduh artikel", "unpaywall", "open access download", "ProQuest full text". | ← after `literature-search`/`literature-trends`. |
 
 ## Utility
 
 | Skill | Use when | Hand off |
 |---|---|---|
-| `version` | Read or bump the VERSION file. "show version", "bump version", "release X.Y.Z". | — |
+| `managing-version` | Read or bump the VERSION file. "show version", "bump version", "release X.Y.Z". | — |
 | `classify-issue` | Classify a pasted bug/feature/chore into a triage record. "triage this", "classify this issue". | — |
 
 ## Common chains
 
 - **New feature / creative change:** `brainstorm` → `writing-plans` →
   (`using-git-worktrees`) → `subagent-driven-development` *or* `executing-plans`
-  → `verification` → `requesting-code-review` → `finishing-a-development-branch`.
-- **Bug:** `debugging` (root cause) → `tdd` (failing test → minimal fix) →
-  `verification`.
+  → `verifying-before-done` → `requesting-code-review` → `finishing-development-branch`.
+- **Bug:** `debugging` (root cause) → `test-driven-development` (failing test → minimal fix) →
+  `verifying-before-done`.
 - **Authoring a skill:** `writing-skills` (+ `brainstorm` if the shape is fuzzy).
 - **Literature review:** `literature-search` (harvest → RIS) → `literature-trends`
   (dedup + topic trends + diagrams) → `literature-fulltext` (open-access PDFs).
-- **Any time:** `careful` before a destructive command; `verification` before
+- **Any time:** `guarding-destructive-commands` before a destructive command; `verifying-before-done` before
   claiming done.
 
 ## When several apply

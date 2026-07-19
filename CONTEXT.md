@@ -29,7 +29,7 @@ agency, triggers, includes, output_schema); see
 _Avoid_: skill config, metadata, manifest.
 
 **Skill id**:
-The short kebab-case identifier of a skill (for example, `careful`,
+The short kebab-case identifier of a skill (for example, `guarding-destructive-commands`,
 `plan-ceo-review`). Validated by the `SkillId` value object: lowercase
 letters, digits, and hyphens; 1 to 64 characters; must start with a
 letter.

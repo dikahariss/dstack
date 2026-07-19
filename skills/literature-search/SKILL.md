@@ -5,19 +5,21 @@ description: >
   search for a systematic literature review (SLR), scoping review, or
   bibliometric/trend study — designing a boolean concept-block query, applying
   year / article-type / subject / open-access filters, exporting results to RIS,
-  and logging hit counts for PRISMA. Primary tested database is
-  ScienceDirect (Elsevier); ProQuest Dissertations & Theses (guest/public — a
-  scrape-not-export adapter) is also tested; Emerald, Springer Nature and others
-  plug in as per-vendor adapters. Triggers: "SLR search", "cari literatur", "search
-  string", "boolean query", "literature keyword strategy", "export/download RIS",
-  "harvest citations", "ScienceDirect search", "ProQuest search", "ProQuest
-  dissertations", "harvest dissertations", "build a reference corpus".
+  and logging hit counts for PRISMA. Empirically tested adapters: ScienceDirect
+  (Elsevier), Taylor & Francis (Atypon Literatum), Springer Nature Link, ProQuest
+  Dissertations & Theses (guest/public — scrape-not-export), and Neliti (Indonesian
+  index — bag-of-words, robots-constrained); Emerald and others plug in as per-vendor
+  adapters. Triggers: "SLR search", "cari literatur", "search string", "boolean
+  query", "literature keyword strategy", "export/download RIS", "harvest citations",
+  "ScienceDirect search", "Taylor & Francis search", "tandfonline", "Springer
+  search", "ProQuest search", "ProQuest dissertations", "harvest dissertations",
+  "Neliti", "perpusnas e-resources", "build a reference corpus".
 allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.2.0
-    context_budget_tokens: 3500
+    version: 0.3.2
+    context_budget_tokens: 4500
     side_effects: local
     agency: deliberative
     triggers:
@@ -31,9 +33,14 @@ metadata:
       - download ris
       - harvest citations
       - sciencedirect search
+      - taylor & francis search
+      - tandfonline
+      - springer search
       - proquest search
       - proquest dissertations
       - harvest dissertations
+      - neliti
+      - perpusnas e-resources
 ---
 # /literature-search
 
@@ -86,7 +93,9 @@ already-known paper.
 earn a slot, and reading the hit count to steer — too much noise → add an `AND`
 block or tighten phrases; too few → loosen or add synonyms; stop adding synonyms
 at diminishing returns (a new term surfaces no new relevant papers). The
-numbered steps are rails; concept and synonym design is yours.
+numbered steps are rails; concept and synonym design is yours. Some engines
+break the spine — **Neliti has no operators at all** (bag-of-words); the adapter
+tells you when the method itself must bend.
 
 ## The adapter contract
 Databases differ in syntax and mechanics, and **vendor documentation is often
@@ -109,15 +118,19 @@ and fill every slot **empirically** (run the probe tests in that template).
 | Database | Adapter | Status |
 |---|---|---|
 | ScienceDirect (Elsevier) | `references/sciencedirect.md` | primary — empirically tested (RIS export) |
-| ProQuest (guest / public) | `references/proquest.md` | empirically tested — **scrape-not-export** (no RIS in guest mode; build it from detail pages) |
+| Taylor & Francis (Atypon Literatum) | `references/taylorfrancis.md` | empirically tested (RIS export; scriptable `downloadCitation`) |
+| Springer Nature Link | `references/springer.md` | empirically tested — **export-poor** (CSV→DOI→enrich; no bulk RIS) |
+| ProQuest (guest / public) | `references/proquest.md` | empirically tested — **scrape-not-export** (build RIS from detail pages) |
+| Neliti (Indonesian index) | `references/neliti.md` | empirically tested — **bag-of-words** (no operators), **robots-constrained** |
 | Emerald Insight | copy `references/adding-a-vendor.md` | not yet built |
-| Springer Nature | copy `references/adding-a-vendor.md` | not yet built |
 
-> **Two adapter shapes.** Most databases *export* RIS (ScienceDirect). Some — e.g.
-> **ProQuest guest** — have **no export**; you scrape each detail page and **build**
-> the RIS yourself. The adapter says which shape applies; a scrape adapter documents
-> the detail-page field set, an anti-bot pace, and a local RIS/CSV/JSONL build step
-> instead of an export recipe.
+> **Adapter shapes differ — the export slot is decisive.** Some *export* RIS in
+> bulk (ScienceDirect, Taylor & Francis); others don't: **ProQuest guest** scrapes
+> detail pages to build RIS; **Springer** is export-poor (1,000-row CSV → harvest
+> DOIs, enrich via CrossRef/API); **Neliti** has no bulk export, **no search
+> operators**, and a `robots.txt` that disallows its own RIS endpoint — so RIS is
+> built from detail-page `<meta>` tags. The adapter names the shape and its harvest
+> step.
 
 ## Driving the web UI
 Drive the browser with the **`/claude-in-chrome`** skill (load its tools via
@@ -128,6 +141,21 @@ says results URLs are session-hashed (e.g. ProQuest), in which case log the
 adapter's recipe; downloaded files land in the browser's download directory —
 move each to a named file per search before the next export. For a **scrape-not-
 export** adapter, `get_page_text` each detail page and build the RIS locally.
+Behind an **EZproxy** (e.g. Perpusnas `e-resources.perpusnas.go.id:<port>`) the
+target is rewritten to `host:port` with path + params unchanged, so adapter URLs
+still work — but mind per-engine **anti-bot walls** (Springer): pace requests,
+prefer real navigations over `fetch()` bursts.
+
+**Check `robots.txt` before scripting any fetch loop**, and honor its `Crawl-delay`.
+Neither open access nor an institutional login implies crawl-permitted — **all three
+proxied engines disallow their own search/export paths** to unlisted agents: T&F
+`Disallow: /action` (both `doSearch` and `downloadCitation`), Springer default-denies
+with an allow-list that excludes `/search?query=` and `/search/csv`, Neliti disallows
+`/search` + `/citations/` and blocks `ClaudeBot`/`anthropic-ai` outright. **So drive
+these from the browser session and pace it** — the entitlement covers your reading, not
+a crawler. A **403 is a refusal**: never spoof a User-Agent to get past one (that hides
+the fetch, it doesn't authorize it). For corpus-scale automation, use the vendor's API
+or TDM programme, or ask.
 
 ## Checklist (before trusting a harvest)
 - [ ] Every multi-word phrase quoted; concept blocks parenthesized; connectors ≤ adapter limit.
@@ -141,10 +169,22 @@ export** adapter, `get_page_text` each detail page and build the RIS locally.
 - `references/sciencedirect.md` — the ScienceDirect web engine: hard limits,
   operators, filters, export flow, pagination — measured on the live site. Read
   before any ScienceDirect search.
+- `references/taylorfrancis.md` — Taylor & Francis / **Atypon Literatum** engine:
+  UPPERCASE operators, stemming-on (quotes disable it), no connector cap,
+  `pageSize=100` + 0-indexed `startPage`, scriptable `/action/downloadCitation` RIS
+  (multi-DOI, no login). Read before any T&F / Atypon search.
+- `references/springer.md` — Springer Nature Link: UPPERCASE operators, **left-to-
+  right precedence (parenthesize every OR block)**, anti-bot "Client Challenge",
+  **no bulk RIS** (CSV cap 1,000 → DOI → CrossRef/API enrich). Read before any
+  Springer search.
 - `references/proquest.md` — ProQuest **guest** engine: no export → scrape
   `docview/<id>` detail pages and build RIS/CSV/JSONL; session-hashed result URLs,
   20/page cap, `localStorage`+`get_page_text` exfiltration, anti-bot pace. Read
   before any ProQuest harvest.
+- `references/neliti.md` — Neliti (Indonesian index): **no boolean/phrase/wildcard**
+  (bag-of-words OR union), filters + year-sharding, ~1,000-record reachable ceiling,
+  and a **`robots.txt` that disallows `/search` + `/citations/`** — browser for ids,
+  detail-page `<meta>` for RIS. Read before any Neliti harvest.
 - `references/adding-a-vendor.md` — adapter template + the live-site probe method
   for a new database.
 - `scripts/ris_merge_dedup.py` — merge N RIS files → dedup by DOI (fallback
@@ -155,12 +195,37 @@ export** adapter, `get_page_text` each detail page and build the RIS locally.
 |---|---|
 | Porting another database's syntax verbatim | Each engine differs — read the adapter, verify live |
 | One mega-query over the connector limit | Shard into ≤-limit searches + dedup (union is identical) |
-| Trusting vendor docs | Docs are often wrong (wildcards, phrase braces) — measure live |
+| Trusting vendor docs | Docs are often wrong (wildcards, phrase braces, precedence) — measure live |
+| Assuming lowercase `or` works | Springer & T&F need **UPPERCASE** operators — lowercase becomes a search term |
+| Feeding a boolean string to Neliti | Neliti has no operators — bare words (OR union) + filters + year-shard |
+| Reading "no login needed" (or "we're entitled") as "crawl freely" | Check `robots.txt` — all 3 proxied engines disallow their search/export paths; drive the browser, never spoof a UA past a 403 |
 | Not logging counts | Without string+filters+date+count per search, PRISMA is impossible |
 | Deduping by title only | DOI first; title+year only as fallback |
 | Chasing every synonym | Stop at diminishing returns — new term, no new relevant hits |
 
 ## Changes
+- **0.3.2** — Measured `robots.txt` on all three proxied engines: each disallows the
+  paths its own adapter told you to script (T&F `/action` — both `doSearch` and
+  `downloadCitation`; Springer default-deny excluding `/search?query=` + `/search/csv`,
+  banning `/article/*.ris*`; Neliti `/search` + `/citations/`). All three now route the
+  harvest through the browser session, with the rule generalized in the body.
+  Raised the body budget 4000→4500 to hold the compliance rule.
+- **0.3.1** — Closed a contradiction with `/literature-fulltext`, which forbade exactly
+  what the Neliti adapter prescribed. Adapter now leads with its `robots.txt` map, takes
+  ids via browser and metadata via the allowed detail page (Highwire `<meta>`), and
+  demotes `/citations/` + `/oai` to "documented, not a harvest path". Added the
+  never-spoof-a-UA rule + an eval case, and flagged T&F's 100-DOI batch as extrapolated
+  from a 3-DOI measurement (414 risk + fallback).
+- **0.3.0** — Added three empirically-tested adapters, measured live via the
+  Perpusnas EZproxy: **Taylor & Francis** (Atypon Literatum — clean RIS export +
+  scriptable `downloadCitation`; UPPERCASE ops; stemming-on), **Springer Nature
+  Link** (export-poor — CSV→DOI→enrich; UPPERCASE ops; left-to-right precedence;
+  anti-bot "Client Challenge"), and **Neliti** (Indonesian index — bag-of-words
+  search with no operators + per-record RIS endpoint, ~1,000-record ceiling).
+  Generalized the "adapter shapes" note to four shapes; added EZproxy guidance;
+  registered all three in the table, bundled files, triggers, and common mistakes.
+  Added four `eval/` cases covering the new engines; raised the body budget
+  3500→4000 (five adapters now exceed 90% of the old ceiling).
 - **0.2.0** — Added the **ProQuest (guest)** adapter (`references/proquest.md`) — a
   **scrape-not-export** shape (no RIS in guest mode): session-hashed result URLs,
   20/page cap, `localStorage`+`<article>`/`get_page_text` exfiltration, browser PDF

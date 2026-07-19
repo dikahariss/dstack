@@ -207,7 +207,7 @@ uses it as the brief for the implementation.
 
 ## Cross-references
 
-- After alignment lands, the build itself usually wants `/tdd` for
+- After alignment lands, the build itself usually wants `/test-driven-development` for
   the implementation cycle.
 - For the "is this idea worth building at all" question (one level
   above this skill), the conversation is closer to a product

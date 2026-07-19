@@ -30,8 +30,11 @@ Agent tool (general-purpose):
 
     Once you're clear on requirements:
     1. Implement exactly what the task specifies
-    2. Write tests (following TDD if task says to)
-    3. Verify implementation works
+    2. Invoke `/test-driven-development` and follow it: the failing test comes
+       first, watched to fail, before the production code. Skip only when the
+       task changes no behavior (pure docs, config, or rename).
+    3. Verify implementation works — invoke `/verifying-before-done`; run the
+       command and read the output before reporting success
     4. Commit your work
     5. Self-review (see below)
     6. Report back
@@ -92,7 +95,7 @@ Agent tool (general-purpose):
 
     **Testing:**
     - Do tests actually verify behavior (not just mock behavior)?
-    - Did I follow TDD if required?
+    - Did I watch each test fail before writing the code that passes it?
     - Are tests comprehensive?
 
     If you find issues during self-review, fix them now before reporting.

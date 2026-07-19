@@ -9,7 +9,7 @@ description: |
 allowed-tools: Agent Read Bash
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -38,18 +38,25 @@ are yours.
 
 Walk this decision table:
 
-| Have a plan? | Tasks mostly independent? | Stay in this session? | Use |
+| Have a written plan? | Tasks mostly independent? | Stay in this session? | Use |
 |---|---|---|---|
-| No | — | — | Manual execution, or `/brainstorm` first |
-| Yes | No (tightly coupled) | — | Manual execution, or `/brainstorm` first |
+| No | — | — | `/writing-plans` first (or `/brainstorm` if the shape is unclear) |
+| Yes | No (tightly coupled) | — | Manual execution — coupled tasks fight over the same files |
 | Yes | Yes | Yes | `/subagent-driven-development` (this skill) |
-| Yes | Yes | No (parallel session) | `/executing-plans` |
+| Yes | Yes | No (separate session) | `/executing-plans` |
 
-**vs. Executing Plans (parallel session):**
-- Same session (no context switch)
-- Fresh subagent per task (no context pollution)
-- Two-stage review after each task: spec compliance first, then code quality
-- Faster iteration (no human-in-loop between tasks)
+**Right time:** one plan, whose tasks build **one** feature in order, and you
+want them done now without babysitting each step. Tasks run **one at a time** —
+the parallelism here is context isolation, not concurrency.
+
+**Not this skill — nearest neighbours:**
+
+| Situation | Use instead | Why |
+|---|---|---|
+| 2+ *already-independent* problems (different root causes/subsystems), no shared files | `/dispatching-parallel-agents` | Those run **concurrently**; this skill runs tasks **sequentially** (parallel implementers collide — see Red flags) |
+| A plan you want executed with human checkpoints, in a fresh session | `/executing-plans` | Same-session vs handoff is the only real difference |
+| No plan yet, just a goal | `/writing-plans` | This skill executes a plan; it does not design one |
+| One small change | Do it yourself | Three subagent round-trips per task is not worth it |
 
 ## The process
 
@@ -71,7 +78,7 @@ Walk this decision table:
 3. **Next task.** Repeat step 2 until no tasks remain.
 4. **Final pass.** Dispatch one code reviewer for the entire
    implementation.
-5. **Wrap up.** Use `/finishing-a-development-branch`.
+5. **Wrap up.** Use `/finishing-development-branch`.
 
 ## Model selection
 
@@ -188,37 +195,16 @@ Final reviewer: All requirements met, ready to merge
 Done!
 ```
 
-## Advantages
+## What you trade
 
-**vs. Manual execution:**
-- Subagents follow TDD naturally
-- Fresh context per task (no confusion)
-- Parallel-safe (subagents don't interfere)
-- Subagent can ask questions (before AND during work)
+| You get | You pay |
+|---|---|
+| Fresh context per task — no pollution across tasks, and your own context stays free for coordination | ≥3 subagent invocations per task (implementer + 2 reviewers), more on review loops |
+| Two gates per task: spec compliance catches over/under-building, code quality catches how it was built | Up-front prep — you extract every task's full text before task 1 starts |
+| Questions surface before work starts, not after a wrong implementation lands | Sequential execution — tasks do not overlap |
 
-**vs. Executing Plans:**
-- Same session (no handoff)
-- Continuous progress (no waiting)
-- Review checkpoints automatic
-
-**Efficiency gains:**
-- No file reading overhead (controller provides full text)
-- Controller curates exactly what context is needed
-- Subagent gets complete information upfront
-- Questions surfaced before work begins (not after)
-
-**Quality gates:**
-- Self-review catches issues before handoff
-- Two-stage review: spec compliance, then code quality
-- Review loops ensure fixes actually work
-- Spec compliance prevents over/under-building
-- Code quality ensures implementation is well-built
-
-**Cost:**
-- More subagent invocations (implementer + 2 reviewers per task)
-- Controller does more prep work (extracting all tasks upfront)
-- Review loops add iterations
-- But catches issues early (cheaper than debugging later)
+Worth it when a wrong implementation is expensive to unwind. Not worth it for
+a one-file change.
 
 ## Red flags
 
@@ -257,16 +243,24 @@ Done!
 - `/using-git-worktrees` - Ensures isolated workspace (creates one or verifies existing)
 - `/writing-plans` - Creates the plan this skill executes
 - `/requesting-code-review` - Code review template for reviewer subagents
-- `/finishing-a-development-branch` - Complete development after all tasks
+- `/finishing-development-branch` - Complete development after all tasks
 
 **Subagents should use:**
-- `/tdd` - Subagents follow test-driven development for each task
+- `/test-driven-development` - Subagents follow test-driven development for each task
 
 **Alternative workflow:**
 - `/executing-plans` - Use for parallel session instead of same-session execution
 
 ## Changes
 
+- **0.3.0** — Fixed an unsupported claim: the body advertised "subagents follow
+  TDD naturally" while `references/implementer-prompt.md` only said "following
+  TDD *if task says to*". The prompt now instructs `/test-driven-development`
+  (skippable only for no-behavior-change tasks) and `/verifying-before-done`,
+  so the claim holds. Added the nearest-neighbour boundary table — chiefly
+  **`/dispatching-parallel-agents`** (concurrent, already-independent problems)
+  vs this skill (sequential tasks from one plan). Replaced the five-heading
+  "Advantages" pitch with one get/pay trade-off table (dstack voice).
 - **0.2.0** — Named the judgment (which context each subagent needs;
   reading a BLOCKED status as plan-wrong vs model-too-weak). Hardening
   (v3 plan): converted both graphviz blocks to a decision table and a
@@ -274,7 +268,8 @@ Done!
   normalised headings to dstack voice.
 - **0.1.0** — Imported from superpowers `subagent-driven-development`.
   Adapted to dstack: added frontmatter/`metadata.dstack`; `superpowers:`
-  sub-skill references rewritten as `/skill` (`/tdd` replaces
-  `test-driven-development`); "your human partner" → "the user"; bundled
+  sub-skill references rewritten as `/skill` (the upstream
+  `test-driven-development` became `/tdd`, renamed back in 0.3.0);
+  "your human partner" → "the user"; bundled
   prompt templates moved to `references/` and the in-body paths updated.
   Body and prompt templates otherwise verbatim.

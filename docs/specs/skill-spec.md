@@ -213,7 +213,7 @@ must be referenced by name in the skill that uses it. See
 
 ## Example: a real Hybrid skill
 
-`skills/code-review/SKILL.md` is the reference Hybrid example:
+`skills/responding-to-review/SKILL.md` is the reference Hybrid example:
 
 ```yaml
 ---
@@ -231,7 +231,7 @@ metadata:
       - code review
       - respond to review
 ---
-# /code-review
+# /responding-to-review
 
 ...body...
 

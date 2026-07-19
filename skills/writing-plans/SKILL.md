@@ -78,8 +78,8 @@ Every plan starts with:
 **Architecture:** <2–3 sentences on approach>
 **Stack:** <key technologies>
 
-Implement task by task. Per task: `/tdd` for the red-green-refactor
-cycle, then `/verification` before marking it done. Request review at
+Implement task by task. Per task: `/test-driven-development` for the red-green-refactor
+cycle, then `/verifying-before-done` before marking it done. Request review at
 checkpoints with `/requesting-code-review`. Steps use `- [ ]` checkboxes.
 ```
 
@@ -146,7 +146,7 @@ Fix issues inline; no need to re-review.
 ## Handoff
 
 Save the plan, then hand it to implementation. Execute one task at a
-time: `/tdd` per task, `/verification` before "done", and
+time: `/test-driven-development` per task, `/verifying-before-done` before "done", and
 `/requesting-code-review` at natural checkpoints. For a large plan,
 dispatch a fresh subagent per task and review between tasks.
 
@@ -157,5 +157,5 @@ dispatch a fresh subagent per task and review between tasks.
   (ADR-0025; flag omitted as the default).
 - **0.1.0** — Ported from superpowers `writing-plans`. Adapted to
   dstack: Bun/TypeScript task examples, plans saved under `docs/plans/`,
-  handoff points to dstack skills (`/tdd`, `/verification`,
+  handoff points to dstack skills (`/test-driven-development`, `/verifying-before-done`,
   `/requesting-code-review`) instead of superpowers-only sub-skills.

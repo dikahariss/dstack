@@ -193,7 +193,7 @@ git diff --stat          # confirm only intended files changed, no overlap
   plan-driven tasks worked sequentially in one session (this skill is for
   independent, parallel investigations with no plan).
 - `/debugging` — run it inside each agent to root-cause its own domain.
-- `/verification` — the integrate-time gate above.
+- `/verifying-before-done` — the integrate-time gate above.
 
 ## Changes
 

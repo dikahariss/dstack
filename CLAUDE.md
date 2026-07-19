@@ -82,7 +82,7 @@ concrete adapters happens there and nowhere else.
 | Add `@anthropic-ai/sdk` (or any LLM provider SDK) as runtime dep | Removed in v0.1.0 after exploration. See DEFERRED D11. | Use `claude -p` subprocess in a separate on-demand subcommand, not in `build`. |
 | Make `HostRenderer.render` async | It is sync; only the SkillRepository is async. | Don't. The renderer is pure given its inputs. |
 | Read environment variables outside `src/adapters/cli/main.ts` | All env reads happen at the wiring point. | Pass values down through constructors. |
-| Add a hook engine for `PreToolUse` etc. | DEFERRED D2. One degraded skill (`/careful`) is acceptable; threshold is two. | If two skills need hooks, open D2 properly: write a new ADR, add a `HookEngine` port + contract suite, then a minimal adapter. |
+| Add a hook engine for `PreToolUse` etc. | DEFERRED D2. One degraded skill (`/guarding-destructive-commands`) is acceptable; threshold is two. | If two skills need hooks, open D2 properly: write a new ADR, add a `HookEngine` port + contract suite, then a minimal adapter. |
 | Add bash scripts for build / install / setup | ADR-0005. dstack has no bash orchestrator. | Add a TypeScript subcommand. |
 | Write `console.log` in domain or application code | ADR-0006. Emit a `TelemetryEvent` instead. | Use the `Telemetry` port. |
 | Use `parseYaml` directly | YAML errors must carry `file[:line]`. Always use `parseDocument` with `LineCounter`. | See `FileSkillRepository` for the pattern. |
@@ -106,7 +106,8 @@ concrete adapters happens there and nowhere else.
 | Convention | Example |
 |---|---|
 | Files use kebab-case for filenames, PascalCase for types | `FileSkillRepository.ts` exports `class FileSkillRepository` |
-| Skill IDs use kebab-case, must start with a letter | `careful`, `plan-ceo-review`, NOT `Careful` or `1plan` |
+| Skill IDs use kebab-case, must start with a letter | `debugging`, `plan-ceo-review`, NOT `Debugging` or `1plan` |
+| Skill IDs name the activity, **max 3 words** ([ADR-0027](docs/adr/0027-skill-naming-convention.md)) | Prefer a gerund: `verifying-before-done`. No bare abbreviation (`tdd`), adjective (`careful`), or generic noun (`version`). Hard ceiling of three hyphen-separated words — drop articles, then the least load-bearing noun. Can't disambiguate in 3? The skill does too much; split it. Keep the old id as a trigger keyword. |
 | Typed errors only — no `throw new Error("...")` in domain | `throw new SkillSpecError(id, field, problem, source?)` |
 | Prefer `readonly` and `const` everywhere | All domain types are immutable |
 | No comments unless WHY is non-obvious | If you must explain WHAT, rename the identifier |

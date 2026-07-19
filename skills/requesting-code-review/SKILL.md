@@ -34,7 +34,7 @@ vague review. The procedure fixes *how* to dispatch; deciding *what* the
 reviewer needs to see is your call.
 
 This is the *requesting* side. Handling the feedback you get back is
-`/code-review`.
+`/responding-to-review`.
 
 ## When to request
 
@@ -107,5 +107,5 @@ See the dispatch template in `code-reviewer.md`.
   default).
 - **0.1.0** — Ported from superpowers `requesting-code-review`. Adapted
   to dstack: dispatch via the Agent tool, example plan path under
-  `docs/plans/`, cross-references `/code-review` for handling the
+  `docs/plans/`, cross-references `/responding-to-review` for handling the
   returned feedback.

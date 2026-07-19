@@ -5,10 +5,12 @@ Database-agnostic. Palette follows the dataviz skill (colorblind-safe blue
 sequential + blue/red diverging + status green/red). Read /dataviz before
 tweaking colors.
 
-Input CSV: first column = topic label; remaining columns = year headers, e.g.
+Input CSV: first column = topic label; year columns are the 4-digit headers, e.g.
     topic,2021,2022,2023,2024,2025,2026
     AI in hiring,8,6,8,28,22,36
     ...
+Any non-year column (total, baseline, notes, …) is ignored, so a table written
+for humans by analyze_corpus.py or by hand plots without editing.
 Optional keywords CSV: keyword,count (one per row).
 
 Usage:
@@ -19,7 +21,7 @@ Usage:
 from growth). Figures: fig1_ranking, fig2_positioning, fig3_heatmap,
 fig4_trajectories, (fig5_keywords).  Requires matplotlib.
 """
-import argparse, csv, os, sys
+import argparse, csv, os, re, sys
 try:
     import numpy as np, matplotlib
     matplotlib.use("Agg")
@@ -67,8 +69,15 @@ def main():
     if len(rows) < 2 or len(rows[0]) < 2:
         sys.exit("table needs a header row + >=1 topic row, and >=1 year column")
     hdr, data = rows[0], rows[1:]
-    years = [c.strip() for c in hdr[1:]]
-    T = [{"label": r[0], "y": [int(float(v or 0)) for v in r[1:]]} for r in data if r and r[0].strip()]
+    # Year columns are the 4-digit headers only. A trailing total/baseline/notes
+    # column would otherwise be read as a year — silently, when it is numeric —
+    # which corrupts every figure and the growth computation.
+    ycol = [i for i, c in enumerate(hdr) if i and re.fullmatch(r"\d{4}", c.strip())]
+    if not ycol:
+        sys.exit("no 4-digit year columns in the header row: " + ",".join(hdr))
+    years = [hdr[i].strip() for i in ycol]
+    T = [{"label": r[0], "y": [int(float(r[i] or 0)) if i < len(r) else 0 for i in ycol]}
+         for r in data if r and r[0].strip()]
     if not T:
         sys.exit("no topic rows with a label found in the table")
     for t in T:
@@ -78,7 +87,10 @@ def main():
         t["growth"] = (a1 - a0) / a0 if a0 else 0.0
         t["last_full"] = t["y"][last_full]
     ylab = years[:-1] + [years[-1] + "*"] if a.partial_year else years
-    cap = a.source or "Trend counts (population). * = partial year." if a.partial_year else a.source
+    # `x or y if c else z` parses as `(x or y) if c else z` — that dropped the
+    # "* = partial year" note whenever --source was also given, leaving the
+    # starred year label unexplained. Compose both parts instead.
+    cap = " ".join(p for p in (a.source, "* = partial year." if a.partial_year else "") if p)
     P = lambda n: os.path.join(a.outdir, n)
 
     # fig1 ranking

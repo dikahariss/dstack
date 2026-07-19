@@ -206,10 +206,10 @@ For correctness bugs:
 
 1. **Write a failing test that reproduces the issue.** Simplest
    possible test that fails today and will pass once the fix lands.
-   Use `/tdd` for the writing discipline.
+   Use `/test-driven-development` for the writing discipline.
 2. **Apply one fix.** Address the root cause. One change. No
    "while I'm here" refactors. No bundled improvements.
-3. **Verify.** Use `/verification` — run the test, read the
+3. **Verify.** Use `/verifying-before-done` — run the test, read the
    output, confirm: the new test passes, every existing test still
    passes, the originally reported symptom is gone.
 4. **If the fix does not work, stop.** Count attempts. Fewer than
@@ -292,9 +292,9 @@ before declaring it.
 
 ## Cross-references
 
-- `/tdd` — Phase 4 step 1 (failing test for the bug) uses the same
+- `/test-driven-development` — Phase 4 step 1 (failing test for the bug) uses the same
   red phase.
-- `/verification` — Phase 4 step 3 (verify the fix) is the evidence
+- `/verifying-before-done` — Phase 4 step 3 (verify the fix) is the evidence
   gate. Re-run the test, read the output, then claim "fixed".
 
 ## Final rule

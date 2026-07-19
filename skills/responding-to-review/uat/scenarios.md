@@ -1,6 +1,6 @@
-# UAT scenarios — /code-review
+# UAT scenarios — /responding-to-review
 
-Skill: `/code-review` — diff review with technical rigor.
+Skill: `/responding-to-review` — diff review with technical rigor.
 
 ## Scenario 1 — SQL injection + style mix
 

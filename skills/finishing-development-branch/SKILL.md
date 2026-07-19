@@ -1,5 +1,5 @@
 ---
-name: finishing-a-development-branch
+name: finishing-development-branch
 description: |
   Use when implementation is complete, all tests pass, and you need to
   decide how to integrate the work. Guides completion by verifying
@@ -17,12 +17,12 @@ metadata:
     context_budget_tokens: 3500
     triggers:
       - finish branch
-      - finishing-a-development-branch
+      - finishing-development-branch
       - wrap up branch
       - merge or PR
       - complete this work
 ---
-# /finishing-a-development-branch
+# /finishing-development-branch
 
 ## Overview
 
@@ -30,7 +30,7 @@ Guide completion of development work by presenting clear options and handling ch
 
 **Core principle:** Verify tests → Detect environment → Present options → Execute choice → Clean up.
 
-**Announce at start:** "Using finishing-a-development-branch to complete this work."
+**Announce at start:** "Using finishing-development-branch to complete this work."
 
 ## The process
 
@@ -274,12 +274,12 @@ git worktree prune  # Self-healing: clean up any stale registrations
 
 ## Cross-references
 
-- `/verification` — the quality gate (tests/typecheck/build) you run in
+- `/verifying-before-done` — the quality gate (tests/typecheck/build) you run in
   Step 1 before offering any option. This skill is the wrap-up *decision*,
   not the gate.
 - `/using-git-worktrees` — the counterpart that sets up the isolated
   workspace this skill tears down.
-- `/code-review` — request a review before choosing merge or PR.
+- `/responding-to-review` — request a review before choosing merge or PR.
 
 ## Changes
 
@@ -287,7 +287,7 @@ git worktree prune  # Self-healing: clean up any stale registrations
   external, the exact bash is the value). Named the bounded judgment
   (confirm the base branch when `merge-base` is ambiguous). Hardening
   (v3 plan): added Cross-references; normalised headings to dstack voice.
-- **0.1.0** — Imported from superpowers `finishing-a-development-branch`.
+- **0.1.0** — Imported from superpowers `finishing-development-branch`.
   Adapted to dstack: added frontmatter/`metadata.dstack`; reworded the
   worktree-provenance note (`~/.config/superpowers/worktrees/` retained
   for backward-compat detection). Body otherwise verbatim.

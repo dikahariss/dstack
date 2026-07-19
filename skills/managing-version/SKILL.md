@@ -1,11 +1,11 @@
 ---
-name: version
+name: managing-version
 description: Reads or bumps the project VERSION file deterministically. Use when the user asks to "show version", "bump version", "release X.Y.Z", or "what version are we on".
 allowed-tools: Bash Read
 metadata:
   dstack:
     type: deterministic
-    version: 0.1.0
+    version: 0.2.0
     context_budget_tokens: 1000
     side_effects: local
     agency: reactive
@@ -15,7 +15,7 @@ metadata:
       - release version
       - what version
 ---
-# /version
+# /managing-version
 
 Show or bump the project's VERSION file. The script in `scripts/` does
 the real work — your job is to pick which subcommand to run and pass
@@ -37,3 +37,9 @@ a different procedure.
 Run the chosen command via the `Bash` tool, then print the resulting
 version to the user. Do not edit `VERSION` directly with `Edit` — the
 script is the single source of truth.
+
+## Changes
+
+- **0.2.0** — Renamed `version` → `managing-version`. A single generic noun
+  collided with the frontmatter `version` field in docs and search. Triggers
+  unchanged.

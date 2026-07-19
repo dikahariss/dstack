@@ -1,5 +1,5 @@
 ---
-name: tdd
+name: test-driven-development
 description: |
   Test-driven development discipline. Write the failing test first, watch
   it fail, then write the minimal code that makes it pass. Use when
@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Write Edit Bash
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.4.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -20,7 +20,7 @@ metadata:
       - red green refactor
       - write the test first
 ---
-# /tdd
+# /test-driven-development
 
 Test-driven development discipline. Write the failing test before the
 production code, watch it fail, then write the minimal code that makes
@@ -97,7 +97,7 @@ Two "no" answers in a row → reset. Delete the source, start at step 1.
    do not "improve" anything beyond the test's reach.
 4. **Verify green.** Run the test. It passes, every other test
    still passes, output is pristine — no warnings, no stray errors.
-   This is the same evidence gate `/verification` enforces.
+   This is the same evidence gate `/verifying-before-done` enforces.
 5. **REFACTOR — clean up.** Remove duplication, rename for clarity,
    extract helpers. Keep tests green. Do not add behavior.
 6. **Next.** Pick the next failing test. Repeat.
@@ -112,14 +112,6 @@ Two "no" answers in a row → reset. Delete the source, start at step 1.
   mocks only when the alternative is impossible (external network,
   time, randomness).
 
-## Changes
-
-- **0.2.0** — Added the numbered habit-fix drill for "I write tests
-  after the code" plus the honest-test diagnostic table. Added v2
-  schema fields (`type: semantic`, `side_effects: local`, `agency:
-  deliberative`). Driven by v3 Track C benchmark case-2 loss against
-  superpowers/test-driven-development on specificity + procedure.
-- **0.1.0** — Initial port from v1 skill catalog.
 
 ### Good
 
@@ -156,6 +148,30 @@ test('retry works', async () => {
 
 Vague name, tests the mock instead of the code.
 
+## Cover more than the happy path
+
+A test written after looking at your own implementation inherits its blind
+spots — you test the branches you remember writing. **Derive the cases from the
+contract** (what the behavior promises), not from the code. That is what makes
+the set unbiased.
+
+Walk all four rows before calling a behavior covered:
+
+| Class | Ask | Typical cases |
+|---|---|---|
+| **Happy path** | What is it for? | the documented, expected input |
+| **Edge / boundary** | Where does behavior change? | empty, zero, one, max, off-by-one, very large, unicode/multi-byte, duplicate, unsorted, negative |
+| **Invalid / error** | What must it refuse? | null or missing field, wrong type, malformed, unauthorized, out of range — assert the *specific* error, not merely that it threw |
+| **Chaos / failure injection** | What breaks around it? | dependency down or slow, timeout, retry exhausted, partial write, duplicate or out-of-order delivery, concurrent callers, cancellation mid-flight |
+
+Chaos cases are the most-skipped and the most expensive in production: code
+that only ever ran against a healthy dependency is untested against the case
+that will page you. Inject the failure on purpose — make the fake throw, hang,
+return a partial result, or answer twice.
+
+**Bias check before moving on:** could this test set pass against an
+implementation you know is wrong? If yes, a case is missing.
+
 ## Why order matters
 
 | Excuse | Reality |
@@ -178,6 +194,26 @@ first, start the cycle over.
 - You are thinking "tests can come later".
 - You are rationalizing "just this once".
 - You are keeping pre-test code "as reference" or "to adapt".
+
+## Run the test — pick the stack's command
+
+The discipline is language-agnostic; only the command changes. Read the repo's
+own runner first (`package.json` scripts, `*.csproj`, `pyproject.toml`, a
+Makefile) — never assume the stack.
+
+| Stack | One test | Whole suite |
+|---|---|---|
+| Bun | `bun test path/x.test.ts -t "name"` | `bun test` |
+| Node / npm | `npm test -- -t "name"` | `npm test` |
+| Angular | `ng test --include='**/x.spec.ts'` | `ng test --watch=false` |
+| .NET | `dotnet test --filter "FullyQualifiedName~Name"` | `dotnet test` |
+| Python | `pytest path::test_name` | `pytest -q` |
+| Go | `go test -run TestName ./...` | `go test ./...` |
+| Rust | `cargo test name` | `cargo test` |
+| PHP | `vendor/bin/phpunit --filter name` | `vendor/bin/phpunit` |
+
+Examples in this skill are TypeScript because they must be *some* language.
+The cycle, the four test classes, and the iron law are identical in each.
 
 ## Worked example — a bug fix
 
@@ -242,7 +278,11 @@ the same check. Otherwise leave it inline.
 - [ ] All tests pass.
 - [ ] Test-runner output is pristine — no warnings, no unrelated
       errors.
-- [ ] Edge cases and error paths are covered.
+- [ ] All four classes walked: happy path, edge/boundary, invalid/error,
+      and at least one **chaos** case (dependency failure, timeout,
+      duplicate or concurrent call) — or a stated reason none applies.
+- [ ] The cases came from the contract, not from reading the
+      implementation. A wrong implementation would fail this set.
 
 Cannot tick every box? You skipped TDD on at least one cycle.
 Identify which test was added after, delete the matching production
@@ -250,7 +290,7 @@ code, and redo that cycle the right way.
 
 ## Cross-references
 
-- `/verification` — the green-verification step uses the same
+- `/verifying-before-done` — the green-verification step uses the same
   evidence rule. Re-run before claiming "done", not from memory.
 - `/debugging` — when fixing a bug, the failing-test step is the
   same red phase.
@@ -261,3 +301,27 @@ code, and redo that cycle the right way.
 Production code → a test for it exists AND was watched to fail
 Otherwise → not TDD; stop and raise it with the user
 ```
+
+## Changes
+
+- **0.4.0** — Added **"Cover more than the happy path"**: the four test classes
+  (happy / edge / invalid / **chaos-failure-injection**) with the bias rule —
+  derive cases from the contract, not from the implementation you just wrote —
+  and a "could this pass against a wrong implementation?" gate. Added a
+  stack-agnostic run-command table (Bun, npm, Angular, .NET, Python, Go, Rust,
+  PHP) after finding the skill named only TypeScript tooling while the owner's
+  repos are majority .NET, Node, and Python. Moved `## Changes` to the end of
+  the body — it had been sitting mid-document, splitting "What a good test
+  looks like" from its own Good/Bad examples.
+
+- **0.3.0** — Renamed `tdd` → `test-driven-development`: the abbreviation
+  was opaque to newcomers and broke the catalog's gerund/descriptive naming
+  convention (Anthropic best practices, §"Naming conventions"). Matches the
+  upstream superpowers name. The `tdd` trigger keyword is kept, so "do TDD"
+  still routes here.
+- **0.2.0** — Added the numbered habit-fix drill for "I write tests
+  after the code" plus the honest-test diagnostic table. Added v2
+  schema fields (`type: semantic`, `side_effects: local`, `agency:
+  deliberative`). Driven by v3 Track C benchmark case-2 loss against
+  superpowers/test-driven-development on specificity + procedure.
+- **0.1.0** — Initial port from v1 skill catalog.

@@ -294,6 +294,7 @@ Read in number order if you want the full reasoning.
 | [0024](adr/0024-catalog-breadth-over-yagni.md) | Catalog breadth over strict YAGNI for proven reference skills | Accepted |
 | [0025](adr/0025-hybrid-by-default-doctrine.md) | Hybrid by default: spine + judgment + calibration flag | Accepted |
 | [0026](adr/0026-broaden-project-purpose.md) | Broaden project purpose: skills + non-skill content | Accepted |
+| [0027](adr/0027-skill-naming-convention.md) | Skill names state the activity; no bare abbreviations or adjectives | Accepted |
 
 "Accepted" means the decision is in force. If we change our minds, we
 write a new ADR that supersedes the old one. We do not edit accepted

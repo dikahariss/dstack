@@ -74,7 +74,7 @@ def main():
 
     man = open(os.path.join(a.outdir, "manifest.csv"), "w", newline="", encoding="utf-8")
     w = csv.writer(man); w.writerow(["doi", "is_oa", "license", "host", "url", "file", "bytes", "status"])
-    n_oa = n_dl = n_closed = n_err = n_badpdf = 0
+    n_oa = n_dl = n_closed = n_err = n_badpdf = n_nopdf = 0
     for i, doi in enumerate(dois):
         time.sleep(a.rate if i else 0)
         try:
@@ -86,8 +86,24 @@ def main():
         url = loc.get("url_for_pdf") or ""
         lic = loc.get("license") or ""
         host = loc.get("host_type") or ""
-        if not is_oa or not url:
-            n_closed += 1; w.writerow([doi, is_oa, lic, host, url, "", "", "closed_or_no_pdf"]); continue
+        if is_oa and not url:
+            # best_oa_location often exposes no direct PDF even for gold OA (e.g.
+            # eLife). Every oa_locations entry is an Unpaywall-vetted OA copy, so
+            # fall back to the first one with a PDF instead of dropping the record.
+            for alt in meta.get("oa_locations") or []:
+                if alt.get("url_for_pdf"):
+                    url = alt["url_for_pdf"]
+                    # Report where the PDF actually came from, but keep the best
+                    # location's license when the fallback copy declares none — a
+                    # blank license reads as "unknown, don't redistribute" and would
+                    # silently downgrade a work the publisher licensed CC-BY.
+                    host = alt.get("host_type") or host
+                    lic = alt.get("license") or lic
+                    break
+        if not is_oa:
+            n_closed += 1; w.writerow([doi, is_oa, lic, host, url, "", "", "closed"]); continue
+        if not url:
+            n_nopdf += 1; w.writerow([doi, is_oa, lic, host, "", "", "", "oa_no_pdf_url"]); continue
         n_oa += 1
         if a.dry_run:
             w.writerow([doi, is_oa, lic, host, url, "", "", "oa_found_dryrun"]); continue
@@ -108,7 +124,7 @@ def main():
             n_err += 1; w.writerow([doi, is_oa, lic, host, url, "", "", f"download_error:{e}"])
     man.close()
     e = sys.stderr.write
-    e(f"DOIs={len(dois)}  OA_found={n_oa}  downloaded={n_dl}  closed_skipped={n_closed}  not_pdf={n_badpdf}  errors={n_err}\n")
+    e(f"DOIs={len(dois)}  OA_found={n_oa}  downloaded={n_dl}  closed_skipped={n_closed}  oa_no_pdf={n_nopdf}  not_pdf={n_badpdf}  errors={n_err}\n")
     e(f"manifest -> {os.path.join(a.outdir,'manifest.csv')}" + ("  (dry-run: no files)\n" if a.dry_run else "\n"))
 
 

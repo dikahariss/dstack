@@ -1,5 +1,5 @@
 ---
-name: careful
+name: guarding-destructive-commands
 description: |
   Safety guardrails for destructive commands. Reminds the user to pause before
   rm -rf, DROP TABLE, force-push, git reset --hard, kubectl delete, and similar
@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.4.0
     type: semantic
     context_budget_tokens: 1500
     side_effects: readonly
@@ -21,7 +21,7 @@ metadata:
       - safety mode
       - prod mode
 ---
-# /careful — Destructive Command Guardrails
+# /guarding-destructive-commands
 
 Safety mode is **advisory** in dstack. dstack does not intercept bash
 via hooks — the discipline is yours plus this checklist. Before
@@ -78,13 +78,17 @@ operations that bypass conscious thought. If you are working on prod
 or a shared system and need that guarantee, use a tool that supports
 hook-level enforcement until dstack adds hook support.
 
-A future dstack ADR will decide whether to add hooks. The trade-off
-is real: hooks are powerful, but they also add runtime complexity
-dstack has so far avoided. See `docs/plans/v1/DEFERRED.md` entry D2
-for the current status of hook support.
+Hook support is deliberately deferred in dstack (DEFERRED entry D2):
+hooks are powerful but add runtime complexity, and the threshold to
+revisit is two skills needing them. This skill is the only one that
+does, so the guardrail stays advisory.
 
 ## Changes
 
+- **0.4.0** — Renamed `careful` → `guarding-destructive-commands`. A bare
+  adjective is exactly the "vague name" Anthropic's naming guidance warns
+  against; the new name states the action. The "be careful"/"careful mode"
+  triggers are kept.
 - **0.3.0** — Declared type/side_effects/agency + calibration:
   deterministic-dominant (ADR-0025; safety guardrail, high failure cost).
   Named the bounded judgment (the table is a floor, not a whitelist).

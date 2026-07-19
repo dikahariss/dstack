@@ -8,12 +8,12 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.3.3
+    version: 0.4.0
     type: semantic
     side_effects: readonly
     agency: reactive
     calibration: schema-meta
-    context_budget_tokens: 2000
+    context_budget_tokens: 2500
     triggers:
       - which skill applies
       - find a skill
@@ -74,27 +74,26 @@ Match the situation, then invoke that skill. When unsure, read
 | Execute a written plan (separate session) | `/executing-plans` |
 | Execute plan tasks now via subagents + review | `/subagent-driven-development` |
 | 2+ independent problems, work in parallel | `/dispatching-parallel-agents` |
-| Bug / test failure / unexpected behavior | `/debugging` (then `/tdd`) |
-| New feature, bugfix, behavior change | `/tdd` |
-| About to claim done / fixed / passing | `/verification` |
-| Destructive or risky command, or prod | `/careful` |
+| Bug / test failure / unexpected behavior | `/debugging` (then `/test-driven-development`) |
+| New feature, bugfix, behavior change | `/test-driven-development` |
+| About to claim done / fixed / passing | `/verifying-before-done` |
+| Destructive or risky command, or prod | `/guarding-destructive-commands` |
 | Need an isolated workspace | `/using-git-worktrees` |
-| Work done — merge / PR / keep / discard | `/finishing-a-development-branch` |
-| Got PR or review feedback to address | `/code-review` |
+| Work done — merge / PR / keep / discard | `/finishing-development-branch` |
+| Got PR or review feedback to address | `/responding-to-review` |
 | Want a fresh review of your own work | `/requesting-code-review` |
 | Create / edit / verify a dstack skill | `/writing-skills` |
-| Inventory/classify many DBs into a data dictionary + medallion schema | `/data-catalog` |
-| Convert PDF(s) to retrieval-ready Markdown (scanned/regulation) | `/pdf-to-rag-markdown` |
+| Convert PDF(s) to retrieval-ready Markdown (scanned/regulation) | `/pdf-to-rag` |
 | Harvest citations → RIS from an academic database (SLR/bibliometric) | `/literature-search` |
 | A RIS/BibTeX corpus → research-topic trends + diagrams | `/literature-trends` |
 | Download open-access PDFs for a citation corpus | `/literature-fulltext` |
-| Show or bump VERSION | `/version` |
+| Show or bump VERSION | `/managing-version` |
 | Triage / classify a pasted issue | `/classify-issue` |
 
 **Common chains:**
 - Feature: `/brainstorm` → `/writing-plans` → `/subagent-driven-development`
-  (or `/executing-plans`) → `/verification` → `/finishing-a-development-branch`.
-- Bug: `/debugging` → `/tdd` → `/verification`.
+  (or `/executing-plans`) → `/verifying-before-done` → `/finishing-development-branch`.
+- Bug: `/debugging` → `/test-driven-development` → `/verifying-before-done`.
 - Literature review: `/literature-search` → `/literature-trends` → `/literature-fulltext`.
 
 ### When to open the full catalog
@@ -131,7 +130,7 @@ plan mode, hooks, MCP, effort/model — use `/help` or see code.claude.com/docs.
 
 ## Skill types
 
-- **Rigid** (`/tdd`, `/debugging`): follow exactly; don't adapt away the
+- **Rigid** (`/test-driven-development`, `/debugging`): follow exactly; don't adapt away the
   discipline.
 - **Flexible** (patterns): adapt the principle to context.
 
@@ -144,12 +143,18 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.4.0** — Repointed the router, catalog, and chains at the five renamed
+  skills (`test-driven-development`, `responding-to-review`, `guarding-
+  destructive-commands`, `verifying-before-done`, `managing-version`).
+  Raised the body budget 2000→2500: the descriptive names cost tokens the
+  old abbreviations did not.
+- **0.3.4** — Refreshed the catalog's three literature rows: the tested-adapter
+  list (T&F, Springer, ProQuest, Neliti) and fulltext's no-DOI paths.
 - **0.3.3** — Registered the literature-review pipeline (`literature-search` →
-  `literature-trends` → `literature-fulltext`) in the router, catalog, and chains;
-  added `data-catalog` to the router and catalog.
-- **0.3.2** — Added `pdf-to-rag-markdown` to the inline router (already in the
+  `literature-trends` → `literature-fulltext`) in the router, catalog, and chains.
+- **0.3.2** — Added `pdf-to-rag` to the inline router (already in the
   catalog); removed an unused domain skill from the router + catalog.
-- **0.3.1** — Registered `pdf-to-rag-markdown` in the catalog; dropped the brittle
+- **0.3.1** — Registered `pdf-to-rag` in the catalog; dropped the brittle
   "18-skill" count.
 - **0.3.0** — calibration: schema-meta (ADR-0025; meta/router). The judgment:
   deciding whether a borderline skill applies.

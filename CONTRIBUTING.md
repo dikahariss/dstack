@@ -15,7 +15,7 @@ else (architecture, ADRs, code conventions), see
 A skill is a single directory of YAML + Markdown that the
 renderer turns into `SKILL.md`. Reach for one when the workflow:
 
-- Has a clear name the user could invoke (`/tdd`, `/code-review`).
+- Has a clear name the user could invoke (`/test-driven-development`, `/responding-to-review`).
 - Repeats often enough that copy-pasting the instructions gets old.
 - Stays under 16 000 tokens after rendering.
 
@@ -32,7 +32,7 @@ bun run new <skill-id>
 ```
 
 The skill id must be kebab-case, lowercase letters/digits/hyphens,
-starting with a letter. Examples: `tdd`, `plan-ceo-review`. The
+starting with a letter. Examples: `test-driven-development`, `plan-ceo-review`. The
 scaffold creates `skills/<skill-id>/{skill.yaml,prompt.md}` with
 placeholder content.
 
@@ -62,8 +62,8 @@ substitution. See
 
 Audience is the LLM, not a human reader. Lead with the rule the
 skill enforces, then the procedure, then templates. The existing
-M1 skills (`tdd`, `debugging`, `brainstorm`, `code-review`,
-`verification`) are the reference for shape and tone.
+M1 skills (`test-driven-development`, `debugging`, `brainstorm`,
+`responding-to-review`, `verifying-before-done`) are the reference for shape and tone.
 
 ## 5. Validate before building
 
