@@ -8,12 +8,12 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.5.0
+    version: 0.7.0
     type: semantic
     side_effects: readonly
     agency: reactive
     calibration: schema-meta
-    context_budget_tokens: 2500
+    context_budget_tokens: 3000
     triggers:
       - which skill applies
       - find a skill
@@ -55,42 +55,47 @@ questions.
 ```
 
 1. A message arrives (a question is a task too).
-2. Might any skill apply? If yes — even a small chance — invoke it.
-3. Announce: "Using <skill> to <purpose>."
-4. If the skill has a checklist, create a todo per item.
-5. Follow the skill.
+2. **Scan the router below for matching words in the message.** Match → invoke.
+3. No match, but the task resembles a row → invoke it anyway. Over-invoking is
+   cheap; skipping a skill is not.
+4. Still nothing → read `references/skill-catalog.md`. If that is also empty,
+   proceed without a skill **and say so in one line**.
+5. Announce: "Using <skill> to <purpose>."
+6. If the skill has a checklist, create a todo per item. Follow the skill.
 
 About to plan a creative change and not yet aligned? `/brainstorm` first.
 
 ## Which skill — quick router
 
-Match the situation, then invoke that skill. When unsure, read
-`references/skill-catalog.md` (see "When to open the full catalog" below).
+**Match on the words, not on your interpretation.** The user writes Indonesian and
+English interchangeably; both are listed. One row can fire more than once in a
+task — invoke each in turn.
 
-| Situation | Skill |
+| If the message contains… | Invoke |
 |---|---|
-| Ambiguous/creative plan or design, not aligned | `/brainstorm` |
-| Have a spec; need a step-by-step plan | `/writing-plans` |
-| Execute a written plan (separate session) | `/executing-plans` |
-| Execute plan tasks now via subagents + review | `/subagent-driven-development` |
-| 2+ independent problems, work in parallel | `/dispatching-parallel-agents` |
-| Bug / test failure / unexpected behavior | `/debugging` (then `/test-driven-development`) |
-| New feature, bugfix, behavior change | `/test-driven-development` |
-| About to claim done / fixed / passing | `/verifying-before-done` |
-| Acceptance-test a RUNNING app via browser (UAT) | `/running-uat` |
-| One artifact, several expert points of view | `/multi-persona-review` |
-| Destructive or risky command, or prod | `/guarding-destructive-commands` |
-| Need an isolated workspace | `/using-git-worktrees` |
-| Work done — merge / PR / keep / discard | `/finishing-development-branch` |
-| Got PR or review feedback to address | `/responding-to-review` |
-| Want a fresh review of your own work | `/requesting-code-review` |
-| Create / edit / verify a dstack skill | `/writing-skills` |
-| Convert PDF(s) to retrieval-ready Markdown (scanned/regulation) | `/pdf-to-rag` |
-| Harvest citations → RIS from an academic database (SLR/bibliometric) | `/literature-search` |
-| A RIS/BibTeX corpus → research-topic trends + diagrams | `/literature-trends` |
-| Download open-access PDFs for a citation corpus | `/literature-fulltext` |
-| Show or bump VERSION | `/managing-version` |
-| Triage / classify a pasted issue | `/classify-issue` |
+| "brainstorm", "grill me", "stress test", idea not yet agreed | `/brainstorm` |
+| "buat rencana", "bikin plan", "write a plan", a spec to break down | `/writing-plans` |
+| "jalankan plan", "execute plan" — in a separate session | `/executing-plans` |
+| "kerjakan plan", "pakai subagent", plan tasks to run now | `/subagent-driven-development` |
+| "paralel", "fan out", 2+ unrelated problems | `/dispatching-parallel-agents` |
+| "error", "bug", "gagal", "kenapa", "tidak jalan", a failing test | `/debugging` → then `/test-driven-development` |
+| "buat fitur", "perbaiki", "tambahkan", any behavior change | `/test-driven-development` |
+| "selesai", "sudah pass", "done", "fixed" — about to claim it | `/verifying-before-done` |
+| "lakukan UAT", "uji terima", "test via browser", "pastikan PASS" | `/running-uat` |
+| "point of view", "PoV", "sebagai senior…", "cross review", "panel" | `/multi-persona-review` |
+| "rm -rf", "drop table", "force push", "reset --hard", "prod" | `/guarding-destructive-commands` |
+| "worktree", "workspace terpisah", "isolated" | `/using-git-worktrees` |
+| "merge", "MR", "PR", "wrap up", "selesaikan branch" | `/finishing-development-branch` |
+| "review bilang", "komentar PR", "address these comments" | `/responding-to-review` |
+| "minta direview", "request review", "review before merge" | `/requesting-code-review` |
+| "buat skill", "perbaiki skill", "create a skill" | `/writing-skills` |
+| "konversi PDF", "pdf to rag", "scan", "OCR", a regulation PDF | `/pdf-to-rag` |
+| "cari literatur", "SLR", "boolean query", "export RIS" | `/literature-search` |
+| "analisis tren", "bibliometric", "kelompokan topik" | `/literature-trends` |
+| "unduh artikel", "download OA PDF", "unpaywall" | `/literature-fulltext` |
+| "versi berapa", "bump version", "release X.Y.Z" | `/managing-version` |
+| "triage", "klasifikasi issue", a pasted issue body | `/classify-issue` |
+| "retro", "pelajaran dari sesi", "evaluasi penggunaan", "lessons learned" | `/learning-from-sessions` |
 
 **Common chains:**
 - Feature: `/brainstorm` → `/writing-plans` → `/subagent-driven-development`
@@ -147,6 +152,17 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.7.0** — Rewrote the router for weaker models: rows now match on
+  literal trigger words in Indonesian and English instead of English
+  situation descriptions, since the user writes both and a cheap model
+  matches lexically rather than inferring. Made the rule mechanical — scan,
+  match, invoke; near-match still invokes; no match falls through to the
+  catalog and then to an explicit "proceeding without a skill" line, so
+  silence is never the default. Budget 2500→3000: bilingual triggers for 23
+  skills cost more than the situation descriptions they replaced.
+- **0.6.0** — Registered `learning-from-sessions` (mine the `~/.claude/projects`
+  transcript store into durable rule/skill/memory changes) in the router and
+  catalog.
 - **0.5.0** — Registered `running-uat` (acceptance-testing a running app)
   and `multi-persona-review` (one artifact, several expert points of view)
   in the router, catalog, and chains.

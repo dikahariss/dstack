@@ -59,6 +59,7 @@ approach a task and come first; implementation skills execute.
 |---|---|---|
 | `managing-version` | Read or bump the VERSION file. "show version", "bump version", "release X.Y.Z". | — |
 | `classify-issue` | Classify a pasted bug/feature/chore into a triage record. "triage this", "classify this issue". | — |
+| `learning-from-sessions` | Turning PAST session transcripts (`~/.claude/projects`) into durable improvements — mine transcripts for recurring corrections, repeated tool errors, refused actions and rework, then route each recurring pattern to ONE home: a repo rule, a skill edit, or a memory entry. "retro mingguan", "lessons learned", "evaluasi penggunaan claude", "pelajaran dari sesi kemarin". Exit condition is a diff, never a report. | → `writing-skills` when a lesson needs a new skill; run before adding one, since history says whether the gap is real. |
 
 ## Common chains
 
