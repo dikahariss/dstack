@@ -1,8 +1,14 @@
 # ADR-0026 — Broaden the project purpose: skills plus non-skill performance content
 
-- **Status:** Accepted
+- **Status:** Superseded by [ADR-0028](0028-renderer-only-scope.md)
 - **Date:** 2026-06-14
 - **Reversibility:** Cheap.
+
+> **Superseded (2026-07-21).** The non-skill content (`docs/hpi-riset/`)
+> was removed from this repository so the renderer could be published as
+> a standalone open-source tool. The project scope is again renderer-only.
+> See [ADR-0028](0028-renderer-only-scope.md). This ADR is kept for
+> history; the reasoning below reflects the situation before the split.
 
 ## Context
 
@@ -10,10 +16,9 @@ dstack was founded and documented as "a skill catalog renderer for Claude
 Code" (CLAUDE.md, README.md, CONTEXT.md). That describes the *tool* — the
 only software in the repo. But the repo now also holds non-skill work:
 `docs/hpi-riset/`, the research corpus and draft chapters for an
-evidence-based self-development book (*Sistem Operasi Diri* / High
-Performing Individual). The owner's stated purpose is wider than the
-tool: raise individual performance, by AI skills **and** other means
-(the book is the first "other means").
+unpublished personal book (title and contents kept private). The owner's
+stated purpose is wider than the tool: raise individual performance, by
+AI skills **and** other means (the book is the first "other means").
 
 The framing had drifted into contradiction. Three entry-point docs said
 "skill catalog renderer"; `docs/README.md` already said dstack's goal is

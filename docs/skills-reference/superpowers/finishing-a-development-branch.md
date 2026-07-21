@@ -108,7 +108,7 @@ Kasus lain — pengguna pilih Opsi 4 (Discard):
 This will permanently delete:
 - Branch audit-logging
 - All commits: abc1234, def5678, 9abcdef
-- Worktree at /home/haris/proj/.worktrees/audit-logging
+- Worktree at ~/proj/.worktrees/audit-logging
 
 Type 'discard' to confirm.
 ```

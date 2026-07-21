@@ -293,8 +293,9 @@ Read in number order if you want the full reasoning.
 | [0017](adr/0017-bundled-resources.md) | Bundled resources support (scripts/, references/, assets/) | Accepted |
 | [0024](adr/0024-catalog-breadth-over-yagni.md) | Catalog breadth over strict YAGNI for proven reference skills | Accepted |
 | [0025](adr/0025-hybrid-by-default-doctrine.md) | Hybrid by default: spine + judgment + calibration flag | Accepted |
-| [0026](adr/0026-broaden-project-purpose.md) | Broaden project purpose: skills + non-skill content | Accepted |
+| [0026](adr/0026-broaden-project-purpose.md) | Broaden project purpose: skills + non-skill content | Superseded by [0028](adr/0028-renderer-only-scope.md) |
 | [0027](adr/0027-skill-naming-convention.md) | Skill names state the activity; no bare abbreviations or adjectives | Accepted |
+| [0028](adr/0028-renderer-only-scope.md) | Narrow scope back to renderer-only; remove non-skill content | Accepted |
 
 "Accepted" means the decision is in force. If we change our minds, we
 write a new ADR that supersedes the old one. We do not edit accepted

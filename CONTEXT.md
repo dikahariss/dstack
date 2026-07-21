@@ -1,12 +1,9 @@
 # dstack
 
-dstack raises individual performance on two tracks: **AI skills** rendered
-for Claude Code, and **non-skill performance content** (today, the book
-research in `docs/hpi-riset/`). The software is the first track's tool — a
-skill catalog renderer: it reads skill definitions from `skills/<id>/`,
-validates them, and writes Claude-Code-compatible `SKILL.md` files to
-`.claude/skills/<id>/`. Single user, single host. Non-skill content is
-static; the renderer never reads it (ADR-0026).
+dstack is a skill catalog renderer for Claude Code: it reads skill
+definitions from `skills/<id>/`, validates them, and writes
+Claude-Code-compatible `SKILL.md` files to `.claude/skills/<id>/`.
+Single user, single host.
 
 ## Language
 

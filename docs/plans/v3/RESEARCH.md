@@ -31,13 +31,13 @@ a constraint. The bar is output quality.
 
 Sources:
 
-- `/home/haris/KODING/WORKSPACE-MH/superpowers` — multi-harness skill
+- `~/KODING/WORKSPACE-MH/superpowers` — multi-harness skill
   methodology with bootstrap hook.
-- `/home/haris/KODING/WORKSPACE-MH/gstack` — operational workflow hub
+- `~/KODING/WORKSPACE-MH/gstack` — operational workflow hub
   with persistent browser daemon, security scanning, eval suite.
-- `/home/haris/KODING/WORKSPACE-MH/mattpocock-skills` — personal skill
+- `~/KODING/WORKSPACE-MH/mattpocock-skills` — personal skill
   catalog with domain-driven design and bucket organisation.
-- `/home/haris/KODING/WORKSPACE-MH/anthropics-skills` — official
+- `~/KODING/WORKSPACE-MH/anthropics-skills` — official
   Anthropic reference catalog with the formal spec.
 
 The audit was done in parallel against the dstack codebase to spot
@@ -409,10 +409,10 @@ conditions.
 
 ### Cloned reference repositories (4)
 
-- [`/home/haris/KODING/WORKSPACE-MH/superpowers`](/home/haris/KODING/WORKSPACE-MH/superpowers) — obra/superpowers, multi-harness skill methodology
-- [`/home/haris/KODING/WORKSPACE-MH/gstack`](/home/haris/KODING/WORKSPACE-MH/gstack) — gstack, operational workflow hub
-- [`/home/haris/KODING/WORKSPACE-MH/mattpocock-skills`](/home/haris/KODING/WORKSPACE-MH/mattpocock-skills) — mattpocock/skills, domain-driven skill library
-- [`/home/haris/KODING/WORKSPACE-MH/anthropics-skills`](/home/haris/KODING/WORKSPACE-MH/anthropics-skills) — anthropics/skills, official reference catalog
+- [`~/KODING/WORKSPACE-MH/superpowers`](~/KODING/WORKSPACE-MH/superpowers) — obra/superpowers, multi-harness skill methodology
+- [`~/KODING/WORKSPACE-MH/gstack`](~/KODING/WORKSPACE-MH/gstack) — gstack, operational workflow hub
+- [`~/KODING/WORKSPACE-MH/mattpocock-skills`](~/KODING/WORKSPACE-MH/mattpocock-skills) — mattpocock/skills, domain-driven skill library
+- [`~/KODING/WORKSPACE-MH/anthropics-skills`](~/KODING/WORKSPACE-MH/anthropics-skills) — anthropics/skills, official reference catalog
 
 ### dstack internal references (consulted during audit)
 

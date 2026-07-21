@@ -84,7 +84,7 @@ User punya `letter.md` berisi pengumuman strategi internal. Workflow:
 
 ```
 $ /make-pdf letter.md
-MAKE_PDF_READY: /home/haris/.claude/skills/gstack/make-pdf/dist/pdf
+MAKE_PDF_READY: ~/.claude/skills/gstack/make-pdf/dist/pdf
 $ $P generate --cover --toc --author "Haris" --title "Q4 Strategy Update" letter.md letter.pdf
 Rendering HTML... Generating PDF... Done in 1.5s. 1240 words · 86KB · letter.pdf
 $ open letter.pdf

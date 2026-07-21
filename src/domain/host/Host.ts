@@ -18,7 +18,7 @@ export interface ToolRegistry {
 export class Host {
   constructor(
     readonly name: HostName,
-    readonly outputRoot: string,        // e.g., "/home/haris/.claude/skills"
+    readonly outputRoot: string,        // e.g., "~/.claude/skills"
     readonly tools: ToolRegistry,
   ) {}
 }

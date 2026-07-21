@@ -64,18 +64,6 @@ the context, the decision, the trade-offs, and the reversibility.
 See [adr/README.md](adr/README.md) for ADR format, status definitions,
 and how to add a new ADR.
 
-### `hpi-riset/` — Research & book drafts (non-skill performance work)
-
-dstack's goal is to raise individual performance, with AI skills *or*
-other means ([ADR-0026](adr/0026-broaden-project-purpose.md)).
-[`hpi-riset/`](hpi-riset/) is the "other means" track: the
-research corpus and chapter drafts for an evidence-based self-development
-book (*Sistem Operasi Diri* / High Performing Individual). It is content,
-not code — the renderer never touches it.
-
-See [hpi-riset/README.md](hpi-riset/README.md) for the reading order,
-evidence-tier legend, and file index.
-
 ## How specs, ADRs, and taxonomy relate
 
 These document types serve different purposes and link to each other.

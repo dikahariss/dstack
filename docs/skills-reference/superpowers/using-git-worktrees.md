@@ -104,7 +104,7 @@ sana, dan setup branch. Skip ke Step 3.
 **Report:**
 
 ```
-Worktree ready at /home/haris/.harness/worktrees/audit-logging
+Worktree ready at ~/.harness/worktrees/audit-logging
 Tests passing (142 tests, 0 failures)
 Ready to implement audit-logging
 ```

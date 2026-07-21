@@ -7,7 +7,8 @@
 
 set -euo pipefail
 SKILL_ID="${1:?skill id required}"
-SKILL_DIR="/home/haris/KODING/WORKSPACE-MH/dstack/skills/$SKILL_ID"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SKILL_DIR="$REPO_ROOT/skills/$SKILL_ID"
 [ -d "$SKILL_DIR" ] || { echo "no such skill: $SKILL_ID" >&2; exit 1; }
 [ -f "$SKILL_DIR/uat/scenarios.md" ] || { echo "no UAT scenarios: $SKILL_ID" >&2; exit 1; }
 

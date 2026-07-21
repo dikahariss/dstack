@@ -554,7 +554,7 @@ validation via `bun run validate`.
 # Pairwise head-to-head, 3 cases
 bash scripts/benchmark.sh \
   skills/<id>/SKILL.md \
-  /home/haris/KODING/WORKSPACE-MH/<repo>/skills/<ref>/SKILL.md \
+  ~/KODING/WORKSPACE-MH/<repo>/skills/<ref>/SKILL.md \
   skills/<id>/eval/cases.jsonl \
   /tmp/dstack-bench/<id>-vs-<ref>
 
