@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.9.0
+    version: 0.10.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -75,6 +75,7 @@ language they used. One row can fire more than once in a task.
 |---|---|
 | Problem, goals, or requirements not written down yet | `/discovering-requirements` |
 | Requirements agreed; the design/blueprint is not written | `/writing-specs` |
+| Criteria exist; the situations to test are not enumerated | `/designing-test-cases` |
 | Ambiguous/creative plan or design, not aligned | `/brainstorm` |
 | Have a spec; need a step-by-step plan | `/writing-plans` |
 | Execute a written plan (separate session) | `/executing-plans` |
@@ -102,7 +103,8 @@ language they used. One row can fire more than once in a task.
 **Common chains:**
 - Feature: `/discovering-requirements` (problem not yet written; `/brainstorm`
   alongside it if the idea itself is in doubt) → `/writing-specs` (design not yet
-  written) → `/writing-plans` → `/subagent-driven-development` (or
+  written) → `/designing-test-cases` → `/writing-plans` →
+  `/subagent-driven-development` (or
   `/executing-plans`) → `/verifying-before-done` →
   `/finishing-development-branch`.
 - Bug: `/debugging` → `/test-driven-development` → `/verifying-before-done`.
@@ -157,11 +159,9 @@ The skill itself tells you which.
 
 ## Changes
 
-- **0.9.0** — Registered `writing-specs` (agreed requirements → technical
-  blueprint) between `discovering-requirements` and `writing-plans`.
-- **0.8.0** — Registered `discovering-requirements` (problem, goals, and
-  requirements before any design) in the router and at the head of the feature
-  chain.
+- **0.8.0–0.10.0** — Registered the specification chain at the head of the
+  feature chain: `discovering-requirements` → `writing-specs` →
+  `designing-test-cases` → `writing-plans`.
 - **0.7.0** — Reverted a bilingual trigger table added the same day: it rested
   on an unverified claim that cheap models match lexically rather than
   translating, and cost 500 tokens for a capability every model already has.

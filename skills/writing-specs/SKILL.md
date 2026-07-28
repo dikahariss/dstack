@@ -13,7 +13,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -286,7 +286,8 @@ states what it gives up. That is the whole difference.
 Input from `/discovering-requirements`. Send the finished spec through
 `/multi-persona-review` before planning against it. Then `/writing-plans` turns
 it into tasks — carrying the build order, not re-deriving it — and the `AC-n`
-rows become test cases and the criteria `/running-uat` needs at its entry gate.
+rows feed `/designing-test-cases`, whose output `/running-uat` needs at its
+entry gate.
 
 ## Bundled files
 
@@ -297,6 +298,8 @@ rows become test cases and the criteria `/running-uat` needs at its entry gate.
 
 ## Changes
 
+- **0.3.0** — Reciprocated the `designing-test-cases` boundary: `AC-n` rows are
+  its input, not test cases themselves — one criterion becomes many cases.
 - **0.2.0** — Rebuilt after a five-point-of-view review (architect, stakeholder,
   implementer, data architect, holistic) returning six blocking findings, plus a
   subagent trial that specced this repo and found ten more. Two reviewers

@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Write Edit Bash
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.5.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -290,6 +290,9 @@ code, and redo that cycle the right way.
 
 ## Cross-references
 
+- `/designing-test-cases` — where an enumerated case set comes from when one
+  exists. Take the top-ranked uncovered row and write **that one** failing
+  test; a directory of simultaneously-red tests is not this cycle.
 - `/verifying-before-done` — the green-verification step uses the same
   evidence rule. Re-run before claiming "done", not from memory.
 - `/debugging` — when fixing a bug, the failing-test step is the
@@ -304,6 +307,9 @@ Otherwise → not TDD; stop and raise it with the user
 
 ## Changes
 
+- **0.5.0** — Reciprocated the `designing-test-cases` boundary: a case set is
+  consumed one row at a time, because a batch of simultaneous red tests defeats
+  the watched-failing step this skill exists to protect.
 - **0.4.0** — Added **"Cover more than the happy path"**: the four test classes
   (happy / edge / invalid / **chaos-failure-injection**) with the bias rule —
   derive cases from the contract, not from the implementation you just wrote —

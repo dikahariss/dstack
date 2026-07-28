@@ -14,7 +14,8 @@ approach a task and come first; implementation skills execute.
 | `discovering-requirements` | The problem behind a request is not written down: a request that names a solution but not the problem, a schema about to be modelled, unclear actors, or a regulated domain. Produces a numbered, traceable discovery document. "analisis kebutuhan", "kebutuhan bisnis/fungsional", "apa masalah utamanya", "requirements gathering", "sebelum desain". | → `brainstorm` if the idea itself is still in doubt; → `multi-persona-review` on the finished document; → `writing-specs` once agreed. |
 | `brainstorm` | An ambiguous plan/design/idea needs alignment before building. "brainstorm", "grill me", "stress test", "interview me". | sibling of `discovering-requirements` — that skill owns the problem and its evidence, this one owns doubt about the idea; → `writing-plans` once aligned. |
 | `writing-specs` | Requirements are agreed and the design is not written down: service and module boundaries, domain model and schema, contracts, process flow, interface behaviour, and acceptance criteria — in one document both a stakeholder and an engineer can check. "spesifikasi teknis", "cetak biru", "technical design", "HLD/LLD", "SDD", "ERD", "API contract". | ← after `discovering-requirements`; → `multi-persona-review` on the draft; → `writing-plans`; its `AC-n` rows feed `running-uat`. |
-| `writing-plans` | A spec/requirements needs a step-by-step plan before any code. "write a plan", "plan this". | ← after `writing-specs`; → `executing-plans` / `subagent-driven-development`. |
+| `designing-test-cases` | Acceptance criteria or requirements exist and the concrete situations worth testing are not enumerated — before the first test, before a UAT run needing a frozen scenario list, or to give a code-derived test set an unbiased second pass. Derives by named technique (equivalence partitioning, boundary values, decision table, state transition, pairwise, error guessing); produces a list, never test code. "skenario uji", "test case", "kasus uji", "cakupan pengujian", "boundary value". | ← after `writing-specs`; → `test-driven-development` one case at a time; its human-level rows satisfy `running-uat`'s entry gate. |
+| `writing-plans` | A spec/requirements needs a step-by-step plan before any code. "write a plan", "plan this". | ← after `designing-test-cases`; → `executing-plans` / `subagent-driven-development`. |
 | `writing-skills` | Creating, editing, or verifying a dstack skill. "write a skill", "improve this skill". | → `brainstorm` if the skill's shape is unclear. |
 | `using-dstack` | Start of any task: find and route to the right skill. | → the matched skill. |
 
@@ -67,7 +68,8 @@ approach a task and come first; implementation skills execute.
 
 - **New feature / creative change:** `discovering-requirements` (problem, goal,
   and constraints not yet written; `brainstorm` alongside it when the idea
-  itself is in doubt) → `writing-specs` → `writing-plans` →
+  itself is in doubt) → `writing-specs` →
+  `designing-test-cases` → `writing-plans` →
   (`using-git-worktrees`) → `subagent-driven-development` *or* `executing-plans`
   → `verifying-before-done` → `requesting-code-review` → `finishing-development-branch`.
 - **Bug:** `debugging` (root cause) → `test-driven-development` (failing test → minimal fix) →

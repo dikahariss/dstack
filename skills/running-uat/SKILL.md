@@ -13,7 +13,7 @@ description: >
 allowed-tools: Bash Read Write Edit Agent Skill Glob Grep
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -71,7 +71,8 @@ job.
 Refusing is a valid and cheap outcome. Report the failing row and stop.
 
 - [ ] **Acceptance criteria enumerated**, Given/When/Then, each naming an
-      *observable* consequence. No criteria → no UAT.
+      *observable* consequence. No criteria → no UAT. `/designing-test-cases`
+      produces them; its `human`-level rows are this list.
 - [ ] **Unit and integration/e2e suites green.** Run them; read the output.
 - [ ] **App builds and starts**; the URL responds. Bind a free port and record
       it, so parallel runs do not collide.
@@ -181,6 +182,8 @@ escalate — do not resolve it in the build's favour.
 
 ## Changes
 
+- **0.2.0** — Named `/designing-test-cases` as the producer of the enumerated
+  criteria the entry gate demands; the gate had no upstream and refused often.
 - **0.1.0** — Initial. Derived from 70 real UAT requests in this user's history
   (the "unit testing sebelum UAT" entry gate, the 3-iteration cap, browser-driven
   execution, per-persona points of view) and cross-checked against ISTQB's
