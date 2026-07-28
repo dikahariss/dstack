@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Grep Glob Write
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.4.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -40,7 +40,9 @@ Do not use for a single-file, single-step change — just do it. The "is
 this idea worth building" question is `/brainstorm`, not this. No written
 problem, goal, or constraints to plan against? Run
 `/discovering-requirements` first — planning against an unstated problem
-produces tasks nobody can check.
+produces tasks nobody can check. Requirements agreed but the design
+undecided — boundaries, schema, contracts? That is `/writing-specs`;
+deciding it inside the plan hides it from review.
 
 ## Where the plan goes
 
@@ -155,6 +157,9 @@ dispatch a fresh subagent per task and review between tasks.
 
 ## Changes
 
+- **0.4.0** — Reciprocated the `writing-specs` boundary: agreed requirements
+  with an undecided design route there, because deciding boundaries and schema
+  inside a plan hides them from review.
 - **0.3.0** — Reciprocated the `discovering-requirements` boundary: no
   written problem, goal, or constraints means run that skill first. A
   review found the precondition was claimed upstream and enforced nowhere.

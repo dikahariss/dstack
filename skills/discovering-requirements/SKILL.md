@@ -174,7 +174,8 @@ Behaviour evidence carries a status like every other claim: `OBSERVED` /
 `REPORTED` / `INFERRED`. When nobody affected was consulted, write the standing
 row *"affected actors observed: none"* — visibly, not by omission.
 
-Enumerate **typology and cardinality** for every entity before modelling it.
+Enumerate **typology and cardinality** for every entity; the model is
+`/writing-specs`.
 "A vessel has an owner" hides what breaks schemas later: can an owner be an
 individual, a company, *and* a state institution; can there be several at once?
 Ask two more of every entity: **is it, or does any attribute identify, a natural
@@ -302,8 +303,8 @@ example, goal to traceability, is in `references/worked-example.md`.
 ## Hand-off
 
 `/brainstorm` is a **sibling**, not a predecessor: invoke it when Stage 2.5
-finds the doubt is about the idea itself. Requirement IDs become acceptance
-criteria, then test cases; `/writing-plans` turns an `AGREED` set into tasks.
+finds the doubt is about the idea itself. `/writing-specs` turns an `AGREED` set
+into a design, and carries the IDs into acceptance criteria and test cases.
 Send the document through `/multi-persona-review` before designing on top — but
 a panel of simulated experts does not substitute for Stage 3's real actors.
 

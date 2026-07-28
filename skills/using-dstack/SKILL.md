@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.8.0
+    version: 0.9.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -74,6 +74,7 @@ language they used. One row can fire more than once in a task.
 | Situation | Skill |
 |---|---|
 | Problem, goals, or requirements not written down yet | `/discovering-requirements` |
+| Requirements agreed; the design/blueprint is not written | `/writing-specs` |
 | Ambiguous/creative plan or design, not aligned | `/brainstorm` |
 | Have a spec; need a step-by-step plan | `/writing-plans` |
 | Execute a written plan (separate session) | `/executing-plans` |
@@ -100,9 +101,10 @@ language they used. One row can fire more than once in a task.
 
 **Common chains:**
 - Feature: `/discovering-requirements` (problem not yet written; `/brainstorm`
-  alongside it if the idea itself is in doubt) → `/writing-plans` →
-  `/subagent-driven-development` (or `/executing-plans`) →
-  `/verifying-before-done` → `/finishing-development-branch`.
+  alongside it if the idea itself is in doubt) → `/writing-specs` (design not yet
+  written) → `/writing-plans` → `/subagent-driven-development` (or
+  `/executing-plans`) → `/verifying-before-done` →
+  `/finishing-development-branch`.
 - Bug: `/debugging` → `/test-driven-development` → `/verifying-before-done`.
 - Shipping a UI change: tests green → `/running-uat` (browser, per point of view)
   → fix → `/finishing-development-branch`.
@@ -155,16 +157,17 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.9.0** — Registered `writing-specs` (agreed requirements → technical
+  blueprint) between `discovering-requirements` and `writing-plans`.
 - **0.8.0** — Registered `discovering-requirements` (problem, goals, and
   requirements before any design) in the router and at the head of the feature
   chain.
 - **0.7.0** — Reverted a bilingual trigger table added the same day: it rested
-  on the unverified claim that cheap models match lexically rather than
-  translating, and cost 500 tokens of budget for a capability every model
-  already has. Skills stay English; one line now says match on intent, reply in
-  the user's language. Kept the mechanical rule — near-match still invokes, no
-  match falls through to the catalog and then to an explicit "no skill applied"
-  line, so silence is never the default.
+  on an unverified claim that cheap models match lexically rather than
+  translating, and cost 500 tokens for a capability every model already has.
+  Skills stay English; one line says match on intent, reply in the user's
+  language. Kept the mechanical rule — near-match invokes, no match falls
+  through to the catalog then to an explicit "no skill applied" line.
 - **0.6.0** — Registered `learning-from-sessions` (mine the `~/.claude/projects`
   transcript store into durable rule/skill/memory changes) in the router and
   catalog.
@@ -173,8 +176,7 @@ The skill itself tells you which.
   in the router, catalog, and chains.
 - **0.4.0** — Repointed router, catalog, and chains at the five renamed skills
   (ADR-0027); budget 2000→2500 for the longer names.
-- **0.3.1–0.3.4** — Registered `pdf-to-rag` and the literature pipeline
-  (`literature-search` → `literature-trends` → `literature-fulltext`) across
+- **0.3.1–0.3.4** — Registered `pdf-to-rag` and the literature pipeline across
   router, catalog, and chains; dropped a brittle skill count.
 - **0.3.0** — calibration: schema-meta (ADR-0025). The judgment: deciding
   whether a borderline skill applies.
