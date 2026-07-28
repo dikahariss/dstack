@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Write Edit Bash Grep Glob Agent
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.4.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -177,6 +177,11 @@ official authoring guidance. Add a behavioral check under the skill's
 
 ## Anti-patterns
 
+- **Project bias** — a rule lifted from the repo you happen to be in.
+  Encode the technique, not one project's conventions; those belong in
+  that repo's CLAUDE.md.
+- **Shipping unregistered** — absent from the `/using-dstack` router is
+  a skill nobody finds. Register it in the same commit.
 - **Narrative** — "In session 2025-10-03 we found…". Not reusable.
 - **Multi-language dilution** — the same example in JS, Py, Go. Pick one.
 - **Workflow in the description** — see the discovery section above.
@@ -195,11 +200,21 @@ official authoring guidance. Add a behavioral check under the skill's
 - [ ] Discipline skill: baseline-tested with a subagent; rationalization
       table + red flags
 - [ ] `eval/` behavioral check added
+- [ ] Skill is **project-agnostic** — no rule copied from one repo's
+      CLAUDE.md, no example only that repo's stack would recognise
+- [ ] **Registered in `/using-dstack`**: router row, `references/skill-catalog.md`
+      entry, any chain it belongs to, `## Changes` — and its frontmatter
+      `version` bumped in the same edit
 - [ ] `bun run validate` and `bun run build --strict` pass
 - [ ] Commit (see CLAUDE.md commit style)
 
 ## Changes
 
+- **0.4.0** — Two rules from mined session history, both recurring
+  corrections: a skill must be project-agnostic (no rule lifted from the
+  repo it was written in), and a new skill ships registered in the
+  `/using-dstack` router, catalog, and chains, with that skill's version
+  bumped in the same edit. Added as checklist rows and anti-patterns.
 - **0.3.0** — Encoded the skill-naming convention (ADR-0027): name the
   activity, gerund preferred, no bare abbreviation/adjective/generic noun,
   encode direction for paired skills, and keep the old id as a trigger when
