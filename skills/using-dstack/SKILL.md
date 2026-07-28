@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.7.0
+    version: 0.8.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -73,6 +73,7 @@ language they used. One row can fire more than once in a task.
 
 | Situation | Skill |
 |---|---|
+| Problem, goals, or requirements not written down yet | `/discovering-requirements` |
 | Ambiguous/creative plan or design, not aligned | `/brainstorm` |
 | Have a spec; need a step-by-step plan | `/writing-plans` |
 | Execute a written plan (separate session) | `/executing-plans` |
@@ -98,8 +99,10 @@ language they used. One row can fire more than once in a task.
 | Learn from past sessions — turn them into durable rules | `/learning-from-sessions` |
 
 **Common chains:**
-- Feature: `/brainstorm` → `/writing-plans` → `/subagent-driven-development`
-  (or `/executing-plans`) → `/verifying-before-done` → `/finishing-development-branch`.
+- Feature: `/discovering-requirements` (problem not yet written; `/brainstorm`
+  alongside it if the idea itself is in doubt) → `/writing-plans` →
+  `/subagent-driven-development` (or `/executing-plans`) →
+  `/verifying-before-done` → `/finishing-development-branch`.
 - Bug: `/debugging` → `/test-driven-development` → `/verifying-before-done`.
 - Shipping a UI change: tests green → `/running-uat` (browser, per point of view)
   → fix → `/finishing-development-branch`.
@@ -152,6 +155,9 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.8.0** — Registered `discovering-requirements` (problem, goals, and
+  requirements before any design) in the router and at the head of the feature
+  chain.
 - **0.7.0** — Reverted a bilingual trigger table added the same day: it rested
   on the unverified claim that cheap models match lexically rather than
   translating, and cost 500 tokens of budget for a capability every model

@@ -10,7 +10,7 @@ description: |
 allowed-tools: AskUserQuestion Read Grep Glob
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.4.0
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -68,6 +68,8 @@ thinking.
 
 Do not use when:
 
+- The *problem* behind the instruction is unwritten — that is
+  `/discovering-requirements`. This skill owns doubt about the idea.
 - The user has already given a clear, unambiguous instruction — just
   do the work.
 - The decision is reversible in seconds (a variable name, a colour).
@@ -215,6 +217,8 @@ uses it as the brief for the implementation.
 
 ## Changes
 
+- **0.4.0** — Reciprocated the `discovering-requirements` boundary: an
+  unwritten problem routes there. Siblings, not a sequence.
 - **0.3.0** — calibration: judgment-dominant (ADR-0025). Evidence: v3
   benchmark — /brainstorm loses to mattpocock/grill-me when over-structured
   (docs/v3-benchmark-report.md). Owner-approved 2026-06-04.

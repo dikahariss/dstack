@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Grep Glob Write
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -37,7 +37,10 @@ this toolset or problem domain, and is not strong on test design.
 - The user says "write a plan", "plan this", or hands you a design doc.
 
 Do not use for a single-file, single-step change — just do it. The "is
-this idea worth building" question is `/brainstorm`, not this.
+this idea worth building" question is `/brainstorm`, not this. No written
+problem, goal, or constraints to plan against? Run
+`/discovering-requirements` first — planning against an unstated problem
+produces tasks nobody can check.
 
 ## Where the plan goes
 
@@ -152,6 +155,9 @@ dispatch a fresh subagent per task and review between tasks.
 
 ## Changes
 
+- **0.3.0** — Reciprocated the `discovering-requirements` boundary: no
+  written problem, goal, or constraints means run that skill first. A
+  review found the precondition was claimed upstream and enforced nowhere.
 - **0.2.0** — Named the judgment surface (the file split + task ordering is
   the design call; the templates fix only a task's format). Workflow band
   (ADR-0025; flag omitted as the default).

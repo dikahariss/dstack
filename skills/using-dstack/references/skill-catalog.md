@@ -11,7 +11,8 @@ approach a task and come first; implementation skills execute.
 
 | Skill | Use when | Hand off |
 |---|---|---|
-| `brainstorm` | An ambiguous plan/design/idea needs alignment before building. "brainstorm", "grill me", "stress test", "interview me". | → `writing-plans` once aligned. |
+| `discovering-requirements` | The problem behind a request is not written down: a request that names a solution but not the problem, a schema about to be modelled, unclear actors, or a regulated domain. Produces a numbered, traceable discovery document. "analisis kebutuhan", "kebutuhan bisnis/fungsional", "apa masalah utamanya", "requirements gathering", "sebelum desain". | → `brainstorm` if the idea itself is still in doubt; → `multi-persona-review` on the finished document; → `writing-plans` once agreed. |
+| `brainstorm` | An ambiguous plan/design/idea needs alignment before building. "brainstorm", "grill me", "stress test", "interview me". | sibling of `discovering-requirements` — that skill owns the problem and its evidence, this one owns doubt about the idea; → `writing-plans` once aligned. |
 | `writing-plans` | A spec/requirements needs a step-by-step plan before any code. "write a plan", "plan this". | ← after `brainstorm`; → `executing-plans` / `subagent-driven-development`. |
 | `writing-skills` | Creating, editing, or verifying a dstack skill. "write a skill", "improve this skill". | → `brainstorm` if the skill's shape is unclear. |
 | `using-dstack` | Start of any task: find and route to the right skill. | → the matched skill. |
@@ -63,7 +64,9 @@ approach a task and come first; implementation skills execute.
 
 ## Common chains
 
-- **New feature / creative change:** `brainstorm` → `writing-plans` →
+- **New feature / creative change:** `discovering-requirements` (problem, goal,
+  and constraints not yet written; `brainstorm` alongside it when the idea
+  itself is in doubt) → `writing-plans` →
   (`using-git-worktrees`) → `subagent-driven-development` *or* `executing-plans`
   → `verifying-before-done` → `requesting-code-review` → `finishing-development-branch`.
 - **Bug:** `debugging` (root cause) → `test-driven-development` (failing test → minimal fix) →
