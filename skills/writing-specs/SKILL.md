@@ -13,7 +13,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.4.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -228,7 +228,10 @@ states "none — met by the default shape, because …". An NFR that changed not
 about the design was not a design input.
 
 Diagrams are **Mermaid, inline** — no external tool, no binary. Where a table and
-a diagram carry the same fact, the table is normative. Which diagram for which
+a diagram carry the same fact, the table is normative. When a diagram must be
+opened or edited by someone who does not write Mermaid, `/diagramming-architecture`
+produces the file; the fence stays. The screens behind §7's step table are
+`/wireframing-interfaces`. Which diagram for which
 job: `references/diagrams.md`.
 
 `DRAFT` → `AGREED` needs named humans with roles and a date; the agent never
@@ -298,27 +301,25 @@ entry gate.
 
 ## Changes
 
+- **0.4.0** — Reciprocated the two design-artifact skills: a diagram that must
+  leave the document is `/diagramming-architecture`; the screens behind the step
+  table are `/wireframing-interfaces`. The inline fence and the normative table
+  are unchanged.
 - **0.3.0** — Reciprocated the `designing-test-cases` boundary: `AC-n` rows are
   its input, not test cases themselves — one criterion becomes many cases.
-- **0.2.0** — Rebuilt after a five-point-of-view review (architect, stakeholder,
-  implementer, data architect, holistic) returning six blocking findings, plus a
-  subagent trial that specced this repo and found ten more. Two reviewers
-  independently caught that 0.1.0 dropped the Light depth path its own discovery
-  document required. Gates now record evidence on PASS, name the escalation
-  target, define `BLOCKED-PENDING`, and read `n/a` rather than PASS when their
-  subject is absent. Added: the identity-versus-proof rule for paths; entity
-  grain, key stability, temporality, absence semantics, and a transition
-  section; consistency and compatibility on contracts; build order and
+- **0.2.0** — Rebuilt after a five-point-of-view review (six blocking findings)
+  and a subagent trial (ten more). Two reviewers independently caught that 0.1.0
+  dropped the Light depth path its own discovery required. Gates now record
+  evidence on PASS, name the escalation target, define `BLOCKED-PENDING`, and
+  read `n/a` when their subject is absent. Added the identity-versus-proof rule
+  for paths; entity grain, key stability, temporality, and a transition section;
+  consistency and compatibility on contracts; build order and
   dependency-unavailable behaviour; altitude and `EXTERNAL`; a mandatory
-  structural decision row; reversibility independent of the ADR test; NFRs that
-  must force a structural consequence; every non-success terminal outcome, not
-  one; assertion level on every AC; and a reviewer log with `CHANGES REQUESTED`.
-  The description dropped the clause that listed the output's own sections — it
-  was a workflow summary an agent could act on instead of reading the body.
+  structural decision row; reversibility independent of the ADR test; every
+  non-success terminal outcome; assertion level per AC; and a reviewer log.
 - **0.1.0** — Initial. Built from `docs/discovery/2026-07-28-writing-specs.md`:
-  the plan skill consumes a spec nothing produced, and discovery is gated on
+  the plan skill consumed a spec nothing produced, and discovery is gated on
   *not* naming a solution, so design was decided inside implementation — visible
   as 60 and 18 edits to single plan documents in one session. Stage spine after
   gstack's `spec`; artifact template after mattpocock's `to-spec`; the
-  three-part ADR test after its `domain-modeling`. Calibration
-  `deterministic-dominant` (ADR-0025), matching `discovering-requirements`.
+  three-part ADR test after its `domain-modeling`.

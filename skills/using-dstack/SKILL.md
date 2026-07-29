@@ -8,12 +8,12 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.10.0
+    version: 0.11.0
     type: semantic
     side_effects: readonly
     agency: reactive
     calibration: schema-meta
-    context_budget_tokens: 2500
+    context_budget_tokens: 3000
     triggers:
       - which skill applies
       - find a skill
@@ -76,6 +76,8 @@ language they used. One row can fire more than once in a task.
 | Problem, goals, or requirements not written down yet | `/discovering-requirements` |
 | Requirements agreed; the design/blueprint is not written | `/writing-specs` |
 | Criteria exist; the situations to test are not enumerated | `/designing-test-cases` |
+| A diagram must leave the document — editable or shareable | `/diagramming-architecture` |
+| Spec says what a screen does; nobody can see it yet | `/wireframing-interfaces` |
 | Ambiguous/creative plan or design, not aligned | `/brainstorm` |
 | Have a spec; need a step-by-step plan | `/writing-plans` |
 | Execute a written plan (separate session) | `/executing-plans` |
@@ -159,6 +161,8 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.11.0** — Registered `diagramming-architecture` and `wireframing-interfaces`:
+  design artifacts that leave the spec document as editable files.
 - **0.8.0–0.10.0** — Registered the specification chain at the head of the
   feature chain: `discovering-requirements` → `writing-specs` →
   `designing-test-cases` → `writing-plans`.
