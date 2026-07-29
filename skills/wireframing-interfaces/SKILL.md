@@ -11,8 +11,8 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.1.0
-    type: semantic
+    version: 0.2.0
+    type: hybrid
     calibration: deterministic-dominant
     side_effects: local
     agency: deliberative
@@ -124,12 +124,17 @@ Stage 1's coverage gate, not this one, is what proves the set is real.
 
 ### 4. Check it can be read
 
-When a viewable form exists, check it: a field label overflowing its control,
-text against fill contrast, colliding labels. Report every finding naming the
-screen and the control. When no viewable form exists, say the check **did not
-run** — never let silence imply the panel is clean.
+Run the bundled checker over the `.drawio` **source** — not the render, and not
+conditional on one. Four classes with numbers, listed in `references/shapes.md`.
+Report every finding naming the screen and the control.
 
-**Gate:** findings listed, or the check recorded as not run with the reason.
+On the first real run it caught the marker/chrome collision in 3 of 3 panels and
+two overflowing labels the author had not seen.
+
+**Gate:** `python3 scripts/check_geometry.py <file>.drawio` ran and its findings
+are listed. Exit **2**, or not running it, is **BLOCKED** — the check reads the
+source, which exists in every probe verdict, so there is no case where it
+cannot run.
 
 ### 5. Manifest and hand back
 
@@ -197,6 +202,15 @@ experts is not the operator whose objection the artifact exists to invite.
 
 ## Changes
 
+- **0.2.0** — Legibility mandate made honest after the first real trial. Eight
+  defect classes became four with numeric thresholds, run by a bundled checker
+  over the `.drawio` **source** rather than the rendered SVG — the source exists
+  in every probe verdict and is the tool's persisted contract, while the SVG's
+  label encoding already broke one parser. Two classes were deleted rather than
+  implemented (edge crossings is a layout-search result, not a measurement; short
+  terminals are cosmetic) and contrast retired to a one-time palette audit. The
+  gate lost its unconditional escape: "recorded as not run" no longer passes.
+  `type` semantic → hybrid, which the validator required once `scripts/` existed.
 - **0.1.0** — Initial. Built from `docs/specs/2026-07-29-wireframing-interfaces.md`.
   The interactive test is syntactic because a review found the declared input —
   the spec's step table — has no actor column, so the original "has a human

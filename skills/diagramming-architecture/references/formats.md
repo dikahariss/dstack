@@ -80,24 +80,44 @@ drawio --no-sandbox -x -f xml -o back.xml <slug>.drawio.svg
 A non-zero exit is surfaced verbatim and the row reads **failed**, which is not
 the same as skipped. Never leave a zero-byte artifact behind.
 
-## Legibility — what to check on a rendered diagram
+## Legibility — three checks, over the source
 
-A diagram that traces perfectly and cannot be read has failed. When a viewable
-form exists, check and report:
+| Class | Threshold | Why a reader misreads without it |
+|---|---|---|
+| edge through a shape | overlap > **8 px** into a box the edge does not connect | the reader infers a connection that does not exist |
+| element overlap | partial intersection > **20 px²** between two elements (full containment is intentional and skipped) | the reader binds text to the wrong element |
+| text overflow, width | `len(label) x font-size x 0.55` > box width − **8 px** | content is lost |
+| reserved region | any element inside a stencil's reserved area — `browserWindow` reserves its top **110 px** | the element lands on chrome the stencil draws |
 
-| Defect | What it looks like |
-|---|---|
-| text overflow, width | a label wider than its box |
-| text overflow, height | a label taller than its box |
-| text contrast | font colour too close to its fill for that font size |
-| edge through a shape | a line penetrating a box it does not connect to |
-| edge along a border | a line running flush with a box or frame edge |
-| edge crossings | lines crossing where a reroute would avoid it |
-| label collision | a label box overlapping another box |
-| short terminal | an arrow head with almost no run after the last bend |
+Run it: `python3 scripts/check_geometry.py <file>.drawio` — exit 0 clean,
+1 findings, **2 unparseable, which is not a pass.**
 
-Report every finding with the element named. Fix by adjusting the source, then
-regenerate — never by hand-editing the rendered file, which the next run erases.
+It reads the **`.drawio` source**, never the rendered SVG. The source is the
+tool's persisted contract; the SVG's label encoding is a renderer detail that
+already broke one parser (1 `<text>` against 20 `<foreignObject>` in one file).
+The source is also present in *both* probe verdicts, so the check runs on
+machines with no renderer at all.
+
+**Deleted, not implemented:** *edge crossings* — "crossing where a reroute would
+avoid it" is a layout-search result, not a measurement; it fires on nearly every
+non-planar graph and is actionable on almost none. *Short terminal* — cosmetic.
+**Retired to a one-time audit:** *contrast*. The palette is fixed by this
+reference, so the check measured 10.8:1 and 12.6:1 against a 4.5:1 bar and
+cannot fail unless the palette changes. Audited once below, including the
+stencil defaults.
+
+## Palette audit — done once, not per run
+
+| Colour | Source | Contrast against white | Verdict |
+|---|---|---|---|
+| `#333333` | this reference | 12.6:1 | pass |
+| `#666666` | this reference | 5.7:1 | pass |
+| `#888888` | this reference | 3.5:1 | body text only at ≥14 px |
+| `#999999` | this reference | 2.8:1 | borders and rules only, never text |
+| `#c4c4c4` | **`mxgraph.mockup.*` stencil defaults** — specified nowhere in our source | 1.7:1 | decorative only; the set does not fully control it |
+
+Re-run this audit when the permitted shape set or the fill list changes — not
+on every diagram.
 
 ## The Excalidraw path
 

@@ -1,0 +1,13 @@
+flowchart LR
+  Req((Request)) --> DR[discovering-requirements]
+  DR -- "docs/discovery" --> WS[writing-specs]
+  WS -- "docs/specs" --> DTC[designing-test-cases]
+  WS -- "AC-n" --> DA[diagramming-architecture]
+  WS -- "step table" --> WI[wireframing-interfaces]
+  DTC -- "docs/tests" --> WP[writing-plans]
+  DA -- "docs/design" --> Rev((Reviewer))
+  WI -- "docs/design" --> Rev
+  WP -- "docs/plans" --> TDD[test-driven-development]
+  DTC -- "one case at a time" --> TDD
+  DTC -- "human rows" --> UAT[running-uat]
+  TDD --> UAT

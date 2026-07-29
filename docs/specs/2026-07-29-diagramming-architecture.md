@@ -191,11 +191,11 @@ flowchart TB
 
 **Interface** — this is a file-producing step, so the "screen" is the manifest.
 
-| Step | Via | Empty | Loading | Partial | Denied | Failed |
-|---|---|---|---|---|---|---|
-| Probe | OP-1 | `n/a — one shot` | `n/a — no async step` | `n/a` | `n/a` | verdict = `source-only`, never an exception |
-| Produce | OP-2..4 | no diagram named → refuse | `n/a` | some formats `n/a` with reasons — the normal case | `n/a` | error surfaced verbatim |
-| Report | — | say plainly that nothing was produced and why | `n/a` | list produced and skipped side by side | `n/a` | never claim a format that is absent |
+| Step | Via | Fields and validation | Empty | Loading | Partial | Denied | Failed |
+|---|---|---|---|---|---|---|---|
+| Probe | OP-1 | `n/a — no fields; not interactive` | `n/a — one shot` | `n/a — no async step` | `n/a` | `n/a` | verdict = `no-render`, never an exception |
+| Request a diagram | OP-2 | question (required, one sentence) · altitude (required, one of five) · output root (optional, defaults) | no diagram named → refuse | `n/a` | `n/a` | `n/a` | unparseable source → error named, nothing written |
+| Read the manifest | OP-6 | none — read-only surface | say plainly that nothing was produced and why | `n/a` | produced and skipped side by side — the normal case | `n/a` | never claim a format that is absent |
 
 ## 8. Acceptance criteria
 

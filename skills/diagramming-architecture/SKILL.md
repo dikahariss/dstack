@@ -12,8 +12,8 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.1.0
-    type: semantic
+    version: 0.2.0
+    type: hybrid
     calibration: deterministic-dominant
     side_effects: local
     agency: deliberative
@@ -118,16 +118,18 @@ disk.
 
 ### 4. Check it can be read
 
-A diagram nobody can read has failed regardless of how well it traces. When a
-viewable form exists, check it and report every finding: text overflowing its
-box, text against fill contrast, edges penetrating or running along borders,
-labels colliding, arrow runs too short after the last bend.
+A diagram nobody can read has failed regardless of how well it traces. Run the
+bundled checker over the `.drawio` **source** — not the render, and not
+conditional on one. Four classes with numbers, listed in `references/formats.md`.
+Report every finding with the element named.
 
-When no viewable form exists, say the check **did not run**. Never let silence
-imply the diagram is clean.
+The first real run of this skill produced seven findings where the author's eye
+had found two. That gap is why the check is mechanical.
 
-**Gate:** the check ran and its findings are listed, or it is recorded as not
-run with the reason.
+**Gate:** `python3 scripts/check_geometry.py <file>.drawio` ran and its findings
+are listed. Exit **2**, or not running it, is **BLOCKED** — the check reads the
+source, which exists in every probe verdict, so there is no case where it
+cannot run.
 
 ### 5. Manifest — commit what was observed
 
@@ -203,6 +205,15 @@ replacement for its fence. Send a set that will be reviewed by others through
 
 ## Changes
 
+- **0.2.0** — Legibility mandate made honest after the first real trial. Eight
+  defect classes became four with numeric thresholds, run by a bundled checker
+  over the `.drawio` **source** rather than the rendered SVG — the source exists
+  in every probe verdict and is the tool's persisted contract, while the SVG's
+  label encoding already broke one parser. Two classes were deleted rather than
+  implemented (edge crossings is a layout-search result, not a measurement; short
+  terminals are cosmetic) and contrast retired to a one-time palette audit. The
+  gate lost its unconditional escape: "recorded as not run" no longer passes.
+  `type` semantic → hybrid, which the validator required once `scripts/` existed.
 - **0.1.0** — Initial. Built from `docs/specs/2026-07-29-diagramming-architecture.md`.
   Three things were established by measurement rather than assumption before the
   body was written: the drawing program is absent on both deploy targets, so
