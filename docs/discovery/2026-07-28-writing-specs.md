@@ -12,7 +12,7 @@ Agreed by: —
 |---|---|---|---|
 | 1 | problem names no solution + demand evidence | **PASS** | §2 names no artifact or format. Demand is observed, not asserted (E-3, E-4) |
 | 2 | baseline + target + method + owner + guardrail | **PASS** | §3 — baseline measured from the session miner |
-| 6 | out-of-scope non-empty with IDs; MUST ratio | **PASS** | §7 — four ID-bearing Out rows; 3 MUST of 7 |
+| 6 | out-of-scope non-empty with IDs; MUST ratio | **PASS (ratio mis-recorded — see change log 2026-07-29)** | §7 — four ID-bearing Out rows. Recorded as 3 MUST of 7; **actual 4 of 7**, which is over half and should have read BLOCKED. The skill shipped anyway |
 | 7 | gate table complete | **PASS** | this table; four rows for four stages |
 
 ## 1. Summary
@@ -86,7 +86,8 @@ through a change log*, so edits there are recorded, not silent.
 
 | ID | Item | Why out | Revisit when |
 |---|---|---|---|
-| OUT-1 | Pixel-level mockups and visual design | A design tool owns this; the spec fixes *behaviour and states*, not appearance | a Figma-driven workflow is actually adopted |
+| OUT-1 | Pixel-level **visual** design — brand, colour, typography, spacing | A different craft with a different reviewer; the spec fixes *behaviour and states*, not appearance | a design system is actually adopted |
+| OUT-1b | Low-fidelity wireframes of the screens the spec's step table describes | **Amended 2026-07-29** — moved to `wireframing-interfaces`, which owns the picture between the state table and the built screen | superseded: that skill now owns it |
 | OUT-2 | The implementation plan itself | `writing-plans` owns it; duplicating it would produce two sources of truth | never |
 | OUT-3 | Test case design beyond acceptance criteria | `designing-test-cases` will own it; this skill emits the AC that feed it | that skill is built |
 | OUT-4 | Code generation from the spec | Out of the renderer's scope entirely (ADR-0028) | never |
@@ -116,3 +117,5 @@ through a change log*, so edits there are recorded, not silent.
 |---|---|---|---|---|
 | 2026-07-28 | Initial draft | all | — | — |
 | 2026-07-28 | `writing-specs` 0.1.0 shipped without the depth mechanism the guardrail measures; 0.2.0 added the Light/Full path and the header `Depth:` line | GUARDRAIL | A five-point-of-view review and a subagent trial independently found the requirement had been dropped. The guardrail is measurable again | — |
+| 2026-07-29 | Split OUT-1: visual design stays out; low-fidelity wireframes move to a new sibling skill. **The original revisit trigger ("a Figma-driven workflow is actually adopted") never fired** — the request named draw.io and Excalidraw instead, so the row is amended rather than treated as satisfied | OUT-1, OUT-1b | Honest record: the condition we wrote is not the condition that arrived | — |
+| 2026-07-29 | Stage-6 gate ratio corrected: recorded 3 MUST of 7, **actual 4 of 7** — over half, so the gate should have read BLOCKED. The skill shipped on a gate that was mis-recorded, not on a gate that passed | gate | Found when the same error appeared in four documents for four | — |

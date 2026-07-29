@@ -12,7 +12,7 @@ Agreed by: —
 |---|---|---|---|
 | 1 | problem names no solution + demand evidence | **PASS** | §2 names no artifact or format; demand is observed (E-1, E-4) |
 | 2 | baseline + target + method + owner + guardrail | **PASS** | §3 — baseline measured from the session miner |
-| 6 | out-of-scope non-empty with IDs; MUST ratio | **PASS** | §7 — five ID-bearing Out rows; 4 MUST of 8 |
+| 6 | out-of-scope non-empty with IDs; MUST ratio | **PASS (ratio mis-recorded — see change log 2026-07-29)** | §7 — five ID-bearing Out rows. Recorded as 4 MUST of 8; **actual 5 of 8**, over half, should have read BLOCKED. The skill shipped anyway |
 | 7 | gate table complete | **PASS** | this table |
 
 ## 1. Summary
@@ -123,3 +123,4 @@ and it is why the guardrail exists rather than a case-count target.
 | Date | Change | Affected IDs | Reason | Approved by |
 |---|---|---|---|---|
 | 2026-07-28 | Initial draft | all | — | — |
+| 2026-07-29 | Stage-6 gate ratio corrected: recorded 4 MUST of 8, **actual 5 of 8** — over half, should have read BLOCKED. Recorded rather than retro-blocked, since the skill has shipped | gate | Same review | — |
