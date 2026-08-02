@@ -1,0 +1,17 @@
+# Pinned because OpenCV 5.0 removed cv2.CascadeClassifier while KEEPING
+# cv2.data.haarcascades — so the symptom (AttributeError 120 lines in) does not
+# point at the cause. A fresh `pip install opencv-python-headless` resolves to
+# 5.x today. The extractor degrades gracefully on 5.x (face columns become NULL,
+# never 0), but 4.x is what gives you face detection at all.
+opencv-python-headless>=4.9,<5
+numpy>=1.24
+pandas>=2.0
+pillow>=10.0
+openpyxl>=3.1
+
+# Optional. Without BOTH the wheel and the `tesseract` binary on PATH, OCR
+# columns are NULL and GRW-02 / ACC-01 are scored applicable=false.
+# pytesseract>=0.3.10
+
+# Optional, only for merge_corpus.py --parquet
+# pyarrow>=14.0

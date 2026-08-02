@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.11.0
+    version: 0.12.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -98,6 +98,7 @@ language they used. One row can fire more than once in a task.
 | Harvest citations → RIS from an academic database (SLR/bibliometric) | `/literature-search` |
 | A RIS/BibTeX corpus → research-topic trends + diagrams | `/literature-trends` |
 | Download open-access PDFs for a citation corpus | `/literature-fulltext` |
+| Audit a short-form video file; build a video dataset/corpus | `/auditing-short-video` |
 | Show or bump VERSION | `/managing-version` |
 | Triage / classify a pasted issue | `/classify-issue` |
 | Learn from past sessions — turn them into durable rules | `/learning-from-sessions` |
@@ -161,6 +162,8 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.12.0** — Registered `auditing-short-video` (audit a short-form video file;
+  build a per-video dataset and a multi-video corpus).
 - **0.11.0** — Registered `diagramming-architecture` and `wireframing-interfaces`:
   design artifacts that leave the spec document as editable files.
 - **0.8.0–0.10.0** — Registered the specification chain at the head of the
