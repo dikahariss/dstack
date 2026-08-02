@@ -31,8 +31,16 @@ GRW-02 / GRW-03 / ACC-01 from that. Do the same for faces (CRD-04) when
 `edge_energy_*` columns measure where the *texture* is, not where the *text* is,
 so on a real Reel they can pass a video whose captions sit under the platform UI.
 
-Record `evidence_source` on every score: `computed` (a column), `vision` (you
-read the sheets), or `stated` (the user told you). Mark `applicable=false` only
+Record `evidence_source` on every score, from this exact set:
+`computed` (you can name the column and the value), `vision` (you read it off
+the contact sheets), `stated` (**the user answered a question you asked — record
+the question and the answer in `evidence`; you may not use this token for your
+own inference**), `inferred` (a defensible reading with no direct evidence — the
+only legal token for GRW-01), `judgment` (a craft opinion against no threshold).
+
+Two codings of one video disagreed on this column with kappa = 0.318 — the worst
+field in the audit, and the only column a pipeline could use to filter opinion
+out of a feature set. `computed` that cannot name a column is the failure mode. Mark `applicable=false` only
 when NO source could answer it — GRW-04 (trending audio) and ACC-03 (music
 licence) are the genuine cases, because neither the file nor the sheets contain
 the answer. Read `limitations.txt` first: it says which machine measurements
@@ -60,8 +68,18 @@ per-row weights compares ratios built from different weight vectors.
 
 ## The `action` column is a contract
 
+**This is machine-checked.** `validate_audit.py` fails an audit where any item
+with `applicable=true` and `score < 5` has an empty `action`, or where `item` is
+a placeholder rather than the item's real text. One pass shipped 23
+below-benchmark items with zero actions and 36/36 titles reading `item CRD-01`;
+it was the more rule-conformant pass and the one no human could act on.
+
 Every non-5 item needs an action written as
-`<verb> <what> at <timestamp>` using footage that already exists — `trim`,
+`<verb> <what> at <timestamp>` using footage that already exists — or, for an
+item scoring 4 (already above benchmark) where no edit is warranted, the literal
+string `no change needed`. The column may never be empty: empty means nobody
+decided, and `no change needed` means somebody did. Do not invent a fix to fill
+it; that dilutes the ranked list, which is the one part a creator reads — `trim`,
 `reorder`, `hold`, `overlay`, `retime`, `cut` — or the literal string
 `requires new footage`. "Strengthen the hook" is not an action; "cut 0:47–0:49 to
 the head and push the current opening to 0:02" is. Every recommendation is then
@@ -93,7 +111,7 @@ separate "next time you shoot" list.
 | CST-01 | Structure | Format fits the named platform | 3 | aspect/resolution/codec vs `platform_targets` |
 | CST-02 | Structure | Duration fits platform rules and objective | 3 | `duration_s` vs the platform table; TikTok monetisation needs ≥60 s |
 | CST-03 | Structure | Clear narrative acts | 2 | your `segments.csv` |
-| CST-04 | Structure | Drop-risk transitions mitigated | 3 | `segments.csv.drop_risk` |
+| CST-04 | Structure | Drop-risk transitions mitigated | 3 | `segments.csv.drop_risk`, taxonomy 3.1+ only. The 3.0 rule made segment 1 `high` on every video, so this item was scoring a constant |
 | CST-05 | Structure | Loop-ability | 2 | `loop_similarity` as a hint, plus your own look at first vs last frame |
 | CST-06 | Message | One clear core message | 2 | can you state it in one sentence? |
 
@@ -125,7 +143,7 @@ all three are `applicable=false`.
 
 | ID | Pillar | Item | Weight | What to measure |
 |---|---|---|---|---|
-| MON-01 | Conversion | Explicit CTA present and timed | 3 | final 3–5 s, against the objective |
+| MON-01 | Conversion | Explicit CTA present and timed | 3 | **Time the CTA COPY, not the card.** A platform logo is not an ask. Find the frame where the offer text ("now streaming", "link in bio", "shop now") first becomes legible, and report its dwell as a share of runtime. Measured on one real promo: the card appeared at 31.8 s and the offer line at 35.0 s — 1.2 s of 36.2 s (3.3%), and both codings scored it 5/5 off the card |
 | MON-02 | Conversion | Commercial path visible | 2 | price/availability/link cues |
 | MON-03 | Conversion | Paid-media readiness | 2 | three checks: ad-spec safe zone, licensed audio (see ACC-03), platform ad duration cap. Any unknown → `applicable=false` |
 
@@ -180,6 +198,27 @@ The index is a weighted mean of ordinal analyst judgments. It is not a
 measurement, it moves in 0.24 pp steps, and it has never been validated against
 realised performance. Do not report an "estimated post-fix index" to one decimal
 as if it were a forecast.
+
+## Three rules for reporting the index
+
+**1. Never compare the index across videos until the `applicable` mask's own
+reliability is measured.** The mask is a coding decision, not metadata. On one
+real video the same score vector spans **36.67% to 100.00% — 63.33 pp — under
+mask choice alone, with no score changed**. Report the mask's kappa next to the
+index, or do not report the index.
+
+**2. Print the noise band.** Two codings of the same video by the same model in
+the same session moved the index 2.12 pp. Simulated at the observed disagreement
+rate the index has sd ≈ 1.2 pp and a 95% band ≈ 4.8 pp wide. **Any difference
+narrower than about 2.4 pp is coder noise.** Say so wherever the number appears.
+
+**3. Report per-persona `n`, and suppress any persona below 3 applicable items.**
+In one comparison Monetization *rose* 9.14 pp in the stricter pass, purely
+because its own worst item left the denominator — leaving n=2. The composite
+pathology this checklist removed at item level reappears at persona level.
+
+Also: block `evidence_source` from every corpus aggregate until it passes a
+reliability gate (kappa >= 0.67). It currently does not.
 
 ## After scoring
 

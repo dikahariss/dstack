@@ -67,8 +67,8 @@ try:
 except ImportError:
     sys.exit("pandas not installed. See requirements.txt next to this script.")
 
-SCHEMA_VERSION = "3.0"
-EXTRACTOR_VERSION = "3.1.0"
+SCHEMA_VERSION = "3.1"
+EXTRACTOR_VERSION = "3.1.1"
 
 # k-means picks initial centres from OpenCV's global RNG. Unseeded, the
 # dominant-colour columns can differ between runs on identical bytes.
@@ -121,29 +121,45 @@ def read_sidecar(src):
     creator, and the publish date. Harvesting it is the only step whose window
     closes — a deleted post cannot be re-fetched, and a re-encode mints a new
     video_id with nothing tying it to the original."""
+    # Only yt-dlp's own sidecar. A bare "<name>.json" sibling was previously
+    # accepted, so an unrelated notes file was consumed, suppressed the
+    # missing-join-key limitation, and stamped a capture time for engagement
+    # figures that were never fetched.
     base = os.path.splitext(src)[0]
-    for cand in (base + ".info.json", base + ".json"):
+    for cand in (base + ".info.json",):
         if os.path.isfile(cand):
             try:
                 d = json.load(open(cand))
             except (ValueError, OSError):
                 return {}, ""
+            if not d.get("id"):
+                return {}, ""     # not a yt-dlp sidecar; treat as no sidecar
             ts = d.get("timestamp")
+            epoch = d.get("epoch")
             return dict(
                 platform=d.get("extractor_key") or d.get("extractor") or "",
                 platform_post_id=d.get("id") or "",
                 post_url=d.get("webpage_url") or "",
-                creator_id=str(d.get("uploader_id") or ""),
-                creator_handle=d.get("channel") or d.get("uploader") or "",
+                # The stable key differs per extractor. On YouTube `channel_id`
+                # is the durable UC... id while `uploader_id` is the mutable
+                # @handle; on Instagram `uploader_id` IS the numeric pk. Prefer
+                # the durable one and never let a handle land in creator_id.
+                creator_id=str(d.get("channel_id") or d.get("uploader_id") or ""),
+                creator_handle=(d.get("uploader_id") if str(d.get("uploader_id", "")).startswith("@")
+                                else d.get("channel") or d.get("uploader") or ""),
                 published_at_utc=(datetime.fromtimestamp(ts, timezone.utc)
                                   .strftime("%Y-%m-%dT%H:%M:%SZ") if ts else ""),
                 parent_media_id=str(d.get("playlist_id") or ""),
                 engagement_likes=d.get("like_count"),
                 engagement_comments=d.get("comment_count"),
                 engagement_views=d.get("view_count"),
+                # yt-dlp records its own fetch time in `epoch`; mtime is
+                # destroyed by cp without -p, unzip, git checkout or cloud sync.
                 engagement_captured_at_utc=(
-                    datetime.fromtimestamp(os.path.getmtime(cand), timezone.utc)
+                    datetime.fromtimestamp(epoch or os.path.getmtime(cand), timezone.utc)
                     .strftime("%Y-%m-%dT%H:%M:%SZ")),
+                caption=(d.get("description") or "")[:2000],
+                hashtags="|".join(re.findall(r"#(\w+)", d.get("description") or "")),
             ), os.path.basename(cand)
     return {}, ""
 
@@ -668,6 +684,8 @@ def main():
         engagement_comments=sidecar.get("engagement_comments"),
         engagement_views=sidecar.get("engagement_views"),
         engagement_captured_at_utc=sidecar.get("engagement_captured_at_utc"),
+        caption=sidecar.get("caption"),
+        hashtags=sidecar.get("hashtags"),
         container_creation_time=tags.get("creation_time", ""),
         container_encoder=tags.get("encoder", ""),
         filesize_mb=round(int(fmt["size"]) / 1e6, 3) if fmt.get("size") else None,

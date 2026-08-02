@@ -62,6 +62,8 @@ TABLES = {
                                 {"video_id", "item_id", "score", "weight", "applicable"}),
     "recommendations.csv":     ("corpus_recommendations.csv",
                                 {"video_id", "rec_idx"}),
+    "semantic.csv":            ("corpus_semantic.csv",
+                                {"video_id", "subject_domain", "objective"}),
 }
 
 # Read every identifier-ish column as text. Losing a leading zero on video_id
@@ -110,6 +112,8 @@ def main():
                          "grows; note the key is sha256(file)[:16], so run this "
                          "BEFORE deleting the source file or you can no longer "
                          "compute the key.")
+    ap.add_argument("--strict", action="store_true",
+                    help="exit 1 if any analyst table lacked run_id")
     ap.add_argument("--replace", action="store_true",
                     help="overwrite the corpus instead of upserting into it")
     args = ap.parse_args()
@@ -146,7 +150,7 @@ def main():
         sys.exit("No audit dirs with video_master.csv found.")
     os.makedirs(args.out_dir, exist_ok=True)
 
-    skipped, masters, semantics = [], [], []
+    skipped, masters, semantics, no_run_id = [], [], [], []
     for d in dirs:
         m = read_csv(os.path.join(d, "video_master.csv"))
         if "video_id" not in m.columns or m.empty:
@@ -169,12 +173,11 @@ def main():
         print(f"WARNING: {dupes.video_id.nunique()} duplicate video_id(s) in this "
               f"batch (same file audited twice) — keeping the last of each.")
         videos = videos.drop_duplicates("video_id", keep="last")
-    if semantics:
-        sem = pd.concat(semantics, ignore_index=True).drop_duplicates("video_id", keep="last")
-        # m:1 — more than one semantic row per video would silently multiply
-        # every downstream aggregate.
-        videos = videos.merge(sem, on="video_id", how="left",
-                              suffixes=("", "_semantic"), validate="m:1")
+    # semantic.csv is NOT flattened into corpus_videos. It is one row per
+    # CODING; corpus_videos is one row per VIDEO. Flattening forced a
+    # drop_duplicates(video_id) that silently destroyed the earlier coding —
+    # on the exact table whose 23% disagreement motivated run_id keying.
+    # It now travels as corpus_semantic.csv, keyed (video_id, run_id).
 
     manifest = {"n_audit_dirs": len(dirs), "n_videos_this_batch": len(videos),
                 "n_with_semantic": len(semantics), "skipped": [], "tables": {}}
@@ -213,6 +216,12 @@ def main():
             continue
         big = pd.concat(parts, ignore_index=True)
         out_path = os.path.join(args.out_dir, out_name)
+        if src_name in ANALYST_TABLES and "run_id" not in big.columns:
+            print(f"WARNING: {src_name} has no run_id column. Merging it will "
+                  f"REPLACE any existing coding of the same video instead of "
+                  f"keeping both, and inter-rater agreement becomes impossible "
+                  f"to compute. Add run_id/coder_id (see references/schema.md).")
+            no_run_id.append(src_name)
         key = (("video_id", "run_id") if src_name in ANALYST_TABLES
                and "run_id" in big.columns else ("video_id",))
         big = upsert(out_path, big, keys=key, replace=args.replace)
@@ -232,12 +241,15 @@ def main():
             df.to_parquet(csv_path.replace(".csv", ".parquet"), index=False)
 
     manifest["skipped"] = [{"dir": d, "table": t, "reason": r} for d, t, r in skipped]
+    manifest["analyst_tables_without_run_id"] = sorted(set(no_run_id))
     json.dump(manifest, open(os.path.join(args.out_dir, "corpus_manifest.json"), "w"),
               indent=2)
     print(json.dumps(manifest, indent=2))
     if skipped:
         print(f"\n{len(skipped)} table(s) SKIPPED and not ingested — see "
               "corpus_manifest.json.skipped. Silent dropout is what this prevents.")
+    if no_run_id and args.strict:
+        sys.exit(f"--strict: analyst tables without run_id: {sorted(set(no_run_id))}")
 
 
 if __name__ == "__main__":

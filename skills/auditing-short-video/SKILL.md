@@ -14,11 +14,11 @@ description: >
 allowed-tools: Read Write Edit Bash Glob Grep
 metadata:
   dstack:
-    version: 1.1.0
+    version: 1.2.0
     type: hybrid
     side_effects: local
     agency: deliberative
-    context_budget_tokens: 3500
+    context_budget_tokens: 4500
     triggers:
       - audit short video
       - analisis video
@@ -134,6 +134,22 @@ Rank by `weight × score-gap`, restricted to `effort=timeline` first, then
 `asset`. A `reshoot` fix never enters the top 3. Name the single best existing
 shot to open with, by timestamp. Write `<audit_dir>/recommendations.csv`.
 
+## Step 5b — Validate before you build
+
+```bash
+python "<skill_dir>/scripts/validate_audit.py" "<audit_dir>"
+```
+
+It exits non-zero on an illegal enum value, a Monetization gate opened by the
+wrong objective, a below-benchmark item with no action, placeholder item text,
+`stated` evidence nobody was asked for, non-tiling segments, or a missing
+`run_id`. **Do not build the workbook on a failing audit** — an earlier run
+rendered `objective = sell` into .xlsx and presented it as a result.
+
+Stamp every analyst file with `run_id` (a new value per coding of this video)
+and `coder_id`. They are part of the key: without them a second coding deletes
+the first in the corpus.
+
 ## Step 6 — Build the workbook
 
 ```bash
@@ -169,7 +185,11 @@ measurement — and it is an association even then.
 python "<skill_dir>/scripts/merge_corpus.py" "<corpus_out>" --parent "<corpus_root>"
 ```
 
-Upserts on `video_id`. Read `corpus_manifest.json.skipped` — tables that failed
+Upserts machine tables on `video_id` and analyst tables on `(video_id, run_id)`,
+so two codings of one video coexist and their agreement is a query rather than a
+manual diff. Add `--strict` to fail when any analyst table lacks `run_id`.
+To remove a video: `--forget <video_id>` — run it BEFORE deleting the source
+file, because the key is the file hash. Read `corpus_manifest.json.skipped` — tables that failed
 validation are reported, never silently ingested. Before any cross-video query,
 read the "Before you run a corpus query" section of `references/schema.md`:
 stratify on the provenance flags, pool percentages rather than averaging them,
@@ -183,6 +203,21 @@ account. If the user wants only a sub-deliverable, still run Steps 1–2 — the
 what stop a wrong answer — but deliver only what was asked.
 
 ## Changes
+
+- **1.2.0** — Everything the second review round found, implemented. A machine
+  validator (`validate_audit.py`) now parses the authoritative enum block in
+  `taxonomy.md` and fails an audit on illegal values, a mis-opened Monetization
+  gate, missing actions, placeholder item text, or `stated` evidence nobody was
+  asked for. `semantic.csv` moved onto the `(video_id, run_id)` key and out of
+  `corpus_videos` — it was the one table the run_id fix had missed, on the table
+  whose disagreement motivated it. Sidecar harvest hardened: yt-dlp only,
+  `creator_id` takes the durable key per platform, capture time from yt-dlp's
+  own `epoch`, and caption/hashtags harvested. Workbook widths keyed by column
+  name after a positional list silently shrank three free-text columns to 11-20
+  chars. `subject_domain` gained factual/documentary terms; `drop_risk` no
+  longer constant by construction; `is_branded` became
+  `commercial_relationship`; MON-01 now times the CTA copy, not the card.
+  22 executable regressions in `scripts/test_pipeline.py`.
 
 - **1.1.0** — Added the vision text layer. The host has eyes; v1.0 read every
   caption in Step 2 and then left `ocr_text.csv` empty and two weight-3 items

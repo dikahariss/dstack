@@ -1,4 +1,4 @@
-# Data contract (schema v3.0)
+# Data contract (schema v3.1)
 
 Every table is keyed by `video_id` = sha256(file)[:16]. Identical files always
 produce the same id; a re-encode produces a new id, which is correct — a
@@ -25,6 +25,31 @@ Parquet, and silently mis-lands values in a positional `COPY`.
 must pool `SUM(num)/SUM(den)`, never average per-video percentages. Averaging
 `50%` (5 of 10) with `20%` (30 of 150) gives 35%; the pooled truth is 21.9%.
 
+## Platform identity — harvested, and the window closes
+
+`video_master.csv` carries, from the yt-dlp `<name>.info.json` sidecar beside
+the media: `sidecar_file, platform, platform_post_id, post_url, creator_id,
+creator_handle, published_at_utc, parent_media_id, caption, hashtags,
+engagement_likes, engagement_comments, engagement_views,
+engagement_captured_at_utc`.
+
+`video_id` is `sha256(file)[:16]` — an ASSET identity. No platform reports
+performance on it, and a re-encode mints a new one. `platform_post_id` is the
+POST identity and is the only thing a platform export can be joined on. It
+cannot be recovered once the post is deleted, so it is harvested at extract time
+or not at all. `creator_id` is always the durable key (`channel_id` on YouTube,
+`uploader_id` on Instagram/TikTok); a handle never lands there.
+
+Only the yt-dlp sidecar is read — an arbitrary `<name>.json` sibling is ignored,
+because consuming one suppressed the missing-join warning and stamped a capture
+time for engagement that was never fetched. No sidecar means every column above
+is NULL and `limitations.txt` says so.
+
+**The engagement snapshot is not performance data.** It is likes and comments at
+one instant with no reach, no views and no follower base. `published_at_utc` and
+`engagement_captured_at_utc` are both present so post age is computable — that
+is the minimum that stops the numbers misleading, not a substitute for Insights.
+
 ## Provenance — what made this row possible
 
 On `video_master.csv`:
@@ -39,9 +64,23 @@ On **every other table**: `video_id, schema_version, extractor_version` (plus
 per-second row *means*).
 
 Analyst-written tables carry their own judgment-layer provenance —
-`analyst_model`, `scored_at_utc`, `benchmark_version`, `taxonomy_version` — so a
-2026 score is never silently compared with a 2029 score on a re-verified
-threshold.
+`run_id`, `coder_id`, `analyst_model`, `scored_at_utc`, `benchmark_version`,
+`taxonomy_version` — so a 2026 score is never silently compared with a 2029
+score on a re-verified threshold.
+
+**`run_id` is part of the key, not decoration.** Machine tables are keyed on
+`video_id` alone: a re-extract of identical bytes is the same measurement and
+replacing it is right. Analyst tables are keyed `(video_id, run_id)`, because a
+second CODING is new evidence. Without it the second coding deletes the first
+and the inter-rater agreement `taxonomy.md` requires cannot be computed at all.
+Two codings of one real video disagreed on 23% of semantic fields and 14% of
+scores; `merge_corpus.py` warns on any analyst table lacking `run_id` and exits
+non-zero under `--strict`.
+
+`semantic.csv` travels as its own corpus table (`corpus_semantic.csv`), NOT
+flattened into `corpus_videos` — flattening forced a `drop_duplicates(video_id)`
+that destroyed the earlier coding on the exact table whose disagreement
+motivated the key.
 
 ## video_master.csv — 1 row per video (the aggregation unit)
 
@@ -140,9 +179,14 @@ scripts, and handwriting that Tesseract at `conf>55` systematically drops — an
 unlike Tesseract it can tell a caption from a logo from a platform watermark.
 That reading is a real measurement and it belongs in a table, not only in prose.
 
-`video_id, taxonomy_version, analyst_model, scored_at_utc, evidence_source,
-seg_idx, t_start_s, t_end_s, text, text_role, position_band, language,
+`video_id, run_id, coder_id, taxonomy_version, analyst_model, scored_at_utc,
+evidence_source, t_start_s, t_end_s, text, text_role, position_band, language,
 is_burned_in`
+
+`seg_idx` was removed in 3.1: 7 of 27 rows on one real video pointed at a
+segment that did not contain the row's own time span, and three branding rows
+spanning 0–31 s were filed under a segment ending at 4.4 s. Join to `segments`
+by time overlap instead.
 
 Kept SEPARATE from `ocr_text.csv` on purpose. `ocr_text.csv` is deterministic,
 reproducible, and machine-generated; this table is a model reading and is not
@@ -207,10 +251,36 @@ partitioned Parquet dataset directly and retire the script — do not read
 "millions of videos" as a claim about this implementation. Excel is a viewer,
 never the system of record.
 
+## Validation
+
+`python scripts/validate_audit.py <audit_dir> [--strict]` exits non-zero on:
+illegal enum values (parsed from the authoritative ```enums block in
+taxonomy.md), a Monetization gate opened by an objective that does not open it,
+blank scores on applicable items, below-benchmark items with no action,
+placeholder item text, `evidence_source=stated` whose evidence says nobody was
+asked, non-tiling segments, and analyst tables missing `run_id`/`coder_id`.
+
+It exists because an audit shipped with `objective = sell` — not a legal value,
+silently failing to gate Monetization — and rendered to .xlsx as a result.
+
+## Deletion
+
+`python scripts/merge_corpus.py <corpus> --forget <video_id>` removes every row
+for that video from every corpus table. **Order matters and is not recoverable
+if you get it wrong:** the key is `sha256(file)[:16]`, so delete the source file
+first and you can no longer compute the key that identifies its rows. Forget
+first, then delete. The per-video audit dir and its `contact_sheets/` are not
+touched — remove them separately.
+
 ## Before you run a corpus query
 
 - Filter or stratify on `ocr_available`, `face_detection_available`,
-  `motion_comparable`, `param_sample_fps` and `param_scene_threshold`. Every one
+  `motion_comparable`, `param_sample_fps`, `param_scene_threshold` and
+  `param_platform` (every `edge_energy_*` column means something different per
+  platform).
+- **Pick one `run_id` per video, or you double-count.** Analyst tables now hold
+  one row set per coding. `GROUP BY video_id` over `corpus_scores` without a
+  run filter sums two codings into one video's weight. Every one
   of them changes what a column means.
 - Pool percentages from numerator and denominator; never average them.
 - Report `n` next to every group mean. Detecting a 5 pp health-index difference

@@ -57,6 +57,15 @@ RECS_COLUMNS = ["video_id", "run_id", "coder_id", "rec_idx", "item_ids", "recomm
                 "expected_metric", "expected_direction", "personas_lifted"]
 
 
+def _w(columns, **overrides):
+    """Widths keyed by COLUMN NAME, not position. Positional lists silently
+    shifted every width by two when run_id/coder_id were inserted, collapsing
+    `text`, `visual_description` and `recommendation` to 11-20 chars while
+    numeric columns got 48-52."""
+    default = {"video_id": 15, "run_id": 18, "coder_id": 15, "item_id": 9}
+    return [overrides.get(c, default.get(c, 12)) for c in columns]
+
+
 def style_sheet(ws, ncols, widths=None):
     for c in range(1, ncols + 1):
         cell = ws.cell(1, c)
@@ -252,12 +261,12 @@ def main():
         sem.columns = ["Field", "Value"]
         write_df(wb, "Semantic", sem, widths=[26, 70])
     if recs is not None:
-        write_df(wb, "Recommendations", recs, widths=[15, 8, 16, 52, 12, 20, 16, 26])
+        write_df(wb, "Recommendations", recs, widths=_w(RECS_COLUMNS, recommendation=60, item_ids=16, personas_lifted=26))
     if segs is not None:
-        write_df(wb, "Narrative_Segments", segs, widths=[15, 7, 9, 9, 18, 48, 40, 11])
+        write_df(wb, "Narrative_Segments", segs, widths=_w(SEGMENTS_COLUMNS, visual_description=52, retention_function=40, segment_type=18))
 
     if otext is not None:
-        write_df(wb, "OnScreen_Text", otext, widths=[15, 14, 8, 10, 10, 52, 20, 14, 10, 12])
+        write_df(wb, "OnScreen_Text", otext, widths=_w(TEXT_COLUMNS, text=60, evidence_source=14))
 
     write_df(wb, "Timeline_per_second", tl)
     write_df(wb, "Shot_list", sh)
