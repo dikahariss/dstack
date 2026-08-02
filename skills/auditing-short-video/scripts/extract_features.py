@@ -68,7 +68,7 @@ except ImportError:
     sys.exit("pandas not installed. See requirements.txt next to this script.")
 
 SCHEMA_VERSION = "3.0"
-EXTRACTOR_VERSION = "3.0.0"
+EXTRACTOR_VERSION = "3.1.0"
 
 # k-means picks initial centres from OpenCV's global RNG. Unseeded, the
 # dominant-colour columns can differ between runs on identical bytes.
@@ -113,6 +113,39 @@ def require_binaries():
     if missing:
         sys.exit(f"Required binary not found on PATH: {', '.join(missing)}. "
                  "Install ffmpeg before running this script.")
+
+
+def read_sidecar(src):
+    """yt-dlp writes <name>.info.json next to the media. It carries the platform
+    identity this dataset cannot reconstruct from file bytes: the post id, the
+    creator, and the publish date. Harvesting it is the only step whose window
+    closes — a deleted post cannot be re-fetched, and a re-encode mints a new
+    video_id with nothing tying it to the original."""
+    base = os.path.splitext(src)[0]
+    for cand in (base + ".info.json", base + ".json"):
+        if os.path.isfile(cand):
+            try:
+                d = json.load(open(cand))
+            except (ValueError, OSError):
+                return {}, ""
+            ts = d.get("timestamp")
+            return dict(
+                platform=d.get("extractor_key") or d.get("extractor") or "",
+                platform_post_id=d.get("id") or "",
+                post_url=d.get("webpage_url") or "",
+                creator_id=str(d.get("uploader_id") or ""),
+                creator_handle=d.get("channel") or d.get("uploader") or "",
+                published_at_utc=(datetime.fromtimestamp(ts, timezone.utc)
+                                  .strftime("%Y-%m-%dT%H:%M:%SZ") if ts else ""),
+                parent_media_id=str(d.get("playlist_id") or ""),
+                engagement_likes=d.get("like_count"),
+                engagement_comments=d.get("comment_count"),
+                engagement_views=d.get("view_count"),
+                engagement_captured_at_utc=(
+                    datetime.fromtimestamp(os.path.getmtime(cand), timezone.utc)
+                    .strftime("%Y-%m-%dT%H:%M:%SZ")),
+            ), os.path.basename(cand)
+    return {}, ""
 
 
 def sha16(path, chunk=1 << 20):
@@ -223,6 +256,13 @@ def main():
         shutil.rmtree(os.path.join(outdir, sub), ignore_errors=True)
         os.makedirs(os.path.join(outdir, sub), exist_ok=True)
 
+    _pending_lims = []
+    sidecar, sidecar_name = read_sidecar(src)
+    if not sidecar:
+        _pending_lims.append(
+            "No yt-dlp .info.json sidecar found next to the media: platform post id, "
+            "creator_id and published_at_utc are NULL. Without them this row cannot "
+            "be joined to platform analytics and cannot be placed on a timeline.")
     limitations = [
         "No speech-to-text: spoken words are NOT transcribed. speech_band_ratio "
         "is the energy share in 300-3400 Hz (the telephony band), which music "
@@ -230,6 +270,7 @@ def main():
         "Semantic labels (genre, pull mechanisms, segments) come from the analyst "
         "viewing contact sheets, not from this script.",
     ]
+    limitations += _pending_lims
     vid16, vid_full = sha16(src)
 
     # ---------- probe ----------
@@ -615,6 +656,18 @@ def main():
         tool_pandas=pd.__version__, tool_tesseract=tesseract_ver,
         tool_pytesseract=pytesseract_ver,
         source_file=os.path.basename(src),
+        sidecar_file=sidecar_name,
+        platform=sidecar.get("platform"),
+        platform_post_id=sidecar.get("platform_post_id"),
+        post_url=sidecar.get("post_url"),
+        creator_id=sidecar.get("creator_id"),
+        creator_handle=sidecar.get("creator_handle"),
+        published_at_utc=sidecar.get("published_at_utc"),
+        parent_media_id=sidecar.get("parent_media_id"),
+        engagement_likes=sidecar.get("engagement_likes"),
+        engagement_comments=sidecar.get("engagement_comments"),
+        engagement_views=sidecar.get("engagement_views"),
+        engagement_captured_at_utc=sidecar.get("engagement_captured_at_utc"),
         container_creation_time=tags.get("creation_time", ""),
         container_encoder=tags.get("encoder", ""),
         filesize_mb=round(int(fmt["size"]) / 1e6, 3) if fmt.get("size") else None,

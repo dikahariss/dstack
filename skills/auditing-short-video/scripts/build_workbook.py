@@ -47,13 +47,13 @@ HEAD = Font(name="Arial", bold=True, color="FFFFFF", size=10)
 BODY = Font(name="Arial", size=10)
 FILL = PatternFill("solid", fgColor="1F3864")
 
-SCORES_COLUMNS = ["video_id", "item_id", "persona", "pillar", "item", "weight",
+SCORES_COLUMNS = ["video_id", "run_id", "coder_id", "item_id", "persona", "pillar", "item", "weight",
                   "applicable", "score", "evidence", "evidence_source", "action"]
-SEGMENTS_COLUMNS = ["video_id", "seg_idx", "start_s", "end_s", "segment_type",
+SEGMENTS_COLUMNS = ["video_id", "run_id", "coder_id", "seg_idx", "start_s", "end_s", "segment_type",
                     "visual_description", "retention_function", "drop_risk"]
-TEXT_COLUMNS = ["video_id", "evidence_source", "seg_idx", "t_start_s", "t_end_s",
+TEXT_COLUMNS = ["video_id", "run_id", "coder_id", "evidence_source", "t_start_s", "t_end_s",
                 "text", "text_role", "position_band", "language", "is_burned_in"]
-RECS_COLUMNS = ["video_id", "rec_idx", "item_ids", "recommendation", "effort",
+RECS_COLUMNS = ["video_id", "run_id", "coder_id", "rec_idx", "item_ids", "recommendation", "effort",
                 "expected_metric", "expected_direction", "personas_lifted"]
 
 
@@ -62,8 +62,9 @@ def style_sheet(ws, ncols, widths=None):
         cell = ws.cell(1, c)
         cell.font, cell.fill = HEAD, FILL
         cell.alignment = Alignment(horizontal="center", wrap_text=True)
+        w = (widths[c - 1] if widths and c - 1 < len(widths) else None)
         ws.column_dimensions[get_column_letter(c)].width = (
-            widths[c - 1] if widths else max(12, min(46, len(str(cell.value or "")) + 4)))
+            w if w else max(12, min(46, len(str(cell.value or "")) + 4)))
     for row in ws.iter_rows(min_row=2):
         for cell in row:
             cell.font = BODY
@@ -79,10 +80,11 @@ def write_df(wb, title, df, widths=None):
     return ws
 
 
-def load_checked(path, required, label):
+def load_checked(path, required, label, optional=()):
     if not os.path.exists(path) or os.path.getsize(path) == 0:
         return None
     df = pd.read_csv(path, dtype={"video_id": "string", "item_id": "string"})
+    required = [c for c in required if c not in optional or c in df.columns]
     missing = [c for c in required if c not in df.columns]
     if missing:
         raise SystemExit(f"{label} ({path}) missing columns: {missing}\n"
@@ -108,13 +110,13 @@ def main():
     s = s.get("master", s)
     tl = pd.read_csv(f"{ad}/timeline_per_second.csv")
     sh = pd.read_csv(f"{ad}/shot_list.csv")
-    scores = load_checked(f"{ad}/scores.csv", SCORES_COLUMNS, "scores.csv")
+    scores = load_checked(f"{ad}/scores.csv", SCORES_COLUMNS, "scores.csv", ("run_id","coder_id"))
     if scores is None:
         raise SystemExit(f"{ad}/scores.csv not found. Score the checklist first "
                          "(references/persona_checklist.md), then re-run.")
-    segs = load_checked(f"{ad}/segments.csv", SEGMENTS_COLUMNS, "segments.csv")
-    recs = load_checked(f"{ad}/recommendations.csv", RECS_COLUMNS, "recommendations.csv")
-    otext = load_checked(f"{ad}/onscreen_text.csv", TEXT_COLUMNS, "onscreen_text.csv")
+    segs = load_checked(f"{ad}/segments.csv", SEGMENTS_COLUMNS, "segments.csv", ("run_id","coder_id"))
+    recs = load_checked(f"{ad}/recommendations.csv", RECS_COLUMNS, "recommendations.csv", ("run_id","coder_id"))
+    otext = load_checked(f"{ad}/onscreen_text.csv", TEXT_COLUMNS, "onscreen_text.csv", ("run_id","coder_id"))
 
     scores["applicable"] = (scores["applicable"].astype(str).str.strip().str.lower()
                             .isin(("true", "1", "yes", "y")))
