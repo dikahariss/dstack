@@ -2,26 +2,29 @@
 
 dstack is a skill catalog renderer for Claude Code. It reads skill
 definitions from disk, validates them, and writes the result in the
-format Claude Code expects.
+format Claude Code expects. The source skills follow the Agent Skills
+format, so Codex can load them directly without a second renderer.
 
 This project is a rewrite of [gstack](../gstack/) for a single user and a
-single AI host (Claude Code). The goal is to keep today's solution simple,
-and to organize the code so that future changes do not become expensive.
+single render target (Claude Code). The goal is to keep today's solution
+simple, and to organize the code so that future changes do not become
+expensive. Compatible hosts such as Codex can consume the source catalog
+directly; see [Installing skills into Codex](#installing-skills-into-codex).
 
 ## What "skill" means here
 
-A skill is a slash command that the user can run in Claude Code. For
-example: `/ship`, `/review`, `/qa`. Each skill is one directory under
-`skills/<skill-id>/`. The directory contains two files:
+A skill is a reusable workflow that an AI host can discover from its
+description or the user can invoke explicitly. Claude Code uses names such
+as `/debugging`; Codex uses `$debugging`. Each skill is one directory under
+`skills/<skill-id>/` containing:
 
-- `skill.yaml` — metadata. The skill's name, version, description, and
-  the list of tools it is allowed to use.
-- `prompt.md` — the prompt text. This is the instruction the AI model
-  reads when the user runs the skill.
+- `SKILL.md` — required metadata, triggers, and workflow instructions.
+- Optional `scripts/`, `references/`, `assets/`, or other bundled resources
+  used by that workflow.
 
 ## What this project does
 
-1. Reads every skill directory under `skills/`.
+1. Reads every `skills/<skill-id>/SKILL.md` definition and its bundled files.
 2. Validates each skill against the schema defined in
    [`docs/specs/skill-spec.md`](docs/specs/skill-spec.md).
 3. Combines the prompt body with a small YAML header (called frontmatter)
@@ -29,15 +32,19 @@ example: `/ship`, `/review`, `/qa`. Each skill is one directory under
 4. Writes the result to `.claude/skills/<skill-id>/SKILL.md`. Claude Code
    reads files from this directory at startup.
 
+Codex deployment does not run this renderer. It links the spec-compatible
+source directories under `skills/` into Codex's user skill directory.
+
 ## What this project does NOT do (and why)
 
 The following features are deliberately not built:
 
-- **Multiple AI hosts**. Today this project only generates output for
-  Claude Code. The code is structured so that a second host (such as
-  Codex or Kiro) can be added later, but no second host is written.
-  Reason: only one user, only one host. Adding more would create code
-  that no one uses. See [ADR-0002](docs/adr/0002-single-host-v0.md).
+- **Multiple renderer adapters**. Today the build pipeline only generates
+  output for Claude Code. The code is structured so that a second renderer
+  can be added if a host requires a genuinely different representation, but
+  none is needed for Codex: Codex reads the source `SKILL.md` directories
+  directly. See
+  [ADR-0029](docs/adr/0029-portable-source-consumption.md).
 
 - **Template engine for prompts**. Skill prompts are plain Markdown.
   There are no template variables, no resolvers, no shared snippets
@@ -83,8 +90,9 @@ where the pressures will appear.
 
 ## Project status
 
-This project is at version 0 (v0). It builds and runs. One skill is
-included as an example. See `docs/plans/v1/` for the roadmap to version 1.
+This project is at version 0 (v0). It builds and runs. The maintained skill
+catalog lives under `skills/`. See `docs/plans/v1/` for the roadmap to
+version 1.
 
 - Architecture overview: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Architecture Decision Records (ADRs): [docs/adr/](docs/adr/)
@@ -105,9 +113,9 @@ bun install
 bun run build
 
 # Render one skill and print to standard output
-bun run render careful
+bun run render debugging
 
-# Scaffold a new skill (creates skills/<skill-id>/{skill.yaml,prompt.md})
+# Scaffold a new skill (creates skills/<skill-id>/SKILL.md)
 bun run new my-new-skill
 
 # Validate every skill (no install); exit 1 if any skill fails
@@ -131,7 +139,7 @@ bun link
 
 # Now usable from anywhere
 dstack build
-dstack render careful
+dstack render debugging
 dstack new my-new-skill
 dstack list
 dstack validate
@@ -144,6 +152,81 @@ To remove: run `bun unlink` from the repo root.
 The CLI entry point is `src/adapters/cli/main.ts`. It carries a
 `#!/usr/bin/env bun` shebang and the executable bit, so it can also
 be invoked directly: `./src/adapters/cli/main.ts <command>`.
+
+### Installing skills into Codex
+
+Run this from the dstack repository root. The installation is additive: it
+creates one symlink per dstack skill and refuses to replace an existing Codex
+skill with the same name.
+
+```bash
+DSTACK_REPO=$(pwd)
+DSTACK_CODEX_SKILLS_DIR="${CODEX_HOME:-$HOME/.codex}/skills"
+
+mkdir -p "$DSTACK_CODEX_SKILLS_DIR"
+
+for source_dir in "$DSTACK_REPO"/skills/*; do
+  [ -f "$source_dir/SKILL.md" ] || continue
+  skill_id=$(basename "$source_dir")
+  target="$DSTACK_CODEX_SKILLS_DIR/$skill_id"
+
+  if [ -e "$target" ] || [ -L "$target" ]; then
+    echo "skip existing: $target"
+    continue
+  fi
+
+  ln -s "$source_dir" "$target"
+done
+```
+
+Symlinks expose source changes to Codex without copying or rerunning
+`dstack build`. Start a new Codex session after installation or when an active
+session still shows stale metadata. Keep the repository at the same absolute
+path because moving it breaks the links.
+
+Start a new Codex session, then invoke a skill with `$`:
+
+```text
+$using-dstack
+$debugging
+$writing-specs
+```
+
+To verify discovery with the installed Codex CLI:
+
+```bash
+codex debug prompt-input "verify dstack skills" | rg --fixed-strings 'using-dstack'
+```
+
+Updating the checkout is enough to update linked skills:
+
+```bash
+git pull
+bun install --frozen-lockfile
+bun run validate
+```
+
+`dstack build` and `dstack build --global` remain Claude Code commands; they
+write under `.claude/skills`, not Codex. Direct deployment also does not
+translate host-specific tool names or paths inside a skill body. Review those
+instructions when a workflow explicitly depends on a Claude-only capability.
+
+To uninstall only links pointing into the current checkout, run this from the
+dstack repository root:
+
+```bash
+DSTACK_REPO=$(pwd)
+DSTACK_CODEX_SKILLS_DIR="${CODEX_HOME:-$HOME/.codex}/skills"
+
+for target in "$DSTACK_CODEX_SKILLS_DIR"/*; do
+  [ -L "$target" ] || continue
+  link_source=$(readlink "$target")
+
+  case "$link_source" in
+    "$DSTACK_REPO"/skills/*) unlink "$target" ;;
+  esac
+done
+```
 
 ### Installing skills into Claude config dirs (incl. alternate model setups)
 
@@ -214,6 +297,7 @@ local.
 
 ```
 dstack/
+├── AGENTS.md          # Codex instructions (loaded automatically)
 ├── CLAUDE.md          # Agent instructions (read first if you are an AI)
 ├── CONTEXT.md         # Domain language glossary (for AI agents)
 ├── VERSION            # Current dstack version

@@ -1,6 +1,6 @@
 # ADR-0002 — Single host (Claude Code) at v0
 
-- **Status:** Accepted
+- **Status:** Superseded by [ADR-0029](0029-portable-source-consumption.md)
 - **Date:** 2026-05-13
 - **Reversibility:** Cheap. Adding a host is one new adapter file plus
   one line in the host registry.

@@ -8,7 +8,7 @@ Claude Code as a target AI host.
 | Term | Definition |
 |---|---|
 | Claude Code | The CLI tool by Anthropic that runs AI agents. https://docs.anthropic.com/en/docs/claude-code |
-| Host | An AI agent that consumes skills. dstack targets Claude Code as its only host (today). |
+| Host | A render/install pipeline target. Claude Code is the only host adapter today; compatible runtimes may consume source directly. |
 | Adapter | Concrete code that implements a port defined in the domain layer. |
 | Frontmatter | A YAML block at the top of a Markdown file, between `---` fences. |
 | Tool registry | The list of tool names the host recognizes. Examples: `Bash`, `Edit`, `Read`. |
@@ -40,24 +40,27 @@ This adapter does not know:
   entity's `outputRoot` property.
 - Whether to symbolic-link or copy files. That is the `Installer`
   adapter's choice.
-- Anything about Codex, Kiro, OpenCode, or any other AI host.
+- How compatible runtimes such as Codex discover portable source skills.
+  That direct-consumption path does not enter this adapter.
 
 ## How to add a second renderer
 
-To add support for a second host (for example, Codex):
+Do not add a renderer merely to support a different install directory.
+Compatible runtimes such as Codex consume the source catalog directly.
+If a real workflow proves that another host requires a representation
+transform:
 
-1. Create `src/adapters/codex/CodexRenderer.ts` that implements the
+1. Create `src/adapters/<host>/<Host>Renderer.ts` that implements the
    `HostRenderer` port.
-2. Create `src/adapters/codex/tools.ts` with Codex's tool names. Codex
-   tool names differ from Claude Code tool names.
+2. Create `src/adapters/<host>/tools.ts` with that host's tool names.
 3. Wire the new adapter in `src/adapters/cli/main.ts`. Use a flag
-   like `--host codex` to select between adapters.
+   such as `--host <host>` to select between adapters.
 4. Write contract tests in `test/contract/HostRenderer.contract.ts`.
-   Both the Claude Code renderer and the Codex renderer must pass the
+   Both the Claude Code renderer and the new renderer must pass the
    same test suite.
 
-See [ADR-0002](../../../docs/adr/0002-single-host-v0.md) for why this
-work is deferred until a real user wants Codex support.
+See [ADR-0029](../../../docs/adr/0029-portable-source-consumption.md)
+for the adapter trigger and the direct-consumption boundary.
 
 ## Cross-references
 

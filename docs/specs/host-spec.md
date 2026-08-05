@@ -2,7 +2,9 @@
 
 This document defines what a "host" is in dstack, and what each host
 adapter must provide. A host is the AI agent that consumes rendered
-skills. Today the only host is Claude Code.
+skills inside the render/install pipeline. Today the only host adapter is
+Claude Code. Compatible runtimes may instead consume the portable source
+directories directly; that path is outside this specification.
 
 This spec is one of four. The others are:
 
@@ -14,7 +16,8 @@ This spec is one of four. The others are:
 
 | Term | Definition |
 |---|---|
-| Host | An AI agent that runs skills. Examples: Claude Code, Codex, Kiro. |
+| Host | A render/install pipeline target represented by the `Host` entity. Today: Claude Code. |
+| Direct source consumer | A compatible runtime, such as Codex, that discovers portable source directories without entering this pipeline. |
 | Host adapter | The TypeScript code that produces output for one specific host. Located under `src/adapters/<host-name>/`. |
 | Tool | A capability the host provides to the LLM. Examples: `Bash`, `Edit`, `Read`. |
 | Tool registry | The list of tool names the host recognizes. Skills are validated against this list. |
@@ -63,7 +66,7 @@ Each host adapter exports a constant `<HOST_NAME>_TOOLS` of type
 `readonly string[]`. The list is the authoritative set of tool names
 this host's harness recognizes.
 
-When a skill declares a `tools` field in its `skill.yaml`, the renderer
+When a skill declares `allowed-tools` in `SKILL.md`, the renderer
 checks every entry against this list. An entry that is not in the list
 causes `UnknownToolError`. See [skill-spec.md](skill-spec.md) and
 [render-spec.md](render-spec.md).
@@ -87,17 +90,27 @@ For Claude Code, the frontmatter is:
 ```yaml
 ---
 name: <skill-id>
-version: <skill-version>
-description: |
-  <description, with each line indented by two spaces>
-allowed-tools: [<list of tool names>]
+description: <single-line text or YAML block scalar>
+license: <optional license>
+compatibility: <optional environment requirement>
+metadata:
+  dstack:
+    type: <skill-type>
+    version: <skill-version>
+    triggers: [<optional trigger phrases>]
+    context_budget_tokens: <token-budget>
+    side_effects: <side-effects>
+    agency: <agency>
+    calibration: <optional non-deterministic freedom band>
+    output_schema: <optional inline schema>
+allowed-tools: <optional space-separated tool names>
 ---
 ```
 
 Future hosts may use:
 
 - Different field names (`tools` instead of `allowed-tools`).
-- Different value formats (JSON array instead of YAML list).
+- Different value formats (JSON array instead of a space-separated scalar).
 - Different required fields (a `model:` field, for example).
 
 Each host's renderer is responsible for emitting its own frontmatter.
@@ -131,10 +144,23 @@ dstack ships one host adapter: Claude Code.
 | Adapter folder | `src/adapters/claude-code/` |
 | Renderer | `ClaudeCodeRenderer` |
 | Tool registry | `CLAUDE_CODE_TOOLS` in `tools.ts` |
-| Frontmatter fields | `name`, `version`, `description`, `allowed-tools` |
+| Frontmatter fields | `name`, `description`, optional `license` / `compatibility`, `metadata.dstack.*`, optional `allowed-tools` |
 | Output filename per skill | `<skill-id>/SKILL.md` |
 | Output root (local) | `<cwd>/.claude/skills/` |
 | Output root (global) | `~/.claude/skills/dstack/` |
+
+## Direct source consumers
+
+A runtime that discovers `skills/<id>/` directly is not another dstack
+`Host`. It does not enter the render/install pipeline, receive a domain
+`Host` entity, or need a `HostRenderer` adapter.
+
+Codex is deployed this way: its user skill directory contains symlinks to
+the portable source directories. Codex receives the `SKILL.md` and bundled
+resources unchanged. This proves format discovery only; Claude-specific
+tool names or paths inside the body are not translated. See
+[ADR-0029](../adr/0029-portable-source-consumption.md) and
+[Installing skills into Codex](../../README.md#installing-skills-into-codex).
 
 ### Claude Code tool registry
 
@@ -149,9 +175,11 @@ That file is the single source of truth — this spec does not duplicate
 the list. When Anthropic adds, renames, or removes a first-party tool,
 update `tools.ts`.
 
-## How to add a new host
+## How to add a new host renderer
 
-To support a new AI host (for example, Codex):
+Do this only when ADR-0029's trigger fires: a real workflow requires a
+host-specific representation that portable source consumption cannot
+express. Do not add a renderer merely to select another install directory.
 
 ### Step 1. Create the adapter folder
 
@@ -168,10 +196,10 @@ Export an array of tool names the host recognizes. The names match
 whatever the host's harness uses.
 
 ```typescript
-export const CODEX_TOOLS = [
-  'shell',
-  'apply_patch',
-  // ... more Codex tool names
+export const OTHER_HOST_TOOLS = [
+  'other_shell',
+  'other_edit',
+  // ... more host tool names
 ];
 ```
 
@@ -181,8 +209,7 @@ Implement the `HostRenderer` port. Follow the algorithm in
 [render-spec.md](render-spec.md), with two adjustments:
 
 - Build the frontmatter in the host's expected shape.
-- If the host's tool names differ from a "canonical" set, rewrite
-  them. (For Codex, `AskUserQuestion` might map to a different tool.)
+- If the host's tool names differ from the source set, rewrite them.
 
 ### Step 4. Wire the adapter
 
@@ -202,13 +229,14 @@ The new adapter and the Claude Code adapter must pass the same suite.
 The adapter's `README.md` lists what the adapter knows and what it
 does not know. Reference this document for the format.
 
-## Why we have not added other hosts yet
+## Why we have not added other renderer adapters yet
 
-See [ADR-0002](../adr/0002-single-host-v0.md). The short version: one
-user, one host. Adding a host requires a real user who wants it.
+See [ADR-0029](../adr/0029-portable-source-consumption.md). Compatible
+hosts consume the source catalog directly. An adapter is justified only
+by a measured representation mismatch.
 
 The port (`HostRenderer`) is in place. The cost of adding the second
-host is one adapter folder and a contract test.
+renderer is one adapter folder and a contract test.
 
 ## Host-specific concerns that live in adapters
 
@@ -225,7 +253,7 @@ The following are adapter-local. The domain layer never sees them.
 
 ## Cross-references
 
-- [skill-spec.md](skill-spec.md) — `skill.yaml` declares the tools the
+- [skill-spec.md](skill-spec.md) — `SKILL.md` declares the tools the
   host must recognize.
 - [render-spec.md](render-spec.md) — how the renderer uses the
   frontmatter contract.
@@ -233,6 +261,8 @@ The following are adapter-local. The domain layer never sees them.
   installer.
 - [ADR-0001](../adr/0001-hexagonal-layered.md) — why the host is a
   port-bound entity.
+- [ADR-0029](../adr/0029-portable-source-consumption.md) — why compatible
+  direct consumers do not require a host adapter.
 - [ADR-0002](../adr/0002-single-host-v0.md) — why only Claude Code
   ships at v0.
 - [ADR-0008](../adr/0008-sandbox-detection-at-adapter.md) — example of

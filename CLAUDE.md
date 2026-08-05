@@ -2,8 +2,9 @@
 
 dstack is a skill catalog renderer for Claude Code: it reads skill
 definitions, validates them, and writes Claude-Code-compatible
-`SKILL.md` files. One user, one host. TypeScript on Bun. Hexagonal
-architecture, ADR-driven, YAGNI strict.
+`SKILL.md` files. One user, one renderer target; compatible hosts may
+consume the Agent Skills source directly under ADR-0029. TypeScript on
+Bun. Hexagonal architecture, ADR-driven, YAGNI strict.
 
 The renderer's scope stays frozen and every DEFERRED item stands
 ([ADR-0028](docs/adr/0028-renderer-only-scope.md)). When working in
@@ -66,9 +67,10 @@ concrete adapters happens there and nowhere else.
 - **Do not add template variables, resolvers, or auto-injected
   preambles** to the renderer. Per ADR-0003 + ADR-0004, skills are
   YAML + Markdown only.
-- **Do not add a second host adapter** (Codex, Kiro, etc.) until a
-  named real user asks for one. The `HostRenderer` port is ready;
-  don't pre-build adapters. See ADR-0002.
+- **Do not add a second host adapter** merely to change an install path.
+  Compatible hosts consume source skills directly. Add an adapter only
+  after a real workflow proves it needs a host-specific representation
+  or transform. See ADR-0029.
 - **Do not add features documented in DEFERRED.md** (D1-D11) unless
   the entry's "Trigger to revisit" condition has actually fired.
 

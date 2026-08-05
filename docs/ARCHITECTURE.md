@@ -124,7 +124,7 @@ RenderContext (input to renderer)        produces       RenderResult (output)
 ```
 
 - `Skill` is the aggregate: a complete skill in memory, ready to render.
-- `SkillSpec` is the parsed contents of `skill.yaml`.
+- `SkillSpec` is the parsed, validated `SKILL.md` frontmatter.
 - `Host` is the target AI agent that will consume the rendered skill.
   Currently only one Host exists: `claude-code`.
 - `RenderContext` is the input to the renderer. It includes the current
@@ -190,7 +190,7 @@ The contracts of dstack live in four specification documents under
 
 | Specification | Scope |
 |---|---|
-| [specs/skill-spec.md](specs/skill-spec.md) | The input format. What a skill is on disk: directory layout, `skill.yaml` schema, `prompt.md` rules, validation. |
+| [specs/skill-spec.md](specs/skill-spec.md) | The input format. What a skill is on disk: directory layout, `SKILL.md` schema and body rules, validation. |
 | [specs/host-spec.md](specs/host-spec.md) | The target. What defines an AI host: tool registry, frontmatter contract, output root, how to add a host. |
 | [specs/render-spec.md](specs/render-spec.md) | The transform. How a skill becomes output for a host: the five-step pipeline, errors, warnings, determinism guarantee. |
 | [specs/install-spec.md](specs/install-spec.md) | The output. How rendered output reaches disk: atomic write, idempotency, orphan removal, path policy. |
@@ -221,10 +221,10 @@ read [skill-taxonomy.md](skill-taxonomy.md). That document describes:
 - Six independent design axes: knowledge source, temporal pattern,
   coordination, statefulness, agency level, side-effect profile.
 
-The taxonomy is a reference for design thinking. It is not enforced by
-the `skill.yaml` schema today. Adding taxonomy fields to the schema
-would require a new ADR. The four specs listed above describe possible
-adoption points:
+The taxonomy is a reference for design thinking. Its computation type is
+represented by `metadata.dstack.type`; the other axes remain design guidance.
+Changing their schema representation would require a new ADR. The four specs
+listed above describe the current adoption points:
 
 - `skill-spec.md` Section "Computation type" — the schema field that
   would carry the taxonomy choice.
@@ -256,16 +256,15 @@ the function `assertAllowed`.
 
 ### Versioning
 
-Each `skill.yaml` carries a `version` field. The renderer copies this
-into the output frontmatter. A future cache or rollback feature can use
-the version to detect changes.
+Each `SKILL.md` carries `metadata.dstack.version`. The renderer copies this
+into the output frontmatter. A future cache or rollback feature can use the
+version to detect changes.
 
 ### LLM integration
 
-The body of `prompt.md` is plain Markdown. The renderer does not
-substitute variables, does not call an LLM at render time, and does not
-inject hidden instructions. The output file is the body, prefixed with
-host-specific frontmatter.
+The body of `SKILL.md` is plain Markdown. The renderer does not substitute
+variables, call an LLM at render time, or inject hidden instructions. The
+output file is the body, prefixed with host-specific frontmatter.
 
 ## ADR index
 
@@ -275,7 +274,7 @@ Read in number order if you want the full reasoning.
 | Number | Title | Status |
 |---|---|---|
 | [0001](adr/0001-hexagonal-layered.md) | Hexagonal/layered architecture | Accepted |
-| [0002](adr/0002-single-host-v0.md) | Single host (Claude Code) at v0 | Accepted |
+| [0002](adr/0002-single-host-v0.md) | Single host (Claude Code) at v0 | Superseded by [0029](adr/0029-portable-source-consumption.md) |
 | [0003](adr/0003-skill-as-data.md) | Skills are YAML+Markdown, not templates | Accepted |
 | [0004](adr/0004-no-template-engine-v0.md) | No template engine, no resolvers at v0 | Accepted |
 | [0005](adr/0005-bun-runtime.md) | Bun + TypeScript everywhere; no bash orchestrator | Accepted |
@@ -296,6 +295,7 @@ Read in number order if you want the full reasoning.
 | [0026](adr/0026-broaden-project-purpose.md) | Broaden project purpose: skills + non-skill content | Superseded by [0028](adr/0028-renderer-only-scope.md) |
 | [0027](adr/0027-skill-naming-convention.md) | Skill names state the activity; no bare abbreviations or adjectives | Accepted |
 | [0028](adr/0028-renderer-only-scope.md) | Narrow scope back to renderer-only; remove non-skill content | Accepted |
+| [0029](adr/0029-portable-source-consumption.md) | One renderer, portable source consumption | Accepted |
 
 "Accepted" means the decision is in force. If we change our minds, we
 write a new ADR that supersedes the old one. We do not edit accepted

@@ -5,9 +5,10 @@ import { BundledFile } from '@domain/skill/BundledFile';
 /**
  * HostRenderer turns a Skill into a file content + path for a specific host.
  *
- * Each host has its own renderer. The Claude Code renderer emits
- * `<skill-id>/SKILL.md` with Claude-shaped frontmatter. A Codex renderer
- * would emit different frontmatter and possibly rewrite tool names.
+ * Each render-pipeline host has its own renderer. The Claude Code renderer
+ * emits `<skill-id>/SKILL.md` with Claude-shaped frontmatter. Compatible
+ * runtimes such as Codex can consume the portable source directly and stay
+ * outside this port; add another renderer only for a required transform.
  *
  * Renderers are pure — they do not write to disk. The Installer does.
  */

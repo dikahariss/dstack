@@ -3,7 +3,9 @@
 dstack is a skill catalog renderer for Claude Code: it reads skill
 definitions from `skills/<id>/`, validates them, and writes
 Claude-Code-compatible `SKILL.md` files to `.claude/skills/<id>/`.
-Single user, single host.
+Single user, single renderer target. Compatible hosts may consume the
+portable source directories directly; see
+[ADR-0029](docs/adr/0029-portable-source-consumption.md).
 
 ## Language
 
@@ -11,7 +13,8 @@ Single user, single host.
 A folder under `skills/<id>/` containing a single `SKILL.md` (YAML
 frontmatter + Markdown body) plus optional bundled resources
 (`scripts/`, `references/`, `assets/`, free-form). One skill becomes
-one slash command in Claude Code. The built-in parser no longer
+one slash command in Claude Code or one `$`-invoked skill in Codex. The
+built-in parser no longer
 accepts the legacy v1 layout (`skill.yaml + prompt.md`); use
 `bun run dstack migrate-v2` to convert a third-party catalog.
 _Avoid_: command, capability, plugin, action.
@@ -48,9 +51,10 @@ _Avoid_: driver, plugin, backend.
 
 **Renderer**:
 An adapter that converts a `Skill` into the file format a specific
-host expects. Today only `ClaudeCodeRenderer` exists. Adding a renderer
-is how dstack would gain a second host (Codex, Kiro, etc.) — see
-[ADR-0002](docs/adr/0002-single-host-v0.md).
+host expects. Today only `ClaudeCodeRenderer` exists. A compatible host
+reading the portable source is not a renderer; add another renderer only
+when that host needs a representation transform — see
+[ADR-0029](docs/adr/0029-portable-source-consumption.md).
 _Avoid_: generator, builder, formatter, transformer.
 
 **Installer**:
@@ -60,9 +64,10 @@ skill changes reports "skipped".
 _Avoid_: writer, deployer, publisher.
 
 **Host**:
-The AI runtime that loads the rendered skills. Today only Claude Code.
-Represented in the domain by the `Host` entity, which carries an output
-root path and a `ToolRegistry`.
+The AI runtime represented inside dstack's render/install pipeline. Today
+only Claude Code. The domain `Host` entity carries an output root path and
+a `ToolRegistry`. A runtime that reads source skills directly is a
+consumer outside this pipeline, not another domain `Host`.
 _Avoid_: target, agent, environment.
 
 **Use case**:
@@ -117,6 +122,13 @@ Local install goes to `<cwd>/.claude/skills/`; global install goes to
 `~/.claude/skills/dstack/`. NOT `npm install` — package dependency
 installation is `bun install`.
 _Avoid_: deploy, publish.
+
+**Direct source consumption**:
+A compatible host discovers `skills/<id>/` without dstack rendering or
+installing it. Codex deployment symlinks these directories into its own
+skill root. This is outside the `HostRenderer` and `Installer` ports; see
+[ADR-0029](docs/adr/0029-portable-source-consumption.md).
+_Avoid_: Codex host adapter, Codex build.
 
 **Render**:
 Converting one `Skill` (domain object) into a `RenderResult` (path,
@@ -222,12 +234,12 @@ so any local secrets you add later stay local. See
 
 ## How to use this file
 
-If you are an AI agent (Claude, Codex, etc.) starting work in this
-repo: read [`CLAUDE.md`](CLAUDE.md) FIRST (rules and forbidden
-patterns), then this file (vocabulary), then `docs/ARCHITECTURE.md`
-(structure), then the ADR most relevant to your task. Most session
-vocabulary lives here; new terms should be added here when they
-appear in code review.
+If you are an AI agent starting work in this repo, use the native entry
+point first: Claude Code reads [`CLAUDE.md`](CLAUDE.md), while Codex loads
+[`AGENTS.md`](AGENTS.md), which then requires the shared `CLAUDE.md` rules.
+Next read this file (vocabulary), `docs/ARCHITECTURE.md` (structure), and
+the ADR most relevant to your task. Most session vocabulary lives here;
+new terms should be added here when they appear in code review.
 
 If you are a human contributor: skim this once to ground your
 vocabulary, then refer back when a term feels overloaded.

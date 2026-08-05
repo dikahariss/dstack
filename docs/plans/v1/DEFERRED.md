@@ -20,13 +20,16 @@ listed "trigger to revisit" has actually happened.
 
 ## D1 — Multi-host renderer (Codex, Kiro, OpenCode, etc.)
 
-- **Why deferred.** One user, one AI host (Claude Code).
-  [ADR-0002](../../adr/0002-single-host-v0.md) covers the
-  reasoning.
-- **What is in place.** The `HostRenderer` port is defined. Adding a
-  host requires one new adapter file and one wiring line.
-- **Trigger to revisit.** A named real user wants Codex, Kiro, or
-  similar, AND has agreed to maintain the adapter.
+- **Status update.** [ADR-0029](../../adr/0029-portable-source-consumption.md)
+  supersedes ADR-0002. Compatible hosts may consume source skills directly;
+  only renderer adapters remain deferred.
+- **Why deferred.** A second renderer without a measured representation
+  mismatch duplicates the portable Agent Skills source.
+- **What is in place.** The `HostRenderer` port and Claude Code contract tests
+  define the extension point for a future renderer and its CLI wiring.
+- **Trigger to revisit.** A named real workflow needs a host-specific
+  field, path layout, or tool-name transform that portable source cannot
+  express, AND the user has agreed to maintain the adapter.
 - **Estimated effort when triggered.** 2 to 3 hours for the first
   additional host. About 1 hour for each host after that.
 

@@ -59,7 +59,7 @@ Each ADR has six sections. Aim for under 80 lines per ADR.
 | Number | Title | Status | Reversibility |
 |---|---|---|---|
 | [0001](0001-hexagonal-layered.md) | Hexagonal/layered architecture | Accepted | Moderate |
-| [0002](0002-single-host-v0.md) | Single host (Claude Code) at v0 | Accepted | Cheap |
+| [0002](0002-single-host-v0.md) | Single host (Claude Code) at v0 | Superseded by [0029](0029-portable-source-consumption.md) | Cheap |
 | [0003](0003-skill-as-data.md) | Skills are YAML+Markdown, not templates | Accepted | Moderate |
 | [0004](0004-no-template-engine-v0.md) | No template engine, no resolvers | Accepted | Cheap |
 | [0005](0005-bun-runtime.md) | Bun + TypeScript everywhere | Accepted | Expensive |
@@ -80,6 +80,7 @@ Each ADR has six sections. Aim for under 80 lines per ADR.
 | [0026](0026-broaden-project-purpose.md) | Broaden project purpose: skills + non-skill content | Superseded by [0028](0028-renderer-only-scope.md) | Cheap |
 | [0027](0027-skill-naming-convention.md) | Skill names state the activity; no bare abbreviations or adjectives | Accepted | Cheap |
 | [0028](0028-renderer-only-scope.md) | Narrow scope back to renderer-only; remove non-skill content | Accepted | Moderate |
+| [0029](0029-portable-source-consumption.md) | One renderer, portable source consumption | Accepted | Cheap |
 
 *Numbers 0018–0023 are reserved for v3 milestones (see
 [v3 ROADMAP](../plans/v3/ROADMAP.md), M41–M48/M59) and are not yet

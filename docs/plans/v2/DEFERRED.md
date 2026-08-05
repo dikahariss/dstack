@@ -25,6 +25,8 @@ that would unlock the item.
   hosts that need transforms can subclass it. Until a specific host
   needs a transform we cannot do at the spec level, we do not build
   per-host adapters.
+  [ADR-0029](../../adr/0029-portable-source-consumption.md) records this
+  as the current architecture.
 - **What is in place.** Strict-spec renderer (M22), `metadata.dstack.*`
   extensions that other hosts ignore, `HostRenderer` port.
 - **Trigger to revisit.** A specific host adds a frontmatter field

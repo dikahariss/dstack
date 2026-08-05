@@ -45,13 +45,13 @@ specs/render-spec.md  ->  specs/install-spec.md
 
 ### `adr/` — Architecture Decision Records
 
-Ten records documenting non-obvious design choices. Each ADR explains
+Records documenting non-obvious design choices. Each ADR explains
 the context, the decision, the trade-offs, and the reversibility.
 
 | ADR | Topic |
 |---|---|
 | [0001](adr/0001-hexagonal-layered.md) | Hexagonal / layered architecture |
-| [0002](adr/0002-single-host-v0.md) | Single host (Claude Code) at v0 |
+| [0002](adr/0002-single-host-v0.md) | Single host (Claude Code) at v0 — superseded by [0029](adr/0029-portable-source-consumption.md) |
 | [0003](adr/0003-skill-as-data.md) | Skills are YAML + Markdown, not templates |
 | [0004](adr/0004-no-template-engine-v0.md) | No template engine, no resolvers |
 | [0005](adr/0005-bun-runtime.md) | Bun + TypeScript everywhere |
@@ -60,6 +60,19 @@ the context, the decision, the trade-offs, and the reversibility.
 | [0008](adr/0008-sandbox-detection-at-adapter.md) | Sandbox detection in the adapter |
 | [0009](adr/0009-spec-driven-skills.md) | Each skill ships a contract |
 | [0010](adr/0010-context-budget.md) | Hard token budget per skill |
+| [0011](adr/0011-import-path-aliases.md) | Import path aliases for cross-layer references |
+| [0012](adr/0012-frontmatter-align-official.md) | Frontmatter alignment with the official Agent Skills schema |
+| [0013](adr/0013-single-file-skill-md.md) | Single-file `SKILL.md` source format |
+| [0014](adr/0014-metadata-namespace.md) | `metadata.dstack.*` namespace for extensions |
+| [0015](adr/0015-type-taxonomy-adoption.md) | Four-type computation taxonomy in the skill schema |
+| [0016](adr/0016-per-tier-token-budget.md) | Per-tier token budgets |
+| [0017](adr/0017-bundled-resources.md) | Bundled resource support |
+| [0024](adr/0024-catalog-breadth-over-yagni.md) | Catalog breadth for proven reference skills |
+| [0025](adr/0025-hybrid-by-default-doctrine.md) | Hybrid-by-default doctrine |
+| [0026](adr/0026-broaden-project-purpose.md) | Broadened project purpose, later superseded by 0028 |
+| [0027](adr/0027-skill-naming-convention.md) | Activity-based skill naming |
+| [0028](adr/0028-renderer-only-scope.md) | Renderer-only scope |
+| [0029](adr/0029-portable-source-consumption.md) | One renderer, portable source consumption |
 
 See [adr/README.md](adr/README.md) for ADR format, status definitions,
 and how to add a new ADR.

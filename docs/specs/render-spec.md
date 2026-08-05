@@ -197,21 +197,23 @@ Return a `RenderResult` with:
 - `tokenCount` = the count from Step 5
 - `warnings` = the collected warnings (may be empty)
 
-## Algorithm for a future second host (hypothetical Codex renderer)
+## Algorithm for a future host that requires a transform
 
 The `HostRenderer` port is host-agnostic. A second host's renderer
 would have the same shape but with three host-specific differences:
 
-| Step | Claude Code today | Hypothetical Codex |
+| Step | Claude Code today | Host requiring a transform |
 |---|---|---|
-| Step 3. Frontmatter | Claude Code shape | Codex shape (different fields) |
-| Extra step 3b. Tool name rewriting | Not needed | Codex tool names may differ. Example: `AskUserQuestion` might map to a different tool. |
-| Extra step 3c. Path rewriting | Output is `<id>/SKILL.md` | Codex may use a different file layout. |
+| Step 3. Frontmatter | Claude Code shape | Host-specific shape |
+| Extra step 3b. Tool name rewriting | Not needed | Source tool names map to the host's tool names. |
+| Extra step 3c. Path rewriting | Output is `<id>/SKILL.md` | The host may use a different file layout. |
 
 Steps 3b and 3c do not exist in the Claude Code renderer because the
 body is already in Claude Code's expected shape. They are
 adapter-local concerns. See [host-spec.md](host-spec.md) for how
-hosts differ.
+hosts differ. Codex currently consumes the portable source directories
+directly and does not use this hypothetical renderer path; see
+[ADR-0029](../adr/0029-portable-source-consumption.md).
 
 ## Determinism guarantee
 
