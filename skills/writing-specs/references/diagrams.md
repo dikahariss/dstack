@@ -99,6 +99,12 @@ flowchart TB
 Subgraphs as swimlanes show *who* does each step. The rejection path is the
 half that gets left out and the half stakeholders recognise.
 
+This fence is enough while the process is being agreed. Once it must be
+executed, handed to an operations team, or deployed to an engine, it needs to
+be a real `.bpmn` — Mermaid has no pool, no typed gateway, and no message or
+timer event. Hand off to `/modelling-business-processes` and reference the file
+from here; the fence stays, as the readable summary of it.
+
 ## Rules that keep a diagram useful
 
 1. **One question per diagram.** A picture answering three questions answers

@@ -12,7 +12,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -50,6 +50,8 @@ success is worse than one that refuses.
 | Instead of this skill | Use |
 |---|---|
 | The diagram belongs inside the spec and nowhere else | leave the Mermaid fence — `/writing-specs` is right |
+| A business process with roles, lanes and approvals | `/modelling-business-processes` — that is BPMN, and the draw.io CLI cannot read `.bpmn` |
+| A use case diagram, or a sequence with combined fragments | `/modelling-system-behaviour` — Mermaid has no use case diagram at all |
 | A screen, a form, a layout | `/wireframing-interfaces` |
 | A chart of data — bars, lines, distributions | `/dataviz` |
 | No design to draw yet | `/writing-specs` first |
@@ -189,6 +191,7 @@ diagram adds maintenance and no information. Say so and stop.
 | "The picture looks fine to me" | You are not the reader who has to object. Run the legibility check. |
 | "One diagram can cover both levels" | That is the diagram nobody reads. Split it. |
 | "No renderer here, so nothing to do" | Wrong. Source and editable file still ship; the rest reads `n/a` with a reason. |
+| "A `.bpmn` is XML, so draw.io can convert it" | Measured `Error: Export failed`. BPMN is not on this path — `/modelling-business-processes` is. |
 
 ## Hand-off
 
@@ -205,6 +208,12 @@ replacement for its fence. Send a set that will be reviewed by others through
 
 ## Changes
 
+- **0.3.0** — Two notations routed away rather than absorbed. `.bpmn` cannot be
+  read by the draw.io CLI (`Error: Export failed`), so the Mermaid→draw.io spine
+  does not reach it; and Mermaid has no use case diagram type. Both would have
+  been attempted and silently failed against this skill's conversion stage.
+  Added the hand-off rows to `/modelling-business-processes` and
+  `/modelling-system-behaviour`, and the measured `.bpmn` refusal as a red flag.
 - **0.2.0** — Legibility mandate made honest after the first real trial. Eight
   defect classes became four with numeric thresholds, run by a bundled checker
   over the `.drawio` **source** rather than the rendered SVG — the source exists

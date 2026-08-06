@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.12.0
+    version: 0.13.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -77,6 +77,8 @@ language they used. One row can fire more than once in a task.
 | Requirements agreed; the design/blueprint is not written | `/writing-specs` |
 | Criteria exist; the situations to test are not enumerated | `/designing-test-cases` |
 | A diagram must leave the document — editable or shareable | `/diagramming-architecture` |
+| A business process needs a real `.bpmn` — roles, lanes, gateways | `/modelling-business-processes` |
+| Use case or sequence diagram — actors, goals, message order | `/modelling-system-behaviour` |
 | Spec says what a screen does; nobody can see it yet | `/wireframing-interfaces` |
 | Ambiguous/creative plan or design, not aligned | `/brainstorm` |
 | Have a spec; need a step-by-step plan | `/writing-plans` |
@@ -114,6 +116,9 @@ language they used. One row can fire more than once in a task.
 - Shipping a UI change: tests green → `/running-uat` (browser, per point of view)
   → fix → `/finishing-development-branch`.
 - Literature review: `/literature-search` → `/literature-trends` → `/literature-fulltext`.
+- Modelling a system: `/discovering-requirements` (its actor table feeds both) →
+  `/modelling-system-behaviour` (who wants what, in what order) →
+  `/modelling-business-processes` (who does what, as a `.bpmn`) → `/writing-specs`.
 
 ### When to open the full catalog
 
@@ -162,6 +167,11 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.13.0** — Registered `modelling-business-processes` (a business process as
+  a real `.bpmn`) and `modelling-system-behaviour` (use case and sequence models
+  in UML), plus a modelling chain. Both sit beside `diagramming-architecture`
+  rather than inside it: the draw.io CLI cannot read `.bpmn` at all, and Mermaid
+  has no use case diagram, so neither notation is reachable from that skill.
 - **0.12.0** — Registered `auditing-short-video` (audit a short-form video file;
   build a per-video dataset and a multi-video corpus).
 - **0.11.0** — Registered `diagramming-architecture` and `wireframing-interfaces`:
