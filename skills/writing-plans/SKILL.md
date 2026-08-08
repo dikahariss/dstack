@@ -9,11 +9,11 @@ description: |
 allowed-tools: Read Grep Glob Write
 metadata:
   dstack:
-    version: 0.6.0
+    version: 0.7.0
     type: semantic
     side_effects: local
     agency: deliberative
-    context_budget_tokens: 3200
+    context_budget_tokens: 4000
     triggers:
       - write a plan
       - writing-plans
@@ -21,6 +21,7 @@ metadata:
       - implementation plan
       - task ordering
       - frontend first
+      - plan status
 ---
 # /writing-plans
 
@@ -127,6 +128,48 @@ at checkpoints with `/requesting-code-review`.
 Steps use `- [ ]` checkboxes.
 ```
 
+## Status block — write it, then keep it true
+
+Directly under the header, before Task 1, every plan carries a Status block.
+It is the **first thing a later session reads and the only authoritative record
+of where the work stands**. `/executing-plans` resumes from it.
+
+```markdown
+## Status
+
+**Updated:** YYYY-MM-DD · **Branch:** `feat/x` · **Next:** Task 4
+
+| Task | State | Evidence |
+|---|---|---|
+| 1 Map shell screen | done | `a1b2c3d` — /martin renders, 3 layers visible |
+| 2 Tile endpoint | done | `e4f5g6h` — 12 tests green, 200 in 40 ms |
+| 3 Contour import | blocked | GDAL missing on this host — see Deviations |
+| 4–9 | todo | — |
+
+**Deviations from plan:**
+- Task 3: synthetic bathymetry in PostGIS instead of a BATNAS download —
+  works offline. Agreed with the user 2026-07-23. Task 3's steps still
+  describe the download; that is the target once real data lands.
+```
+
+Rules that keep it honest:
+
+- **States** are `todo`, `in progress`, `done`, `blocked`, `dropped`. Nothing else.
+- **Only `done` carries evidence**, and evidence is a commit SHA plus what was
+  observed — a number, a status code, a screen. "Implemented" is not evidence.
+- **Consecutive `todo` tasks collapse into one range row.** The block stays
+  short enough that reading it is cheap; expand a row when its task starts.
+- **Deviations are appended, never rewritten.** When reality diverges from the
+  plan, add a line saying what changed and why. Do not silently edit the task
+  text to match the code — a plan quietly rewritten to agree with what was built
+  is a plan nobody can review.
+- **The block is written when the plan is written**, with every task `todo`.
+  A plan whose Status block is added later is a plan that already lost its history.
+
+Step-level `- [ ]` boxes stay, but they are in-task scratch for whoever is
+executing right now. **The task table is the record.** Where the two disagree,
+the table wins.
+
 ## Task structure
 
 ````markdown
@@ -196,6 +239,8 @@ After writing the plan, check it against the spec with fresh eyes:
 5. **Placeholders** — scan for the red flags above. Fix inline.
 6. **Consistency** — types, signatures, and names defined in early tasks
    match the ones used in later tasks.
+7. **Status block present** — it sits under the header, lists every task as
+   `todo`, and names the branch. A plan without one cannot be resumed.
 
 Fix issues inline; no need to re-review.
 
@@ -206,8 +251,32 @@ time: `/test-driven-development` per task, `/verifying-before-done` before "done
 `/requesting-code-review` at natural checkpoints. For a large plan,
 dispatch a fresh subagent per task and review between tasks.
 
+Handing the work to a **fresh session** needs no written summary and no
+generated prompt. The Status block is the handoff. One line carries it:
+
+```
+/executing-plans docs/plans/YYYY-MM-DD-<feature>.md
+```
+
+If that line is not enough for a session with no history to know what to do
+next, the Status block is under-filled — fix the block, not the prompt.
+
 ## Changes
 
+- **0.7.0** — Added the **Status block**: a task-state table under the plan
+  header, with a branch, a `Next:` pointer, evidence on `done` rows, and an
+  append-only Deviations list. Transcript mining across ~60 real plan documents
+  found thousands of `- [ ]` steps and effectively zero ticked — including a
+  plan whose work demonstrably shipped in 12 commits while its 72 boxes stayed
+  unticked. Status was being delegated to session-local todos, so it died at
+  `/clear`; the same evidence showed both the model and the user independently
+  hand-inventing the missing artifact (an ad-hoc `## STATUS EKSEKUSI` section
+  buried at line 714 of one plan, and a hand-maintained `STATUS.md` dashboard in
+  another repo). The block sits under the header rather than at the end so
+  reading it is cheap, and step checkboxes were demoted to in-task scratch
+  rather than mandated harder — a rule at 0% compliance over 60 documents does
+  not get fixed by repeating it. The handoff section now states that the block
+  replaces the written hand-off prompt.
 - **0.6.0** — English-only sweep. Dropped the two Indonesian trigger phrases
   (priority ordering, frontend-first) and put the 0.5.0 entry's quoted
   Indonesian complaint into English reported speech. Reasoning is

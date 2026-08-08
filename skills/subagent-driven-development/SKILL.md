@@ -9,7 +9,7 @@ description: |
 allowed-tools: Agent Read Bash
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.5.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -112,6 +112,18 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 4. If the plan itself is wrong, escalate to the user
 
 **Never** ignore an escalation or force the same model to retry without changes. If the implementer said it's stuck, something needs to change.
+
+## Writing status back to the plan
+
+The plan's `## Status` block (`/writing-plans`) is the record that outlives this
+session; your todo list is not. **You** own it — subagents must not write to the
+plan file, or concurrent tasks will clobber each other.
+
+After each task passes both reviews, update its row: state `done`, the commit
+SHA and observed evidence, `Updated:` bumped, `Next:` moved on. A `BLOCKED` you
+escalate goes in as `blocked` with the reason before you stop. Deviations from
+the plan are appended to `Deviations from plan`, never folded silently into the
+task text.
 
 ## Prompt templates
 
@@ -254,6 +266,11 @@ a one-file change.
 
 ## Changes
 
+- **0.5.0** — Added status write-back to the plan's `## Status` block
+  (`/writing-plans` 0.7.0), owned by the orchestrator so parallel subagents
+  cannot clobber the file. Without it, same-session execution finished tasks
+  the next session had no record of — the same gap `/executing-plans` 0.3.0
+  closes for separate sessions.
 - **0.4.0** — Reciprocated `/test-driven-development` 0.6.0: the implementer
   prompt now delegates the risk-tier decision (inside → failing test first;
   outside → frozen case list with expected outcomes, then tests) instead of
