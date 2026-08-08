@@ -23,9 +23,9 @@ never fires (a repo rule that should have been a skill edit) or fires everywhere
 | Observation | Routes to | Why not elsewhere |
 |---|---|---|
 | 6× "File has not been read yet" | repo rule | Mechanical harness contract. Not a workflow, so no skill owns it |
-| User keeps asking "pastikan dulu" before believing a claim | the verification skill's triggers/routing | A *new* rule would duplicate what the skill already says; the problem is it is not firing |
-| "Jangan sampai mendiskreditkan kerjaan kita sendiri" | memory (`feedback`) | Context about the user's position and stakes. No repo owns it |
-| Agent proposed 3 categories; user pushed back with "kalau saya bilang 4, kamu ubah juga?" | memory (`feedback`) | A standing instruction about sycophancy — hold the position or show the evidence for changing it |
+| User keeps demanding the claim be verified first, before believing it | the verification skill's triggers/routing | A *new* rule would duplicate what the skill already says; the problem is it is not firing |
+| User's standing instruction: never discredit our own work | memory (`feedback`) | Context about the user's position and stakes. No repo owns it |
+| Agent proposed 3 categories; user pushed back by asking whether it would have said 4 had they claimed 4 | memory (`feedback`) | A standing instruction about sycophancy — hold the position or show the evidence for changing it |
 | Same test file edited 11× in one session | the testing skill | Trial-and-error against a failing test is a workflow gap, not a rule |
 | A library's API changed | nowhere | Stale next month. Look it up when needed |
 | Deploy needs a specific tag format in one repo | that repo's `CLAUDE.md` | Project-specific and mechanical |

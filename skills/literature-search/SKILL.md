@@ -9,7 +9,7 @@ description: >
   (Elsevier), Taylor & Francis (Atypon Literatum), Springer Nature Link, ProQuest
   Dissertations & Theses (guest/public — scrape-not-export), and Neliti (Indonesian
   index — bag-of-words, robots-constrained); Emerald and others plug in as per-vendor
-  adapters. Triggers: "SLR search", "cari literatur", "search string", "boolean
+  adapters. Triggers: "SLR search", "literature search", "search string", "boolean
   query", "literature keyword strategy", "export/download RIS", "harvest citations",
   "ScienceDirect search", "Taylor & Francis search", "tandfonline", "Springer
   search", "ProQuest search", "ProQuest dissertations", "harvest dissertations",
@@ -18,14 +18,13 @@ allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.3.2
+    version: 0.4.0
     context_budget_tokens: 4500
     side_effects: local
     agency: deliberative
     triggers:
       - slr search
       - literature search
-      - cari literatur
       - search string
       - boolean query
       - literature keyword strategy
@@ -204,6 +203,16 @@ or TDM programme, or ask.
 | Chasing every synonym | Stop at diminishing returns — new term, no new relevant hits |
 
 ## Changes
+- **0.4.0** — Dropped the one Indonesian trigger phrase (the literal translation
+  of "search literature") from the description and the trigger list under the
+  English-only rule (`/using-dstack` 0.7.0): models translate intent rather than
+  matching lexically, so the phrase cost tokens without adding reach. Its slot in
+  the description now reads "literature search", which the trigger list already
+  carried. Preserved as data: the proper nouns **Neliti**, **Perpusnas**,
+  ScienceDirect, Taylor & Francis, Springer, ProQuest, Emerald (including the
+  `perpusnas e-resources` trigger and the EZproxy host) and the Neliti adapter's
+  Indonesian-language filter value `languages=id` — those are matched against the
+  live site.
 - **0.3.2** — Measured `robots.txt` on all three proxied engines: each disallows the
   paths its own adapter told you to script (T&F `/action` — both `doSearch` and
   `downloadCitation`; Springer default-deny excluding `/search?query=` + `/search/csv`,

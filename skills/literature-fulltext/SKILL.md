@@ -8,21 +8,20 @@ description: >
   Covers the no-DOI paths too: browser-driven OA download of ProQuest
   dissertations, and Neliti's self-hosted OA PDFs. Stage 3 after /literature-search
   and /literature-trends. Triggers:
-  "download OA PDF", "fetch full text", "unduh artikel", "unpaywall", "download
+  "download OA PDF", "fetch full text", "unpaywall", "download
   articles for these DOIs", "open access download", "get the PDFs", "download open
   access", "download dissertation PDF", "ProQuest full text", "Neliti PDF".
 allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.3.0
-    context_budget_tokens: 2500
+    version: 0.4.0
+    context_budget_tokens: 2750
     side_effects: external
     agency: deliberative
     triggers:
       - download oa pdf
       - fetch full text
-      - unduh artikel
       - unpaywall
       - download articles
       - open access download
@@ -129,6 +128,12 @@ assume CC-BY.
 | Assuming every Neliti PDF is CC-BY | Neliti aggregates many publishers — read the license per record, don't assume |
 
 ## Changes
+- **0.4.0** — English-only pass (`using-dstack` 0.7.0: models translate intent,
+  so the phrase only cost tokens); "download articles for these DOIs" and "get
+  the PDFs" already covered it. Preserved as data: Neliti, ProQuest, Unpaywall
+  and the `media.neliti.com` / `citation_pdf_url` details.
+  `context_budget_tokens` re-targeted 2500 → 2750: the body had been sitting at
+  2239/2500 since 0.3.0, so any edit tripped the near-budget warning.
 - **0.3.0** — Fixed a **recall bug** in `oa_fetch.py`: reading only
   `best_oa_location.url_for_pdf` silently dropped gold-OA records whose best location
   exposes no direct PDF (measured: eLife `10.7554/eLife.00005` reported closed, yet

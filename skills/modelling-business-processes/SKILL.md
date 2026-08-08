@@ -8,14 +8,13 @@ description: >
   and wait patterns, and the lint gate. `.bpmn` is the mandatory artifact;
   rendered and inline views are optional. Requests for an "activity diagram"
   or a "flowchart of the process" land here too. Not for architecture pictures
-  and not for UML use case or sequence models. Triggers: "bpmn", "proses
-  bisnis", "business process", "activity diagram", "diagram alur proses",
-  "alur persetujuan", "swimlane", "pool dan lane", "workflow diagram",
-  "process model", "camunda", "zeebe", "bikin diagram prosesnya".
+  and not for UML use case or sequence models. Triggers: "bpmn", "business
+  process", "process diagram", "activity diagram", "approval flow",
+  "swimlane", "workflow diagram", "process model", "camunda", "zeebe".
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -24,11 +23,10 @@ metadata:
     triggers:
       - modelling business processes
       - bpmn
-      - diagram proses bisnis
       - business process
+      - process diagram
       - activity diagram
-      - diagram alur proses
-      - alur persetujuan
+      - approval flow
       - swimlane
       - workflow diagram
       - camunda
@@ -53,8 +51,8 @@ NEVER CLAIM A FILE THIS MACHINE DID NOT PRODUCE.
 | The process needs only a fence inside the spec | `/writing-specs` — its lane flowchart is enough |
 | Nobody has agreed what the process *is* yet | `/discovering-requirements` first |
 
-**"Activity diagram", "diagram alur proses" and "flowchart proses bisnis" all
-land here.** The answer is a BPMN process in every case — say which term was
+**"Activity diagram", "process flow diagram" and "business process flowchart"
+all land here.** The answer is a BPMN process in every case — say which term was
 asked for and which notation was produced, so the caller is not surprised.
 
 ## Stage 0 — inputs
@@ -197,7 +195,7 @@ for, and that no branch depends on, is narration. Leave it out and say you did.
 
 ## Badly and well
 
-> Ask: "buatkan diagram proses persetujuan sertifikat"
+> Ask: "draw the certificate approval process"
 
 | | |
 |---|---|
@@ -236,6 +234,13 @@ operations reviewer and an engineer object to different things.
 
 ## Changes
 
+- **0.2.0** — Dropped the Indonesian trigger phrases from the description and
+  the trigger list, and put the example ask into English, under the English-only
+  rule (`using-dstack` 0.7.0): models translate intent rather than matching
+  lexically, so the phrases cost tokens without adding reach. `approval flow`
+  and `process diagram` were added to carry the reach the removed phrases had.
+  The Indonesian eval prompts are deliberately untouched — they are the proof
+  that an English skill still matches an Indonesian request.
 - **0.1.0** — Initial. Four things were measured before the body was written,
   and each changed the design. `drawio -x` **cannot read `.bpmn`** (`Error:
   Export failed`), so the Mermaid→draw.io spine of `/diagramming-architecture`

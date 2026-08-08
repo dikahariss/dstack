@@ -8,23 +8,21 @@ description: >
   per-year and per-topic bibliometrics, ranking topics by volume and growth, and
   producing trend diagrams (ranking, heatmap, trajectories, keyword frequency,
   volume-vs-growth positioning). Database-agnostic. Triggers: "research trend analysis",
-  "analisis tren", "bibliometric", "topic categorization", "kelompokan topik",
-  "which topics are growing", "research trends", "keyword frequency", "publication
-  trend", "corpus analysis", "peta tren".
+  "bibliometric", "topic categorization", "which topics are growing", "research
+  trends", "keyword frequency", "publication trend", "corpus analysis", "trend map".
 allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.1.0
+    version: 0.2.0
     context_budget_tokens: 3000
     side_effects: local
     agency: deliberative
     triggers:
       - research trend analysis
-      - analisis tren
       - bibliometric
       - topic categorization
-      - kelompokan topik
+      - trend map
       - research trends
       - keyword frequency
       - publication trend
@@ -100,6 +98,13 @@ the partial current year. The scripts are rails; the interpretation is yours.
 | Summing per-topic counts for an "overall" line | Topics overlap → double-counts; use an umbrella query or the deduped corpus |
 
 ## Changes
+- **0.2.0** — Dropped the three Indonesian trigger phrases (the literal
+  translations of "trend analysis", "group the topics", and "trend map") from the
+  description and the trigger list under the English-only rule (`/using-dstack`
+  0.7.0): models translate intent rather than matching lexically, so the phrases
+  cost tokens without adding reach. "research trend analysis" and "topic
+  categorization" already covered the first two; the third is now covered by the
+  English "trend map", which is what this skill produces. Nothing else here was Indonesian.
 - **0.1.0** — Initial. Database-agnostic corpus→trends: parse/dedup + categorize +
   population-vs-sample discipline + growth metrics + the standard diagram set
   (delegates palette to `/dataviz`). Stage 2 of the literature pipeline.

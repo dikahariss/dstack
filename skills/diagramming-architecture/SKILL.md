@@ -6,13 +6,14 @@ description: >
   wanted for a review, a slide, or a whiteboard; or when a spec's inline fence
   should also exist as a file. Produces the source plus editable and viewable
   files, and states per output what this machine could and could not produce.
-  Triggers: "buat diagram", "diagram arsitektur", "gambar arsitekturnya",
-  "excalidraw", "draw.io", "drawio", "export diagram", "editable diagram",
-  "C4 diagram", "ERD gambar", "diagram alur", "diagram bisa diedit".
+  Triggers: "draw a diagram", "architecture diagram", "excalidraw", "draw.io",
+  "drawio", "export diagram", "editable diagram", "C4 diagram", "ER diagram as
+  an editable file", "architecture flowchart" — a flowchart of a business
+  process is `/modelling-business-processes`.
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.4.0
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -20,15 +21,14 @@ metadata:
     context_budget_tokens: 5000
     triggers:
       - diagramming architecture
-      - buat diagram
-      - diagram arsitektur
-      - gambar arsitekturnya
+      - draw a diagram
+      - architecture diagram
       - excalidraw
       - drawio
       - export diagram
       - editable diagram
       - c4 diagram
-      - diagram alur
+      - diagram as a file
 ---
 # /diagramming-architecture
 
@@ -208,6 +208,15 @@ replacement for its fence. Send a set that will be reviewed by others through
 
 ## Changes
 
+- **0.4.0** — Indonesian trigger phrases dropped from the description and the
+  trigger list under the English-only rule. `/using-dstack` 0.7.0 settled the
+  reasoning: models match on intent and translate, so the phrases spent tokens
+  without buying reach. Every dropped phrase kept its reach through a precise
+  English trigger — *draw a diagram*, *architecture diagram*, *ER diagram as
+  an editable file*, *architecture flowchart* — and *editable diagram* already covered the last of them. Nothing
+  in the body was Indonesian, so nothing was translated; the Indonesian prompts
+  in `eval/cases.jsonl` stay untouched, because they are the evidence that an
+  English skill still matches an Indonesian request.
 - **0.3.0** — Two notations routed away rather than absorbed. `.bpmn` cannot be
   read by the draw.io CLI (`Error: Export failed`), so the Mermaid→draw.io spine
   does not reach it; and Mermaid has no use case diagram type. Both would have

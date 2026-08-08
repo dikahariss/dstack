@@ -7,27 +7,25 @@ description: >
   criteria are met. Covers the entry gate (unit/e2e green first), the evidence
   rules that stop a false PASS, per-persona points of view, and a hard iteration
   cap. Not for unit or e2e tests, and not for testing a dstack skill. Triggers:
-  "lakukan UAT", "run UAT", "UAT dengan point of view", "acceptance test",
-  "uji terima", "test via browser", "pastikan PASS semuanya", "user acceptance
-  testing", "UAT end-to-end", "smoke test the running app".
+  "run UAT", "UAT from a point of view", "acceptance test", "test via browser",
+  "make sure every acceptance criterion passes", "user acceptance testing", "UAT end-to-end",
+  "smoke test the running app".
 allowed-tools: Bash Read Write Edit Agent Skill Glob Grep
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
     agency: deliberative
     context_budget_tokens: 4500
     triggers:
-      - lakukan uat
       - run uat
       - acceptance test
-      - uji terima
       - uat end-to-end
       - uat point of view
       - test via browser
-      - pastikan pass semuanya
+      - make sure every acceptance criterion passes
 ---
 # /running-uat
 
@@ -182,10 +180,17 @@ escalate — do not resolve it in the build's favour.
 
 ## Changes
 
+- **0.3.0** — Removed the Indonesian trigger phrases and prose under the
+  English-only rule (using-dstack 0.7.0: models translate intent, so the phrases
+  cost tokens without adding reach). "Run UAT" and "acceptance test" already
+  covered two of them; the third gained the English trigger "make sure every
+  acceptance criterion passes". The 0.1.0 entry's mixed-language quote of the entry gate now reads as
+  English. Nothing was preserved as data — this skill matches no Indonesian
+  literal.
 - **0.2.0** — Named `/designing-test-cases` as the producer of the enumerated
   criteria the entry gate demands; the gate had no upstream and refused often.
 - **0.1.0** — Initial. Derived from 70 real UAT requests in this user's history
-  (the "unit testing sebelum UAT" entry gate, the 3-iteration cap, browser-driven
+  (the "unit testing before UAT" entry gate, the 3-iteration cap, browser-driven
   execution, per-persona points of view) and cross-checked against ISTQB's
   definitions of acceptance testing, test oracle, entry/exit criteria and
   confirmation testing; Playwright's auto-waiting and web-first assertion

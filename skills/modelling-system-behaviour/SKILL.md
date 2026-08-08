@@ -8,14 +8,13 @@ description: >
   the include/extend traps, combined fragments, and the cross-check that the
   actors in a sequence are the actors someone actually agreed to. Produces
   `.puml` sources plus renders. Not for BPMN process models and not for
-  architecture pictures. Triggers: "use case diagram", "diagram use case",
-  "sequence diagram", "diagram sekuens", "UML", "plantuml", "aktor sistem",
-  "skenario interaksi", "message flow", "lifeline", "diagram interaksi",
-  "siapa saja aktornya", "boundary sistem".
+  architecture pictures. Triggers: "use case diagram", "sequence diagram",
+  "UML", "plantuml", "system actors", "system boundary", "interaction
+  scenario", "interaction diagram", "message flow", "lifeline".
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -24,14 +23,13 @@ metadata:
     triggers:
       - modelling system behaviour
       - use case diagram
-      - diagram use case
       - sequence diagram
-      - diagram sekuens
       - plantuml
       - uml
-      - aktor sistem
-      - skenario interaksi
-      - diagram interaksi
+      - system actors
+      - system boundary
+      - interaction scenario
+      - interaction diagram
 ---
 # /modelling-system-behaviour
 
@@ -186,7 +184,7 @@ timeout. That choice is the design, not a drawing decision.
 
 ## Badly and well
 
-> Ask: "bikin use case diagram untuk modul pengajuan izin"
+> Ask: "build a use case diagram for the permit application module"
 
 | | |
 |---|---|
@@ -225,6 +223,15 @@ path is already a test case waiting to be named.
 
 ## Changes
 
+- **0.2.0** — Dropped the Indonesian trigger phrases from the description and
+  the trigger list, and put the example ask into English, under the English-only
+  rule (`using-dstack` 0.7.0): models translate intent rather than matching
+  lexically, so the phrases cost tokens without adding reach. `system actors`,
+  `system boundary`, `interaction scenario` and `interaction diagram` were added
+  to carry the reach the removed phrases had. `NPWP` stays in
+  `references/use-case.md` as a proper noun in a worked example, and the
+  Indonesian eval prompts are deliberately untouched — they are the proof that
+  an English skill still matches an Indonesian request.
 - **0.1.0** — Initial. Built after measuring that **PlantUML exits 0 on a syntax
   error and writes a plausible SVG** — a deliberately broken file produced 1,963
   bytes reading `A A` — which is why rendering is followed by a round-trip check

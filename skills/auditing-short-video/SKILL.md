@@ -7,21 +7,21 @@ description: >
   use when several such audits must be merged into a corpus, or when video
   measurements must be prepared for a database, warehouse, or ML feature store.
   Not for a platform URL (this reads local files only) and not for judging a
-  running app. Triggers: "analisis video ini", "audit video", "review video ini",
-  "kenapa video ini tidak perform", "extract data dari video", "hook analysis",
-  "retention critique", "why isn't this reel performing", "video dataset",
-  "merge video audits", "video-analyzer".
+  running app. Triggers: "analyze this video", "audit video", "review this video",
+  "extract data from a video", "hook analysis", "retention critique",
+  "why isn't this reel performing", "video dataset", "merge video audits",
+  "video-analyzer".
 allowed-tools: Read Write Edit Bash Glob Grep
 metadata:
   dstack:
-    version: 1.2.0
+    version: 1.3.0
     type: hybrid
     side_effects: local
     agency: deliberative
     context_budget_tokens: 4500
     triggers:
       - audit short video
-      - analisis video
+      - analyze video
       - audit video
       - video hook retention
       - video dataset corpus
@@ -203,6 +203,14 @@ account. If the user wants only a sub-deliverable, still run Steps 1–2 — the
 what stop a wrong answer — but deliver only what was asked.
 
 ## Changes
+
+- **1.3.0** — Indonesian trigger phrases removed under the English-only rule
+  (using-dstack 0.7.0: models translate intent, so the phrases cost tokens
+  without adding reach). The four Indonesian phrases in the description became
+  English triggers of the same intent, and `metadata.dstack.triggers` now reads
+  "analyze video". Preserved as data: the BCP 47 language codes in `taxonomy.md`
+  (which include Indonesian), and the Indonesian prompts in `eval/cases.jsonl`,
+  which are the proof that an English skill still matches an Indonesian request.
 
 - **1.2.0** — Everything the second review round found, implemented. A machine
   validator (`validate_audit.py`) now parses the authoritative enum block in

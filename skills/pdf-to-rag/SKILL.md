@@ -2,10 +2,10 @@
 name: pdf-to-rag
 description: >
   Use when converting one or more PDFs into retrieval-ready (RAG) Markdown —
-  especially scanned/OCR'd, image- or flowchart-heavy (bagan alur), table-heavy,
+  especially scanned/OCR'd, image- or flowchart-heavy, table-heavy,
   or Indonesian government/legal/regulatory documents (Permenhub, Inpres, Juknis,
   UU, Peraturan, SK/Keputusan). Triggers: "convert PDF to markdown", "pdf to rag",
-  "siapkan/sempurnakan untuk RAG", "konversi PDF", "extract this regulation",
+  "prepare for RAG", "extract this regulation",
   scanned pages, OCR garble, scrambled tables, word-splits, missing heading
   structure, or when an earlier deterministic extractor (pdf2md, plain pdftotext)
   produced garbled output. Assumes a Claude Max plan (fan out subagents freely).
@@ -13,16 +13,13 @@ allowed-tools: Bash Read Write Edit Workflow Grep Glob
 metadata:
   dstack:
     type: hybrid
-    version: 0.5.0
+    version: 0.6.0
     triggers:
       - convert pdf to markdown
       - pdf to rag
-      - siapkan untuk rag
-      - sempurnakan untuk rag
-      - konversi pdf
+      - prepare for rag
       - scanned pdf
       - ocr garble
-      - bagan alur
       - flowchart pages
       - permenhub
       - inpres
@@ -167,6 +164,16 @@ path) and a 23-page SCANNED Inpres with an 18-page matrix lampiran (vision/matri
 | Dropping page markers / no cost recap | Keep `<!-- page N -->`; sum each Workflow's `subagent_tokens` at the end |
 
 ## Changes
+- **0.6.0** — English-only pass (using-dstack 0.7.0's rule): dropped the four
+  Indonesian routing phrases from the description and `triggers` — models translate
+  intent, so the phrases cost tokens without adding reach; "prepare for RAG" now
+  carries that intent in English. PRESERVED as data, not prose: the proper nouns (Permenhub,
+  Inpres, Juknis, UU, Peraturan, SK/Keputusan), every literal the vision profiles
+  must MATCH in an Indonesian source page (`Menginstruksikan:`, `Kepada :`, `Untuk :`,
+  `Salinan sesuai dengan aslinya`, `JABATAN FUNGSIONAL DAN JABATAN PELAKSANA`, the
+  `Ya/Tidak` decision labels, the `Bagan alur …` / `BAGAN STRUKTUR ORGANISASI …`
+  headings, BAB/Bagian/Pasal/Paragraf, the KESATU…/PERTAMA… dictum, Rencana Aksi),
+  the `yangmenjadi` → `yang menjadi` word-split example, and the `eval/` prompts.
 - **0.5.0** — Quality pass from two field tests (multi-lens audit). (1) **Verify-before-fix**
   replaces "auto-fix any grounded=false page": a 23-page scanned run flagged 18/23 but
   only 2 were real (rest = omitted chrome or single-letter reviewer misreads); blind

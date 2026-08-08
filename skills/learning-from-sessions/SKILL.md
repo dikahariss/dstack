@@ -6,26 +6,25 @@ description: >
   tool errors, refused actions, and rework, then converting each recurring pattern
   into a written rule, a skill edit, or a memory entry. Run it on a cadence
   (weekly) or after a session that went badly. The exit condition is a committed
-  change, never a report. Triggers: "retro mingguan", "retrospective", "evaluasi
-  penggunaan claude", "apa yang bisa kita perbaiki", "pelajaran dari sesi kemarin",
-  "review history percakapan", "lessons learned", "analisa kesalahan AI", "belajar
-  dari sesi sebelumnya", "improve week over week".
+  change, never a report. Triggers: "retrospective", "weekly retro", "evaluate
+  Claude usage", "what can we improve", "lessons from yesterday's session",
+  "review conversation history", "lessons learned", "analyze recurring mistakes",
+  "learn from past sessions", "improve week over week".
 allowed-tools: Bash Read Write Edit Grep Glob
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: hybrid
     side_effects: local
     agency: deliberative
     context_budget_tokens: 3500
     triggers:
       - retrospective
-      - retro mingguan
+      - weekly retro
       - lessons learned
-      - evaluasi penggunaan claude
-      - pelajaran dari sesi
-      - analisa kesalahan ai
-      - belajar dari sesi
+      - evaluate claude usage
+      - analyze recurring mistakes
+      - learn from past sessions
 ---
 # /learning-from-sessions
 
@@ -151,6 +150,16 @@ The miner reports, over 14 days:
   shape, and how to retire a rule that stopped earning its place.
 
 ## Changes
+
+- **0.2.0** — Indonesian trigger phrases and prose removed under the English-only
+  rule (using-dstack 0.7.0: models translate intent, so the phrases cost tokens
+  without adding reach). The description and `metadata.dstack.triggers` now carry
+  English triggers of the same intent, and the worked routing examples in
+  `references/lesson-routing.md` state the user's pushback in English rather than
+  quoting it in Indonesian. Preserved as data: the Indonesian correction and
+  verify-demand regexes in `scripts/mine_sessions.py`, which exist to match real
+  Indonesian transcripts, and the Indonesian prompts in `eval/cases.jsonl`, which
+  are the proof that an English skill still matches an Indonesian request.
 
 - **0.1.0** — Initial. Built after mining this user's own corpus: 121 main-session
   transcripts (2,390 of 2,511 files were subagent transcripts and had to be

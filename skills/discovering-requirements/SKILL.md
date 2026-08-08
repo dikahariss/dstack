@@ -7,16 +7,15 @@ description: >
   actors, and no verified constraints. Also use when a request names a solution
   but never the problem it solves, when actors or permissions are unclear, or
   when the work touches regulated, contractual, or personal-data territory. Run
-  it before any spec, design, model, or plan. Triggers: "analisis kebutuhan",
-  "kebutuhan bisnis", "kebutuhan fungsional", "bikin modul", "buatkan sistem",
-  "desain schema-nya", "requirements gathering", "apa masalah utamanya",
-  "goals-nya apa", "problem statement", "BRD", "SRS", "KAK", "TOR", "user
-  story", "acceptance criteria", "business requirements", "user needs",
-  "discovery", "sebelum desain".
+  it before any spec, design, model, or plan. Triggers: "requirements
+  gathering", "requirements analysis", "functional requirements", "business
+  requirements", "schema design", "build a new module", "problem statement",
+  "BRD", "SRS", "KAK", "TOR", "user story", "acceptance criteria", "user
+  needs", "discovery", "before design".
 allowed-tools: Read Grep Glob Write WebSearch WebFetch AskUserQuestion Bash Skill
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -24,15 +23,13 @@ metadata:
     context_budget_tokens: 5000
     triggers:
       - discovering requirements
-      - analisis kebutuhan
-      - kebutuhan bisnis
-      - kebutuhan fungsional
       - requirements gathering
+      - requirements analysis
       - problem statement
       - business requirements
-      - apa masalah utamanya
-      - bikin modul
-      - desain schema
+      - functional requirements
+      - build a new module
+      - schema design
       - brd
       - srs
       - kak tor
@@ -318,18 +315,19 @@ a panel of simulated experts does not substitute for Stage 3's real actors.
 
 ## Changes
 
+- **0.3.0** — English-only pass (`using-dstack` 0.7.0). Reach kept via
+  "requirements analysis", "functional requirements", "schema design", "build a
+  new module". `KAK`/`TOR` stay — they are document types, not prose.
 - **0.2.0** — Rebuilt after a five-point-of-view review (BA, PM, compliance/DPO,
   UX, holistic) returning seven blocking findings, then a subagent trial that
   found eight more. Gates leave a written verdict, define what refusal does, and
   say what a BLOCKED gate does downstream; never-block gained legal and BLOCKED
   carve-outs. Added Stage 2.5 viability with `DO NOT BUILD`, Stage 7 close with
   a human-granted `AGREED`, Light/Full depth, actor classes with evidence
-  provenance, regime scoping, an evidentiary floor where the agent may no longer
-  write `VERIFIED`, downward traceability, `C-n` as trace parent, a conflict
-  register, ranked assumptions, and pass-conditions replacing "has a number".
-  The trial fixed a MUST-ratio gate that was unsatisfiable on compliance-bound
-  work, an evidence gate that passed on all-`INFERRED` rows, and a multi-repo
-  blind spot. Calibration `workflow` → `deterministic-dominant` (ADR-0025):
+  provenance, regime scoping, an evidentiary floor, downward traceability, `C-n`
+  as trace parent, a conflict register, ranked assumptions, and pass-conditions.
+  The trial fixed an unsatisfiable MUST-ratio gate, an evidence gate that passed
+  on all-`INFERRED` rows, and a multi-repo blind spot. Calibration `workflow` → `deterministic-dominant` (ADR-0025):
   a fixed spine with eight gates is the shape `running-uat` uses at that band,
   and the default told cheap models they had ~70% freedom over it.
   Owner-approved in session.

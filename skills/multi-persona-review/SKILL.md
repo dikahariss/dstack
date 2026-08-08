@@ -7,13 +7,13 @@ description: >
   per point of view, each with its own criteria checklist and a mandatory
   objection, then reconciles by union and arbitrates only genuine contradictions.
   Not for improving factual accuracy — see "What this does not do". Triggers:
-  "review dari beberapa point of view", "PoV senior data architect", "panel
-  review", "cross review", "review sebagai senior data engineer", "multi
+  "review from several points of view", "PoV senior data architect", "panel
+  review", "cross review", "review as a senior data engineer", "multi
   perspective review", "review from several angles", "reviewer panel".
 allowed-tools: Agent Read Write Edit Grep Glob Skill
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -24,7 +24,6 @@ metadata:
       - cross review
       - point of view review
       - pov senior
-      - review dari beberapa sudut pandang
 ---
 # /multi-persona-review
 
@@ -158,6 +157,12 @@ versus two reviewers describing the same thing differently.**
 
 ## Changes
 
+- **0.2.0** — Removed the Indonesian trigger phrases under the English-only rule
+  (using-dstack 0.7.0: models translate intent, so the phrases cost tokens
+  without adding reach). Two became their English forms — "review from several
+  points of view" and "review as a senior data engineer" — and the third was
+  dropped as already covered by "point of view review". Nothing was preserved as
+  data — this skill matches no Indonesian literal.
 - **0.1.0** — Initial. The point-of-view set is taken from this user's own
   recurring requests (senior data architect, data engineer, data analyst, UI/UX,
   novice vs. experienced user). Design constrained by the evidence rather than the

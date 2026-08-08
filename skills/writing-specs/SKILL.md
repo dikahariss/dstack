@@ -6,14 +6,13 @@ description: >
   is about to be resolved inside the implementation, where nobody can review it.
   Requires an agreed requirement set as input. Also use when someone asks for an
   HLD, LLD, technical design, solution design, blueprint, or spec-driven
-  development. Triggers: "spesifikasi teknis", "cetak biru sistem", "desain
-  arsitektur", "technical design", "design doc", "solution design", "HLD", "LLD",
-  "SDD", "spec-driven", "ERD", "API contract", "proses bisnis", "system
-  blueprint", "write the spec".
+  development. Triggers: "technical design", "architecture design", "design
+  doc", "solution design", "HLD", "LLD", "SDD", "spec-driven", "ERD", "API
+  contract", "process flow section", "system blueprint", "write the spec".
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.5.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -21,9 +20,8 @@ metadata:
     context_budget_tokens: 5000
     triggers:
       - writing specs
-      - spesifikasi teknis
-      - cetak biru
       - technical design
+      - architecture design
       - design doc
       - solution design
       - hld lld
@@ -31,7 +29,7 @@ metadata:
       - system blueprint
       - api contract
       - erd
-      - proses bisnis
+      - process flow section
 ---
 # /writing-specs
 
@@ -301,6 +299,9 @@ entry gate.
 
 ## Changes
 
+- **0.5.0** — English-only pass (`using-dstack` 0.7.0). Reach kept via
+  "architecture design" and "process flow section" — not "business process",
+  which `modelling-business-processes` owns and would collide with.
 - **0.4.0** — Reciprocated the two design-artifact skills: a diagram that must
   leave the document is `/diagramming-architecture`; the screens behind the step
   table are `/wireframing-interfaces`. The inline fence and the normative table
@@ -312,11 +313,10 @@ entry gate.
   dropped the Light depth path its own discovery required. Gates now record
   evidence on PASS, name the escalation target, define `BLOCKED-PENDING`, and
   read `n/a` when their subject is absent. Added the identity-versus-proof rule
-  for paths; entity grain, key stability, temporality, and a transition section;
-  consistency and compatibility on contracts; build order and
-  dependency-unavailable behaviour; altitude and `EXTERNAL`; a mandatory
-  structural decision row; reversibility independent of the ADR test; every
-  non-success terminal outcome; assertion level per AC; and a reviewer log.
+  for paths; entity grain, key stability and temporality; contract consistency
+  and compatibility; build order; altitude and `EXTERNAL`; a mandatory
+  structural decision row; reversibility; every non-success terminal outcome;
+  assertion level per AC; and a reviewer log.
 - **0.1.0** — Initial. Built from `docs/discovery/2026-07-28-writing-specs.md`:
   the plan skill consumed a spec nothing produced, and discovery is gated on
   *not* naming a solution, so design was decided inside implementation — visible

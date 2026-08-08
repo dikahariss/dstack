@@ -5,13 +5,13 @@ description: >
   implementation invents the layout, or when someone needs to check the flow
   rather than read a table of states. Draws one rough panel per state the spec
   names and records every state it did not draw. Never decides colour, typeface,
-  or spacing. Triggers: "wireframe", "mockup", "gambar layarnya", "rancangan
-  tampilan", "sketsa UI", "low fidelity", "bagaimana tampilannya", "desain
-  layar", "draw.io mockup", "excalidraw wireframe".
+  or spacing. Triggers: "wireframe", "mockup", "screen sketch", "screen layout",
+  "low fidelity", "what does the screen look like", "screen design",
+  "draw.io mockup", "excalidraw wireframe".
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -21,12 +21,11 @@ metadata:
       - wireframing interfaces
       - wireframe
       - mockup
-      - gambar layarnya
-      - rancangan tampilan
-      - sketsa ui
+      - screen sketch
+      - screen layout
       - low fidelity
-      - bagaimana tampilannya
-      - desain layar
+      - what does the screen look like
+      - screen design
 ---
 # /wireframing-interfaces
 
@@ -202,6 +201,15 @@ experts is not the operator whose objection the artifact exists to invite.
 
 ## Changes
 
+- **0.3.0** — Indonesian trigger phrases dropped from the description and the
+  trigger list under the English-only rule. `/using-dstack` 0.7.0 settled the
+  reasoning: models match on intent and translate, so the phrases spent tokens
+  without buying reach. Every dropped phrase kept its reach through a precise
+  English trigger — *screen sketch*, *screen layout*, *screen design*, *what
+  does the screen look like*. Nothing in the body was Indonesian, so nothing was
+  translated; the Indonesian prompts in `eval/cases.jsonl` stay untouched,
+  because they are the evidence that an English skill still matches an
+  Indonesian request.
 - **0.2.0** — Legibility mandate made honest after the first real trial. Eight
   defect classes became four with numeric thresholds, run by a bundled checker
   over the `.drawio` **source** rather than the rendered SVG — the source exists
