@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: semantic
     side_effects: external
     agency: deliberative
@@ -54,7 +54,9 @@ Cannot proceed with merge/PR until tests pass.
 
 Stop. Don't proceed to Step 2.
 
-**If tests pass:** Continue to Step 2.
+**If tests pass:** for user-visible work, also require the `/running-uat`
+PASS evidence (run log or artifact paths) before offering options — a green
+suite alone does not qualify the branch. Then continue to Step 2.
 
 ### Step 2: Detect environment
 
@@ -283,6 +285,9 @@ git worktree prune  # Self-healing: clean up any stale registrations
 
 ## Changes
 
+- **0.3.0** — Reciprocated `/test-driven-development` 0.6.0: Step 1 now also
+  requires `/running-uat` PASS evidence for user-visible work before the
+  merge/PR menu — tests green alone no longer qualifies the branch.
 - **0.2.0** — calibration: deterministic-dominant (ADR-0025; side_effects
   external, the exact bash is the value). Named the bounded judgment
   (confirm the base branch when `merge-base` is ambiguous). Hardening

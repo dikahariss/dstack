@@ -30,9 +30,13 @@ Agent tool (general-purpose):
 
     Once you're clear on requirements:
     1. Implement exactly what the task specifies
-    2. Invoke `/test-driven-development` and follow it: the failing test comes
-       first, watched to fail, before the production code. Skip only when the
-       task changes no behavior (pure docs, config, or rename).
+    2. Invoke `/test-driven-development` and follow it: name the task's risk
+       tier first — the plan's Tier field is the input, and there is no
+       default. Inside a tier the failing test comes first, watched to fail,
+       before the production code; outside one, freeze the case list (with
+       expected outcomes) before implementing, then derive the tests from
+       that list. Skip only when the task changes no behavior (pure docs,
+       config, or rename).
     3. Verify implementation works — invoke `/verifying-before-done`; run the
        command and read the output before reporting success
     4. Commit your work

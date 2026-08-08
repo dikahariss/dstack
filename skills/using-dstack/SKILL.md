@@ -8,12 +8,12 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.13.0
+    version: 0.15.0
     type: semantic
     side_effects: readonly
     agency: reactive
     calibration: schema-meta
-    context_budget_tokens: 3000
+    context_budget_tokens: 4000
     triggers:
       - which skill applies
       - find a skill
@@ -86,7 +86,7 @@ language they used. One row can fire more than once in a task.
 | Execute plan tasks now via subagents + review | `/subagent-driven-development` |
 | 2+ independent problems, work in parallel | `/dispatching-parallel-agents` |
 | Bug / test failure / unexpected behavior | `/debugging` (then `/test-driven-development`) |
-| New feature, bugfix, behavior change | `/test-driven-development` |
+| New feature, bugfix, behavior change | `/test-driven-development` — it decides how much discipline the change earned; the full cycle is **not** the default |
 | About to claim done / fixed / passing | `/verifying-before-done` |
 | Acceptance-test a RUNNING app via browser (UAT) | `/running-uat` |
 | One artifact, several expert points of view | `/multi-persona-review` |
@@ -105,16 +105,25 @@ language they used. One row can fire more than once in a task.
 | Triage / classify a pasted issue | `/classify-issue` |
 | Learn from past sessions — turn them into durable rules | `/learning-from-sessions` |
 
+**Building a product, app, SaaS, or web app? The visible slice ships first.**
+Unless the work is genuinely backend-only (a service, a job, a data pipeline,
+an API with no screen), the first executable task must produce a screen the
+user can open and click — stubbed data is fine. `/writing-plans` enforces the
+ordering; a plan whose first task produces nothing visible gets rejected there.
+
 **Common chains:**
 - Feature: `/discovering-requirements` (problem not yet written; `/brainstorm`
   alongside it if the idea itself is in doubt) → `/writing-specs` (design not yet
-  written) → `/designing-test-cases` → `/writing-plans` →
+  written) → `/designing-test-cases` → `/writing-plans` (visible slice first) →
   `/subagent-driven-development` (or
-  `/executing-plans`) → `/verifying-before-done` →
+  `/executing-plans`) → `/running-uat` (anything with a screen) →
+  `/verifying-before-done` →
   `/finishing-development-branch`.
-- Bug: `/debugging` → `/test-driven-development` → `/verifying-before-done`.
+- Bug: `/debugging` → `/test-driven-development` (a bug fix is always inside a
+  risk tier — the reproducing test is mandatory) → `/verifying-before-done`.
 - Shipping a UI change: tests green → `/running-uat` (browser, per point of view)
-  → fix → `/finishing-development-branch`.
+  → fix → `/finishing-development-branch`. A green suite is never the evidence
+  a screen works.
 - Literature review: `/literature-search` → `/literature-trends` → `/literature-fulltext`.
 - Modelling a system: `/discovering-requirements` (its actor table feeds both) →
   `/modelling-system-behaviour` (who wants what, in what order) →
@@ -155,7 +164,9 @@ plan mode, hooks, MCP, effort/model — use `/help` or see code.claude.com/docs.
 ## Skill types
 
 - **Rigid** (`/test-driven-development`, `/debugging`): follow exactly; don't adapt away the
-  discipline.
+  discipline. Rigid means the *gate* is not negotiable — for TDD that gate is
+  naming the risk tier and deriving cases from the spec, not running the full
+  cycle on every change.
 - **Flexible** (patterns): adapt the principle to context.
 
 The skill itself tells you which.
@@ -167,6 +178,25 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.15.0** — English-only sweep of `references/skill-catalog.md`; 0.14.0's
+  quoted complaint became English reported speech. Enforces 0.7.0 below.
+  Preserved as data: the document types `pdf-to-rag` matches (Permenhub,
+  Inpres, Juknis, UU) and the names Neliti and perpusnas e-resources.
+  `context_budget_tokens` re-targeted 3000 → 4000: the router grew a
+  frontend-first rule and longer chains, and 3000 no longer described it.
+- **0.14.0** — Stopped routing every behavior change into the full red-green
+  cycle, and put the visible slice first. Transcript mining across three CLI
+  installs measured `/test-driven-development` as the catalog's most expensive
+  skill (median 90 min to the next human turn, p90 460 min) while the owner
+  still had to test manually afterwards; separately, 12+ pushback turns are
+  about the visible product arriving late or wrong — the archetype being a
+  report of 78 green server tests answered by the owner saying he still could
+  not see any result. The TDD row now says the skill decides the tier and the cycle is not the
+  default; the bug chain says a fix is always inside a tier; the feature chain
+  routes through `/running-uat` before `/verifying-before-done`; and a
+  frontend-first rule sits above the chains, scoped to product/app/SaaS work
+  and exempting genuinely backend-only work. "Rigid" now names the gate that is
+  non-negotiable rather than implying the whole cycle always runs.
 - **0.13.0** — Registered `modelling-business-processes` (a business process as
   a real `.bpmn`) and `modelling-system-behaviour` (use case and sequence models
   in UML), plus a modelling chain. Both sit beside `diagramming-architecture`

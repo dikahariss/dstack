@@ -9,7 +9,7 @@ description: |
 allowed-tools: Agent Read Bash
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.4.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -246,12 +246,19 @@ a one-file change.
 - `/finishing-development-branch` - Complete development after all tasks
 
 **Subagents should use:**
-- `/test-driven-development` - Subagents follow test-driven development for each task
+- `/test-driven-development` - Subagents follow it per task; it decides the
+  task's risk tier and test path
 
 **Alternative workflow:**
 - `/executing-plans` - Use for parallel session instead of same-session execution
 
 ## Changes
+
+- **0.4.0** — Reciprocated `/test-driven-development` 0.6.0: the implementer
+  prompt now delegates the risk-tier decision (inside → failing test first;
+  outside → frozen case list with expected outcomes, then tests) instead of
+  restating the old unconditional iron law, which contradicted `Tier: none`
+  tasks arriving from `/writing-plans`.
 
 - **0.3.0** — Fixed an unsupported claim: the body advertised "subagents follow
   TDD naturally" while `references/implementer-prompt.md` only said "following

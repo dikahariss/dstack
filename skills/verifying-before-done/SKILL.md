@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.5.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -83,6 +83,7 @@ Skipping any step is lying, not verifying.
 | Regression test works | Red-green-revert-red cycle verified | Test passes once |
 | Subagent completed | VCS diff shows the changes you requested | Subagent self-reports "success" |
 | Requirements met | Line-by-line checklist against the plan | Tests pass alone |
+| User-visible feature works | `/running-uat` evidence: the running app driven and observed passing | A green suite alone — tests say nothing about the screen |
 
 ## Default verification gate (use this when no CLAUDE.md rule applies)
 
@@ -106,6 +107,8 @@ bun run validate --strict      # exit 0 = pass
 # e.g., for a refactor: run the test most directly touched
 # e.g., for a bug fix: re-run the regression test
 bun test path/to/changed.test.ts
+
+# 5. Touches a screen? Product-level evidence: open it, or /running-uat
 ```
 
 For a refactor touching the auth module specifically, the
@@ -132,6 +135,9 @@ State the exit code of each step in the claim:
 
 ## Changes
 
+- **0.5.0** — Reciprocated `/test-driven-development` 0.6.0's product-evidence
+  rule: a claim table row and a gate step for user-visible work — a green
+  suite alone no longer satisfies "done" for anything with a screen.
 - **0.4.0** — Renamed `verification` → `verifying-before-done`. The bare
   noun did not say *when* to reach for it; the gerund encodes the trigger
   moment. The "verify"/"prove it" triggers are kept.

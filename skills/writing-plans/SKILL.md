@@ -9,23 +9,26 @@ description: |
 allowed-tools: Read Grep Glob Write
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.6.0
     type: semantic
     side_effects: local
     agency: deliberative
-    context_budget_tokens: 2500
+    context_budget_tokens: 3200
     triggers:
       - write a plan
       - writing-plans
       - plan this
       - implementation plan
+      - task ordering
+      - frontend first
 ---
 # /writing-plans
 
 Write an implementation plan an engineer with zero context for this
 codebase could execute task by task. Document the files to touch, the
 code to write, how to test it, and the order. Bite-sized tasks. DRY,
-YAGNI, TDD, frequent commits.
+YAGNI, frequent commits. Test discipline is per-task and set by risk
+tier, not applied uniformly — see **Bite-sized tasks** below.
 
 Assume the reader is a skilled developer who knows almost nothing about
 this toolset or problem domain, and is not strong on test design.
@@ -66,11 +69,43 @@ Deciding the file split and the task ordering is your design call — the
 templates below fix the *format* of a task, not *which* tasks or in *what*
 order. That sequencing is the judgment this skill exists to apply.
 
+## Order — the visible slice first
+
+Building a product, application, SaaS, or web app? **Task 1 must produce a
+screen the user can open and click.** Stubbed or hardcoded data is fine — the
+point is that something is visible before anything is invisible. Backend, real
+data, and persistence follow behind it.
+
+Exempt only when the work is genuinely backend-only and has no screen at all: a
+service, a background job, a data pipeline, a migration, a CLI, an API another
+team consumes. Say which case applies in the plan header.
+
+**The gate: read Task 1 back. If finishing it would leave the user with nothing
+they can look at, the order is wrong — reorder before writing another line.**
+"The UI comes after the data layer is solid" is the failure this rule exists to
+prevent: it ends in a report of green tests answered with *"I still can't see
+the result."*
+
+This constrains the *order*, not the *content* — every task still ships whole,
+and a stub in Task 1 must be replaced by a named later task, never left to
+rot. Stub at the contract boundary the spec fixed: a stub returns the
+contract's shape, never an invented one.
+
 ## Bite-sized tasks
 
-Each step is one action (2–5 minutes): write the failing test, run it
-and confirm it fails, write the minimal code to pass, run it and confirm
-it passes, commit.
+Each step is one action (2–5 minutes), ending in a commit. The test steps
+depend on the risk tier `/test-driven-development` assigns the task:
+
+- **Inside a tier** (money, authz/tenancy, data loss, computational core, bug
+  fix, consumed contract) — write the failing test, run it and confirm it
+  fails, write the minimal code to pass, run it and confirm it passes, commit.
+- **Outside one** — list the cases the task must handle, implement, then write
+  the tests from that list, run them, commit. The list is written **before**
+  the implementation even though the tests are not; cases read back off
+  finished code are markedly weaker.
+
+Name the tier in each task — there is no default; self-review item 3 rejects
+a plan that leaves one unnamed.
 
 ## Plan header
 
@@ -82,10 +117,14 @@ Every plan starts with:
 **Goal:** <one sentence>
 **Architecture:** <2–3 sentences on approach>
 **Stack:** <key technologies>
+**Visible slice:** <what Task 1 puts on screen> — or `backend-only: <why>`
 
-Implement task by task. Per task: `/test-driven-development` for the red-green-refactor
-cycle, then `/verifying-before-done` before marking it done. Request review at
-checkpoints with `/requesting-code-review`. Steps use `- [ ]` checkboxes.
+Implement task by task. Per task: `/test-driven-development` decides the risk
+tier and the test path, then `/verifying-before-done` before marking it done.
+Before the plan is declared complete, user-visible work also needs
+`/running-uat` — a green suite is not evidence a screen works. Request review
+at checkpoints with `/requesting-code-review`.
+Steps use `- [ ]` checkboxes.
 ```
 
 ## Task structure
@@ -93,10 +132,15 @@ checkpoints with `/requesting-code-review`. Steps use `- [ ]` checkboxes.
 ````markdown
 ### Task N: <component>
 
+**Tier:** `money | authz | data-loss | core | bug-fix | contract` — or `none`
+(`authz` covers authentication, sessions, and tenancy too)
 **Files:**
 - Create: `exact/path/to/file.ts`
 - Modify: `exact/path/to/existing.ts:123-145`
 - Test: `test/exact/path/to/file.test.ts`
+
+Steps below are the **inside-a-tier** shape. For `Tier: none`, swap Steps 1–2
+for a written case list and move the tests after Step 3.
 
 - [ ] **Step 1 — write the failing test**
 
@@ -141,9 +185,16 @@ write them:
 
 After writing the plan, check it against the spec with fresh eyes:
 
-1. **Coverage** — point each spec requirement to a task. List gaps; add tasks.
-2. **Placeholders** — scan for the red flags above. Fix inline.
-3. **Consistency** — types, signatures, and names defined in early tasks
+1. **Visible slice** — read Task 1. Does finishing it give the user something
+   to open and click? If not, and the plan is not declared backend-only,
+   reorder. This is the one check that rejects a plan rather than patching it.
+2. **Coverage** — point each spec requirement to a task. List gaps; add tasks.
+3. **Tiers named** — every task carries a tier, so nothing silently inherits
+   the expensive cycle or silently escapes a needed one.
+4. **Stubs retired** — every stub introduced by the visible slice has a named
+   later task that replaces it, and its shape matches the spec's contract.
+5. **Placeholders** — scan for the red flags above. Fix inline.
+6. **Consistency** — types, signatures, and names defined in early tasks
    match the ones used in later tasks.
 
 Fix issues inline; no need to re-review.
@@ -157,6 +208,25 @@ dispatch a fresh subagent per task and review between tasks.
 
 ## Changes
 
+- **0.6.0** — English-only sweep. Dropped the two Indonesian trigger phrases
+  (priority ordering, frontend-first) and put the 0.5.0 entry's quoted
+  Indonesian complaint into English reported speech. Reasoning is
+  `using-dstack` 0.7.0's: models translate intent, so the phrases cost tokens
+  without adding reach. `task ordering` already covered the first;
+  `frontend first` was added for the second, which no English trigger reached.
+  Nothing in this skill is Indonesian data to match against, so nothing was
+  preserved.
+- **0.5.0** — Added the **visible-slice-first ordering rule** and made the test
+  steps tier-aware. Transcript mining found 12+ pushback turns about the
+  visible product arriving late or wrong, the archetype being a report of 78
+  green server tests answered by the owner saying he still could not see any
+  result; the owner's rule is that product/app/SaaS/web-app work puts the frontend
+  first, with genuinely backend-only work exempt. Task 1 must now put something
+  on screen, the plan header declares the visible slice or why there is none,
+  and the self-review leads with the check that rejects a mis-ordered plan.
+  Tasks now carry a risk tier, so `/test-driven-development` no longer implies
+  the full red-green cycle on every task — the case list still precedes the
+  implementation either way.
 - **0.4.0** — Reciprocated the `writing-specs` boundary: agreed requirements
   with an undecided design route there, because deciding boundaries and schema
   inside a plan hides them from review.

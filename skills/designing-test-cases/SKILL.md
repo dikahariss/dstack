@@ -7,14 +7,12 @@ description: >
   cases a feature needs and the honest answer is nobody knows. Also use when a
   test set was written alongside the code and needs an unbiased second pass.
   Produces a list, never test code, and never a coverage percentage. Triggers:
-  "skenario uji", "test case", "buat test case", "kasus uji", "berapa test
-  case", "test scenario", "test plan", "cakupan pengujian", "boundary value",
-  "equivalence partition", "decision table", "traceability matrix", "matriks
-  keterlacakan".
+  "test case", "test scenario", "test plan", "how many test cases", "boundary value",
+  "equivalence partition", "decision table", "traceability matrix".
 allowed-tools: Read Grep Glob Write Edit Skill
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.4.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -22,12 +20,10 @@ metadata:
     context_budget_tokens: 5000
     triggers:
       - designing test cases
-      - skenario uji
       - test case
-      - kasus uji
       - test scenario
       - test plan
-      - cakupan pengujian
+      - how many test cases
       - boundary value
       - equivalence partition
       - decision table
@@ -51,6 +47,15 @@ that pass against every implementation — including wrong ones.
 simultaneously-failing tests destroys `/test-driven-development`'s discipline,
 which is one failing test, watched failing, then the minimal code. The list
 feeds that loop one row at a time.
+
+**This list is the step that carries the value — run it even when the full
+red-green cycle will not run.** `/test-driven-development` reserves that cycle
+for six risk tiers; every change outside them implements first and tests after.
+What makes those tests-after worth having is that they are derived from *this*
+list rather than read back off the finished code — tests generated after the
+code caught 14% of faults vs 25% for independent derivation
+([arXiv 2607.05139](https://arxiv.org/pdf/2607.05139)). So the list must be
+frozen **before** implementation starts, whichever path follows.
 
 ## When to use — and when not
 
@@ -273,7 +278,8 @@ boundary around it, not exhaustiveness. Name the boundary and what it accepts.
 ## Hand-off
 
 Input from `/writing-specs` (`AC-n`) or `/discovering-requirements`. Output feeds
-`/test-driven-development` one row at a time and `/running-uat` at its entry
+`/test-driven-development` — one row at a time inside a risk tier, as the
+after-the-fact derivation source outside one — and `/running-uat` at its entry
 gate. Send a large set through `/multi-persona-review` — the cases one reviewer
 never thinks of are the point.
 
@@ -286,6 +292,15 @@ never thinks of are the point.
 
 ## Changes
 
+- **0.4.0** — English-only pass (`using-dstack` 0.7.0). `how many test cases`
+  added — not "test coverage", which names the metric this skill refuses to
+  produce. `eval/` keeps its Indonesian prompts as the routing proof.
+- **0.3.0** — Promoted from "the step before TDD" to "the step that carries the
+  value". `/test-driven-development` 0.6.0 now runs the full cycle only inside
+  six risk tiers; everywhere else the tests come after the code. That makes this
+  list the only thing standing between those tests and the implementation bias
+  they would otherwise inherit, so the freeze-before-implementation rule is now
+  stated as unconditional and the hand-off names both consumption modes.
 - **0.2.0** — Rebuilt after a five-point-of-view review (QA lead, implementer,
   release manager, non-functional tester, holistic) returning six blocking
   findings, plus a subagent trial that derived 60 cases from a real criteria set
