@@ -31,7 +31,9 @@ on them is correct behaviour, not an omission.
 1. Every finding needs a LOCATION (file:line, or a quoted phrase from the
    artifact). A finding you cannot anchor is dropped — do not include it.
 2. Every finding needs a SEVERITY: blocking / major / minor / observation.
-   Severity is observable impact. Do not assign business priority.
+   Severity is observable impact. Do not assign business priority — that is
+   set by the owner, or by `/prioritizing-work` when the question is where the
+   finding sits against other work.
 3. Do not restate the artifact back to me. Findings only.
 4. Length is not a quality signal here. Six grounded findings beat twenty
    padded ones.

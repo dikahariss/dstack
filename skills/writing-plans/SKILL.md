@@ -9,11 +9,11 @@ description: |
 allowed-tools: Read Grep Glob Write
 metadata:
   dstack:
-    version: 0.7.0
+    version: 0.8.0
     type: semantic
     side_effects: local
     agency: deliberative
-    context_budget_tokens: 4000
+    context_budget_tokens: 4500
     triggers:
       - write a plan
       - writing-plans
@@ -46,7 +46,9 @@ problem, goal, or constraints to plan against? Run
 `/discovering-requirements` first — planning against an unstated problem
 produces tasks nobody can check. Requirements agreed but the design
 undecided — boundaries, schema, contracts? That is `/writing-specs`;
-deciding it inside the plan hides it from review.
+deciding it inside the plan hides it from review. Several independent
+things could be built and nothing says which first? That order comes from
+`/prioritizing-work` and is **carried** here, not re-derived.
 
 ## Where the plan goes
 
@@ -232,6 +234,8 @@ After writing the plan, check it against the spec with fresh eyes:
    to open and click? If not, and the plan is not declared backend-only,
    reorder. This is the one check that rejects a plan rather than patching it.
 2. **Coverage** — point each spec requirement to a task. List gaps; add tasks.
+   Every `MUST` or `P0_GATE` item from an incoming priority order lands in a
+   task, and any departure from that order is named in one line with its reason.
 3. **Tiers named** — every task carries a tier, so nothing silently inherits
    the expensive cycle or silently escapes a needed one.
 4. **Stubs retired** — every stub introduced by the visible slice has a named
@@ -263,6 +267,13 @@ next, the Status block is under-filled — fix the block, not the prompt.
 
 ## Changes
 
+- **0.8.0** — Reciprocated `/prioritizing-work` 0.1.0: an incoming priority
+  order is **carried**, never re-derived, and self-review item 2 now checks that
+  every `MUST`/`P0_GATE` item landed in a task with departures named. The
+  visible-slice rule still outranks any incoming order, so this skill can reject
+  a sequence that would make Task 1 invisible. Budget re-targeted 4000 → 4500
+  (ADR-0016 default → still under the 5000 ceiling) to hold 0.7.0's Status block
+  alongside this; the alternative was deleting the plan-header template.
 - **0.7.0** — Added the **Status block**: a task-state table under the plan
   header, with a branch, a `Next:` pointer, evidence on `done` rows, and an
   append-only Deviations list. Transcript mining across ~60 real plan documents

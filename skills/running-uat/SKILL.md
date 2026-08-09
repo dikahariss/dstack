@@ -13,7 +13,7 @@ description: >
 allowed-tools: Bash Read Write Edit Agent Skill Glob Grep
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.4.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -161,7 +161,8 @@ from filling up.
 
 Log each defect with severity (observable impact), evidence paths, and repro
 steps. **Severity you may assign; priority you may not** — priority is a business
-decision. Propose it, then escalate.
+decision. Propose it, then escalate: to the owner, or to `/prioritizing-work`
+when the question is where this defect sits against other work.
 
 ## Judgment
 
@@ -180,6 +181,11 @@ escalate — do not resolve it in the build's favour.
 
 ## Changes
 
+- **0.4.0** — The priority refusal now names a destination. "Propose it, then
+  escalate" left an escalation with nowhere to go; it routes to the owner, or to
+  `/prioritizing-work` when the question is where the defect sits against other
+  work. The refusal itself is unchanged — a UAT run still does not set business
+  priority. Same edit in `references/uat-report.md`.
 - **0.3.0** — Removed the Indonesian trigger phrases and prose under the
   English-only rule (using-dstack 0.7.0: models translate intent, so the phrases
   cost tokens without adding reach). "Run UAT" and "acceptance test" already

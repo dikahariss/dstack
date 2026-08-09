@@ -47,7 +47,8 @@ transition needs a second clean-state pass; a fix triggers a regression row.
 ```
 DEF-2  Draft save publishes the entry
   severity   : major   (data visible to consumers before review — observable impact)
-  priority   : NOT SET — business decision, escalated to the owner
+  priority   : NOT SET — business decision; set by the owner, or by
+               /prioritizing-work against the rest of the work
   scenario   : AC-03, attempt 1
   evidence   : dom-01.txt (status="published"), net-01.json (PATCH 200, body status=published)
   repro      : 1. sign in as steward  2. open entry X  3. edit title  4. Save
@@ -59,7 +60,8 @@ DEF-2  Draft save publishes the entry
 **Severity is yours; priority is not.** Severity is the observed impact and is
 technical. Priority is business importance, is set with the owner, and shifts over
 time — a misspelt company name is low severity and high priority. Propose
-severity with evidence; escalate priority.
+severity with evidence; escalate priority to the owner, or to
+`/prioritizing-work` when the question is where this sits against other work.
 
 ## Exit criteria — defaults to agree, not standards to assert
 

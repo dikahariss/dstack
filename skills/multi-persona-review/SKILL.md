@@ -13,7 +13,7 @@ description: >
 allowed-tools: Agent Read Write Edit Grep Glob Skill
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -157,6 +157,9 @@ versus two reviewers describing the same thing differently.**
 
 ## Changes
 
+- **0.3.0** — `references/reviewer-prompt.md`'s "do not assign business
+  priority" now names where the finding goes instead, so a dispatched reviewer
+  escalates rather than drops it.
 - **0.2.0** — Removed the Indonesian trigger phrases under the English-only rule
   (using-dstack 0.7.0: models translate intent, so the phrases cost tokens
   without adding reach). Two became their English forms — "review from several

@@ -12,7 +12,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.5.0
+    version: 0.6.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -60,6 +60,7 @@ the seam actually speaks, where prose would blur the decision.
 | The problem, goal, or constraints are not written down | `/discovering-requirements` first — this skill's input |
 | The design is settled; you need tasks, files, and commands | `/writing-plans` |
 | The doubt is about whether the idea is right at all | `/brainstorm` |
+| Requirements are agreed but nobody decided what comes first | `/prioritizing-work` |
 
 ## Pick the depth first
 
@@ -299,27 +300,27 @@ entry gate.
 
 ## Changes
 
-- **0.5.0** — English-only pass (`using-dstack` 0.7.0). Reach kept via
-  "architecture design" and "process flow section" — not "business process",
-  which `modelling-business-processes` owns and would collide with.
+- **0.6.0** — Routing row for `/prioritizing-work`: agreed requirements with no
+  agreed order otherwise land here, and designing all of them is the mis-route.
+- **0.5.0** — English-only pass (`using-dstack` 0.7.0); reach kept via
+  "architecture design" and "process flow section", not "business process",
+  which `modelling-business-processes` owns.
 - **0.4.0** — Reciprocated the two design-artifact skills: a diagram that must
   leave the document is `/diagramming-architecture`; the screens behind the step
-  table are `/wireframing-interfaces`. The inline fence and the normative table
-  are unchanged.
-- **0.3.0** — Reciprocated the `designing-test-cases` boundary: `AC-n` rows are
-  its input, not test cases themselves — one criterion becomes many cases.
+  table are `/wireframing-interfaces`.
+- **0.3.0** — Reciprocated `designing-test-cases`: `AC-n` rows are its input,
+  not test cases — one criterion becomes many cases.
 - **0.2.0** — Rebuilt after a five-point-of-view review (six blocking findings)
   and a subagent trial (ten more). Two reviewers independently caught that 0.1.0
   dropped the Light depth path its own discovery required. Gates now record
   evidence on PASS, name the escalation target, define `BLOCKED-PENDING`, and
   read `n/a` when their subject is absent. Added the identity-versus-proof rule
-  for paths; entity grain, key stability and temporality; contract consistency
-  and compatibility; build order; altitude and `EXTERNAL`; a mandatory
-  structural decision row; reversibility; every non-success terminal outcome;
-  assertion level per AC; and a reviewer log.
+  for paths; entity grain, key stability and temporality; contract consistency;
+  build order; altitude and `EXTERNAL`; a mandatory structural decision row;
+  reversibility; non-success terminal outcomes; assertion level per AC; and a
+  reviewer log.
 - **0.1.0** — Initial. Built from `docs/discovery/2026-07-28-writing-specs.md`:
   the plan skill consumed a spec nothing produced, and discovery is gated on
-  *not* naming a solution, so design was decided inside implementation — visible
-  as 60 and 18 edits to single plan documents in one session. Stage spine after
-  gstack's `spec`; artifact template after mattpocock's `to-spec`; the
-  three-part ADR test after its `domain-modeling`.
+  *not* naming a solution, so design was decided inside implementation. Stage
+  spine after gstack's `spec`; artifact template after mattpocock's `to-spec`;
+  the three-part ADR test after its `domain-modeling`.

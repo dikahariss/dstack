@@ -10,12 +10,12 @@ description: |
 allowed-tools: AskUserQuestion Read Grep Glob
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.5.0
     type: semantic
     side_effects: readonly
     agency: deliberative
     calibration: judgment-dominant
-    context_budget_tokens: 2500
+    context_budget_tokens: 3000
     triggers:
       - brainstorm
       - grill me
@@ -211,12 +211,17 @@ uses it as the brief for the implementation.
 
 - After alignment lands, the build itself usually wants `/test-driven-development` for
   the implementation cycle.
-- For the "is this idea worth building at all" question (one level
-  above this skill), the conversation is closer to a product
-  discussion than a design walk — this skill is the wrong tool.
+- "Is this idea worth building at all" splits in two, and neither is this
+  skill: worth building **relative to what else** is `/prioritizing-work`;
+  a per-item go/no-go is `/discovering-requirements` §2.5. This skill owns
+  doubt about a single idea's shape, not a choice between candidates.
 
 ## Changes
 
+- **0.5.0** — Resolved the dangling "worth building at all" pointer, which
+  named no destination: comparative worth is `/prioritizing-work`, per-item
+  go/no-go is `/discovering-requirements` §2.5. Budget 2500 → 3000; the body sat
+  at exactly 90% of the old figure, so any edit would have failed `--strict`.
 - **0.4.0** — Reciprocated the `discovering-requirements` boundary: an
   unwritten problem routes there. Siblings, not a sequence.
 - **0.3.0** — calibration: judgment-dominant (ADR-0025). Evidence: v3

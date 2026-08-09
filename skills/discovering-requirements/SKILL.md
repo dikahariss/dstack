@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Grep Glob Write WebSearch WebFetch AskUserQuestion Bash Skill
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.4.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -233,15 +233,17 @@ Out-of-scope row citing that ID. Forward-only tracing hides silent scope loss.
 
 Name the smallest cut that moves the metric: state each `FR`'s expected
 contribution to the goal, then take the shortest prefix that plausibly reaches
-the target. Priority (`MUST`/`SHOULD`/`COULD`) applies to `FR` **and** `NFR`.
+the target. Priority (`MUST`/`SHOULD`/`COULD`) applies to `FR` **and** `NFR`;
+which label a row earns is decided in `/prioritizing-work`, whose effort-share
+gate supersedes the count gate below once it has run.
 
 Assumptions are ranked by *impact if wrong* × (1 − *confidence*), and §1 names
 the single riskiest one plus the cheapest thing that would settle it.
 
 **Gate:** out-of-scope list non-empty and ID-bearing; no more than half of the
-requirements **not parented by a `C-n`** marked `MUST`. Compliance-driven rows
-are exempt — counting them would make the gate unsatisfiable on exactly the
-work where it matters least.
+requirements **not parented by a `C-n`** marked `MUST` — a first-cut count
+check in this document, not a cross-item ranking. Compliance rows are exempt
+(why, in the template).
 
 ### 7. Close
 
@@ -300,7 +302,8 @@ example, goal to traceability, is in `references/worked-example.md`.
 ## Hand-off
 
 `/brainstorm` is a **sibling**, not a predecessor: invoke it when Stage 2.5
-finds the doubt is about the idea itself. `/writing-specs` turns an `AGREED` set
+finds the doubt is about the idea itself. `/prioritizing-work` owns ordering
+across documents, not inside one requirement set. `/writing-specs` turns an `AGREED` set
 into a design, and carries the IDs into acceptance criteria and test cases.
 Send the document through `/multi-persona-review` before designing on top — but
 a panel of simulated experts does not substitute for Stage 3's real actors.
@@ -315,23 +318,21 @@ a panel of simulated experts does not substitute for Stage 3's real actors.
 
 ## Changes
 
-- **0.3.0** — English-only pass (`using-dstack` 0.7.0). Reach kept via
-  "requirements analysis", "functional requirements", "schema design", "build a
-  new module". `KAK`/`TOR` stay — they are document types, not prose.
-- **0.2.0** — Rebuilt after a five-point-of-view review (BA, PM, compliance/DPO,
-  UX, holistic) returning seven blocking findings, then a subagent trial that
-  found eight more. Gates leave a written verdict, define what refusal does, and
-  say what a BLOCKED gate does downstream; never-block gained legal and BLOCKED
-  carve-outs. Added Stage 2.5 viability with `DO NOT BUILD`, Stage 7 close with
-  a human-granted `AGREED`, Light/Full depth, actor classes with evidence
-  provenance, regime scoping, an evidentiary floor, downward traceability, `C-n`
-  as trace parent, a conflict register, ranked assumptions, and pass-conditions.
-  The trial fixed an unsatisfiable MUST-ratio gate, an evidence gate that passed
-  on all-`INFERRED` rows, and a multi-repo blind spot. Calibration `workflow` → `deterministic-dominant` (ADR-0025):
-  a fixed spine with eight gates is the shape `running-uat` uses at that band,
-  and the default told cheap models they had ~70% freedom over it.
-  Owner-approved in session.
+- **0.4.0** — Stage 6 re-scoped to first-cut selection *inside this document*.
+  It assigned `MUST`/`SHOULD`/`COULD` with no criteria for which label a row
+  earns — `SHOULD` and `COULD` were defined nowhere — so they delegate to
+  `/prioritizing-work`. One label cannot carry two gates a set can split.
+- **0.3.0** — English-only pass (`using-dstack` 0.7.0); reach kept via the
+  English triggers. `KAK`/`TOR` stay — document types, not prose.
+- **0.2.0** — Rebuilt after a five-point-of-view review (seven blocking
+  findings) and a subagent trial (eight more). Gates gained written verdicts,
+  downstream semantics, and legal/BLOCKED carve-outs on never-block. Added
+  Stage 2.5 viability, a human-granted `AGREED`, Light/Full depth, actor
+  classes, regime scoping, downward traceability, and ranked assumptions. The
+  trial fixed an unsatisfiable MUST-ratio gate and an evidence gate that passed
+  on all-`INFERRED` rows. Calibration `workflow` → `deterministic-dominant`
+  (ADR-0025), owner-approved: the default told cheap models they had ~70%
+  freedom over a spine with eight gates.
 - **0.1.0** — Initial. Spine from impact mapping; requirement levels and quality
   bar from ISO/IEC/IEEE 29148; Stage 4 and the research-first posture from mined
-  session history, where design repeatedly started before domain rules were
-  verified and interrogation was refused.
+  sessions where design started before domain rules were verified.

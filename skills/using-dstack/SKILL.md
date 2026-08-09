@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.15.0
+    version: 0.16.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -74,6 +74,7 @@ language they used. One row can fire more than once in a task.
 | Situation | Skill |
 |---|---|
 | Problem, goals, or requirements not written down yet | `/discovering-requirements` |
+| Several candidate items and nobody has agreed what comes first | `/prioritizing-work` |
 | Requirements agreed; the design/blueprint is not written | `/writing-specs` |
 | Criteria exist; the situations to test are not enumerated | `/designing-test-cases` |
 | A diagram must leave the document — editable or shareable | `/diagramming-architecture` |
@@ -105,6 +106,13 @@ language they used. One row can fire more than once in a task.
 | Triage / classify a pasted issue | `/classify-issue` |
 | Learn from past sessions — turn them into durable rules | `/learning-from-sessions` |
 
+**"Do all of it" is a prioritization request.** An instruction to finish
+everything, work through the whole list, or complete all of it leaves the order
+implicit — it does not remove it. Run `/prioritizing-work` on the list before
+executing, unless it holds fewer than five items. Users ask for the whole scope
+far more often than they ask which item comes first, so this is the trigger that
+actually fires.
+
 **Building a product, app, SaaS, or web app? The visible slice ships first.**
 Unless the work is genuinely backend-only (a service, a job, a data pipeline,
 an API with no screen), the first executable task must produce a screen the
@@ -113,8 +121,11 @@ ordering; a plan whose first task produces nothing visible gets rejected there.
 
 **Common chains:**
 - Feature: `/discovering-requirements` (problem not yet written; `/brainstorm`
-  alongside it if the idea itself is in doubt) → `/writing-specs` (design not yet
-  written) → `/designing-test-cases` → `/writing-plans` (visible slice first) →
+  alongside it if the idea itself is in doubt) → `/prioritizing-work` (several
+  candidates; also fires standalone on a multi-item instruction with no prior
+  discovery) → `/writing-specs` (design not yet
+  written) → `/designing-test-cases` → `/writing-plans` (visible slice first;
+  carries the priority order, does not re-derive it) →
   `/subagent-driven-development` (or
   `/executing-plans`) → `/running-uat` (anything with a screen) →
   `/verifying-before-done` →
@@ -178,6 +189,11 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.16.0** — Registered `/prioritizing-work`: router row, feature chain, and
+  catalog entry. The router row alone would not have fired — the phrase users
+  actually type is "do all of it", never "which comes first" — so the
+  do-everything paragraph keys on the **omission** of an order rather than on
+  the word "prioritize", and states the under-five-items exception.
 - **0.15.0** — English-only sweep of `references/skill-catalog.md`; 0.14.0's
   quoted complaint became English reported speech. Enforces 0.7.0 below.
   Preserved as data: the document types `pdf-to-rag` matches (Permenhub,

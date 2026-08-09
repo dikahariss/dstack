@@ -12,7 +12,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Skill
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.5.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -186,7 +186,8 @@ one verdict; no chaos or concurrency case is assigned `unit` without a reason.
 ### 5. Rank — risk order, and release effect
 
 Order by impact × likelihood, highest first, so a truncated run still covers what
-matters. State the rationale once.
+matters. State the rationale once. This orders the *run*, not requirement
+priority — that is `/prioritizing-work`, on different formulas.
 
 Separately, and **before anyone knows which cases will fail**, mark each case
 `BLOCKER` or `ADVISORY`. Risk is run *order*; release effect is *consequence*.
@@ -292,15 +293,17 @@ never thinks of are the point.
 
 ## Changes
 
+- **0.5.0** — Stage 5 states that `impact × likelihood` orders the *run*, not
+  the requirements. Several ranking formulas now exist in the catalog, and
+  reading run order as business priority is the confusion this one would cause.
 - **0.4.0** — English-only pass (`using-dstack` 0.7.0). `how many test cases`
-  added — not "test coverage", which names the metric this skill refuses to
-  produce. `eval/` keeps its Indonesian prompts as the routing proof.
+  added — not "test coverage", the metric this skill refuses to produce.
+  `eval/` keeps its Indonesian prompts as the routing proof.
 - **0.3.0** — Promoted from "the step before TDD" to "the step that carries the
-  value". `/test-driven-development` 0.6.0 now runs the full cycle only inside
-  six risk tiers; everywhere else the tests come after the code. That makes this
-  list the only thing standing between those tests and the implementation bias
-  they would otherwise inherit, so the freeze-before-implementation rule is now
-  stated as unconditional and the hand-off names both consumption modes.
+  value". `/test-driven-development` 0.6.0 runs the full cycle only inside six
+  risk tiers; elsewhere tests come after the code, making this list the only
+  thing between them and the implementation bias they would inherit. The
+  freeze-before-implementation rule became unconditional.
 - **0.2.0** — Rebuilt after a five-point-of-view review (QA lead, implementer,
   release manager, non-functional tester, holistic) returning six blocking
   findings, plus a subagent trial that derived 60 cases from a real criteria set
@@ -309,15 +312,13 @@ never thinks of are the point.
   share penalised correctly-derived lifecycle cases, and "cannot fail" forbade
   the absence scans a universal negative needs. Fixed by adding `R-n` derived
   risks, making the share diagnostic, and defining the verdict as one decision
-  rule rather than one assertion. Added: the falsification-target rule (a
-  collaborator the oracle depends on is real at that level); authority,
-  distributional, and universal-negative shapes, since non-functional criteria
-  had no derivation path at all; a ban on collapsing subject/role/tenant/owner
-  in a decision table, which otherwise folds an entire deny space into one row;
-  release effect separate from risk order; prerequisites, because risk order is
-  not build order; the action column, without which no row said what to invoke;
-  gap kinds; human-granted `AGREED`; and the Light path now runs Stage 4, which
-  it previously skipped while still requiring its output.
+  rule rather than one assertion. Added: the falsification-target rule;
+  authority, distributional and universal-negative shapes, since non-functional
+  criteria had no derivation path at all; a ban on collapsing
+  subject/role/tenant/owner in a decision table, which folds an entire deny
+  space into one row; release effect separate from risk order; prerequisites;
+  the action column; gap kinds; human-granted `AGREED`; and Stage 4 in the Light
+  path, which previously skipped it while requiring its output.
 - **0.1.0** — Initial. Built from
   `docs/discovery/2026-07-28-designing-test-cases.md` and its Light spec: TDD had
   a per-behaviour completeness walk and `running-uat` an entry gate demanding an
