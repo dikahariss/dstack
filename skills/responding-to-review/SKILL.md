@@ -279,8 +279,7 @@ No performative agreement. Technical rigor always.
   name read as "perform a review" while the skill actually handles review
   feedback you *received*, and it collided with `requesting-code-review`.
   The pair now reads request ↔ respond. Trigger keywords unchanged.
-- **0.3.0** — Folded in the inline GitHub thread-reply guidance from
-  superpowers `receiving-code-review` (reply in-thread via
+- **0.3.0** — Added inline GitHub thread-reply guidance (reply in-thread via
   `gh api .../comments/{id}/replies`, not a top-level comment).
   Evaluated `receiving-code-review` head-to-head and kept this skill as
   the superset; the separate skill was not imported, to avoid duplicate

@@ -201,7 +201,4 @@ git diff --stat          # confirm only intended files changed, no overlap
   and added an integrate-time verify command. Hardening (v3 plan):
   converted the graphviz when-to-use block and the ❌/✅ mistakes to tables;
   added Cross-references; normalised headings to dstack voice.
-- **0.1.0** — Imported from superpowers `dispatching-parallel-agents`.
-  Adapted to dstack: added frontmatter/`metadata.dstack`; dispatch
-  examples use the Claude Code `Agent` tool instead of `Task`; dropped
-  the dated session-narrative footer. Body otherwise verbatim.
+- **0.1.0** — Initial. Dispatch examples use the Claude Code `Agent` tool.

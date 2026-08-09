@@ -316,7 +316,6 @@ next, the Status block is under-filled — fix the block, not the prompt.
 - **0.2.0** — Named the judgment surface (the file split + task ordering is
   the design call; the templates fix only a task's format). Workflow band
   (ADR-0025; flag omitted as the default).
-- **0.1.0** — Ported from superpowers `writing-plans`. Adapted to
-  dstack: Bun/TypeScript task examples, plans saved under `docs/plans/`,
-  handoff points to dstack skills (`/test-driven-development`, `/verifying-before-done`,
-  `/requesting-code-review`) instead of superpowers-only sub-skills.
+- **0.1.0** — Initial. Bun/TypeScript task examples, plans saved under
+  `docs/plans/`, hand-off to `/test-driven-development`,
+  `/verifying-before-done`, and `/requesting-code-review`.

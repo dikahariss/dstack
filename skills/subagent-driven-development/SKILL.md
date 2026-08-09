@@ -290,10 +290,6 @@ a one-file change.
   (v3 plan): converted both graphviz blocks to a decision table and a
   numbered process; replaced TodoWrite with host-accurate phrasing;
   normalised headings to dstack voice.
-- **0.1.0** — Imported from superpowers `subagent-driven-development`.
-  Adapted to dstack: added frontmatter/`metadata.dstack`; `superpowers:`
-  sub-skill references rewritten as `/skill` (the upstream
-  `test-driven-development` became `/tdd`, renamed back in 0.3.0);
-  "your human partner" → "the user"; bundled
-  prompt templates moved to `references/` and the in-body paths updated.
-  Body and prompt templates otherwise verbatim.
+- **0.1.0** — Initial. Sub-skill references use the `/skill` form; prompt
+  templates live in `references/` rather than inline, so the body stays the
+  dispatch surface.

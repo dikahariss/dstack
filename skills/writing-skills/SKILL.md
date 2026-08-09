@@ -224,9 +224,7 @@ official authoring guidance. Add a behavioral check under the skill's
 - **0.2.0** — Encoded the hybrid-by-default doctrine (ADR-0025): spine +
   named judgment + the four calibration bands and when to set the flag.
   Fixed the `TodoWrite` heading to host-accurate phrasing.
-- **0.1.0** — Ported from superpowers `writing-skills`. Re-pointed at
-  dstack's authoring path (`bun run new`, `docs/specs/skill-spec.md`,
-  `metadata.dstack`, token budgets, `eval/`); replaced the graphviz
-  tooling with dstack's tables-and-prose convention; cross-references
-  `/test-driven-development`. Kept the TDD-for-skills method and the rationalization-table
-  technique.
+- **0.1.0** — Initial. Authoring path is `bun run new`,
+  `docs/specs/skill-spec.md`, `metadata.dstack`, token budgets, `eval/`;
+  tables and prose rather than diagram tooling. Keeps the TDD-for-skills
+  method and the rationalization-table technique.

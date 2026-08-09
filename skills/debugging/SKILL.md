@@ -313,6 +313,5 @@ Otherwise → stay in Phase 1 or raise it with the user
   4 prefaces memory/perf regressions with measurement-based
   baselining (heap snapshots, hyperfine). Added v2 schema fields:
   `type: semantic`, `side_effects: readonly`, `agency: deliberative`.
-  Driven by v3 Track C benchmark loss against
-  superpowers/systematic-debugging on specificity (3/3 cases).
+  Driven by a v3 Track C benchmark loss on specificity (3/3 cases).
 - **0.1.0** — Initial port from v1 skill catalog.

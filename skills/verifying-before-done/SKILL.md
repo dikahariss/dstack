@@ -148,9 +148,8 @@ State the exit code of each step in the claim:
   with explicit exit-code checks) and the honest-claim shape table
   contrasting vague vs evidence-grounded claims. Added v2 schema
   fields (`type: semantic`, `side_effects: local`, `agency:
-  deliberative`). Driven by v3 Track C benchmark case-1 loss against
-  superpowers/verification-before-completion on specificity +
-  groundedness.
+  deliberative`). Driven by a v3 Track C benchmark case-1 loss on
+  specificity + groundedness.
 - **0.1.0** — Initial port from v1 skill catalog.
 
 ## Red flags — stop before claiming

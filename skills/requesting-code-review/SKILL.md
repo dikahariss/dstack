@@ -105,7 +105,5 @@ See the dispatch template in `code-reviewer.md`.
 - **0.2.0** — Named the judgment surface (crafting the reviewer's context
   sets the review's ceiling); workflow band (ADR-0025; flag omitted as the
   default).
-- **0.1.0** — Ported from superpowers `requesting-code-review`. Adapted
-  to dstack: dispatch via the Agent tool, example plan path under
-  `docs/plans/`, cross-references `/responding-to-review` for handling the
-  returned feedback.
+- **0.1.0** — Initial. Dispatch via the Agent tool, example plan path under
+  `docs/plans/`, cross-references `/responding-to-review` for the reply.

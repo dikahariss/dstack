@@ -321,6 +321,4 @@ entry gate.
   reviewer log.
 - **0.1.0** — Initial. Built from `docs/discovery/2026-07-28-writing-specs.md`:
   the plan skill consumed a spec nothing produced, and discovery is gated on
-  *not* naming a solution, so design was decided inside implementation. Stage
-  spine after gstack's `spec`; artifact template after mattpocock's `to-spec`;
-  the three-part ADR test after its `domain-modeling`.
+  *not* naming a solution, so design was decided inside implementation.

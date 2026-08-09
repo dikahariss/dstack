@@ -324,12 +324,11 @@ Either way → the product was shown working, not just the suite
 
 - **0.3.0** — Renamed `tdd` → `test-driven-development`: the abbreviation
   was opaque to newcomers and broke the catalog's gerund/descriptive naming
-  convention (Anthropic best practices, §"Naming conventions"). Matches the
-  upstream superpowers name. The `tdd` trigger keyword is kept, so "do TDD"
-  still routes here.
+  convention. The `tdd` trigger keyword is kept, so "do TDD" still routes
+  here.
 - **0.2.0** — Added the numbered habit-fix drill for "I write tests
   after the code" plus the honest-test diagnostic table. Added v2
   schema fields (`type: semantic`, `side_effects: local`, `agency:
-  deliberative`). Driven by v3 Track C benchmark case-2 loss against
-  superpowers/test-driven-development on specificity + procedure.
+  deliberative`). Driven by a v3 Track C benchmark case-2 loss on
+  specificity + procedure.
 - **0.1.0** — Initial port from v1 skill catalog.

@@ -10,7 +10,7 @@ description: |
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.3.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -102,12 +102,12 @@ Follow this priority order. Explicit user preference always beats observed files
    ```
    If found, use it. If both exist, `.worktrees` wins.
 
-3. **Check for an existing global directory:**
+3. **Check for a sibling worktree directory** the user already keeps outside the
+   repo, named in an instruction file or visible next to the project root:
    ```bash
-   project=$(basename "$(git rev-parse --show-toplevel)")
-   ls -d ~/.config/superpowers/worktrees/$project 2>/dev/null
+   ls -d ../*worktrees* 2>/dev/null
    ```
-   If found, use it (backward compatibility with legacy global path).
+   If found, use it.
 
 4. **If there is no other guidance available**, default to `.worktrees/` at the project root.
 
@@ -123,7 +123,7 @@ git check-ignore -q .worktrees 2>/dev/null || git check-ignore -q worktrees 2>/d
 
 **Why critical:** Prevents accidentally committing worktree contents to repository.
 
-Global directories (`~/.config/superpowers/worktrees/`) need no verification.
+A directory outside the repository needs no verification — git cannot track it.
 
 #### Create the worktree
 
@@ -132,7 +132,7 @@ project=$(basename "$(git rev-parse --show-toplevel)")
 
 # Determine path based on chosen location
 # For project-local: path="$LOCATION/$BRANCH_NAME"
-# For global: path="~/.config/superpowers/worktrees/$project/$BRANCH_NAME"
+# For an external directory: path="$LOCATION/$project/$BRANCH_NAME"
 
 git worktree add "$path" -b "$BRANCH_NAME"
 cd "$path"
@@ -192,7 +192,7 @@ Ready to implement <feature-name>
 | `worktrees/` exists | Use it (verify ignored) |
 | Both exist | Use `.worktrees/` |
 | Neither exists | Check instruction file, then default `.worktrees/` |
-| Global path exists | Use it (backward compat) |
+| Sibling `*worktrees*` dir exists | Use it (no ignore check needed) |
 | Directory not ignored | Add to .gitignore + commit |
 | Permission error on create | Sandbox fallback, work in place |
 | Tests fail during baseline | Report failures + ask |
@@ -218,7 +218,7 @@ Ready to implement <feature-name>
 ### Assuming directory location
 
 - **Problem:** Creates inconsistency, violates project conventions
-- **Fix:** Follow priority: existing > global legacy > instruction file > default
+- **Fix:** Follow priority: existing > external directory > instruction file > default
 
 ### Proceeding with failing tests
 
@@ -238,7 +238,7 @@ Ready to implement <feature-name>
 **Always:**
 - Run Step 0 detection first
 - Prefer native tools over git fallback
-- Follow directory priority: existing > global legacy > instruction file > default
+- Follow directory priority: existing > external directory > instruction file > default
 - Verify directory is ignored for project-local
 - Auto-detect and run project setup
 - Verify clean test baseline
@@ -252,13 +252,17 @@ Ready to implement <feature-name>
 
 ## Changes
 
+- **0.3.0** — Replaced an inherited hard-coded global worktree path with generic
+  external-directory detection (`../*worktrees*`). That path does not exist on
+  this machine and never did; it was import residue presented as live
+  back-compat, and a detection step that can never fire is still a tool call a
+  model spends.
+
 - **0.2.0** — calibration: deterministic-dominant (ADR-0025; deterministic
   by design — detection + exact bash). Named the bounded judgment (the
   native-vs-`git worktree` fallback choice). Hardening (v3 plan): added
   "When NOT to use" + Cross-references; normalised headings to dstack
-  voice; consolidated the `superpowers/worktrees` back-compat note.
-- **0.1.0** — Imported from superpowers `using-git-worktrees`. Adapted to
-  dstack: added frontmatter/`metadata.dstack`. The native-tool guidance
-  matches Claude Code's `EnterWorktree`/`ExitWorktree`; legacy
-  `~/.config/superpowers/worktrees/` path retained for backward-compat
-  detection. Body otherwise verbatim.
+  voice; consolidated the external-directory detection note.
+- **0.1.0** — Initial. The native-tool guidance matches Claude Code's
+  `EnterWorktree`/`ExitWorktree`; detection prefers an isolation the
+  workspace already has over creating a new one.

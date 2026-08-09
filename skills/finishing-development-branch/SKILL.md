@@ -204,7 +204,7 @@ WORKTREE_PATH=$(git rev-parse --show-toplevel)
 
 **If `GIT_DIR == GIT_COMMON`:** Normal repo, no worktree to clean up. Done.
 
-**If worktree path is under `.worktrees/`, `worktrees/`, or `~/.config/superpowers/worktrees/`:** A managed worktree created by the worktree skill — we own cleanup.
+**If worktree path is under `.worktrees/` or `worktrees/`, or a directory the worktree skill selected this session:** A managed worktree — we own cleanup.
 
 ```bash
 MAIN_ROOT=$(git -C "$(git rev-parse --git-common-dir)/.." rev-parse --show-toplevel)
@@ -248,7 +248,7 @@ git worktree prune  # Self-healing: clean up any stale registrations
 
 **Cleaning up harness-owned worktrees**
 - **Problem:** Removing a worktree the harness created causes phantom state
-- **Fix:** Only clean up worktrees under `.worktrees/`, `worktrees/`, or `~/.config/superpowers/worktrees/`
+- **Fix:** Only clean up worktrees under `.worktrees/`, `worktrees/`, or a directory the worktree skill selected this session
 
 **No confirmation for discard**
 - **Problem:** Accidentally delete work
@@ -285,6 +285,11 @@ git worktree prune  # Self-healing: clean up any stale registrations
 
 ## Changes
 
+- **0.3.0** — Managed-worktree cleanup is scoped to `.worktrees/`, `worktrees/`,
+  or whatever directory `/using-git-worktrees` selected this session, replacing
+  a hard-coded inherited global path that does not exist here. The guard against
+  removing a harness-owned worktree is unchanged.
+
 - **0.3.0** — Reciprocated `/test-driven-development` 0.6.0: Step 1 now also
   requires `/running-uat` PASS evidence for user-visible work before the
   merge/PR menu — tests green alone no longer qualifies the branch.
@@ -292,7 +297,5 @@ git worktree prune  # Self-healing: clean up any stale registrations
   external, the exact bash is the value). Named the bounded judgment
   (confirm the base branch when `merge-base` is ambiguous). Hardening
   (v3 plan): added Cross-references; normalised headings to dstack voice.
-- **0.1.0** — Imported from superpowers `finishing-development-branch`.
-  Adapted to dstack: added frontmatter/`metadata.dstack`; reworded the
-  worktree-provenance note (`~/.config/superpowers/worktrees/` retained
-  for backward-compat detection). Body otherwise verbatim.
+- **0.1.0** — Initial. Cleanup is scoped to worktrees this catalog's own
+  worktree skill created, so a harness-owned worktree is never removed.

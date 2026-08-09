@@ -245,5 +245,4 @@ The skill itself tells you which.
   whether a borderline skill applies.
 - **0.2.0** — Inline router + chains + bundled `references/skill-catalog.md`
   + `eval/cases.jsonl` (ADR-0016/0017).
-- **0.1.0** — Ported from superpowers `using-superpowers`; reduced to dstack's
-  single host (Claude Code).
+- **0.1.0** — Initial. Reduced to dstack's single host (Claude Code).

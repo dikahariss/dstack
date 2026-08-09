@@ -168,8 +168,5 @@ and retries the thing that already failed.
   (v3 plan): added When to use / When NOT to use; replaced TodoWrite with
   host-accurate phrasing; added the `/verifying-before-done` cross-reference;
   normalised headings to dstack voice.
-- **0.1.0** — Imported from superpowers `executing-plans`. Adapted to
-  dstack: added frontmatter/`metadata.dstack`; `superpowers:` sub-skill
-  references rewritten as `/skill`; "your human partner" → "the user";
-  the subagent note points at the Claude Code `Agent` tool and
-  `/subagent-driven-development`.
+- **0.1.0** — Initial. The subagent note points at the Claude Code `Agent`
+  tool and `/subagent-driven-development` for same-session execution.

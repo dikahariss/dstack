@@ -224,13 +224,13 @@ uses it as the brief for the implementation.
   at exactly 90% of the old figure, so any edit would have failed `--strict`.
 - **0.4.0** — Reciprocated the `discovering-requirements` boundary: an
   unwritten problem routes there. Siblings, not a sequence.
-- **0.3.0** — calibration: judgment-dominant (ADR-0025). Evidence: v3
-  benchmark — /brainstorm loses to mattpocock/grill-me when over-structured
+- **0.3.0** — calibration: judgment-dominant (ADR-0025). Evidence: the v3
+  benchmark — this skill loses when over-structured
   (docs/v3-benchmark-report.md). Owner-approved 2026-06-04.
 - **0.2.0** — Reframed the core rule from "ONE QUESTION AT A TIME"
   to "RECOMMENDATION FIRST → ONE QUESTION SECOND" because earlier
-  benchmark losses against mattpocock/grill-me showed Claude
-  defaulting to open enumeration when faced with ambiguous prompts.
+  benchmark losses showed Claude defaulting to open enumeration when
+  faced with ambiguous prompts.
   Added a stress-test worked example with the correct
   recommendation-first response and its anti-pattern. Added v2
   schema fields (`type: semantic`, `side_effects: readonly`,
