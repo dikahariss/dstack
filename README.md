@@ -3,13 +3,15 @@
 dstack is a skill catalog renderer for Claude Code. It reads skill
 definitions from disk, validates them, and writes the result in the
 format Claude Code expects. The source skills follow the Agent Skills
-format, so Codex can load them directly without a second renderer.
+format, so hosts like Codex and Gemini CLI load them directly without a
+second renderer.
 
 This project is a rewrite of [gstack](../gstack/) for a single user and a
 single render target (Claude Code). The goal is to keep today's solution
 simple, and to organize the code so that future changes do not become
-expensive. Compatible hosts such as Codex can consume the source catalog
-directly; see [Installing skills into Codex](#installing-skills-into-codex).
+expensive. Compatible hosts consume the source catalog directly — see
+[Codex](#installing-skills-into-codex) and
+[Gemini CLI](#installing-skills-into-gemini-cli).
 
 ## What "skill" means here
 
@@ -32,8 +34,9 @@ as `/debugging`; Codex uses `$debugging`. Each skill is one directory under
 4. Writes the result to `.claude/skills/<skill-id>/SKILL.md`. Claude Code
    reads files from this directory at startup.
 
-Codex deployment does not run this renderer. It links the spec-compatible
-source directories under `skills/` into Codex's user skill directory.
+Codex and Gemini CLI deployment does not run this renderer. It links the
+spec-compatible source directories under `skills/` into that host's user skill
+directory.
 
 ## What this project does NOT do (and why)
 
@@ -42,8 +45,8 @@ The following features are deliberately not built:
 - **Multiple renderer adapters**. Today the build pipeline only generates
   output for Claude Code. The code is structured so that a second renderer
   can be added if a host requires a genuinely different representation, but
-  none is needed for Codex: Codex reads the source `SKILL.md` directories
-  directly. See
+  none is needed for Codex or Gemini CLI: both read the source `SKILL.md`
+  directories directly. See
   [ADR-0029](docs/adr/0029-portable-source-consumption.md).
 
 - **Template engine for prompts**. Skill prompts are plain Markdown.
@@ -228,19 +231,65 @@ for target in "$DSTACK_CODEX_SKILLS_DIR"/*; do
 done
 ```
 
+### Installing skills into Gemini CLI
+
+Gemini CLI discovers agent skills from `~/.gemini/skills`, so it is a direct
+source consumer on the same terms as Codex ([ADR-0029](docs/adr/0029-portable-source-consumption.md)):
+the same additive symlink loop works, with the target directory changed.
+
+```bash
+DSTACK_REPO=$(pwd)
+DSTACK_GEMINI_SKILLS_DIR="$HOME/.gemini/skills"
+
+mkdir -p "$DSTACK_GEMINI_SKILLS_DIR"
+
+for source_dir in "$DSTACK_REPO"/skills/*; do
+  [ -f "$source_dir/SKILL.md" ] || continue
+  skill_id=$(basename "$source_dir")
+  target="$DSTACK_GEMINI_SKILLS_DIR/$skill_id"
+
+  if [ -e "$target" ] || [ -L "$target" ]; then
+    echo "skip existing: $target"
+    continue
+  fi
+
+  ln -s "$source_dir" "$target"
+done
+```
+
+`gemini skills link <path>` links one skill natively and is equivalent for a
+single directory; the loop above is the bulk form and matches the layout Codex
+already uses.
+
+To verify discovery — each dstack skill should report `[Enabled]` with a
+`Location:` under `~/.gemini/skills`:
+
+```bash
+gemini skills list | rg --fixed-strings 'using-dstack'
+```
+
+The same caveat as Codex applies, and it is not cosmetic: format compatibility
+is not semantic translation. A skill body naming a Claude-only tool
+(`Agent`, `Skill`, `AskUserQuestion`) or a `.claude/` path stays limited on
+Gemini until that skill documents a host-neutral route. Discovery being green
+says the catalog loaded, not that every workflow runs.
+
+Uninstall is the Codex block above with `DSTACK_GEMINI_SKILLS_DIR` substituted.
+
 ### Installing skills into Claude config dirs (incl. alternate model setups)
 
 `bun run build` renders every skill to `./.claude/skills/` (the per-project
 install). To make the skills available in a user Claude config dir — the default
-`~/.claude` and alternate model setups such as `~/.claude-zai` (Z.ai / GLM) and
-`~/.claude-kimi` (Moonshot Kimi) — copy each rendered skill into that dir's
+`~/.claude` and alternate model setups such as `~/.claude-zai` (Z.ai / GLM),
+`~/.claude-helium`, and `~/.claude-kimi` (Moonshot Kimi) — copy each rendered
+skill into that dir's
 `skills/` folder:
 
 ```bash
 bun run build                                   # render to ./.claude/skills/
 
 # Install/update every dstack skill into each config dir you use
-for DIR in ~/.claude ~/.claude-zai ~/.claude-kimi; do
+for DIR in ~/.claude ~/.claude-zai ~/.claude-helium ~/.claude-kimi; do
   [ -d "$DIR" ] || continue                      # skip a config dir you don't have
   mkdir -p "$DIR/skills"                          # ensure skills/ exists on first install
   for s in .claude/skills/*/; do
@@ -262,18 +311,18 @@ repo, deal with its orphan folder in two steps — **look first, then remove**:
 
 ```bash
 # 1. List what the orphan holds. Anything the repo does not ship is yours.
-for DIR in ~/.claude ~/.claude-zai ~/.claude-kimi; do
+for DIR in ~/.claude ~/.claude-zai ~/.claude-helium ~/.claude-kimi; do
   find "$DIR/skills/<old-id>" -type f 2>/dev/null
 done
 
 # 2. On a RENAME, move that payload into the new folder before deleting.
 #    (A real case: pdf-to-rag-markdown/work/ held converted documents.)
-for DIR in ~/.claude ~/.claude-zai ~/.claude-kimi; do
+for DIR in ~/.claude ~/.claude-zai ~/.claude-helium ~/.claude-kimi; do
   [ -d "$DIR/skills/<old-id>/work" ] && rsync -a "$DIR/skills/<old-id>/work" "$DIR/skills/<new-id>/"
 done
 
 # 3. Only now remove the orphan.
-for DIR in ~/.claude ~/.claude-zai ~/.claude-kimi; do rm -rf "$DIR/skills/<old-id>"; done
+for DIR in ~/.claude ~/.claude-zai ~/.claude-helium ~/.claude-kimi; do rm -rf "$DIR/skills/<old-id>"; done
 ```
 
 > `dstack build --global` installs to `~/.claude/skills/dstack/` instead; the
