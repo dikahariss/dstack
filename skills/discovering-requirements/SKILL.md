@@ -235,7 +235,7 @@ Name the smallest cut that moves the metric: state each `FR`'s expected
 contribution to the goal, then take the shortest prefix that plausibly reaches
 the target. Priority (`MUST`/`SHOULD`/`COULD`) applies to `FR` **and** `NFR`.
 
-Assumptions are ranked by *impact if wrong* × *confidence*, sorted, and §1 names
+Assumptions are ranked by *impact if wrong* × (1 − *confidence*), and §1 names
 the single riskiest one plus the cheapest thing that would settle it.
 
 **Gate:** out-of-scope list non-empty and ID-bearing; no more than half of the

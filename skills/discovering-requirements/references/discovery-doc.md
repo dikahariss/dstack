@@ -43,7 +43,7 @@ each dependent requirement `BLOCKED-PENDING` in its Priority cell.
 | 3 | every actor has a change or an effect borne + evidence status | | |
 | 4 | regimes scoped; every constraint sourced and status-stamped | | |
 | 5 | traceability up **and** down; no unresolved conflict | | |
-| 6 | out-of-scope non-empty with IDs; MUST ≤ half of FR+NFR | | |
+| 6 | out-of-scope non-empty with IDs; MUST ≤ half of the FR+NFR not parented by a `C-n` | | |
 | 7 | this table complete | | |
 
 ## 1. Summary
