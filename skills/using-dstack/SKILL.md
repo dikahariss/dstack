@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.17.0
+    version: 0.18.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -190,6 +190,11 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.18.0** — Repointed the catalog at `writing-plans` 0.9.0. The chain column
+  now runs both ways between it and `multi-persona-review`: a decision record is
+  carried into a plan, and an expensive plan goes back out for independent
+  reviewers. The row also names what the plan carries, since the previous entry
+  claimed the hand-off from the review side while the plan side was silent.
 - **0.17.0** — Repointed the router and catalog at `multi-persona-review` 0.4.0,
   which now seats a mandatory Dreamer / Realist / Critic trio and ends in an
   owned decision rather than a findings list. Added a second router row keyed on

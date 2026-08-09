@@ -9,11 +9,11 @@ description: |
 allowed-tools: Read Grep Glob Write
 metadata:
   dstack:
-    version: 0.8.0
+    version: 0.9.0
     type: semantic
     side_effects: local
     agency: deliberative
-    context_budget_tokens: 4500
+    context_budget_tokens: 5000
     triggers:
       - write a plan
       - writing-plans
@@ -49,6 +49,23 @@ undecided — boundaries, schema, contracts? That is `/writing-specs`;
 deciding it inside the plan hides it from review. Several independent
 things could be built and nothing says which first? That order comes from
 `/prioritizing-work` and is **carried** here, not re-derived.
+
+## Carrying a decision in
+
+When the plan follows a recorded decision — `/multi-persona-review`'s decision
+record, a steering review, an approved proposal — that decision is an input, not
+an invitation to re-litigate:
+
+- Every row of its **work-assignment table** becomes a task, or maps onto one.
+  Do not re-derive from the spec what somebody already decided.
+- Every risk it left **still open or unmitigated**, and every claim its
+  verification pass could not confirm, lands in **Assumptions and risks** below.
+  A risk raised in review and dropped on the way into the plan is the exact
+  failure that review existed to prevent.
+- A departure from the decision is named in one line with its reason, the same
+  way a departure from an incoming priority order is. The visible-slice rule
+  outranks both: a sequence that would leave Task 1 invisible gets reordered,
+  and the reorder is named.
 
 ## Where the plan goes
 
@@ -172,6 +189,33 @@ Step-level `- [ ]` boxes stay, but they are in-task scratch for whoever is
 executing right now. **The task table is the record.** Where the two disagree,
 the table wins.
 
+## Assumptions and risks — what the plan is betting on
+
+Directly under the Status block. Status records what happened; this records what
+the plan assumed *before* it started, so a stalled task hits something already
+written down instead of a surprise.
+
+```markdown
+## Assumptions and risks
+
+| # | The plan assumes | Checked? | If false | Fallback |
+|---|---|---|---|---|
+| A1 | GDAL is on the target host | no | Task 3 cannot import contours | synthetic bathymetry in PostGIS; Task 3 rewritten |
+| A2 | the tile contract is frozen | yes — spec §4, agreed 2026-07-20 | — | — |
+| A3 | 40 ms p95 on one node | no — from panel review, item R3 | Task 7 needs an unplanned cache | ship uncached, measure, revisit at Task 9 |
+```
+
+**An unchecked assumption needs a fallback** — a named risk with a blank response
+is a worry, not a plan. Carried risks keep their origin, so nobody re-argues a
+settled decision. Checked assumptions stay in the table with their evidence; that
+is what stops the next session re-verifying them.
+
+Three hats earn a place in a written plan: **White** — what is assumed and
+whether anyone checked; **Black** — what breaks if it is false; **Green** — the
+fallback. Yellow was settled upstream by the spec, Red belongs to the review that
+decided to build this, and Blue is already the Status block's branch and `Next:`
+pointer. Six hats in a plan document would be ceremony.
+
 ## Task structure
 
 ````markdown
@@ -226,27 +270,30 @@ write them:
 - "Similar to Task N" — repeat the code; tasks get read out of order
 - References to types or functions not defined in any task
 
-## Self-review
+## Self-review — three positions, in order
 
-After writing the plan, check it against the spec with fresh eyes:
+"Fresh eyes" is not a position, it is a mood, and it reliably finds nothing.
+Take three positions in sequence, finishing each before starting the next.
 
-1. **Visible slice** — read Task 1. Does finishing it give the user something
-   to open and click? If not, and the plan is not declared backend-only,
-   reorder. This is the one check that rejects a plan rather than patching it.
-2. **Coverage** — point each spec requirement to a task. List gaps; add tasks.
-   Every `MUST` or `P0_GATE` item from an incoming priority order lands in a
-   task, and any departure from that order is named in one line with its reason.
-3. **Tiers named** — every task carries a tier, so nothing silently inherits
-   the expensive cycle or silently escapes a needed one.
-4. **Stubs retired** — every stub introduced by the visible slice has a named
-   later task that replaces it, and its shape matches the spec's contract.
-5. **Placeholders** — scan for the red flags above. Fix inline.
-6. **Consistency** — types, signatures, and names defined in early tasks
-   match the ones used in later tasks.
-7. **Status block present** — it sits under the header, lists every task as
-   `todo`, and names the branch. A plan without one cannot be resumed.
+This is Disney's original sequential form, right here for the same reason it is
+wrong in `/multi-persona-review`: one author, one plan, no reviewer independence
+to protect. The sequence exists to get you out of the position you drafted in.
 
-Fix issues inline; no need to re-review.
+| Position | What it checks |
+|---|---|
+| **Dreamer** | Read Task 1: does finishing it give the user something to open and click, or does the plan declare backend-only and say why? Then — what did the plan quietly drop from the spec's ambition to make itself easier to write? |
+| **Realist** | Spec coverage with every `MUST`/`P0_GATE` landed and departures named; a tier on every task; every stub retired by a named later task in the spec's contract shape; consistent types and names across tasks; a Status block with every task `todo` and a branch; a fallback on every unchecked assumption. |
+| **Critic** | Placeholders — "TBD", "add appropriate error handling", "similar to Task N", a type no task defines. Which task stalls first, and on what. Which assumption is load-bearing and unchecked. What this plan commits to that cannot be undone. |
+
+**The Critic must return something.** A pass that finds nothing has not been run:
+name the weakest task and say why it is still acceptable. "Looks good" is not an
+output, it is the failure mode this position exists to catch.
+
+Only the Dreamer's first check rejects a plan outright — a mis-ordered Task 1 is
+reordered, not patched. Everything else is fixed inline, and no re-review is
+needed.
+
+Full question sets: `references/plan-review-pass.md`.
 
 ## Handoff
 
@@ -267,46 +314,44 @@ next, the Status block is under-filled — fix the block, not the prompt.
 
 ## Changes
 
-- **0.8.0** — Reciprocated `/prioritizing-work` 0.1.0: an incoming priority
-  order is **carried**, never re-derived, and self-review item 2 now checks that
-  every `MUST`/`P0_GATE` item landed in a task with departures named. The
-  visible-slice rule still outranks any incoming order, so this skill can reject
-  a sequence that would make Task 1 invisible. Budget re-targeted 4000 → 4500
-  (ADR-0016 default → still under the 5000 ceiling) to hold 0.7.0's Status block
-  alongside this; the alternative was deleting the plan-header template.
-- **0.7.0** — Added the **Status block**: a task-state table under the plan
-  header, with a branch, a `Next:` pointer, evidence on `done` rows, and an
-  append-only Deviations list. Transcript mining across ~60 real plan documents
-  found thousands of `- [ ]` steps and effectively zero ticked — including a
-  plan whose work demonstrably shipped in 12 commits while its 72 boxes stayed
-  unticked. Status was being delegated to session-local todos, so it died at
-  `/clear`; the same evidence showed both the model and the user independently
-  hand-inventing the missing artifact (an ad-hoc `## STATUS EKSEKUSI` section
-  buried at line 714 of one plan, and a hand-maintained `STATUS.md` dashboard in
-  another repo). The block sits under the header rather than at the end so
-  reading it is cheap, and step checkboxes were demoted to in-task scratch
-  rather than mandated harder — a rule at 0% compliance over 60 documents does
-  not get fixed by repeating it. The handoff section now states that the block
-  replaces the written hand-off prompt.
-- **0.6.0** — English-only sweep. Dropped the two Indonesian trigger phrases
-  (priority ordering, frontend-first) and put the 0.5.0 entry's quoted
-  Indonesian complaint into English reported speech. Reasoning is
-  `using-dstack` 0.7.0's: models translate intent, so the phrases cost tokens
-  without adding reach. `task ordering` already covered the first;
-  `frontend first` was added for the second, which no English trigger reached.
-  Nothing in this skill is Indonesian data to match against, so nothing was
-  preserved.
-- **0.5.0** — Added the **visible-slice-first ordering rule** and made the test
-  steps tier-aware. Transcript mining found 12+ pushback turns about the
-  visible product arriving late or wrong, the archetype being a report of 78
-  green server tests answered by the owner saying he still could not see any
-  result; the owner's rule is that product/app/SaaS/web-app work puts the frontend
-  first, with genuinely backend-only work exempt. Task 1 must now put something
-  on screen, the plan header declares the visible slice or why there is none,
-  and the self-review leads with the check that rejects a mis-ordered plan.
-  Tasks now carry a risk tier, so `/test-driven-development` no longer implies
-  the full red-green cycle on every task — the case list still precedes the
-  implementation either way.
+- **0.9.0** — Reciprocated `/multi-persona-review` 0.4.0, whose catalog entry
+  already claimed this skill "carries the assignment table" while nothing here
+  said so — the unenforced-precondition defect 0.3.0 and 0.4.0 fixed for other
+  upstreams. **Carrying a decision in** names what arrives; **Assumptions and
+  risks** is where the carried risks and unconfirmable claims land, because the
+  plan previously had nowhere to record what it was betting on — only a
+  retrospective Deviations list, so a stalled task always read as a surprise.
+  That block takes three of the Six Thinking Hats and says why the other three
+  stay out rather than including them for symmetry. **Self-review became Disney's
+  three positions in sequence**, absorbing all seven prior checks unchanged and
+  adding the load-bearing-assumption and first-task-to-stall questions; the Critic
+  must return a finding, because "fresh eyes" was a mood and moods measure at
+  baseline. Sequential is right here and parallel is right in
+  `/multi-persona-review`: one author has no reviewer independence to protect.
+  Question sets moved to `references/plan-review-pass.md`. Budget 4500 → 5000.
+- **0.8.0** — Reciprocated `/prioritizing-work` 0.1.0: an incoming priority order
+  is **carried**, never re-derived, and self-review checks that every
+  `MUST`/`P0_GATE` landed with departures named. The visible-slice rule still
+  outranks any incoming order. Budget 4000 → 4500 to hold 0.7.0's Status block.
+- **0.7.0** — Added the **Status block**: a task-state table under the header
+  with a branch, a `Next:` pointer, evidence on `done` rows, and append-only
+  Deviations. Transcript mining across ~60 plan documents found thousands of
+  `- [ ]` steps and effectively zero ticked — one plan shipped 12 commits with
+  all 72 boxes unticked — while both model and user independently hand-invented
+  the missing artifact elsewhere. Step checkboxes were demoted to in-task scratch
+  rather than mandated harder: a rule at 0% compliance over 60 documents is not
+  fixed by repeating it. The block replaces the written hand-off prompt.
+- **0.6.0** — English-only sweep: dropped the two Indonesian trigger phrases
+  under `using-dstack` 0.7.0's rule that models translate intent. `task ordering`
+  already covered one; `frontend first` was added for the other. Nothing here is
+  Indonesian data to match, so nothing was preserved.
+- **0.5.0** — Added the **visible-slice-first ordering rule** and made test steps
+  tier-aware. Transcript mining found 12+ pushback turns about the visible product
+  arriving late, the archetype being 78 green server tests answered with "I still
+  cannot see any result". Task 1 must now put something on screen, the header
+  declares the visible slice or why there is none, and the self-review leads with
+  the check that rejects a mis-ordered plan. Tasks carry a risk tier, so
+  `/test-driven-development` no longer implies the full cycle on every task.
 - **0.4.0** — Reciprocated the `writing-specs` boundary: agreed requirements
   with an undecided design route there, because deciding boundaries and schema
   inside a plan hides them from review.
