@@ -8,12 +8,12 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.16.0
+    version: 0.17.0
     type: semantic
     side_effects: readonly
     agency: reactive
     calibration: schema-meta
-    context_budget_tokens: 4000
+    context_budget_tokens: 4500
     triggers:
       - which skill applies
       - find a skill
@@ -90,7 +90,8 @@ language they used. One row can fire more than once in a task.
 | New feature, bugfix, behavior change | `/test-driven-development` — it decides how much discipline the change earned; the full cycle is **not** the default |
 | About to claim done / fixed / passing | `/verifying-before-done` |
 | Acceptance-test a RUNNING app via browser (UAT) | `/running-uat` |
-| One artifact, several expert points of view | `/multi-persona-review` |
+| One artifact, several expert points of view → a decision | `/multi-persona-review` |
+| Reviewers agreeing too readily; need someone to attack it | `/multi-persona-review` |
 | Destructive or risky command, or prod | `/guarding-destructive-commands` |
 | Need an isolated workspace | `/using-git-worktrees` |
 | Work done — merge / PR / keep / discard | `/finishing-development-branch` |
@@ -189,6 +190,13 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.17.0** — Repointed the router and catalog at `multi-persona-review` 0.4.0,
+  which now seats a mandatory Dreamer / Realist / Critic trio and ends in an
+  owned decision rather than a findings list. Added a second router row keyed on
+  the symptom users actually report — reviewers agreeing too readily — since
+  nobody types "multi persona review" when what they notice is that nothing is
+  being challenged. Budget 4000→4500 — the router was already at 88% and every
+  registration adds to it.
 - **0.16.0** — Registered `/prioritizing-work`: router row, feature chain, and
   catalog entry. The router row alone would not have fired — the phrase users
   actually type is "do all of it", never "which comes first" — so the

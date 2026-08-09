@@ -1,6 +1,13 @@
 # Dispatch prompts
 
-## One blind reviewer
+In the order the three iterations use them.
+
+**Iteration 1** — the blind reviewer (Dreamer, Realist, any specialist), the
+Critic, then the verification pass. **Iteration 2** — the Dreamer/Realist patch
+pass, the Critic's re-check of v2, and Blue-hat arbitration. **Iteration 3, only
+if it fires** — the Go/No-Go. Then the decision record, which closes any of them.
+
+## 1. One blind reviewer
 
 Send one per point of view, in parallel. Each reviewer sees the artifact and its
 own spec — **never a sibling's output, and never your session narrative.**
@@ -34,15 +41,19 @@ on them is correct behaviour, not an omission.
    Severity is observable impact. Do not assign business priority — that is
    set by the owner, or by `/prioritizing-work` when the question is where the
    finding sits against other work.
-3. Do not restate the artifact back to me. Findings only.
-4. Length is not a quality signal here. Six grounded findings beat twenty
+3. Mark every finding that rests on a factual claim — a number, a citation, a
+   stated capability — with [CLAIM] and name the source you would check. A
+   later pass verifies these; do not verify them yourself from memory.
+4. Do not restate the artifact back to me. Findings only.
+5. Length is not a quality signal here. Six grounded findings beat twenty
    padded ones.
-5. You MUST answer the objection field, even if the artifact looks fine.
+6. You MUST answer the objection field, even if the artifact looks fine.
 
 ## Output format
 
 ### Findings
 - [severity] <location> — <what is wrong> — <why it matters> — <what to do>
+  [CLAIM: <the factual claim> | source to check: <where>]   (only if applicable)
 
 ### The one thing I would block this for
 <the single strongest objection you can construct. If you genuinely believe
@@ -53,19 +64,218 @@ falls short of blocking. "Nothing" alone is not an acceptable answer.>
 <one line — so the arbiter knows your blind spots>
 ```
 
-## Arbiter
+## 2. The Critic
 
-Runs once, after all reviewers have returned.
+Disney's third position, and the panel's assigned devil's advocate. Dispatched
+alongside the other seats, blind like them — never after them, and never in the
+same context. This seat is what actually produces dissent: a required objection
+field on the other seats measures at 55% disagreement, statistically
+indistinguishable from baseline, while an assigned advocate measures at 99.2%.
 
 ```
-You are reconciling independent reviews of one artifact. Reviewers worked
-blind and in parallel.
+You are the assigned Critic for this artifact — the devil's advocate. You are
+not a reviewer with a critical mood; your job is a specific one: build the
+strongest HONEST case that this should not proceed, so that if it survives
+review it survived something real.
+
+## The artifact
+<full text, or exact paths + the range that matters>
+
+## Its purpose
+<what it is meant to achieve, and for whom>
+
+## Your job
+
+1. Find the load-bearing assumption — the single one that, if false,
+   collapses the proposal. State it, state why it is load-bearing, and state
+   what evidence exists for it right now.
+2. Argue the rejected alternative, and argue doing nothing, at their
+   strongest — not as straw men.
+3. Stress it: 3× the load, a third of the budget, the sponsor gone, the
+   author unavailable. Name what breaks first in each case.
+4. Separate what is asserted from what is evidenced. Quote the assertions.
+5. Name the cheapest test that would falsify the core claim BEFORE anyone
+   commits to it.
+
+## Rules
+
+- Every objection is anchored to a location or a quoted phrase, and ranked:
+  strongest first.
+- Attack the proposal, never the author.
+- Cosmetic and stylistic objections are out of scope. So is re-opening a
+  decision already recorded as closed with a reopening trigger.
+- "I agree with the proposal" is NOT an acceptable output. If the proposal is
+  genuinely sound, your finding is: what would have to be true for this to
+  fail, and the evidence that it is unlikely. Concluding that a proposal is
+  probably right is allowed. Producing no kill-case is not.
+
+## Output format
+
+### Kill-case, ranked
+1. <objection> — <location> — <what has to be true for this to be fatal>
+2. …
+
+### The load-bearing assumption
+<the one that collapses it, and the evidence that currently supports it>
+
+### The cheapest falsification test
+<what to run or check before committing, and what result would kill it>
+
+### What survives my attack
+<what I could not break, stated plainly — this is the honest part>
+```
+
+## 3. The verification pass
+
+Runs after the union merge, before convergence. It checks claims against
+**sources**, never against another persona. This is the only step in the
+exercise that touches whether something is true.
+
+```
+You are verifying factual claims for a review panel. You do not review the
+artifact and you do not add findings.
+
+## Claims to check
+<every [CLAIM] from the reviewers, plus every number, citation, and stated
+capability in the artifact that a decision depends on>
+
+## Sources available
+<paths, URLs, datasets, tools you may use>
+
+## Rules
+
+1. Check only DECISIVE claims — ones where the decision changes if the claim
+   is false. If a claim does not move the decision, mark it "not decisive"
+   and skip it. Say how many you skipped.
+2. Verify against the source itself. A second opinion is not a source, and
+   your own recollection is not a source.
+3. For a citation: confirm it exists AND that it says what it is claimed to
+   say. Those fail separately.
+4. For a number: confirm the value, the period, the units, and the
+   population. A right number over the wrong period is refuted, not verified.
+5. If you cannot reach a source, the status is UNVERIFIABLE. Do not guess,
+   and do not downgrade it to verified because it sounds plausible.
+
+## Output format
+
+| claim | raised by | status | source checked | what the source actually says |
+|---|---|---|---|---|
+
+Status is exactly one of: VERIFIED / REFUTED / UNVERIFIABLE / NOT DECISIVE.
+
+### Consequences
+- REFUTED claims, and the findings or artifact statements that rest on them.
+- UNVERIFIABLE claims that a decision would otherwise rest on — each of these
+  has to become a named assumption with an owner, not a fact.
+
+### Counts
+checked <n> · verified <n> · refuted <n> · unverifiable <n> · skipped as not
+decisive <n>
+```
+
+## 4a. Iteration 2 — Dreamer and Realist patch the register
+
+Sent to both seats at once, still blind to each other. Both wear Green then
+Yellow: same-hat-at-once is de Bono's discipline, and it is what keeps this a
+work session rather than a rematch. Blue never appears in a seat's prompt.
+
+```
+You reviewed this artifact earlier as <Dreamer | Realist>. The critique
+phase is over. Your job now is to close the register, not to re-argue it.
+
+## The risk register
+<the Critic's ranked kill-case + every blocking and major finding>
+
+## Verification results
+<the table from the verification pass>
+
+## Answer exactly these three fields. Nothing else. No preamble.
+
+### WHITE — facts only
+What the verification changed. Every finding of mine that rests on a REFUTED
+claim is withdrawn here — withdrawing is the mechanism working, not losing.
+Then list what is still only an assumption.
+
+### GREEN — a mitigation per register item
+For EACH item: the smallest change that would close it. A proposal, not an
+argument. As the Dreamer, look for the way through — a different framing that
+makes the risk irrelevant rather than merely smaller. As the Realist, say
+whether the mitigation can actually be built and what it costs. Mark any item
+you cannot close as UNMITIGATED rather than inventing something.
+
+### YELLOW — value that survives
+What still genuinely works once these mitigations are applied, and what it is
+worth. A proposal whose value does not survive its own mitigations is a
+finding, so say that plainly if it is what you find.
+```
+
+## 4b. Iteration 2 — the Critic re-checks v2
+
+Runs after the artifact is revised, never before: the Critic must review a
+changed artifact, or this is a second debate rather than a second iteration.
+Send the Red field to every other seat in parallel with this.
+
+```
+You were the Critic on v1 of this artifact. Here is v2 and the register it
+was meant to close. Check the patches, not the people who wrote them.
+
+## v2 of the artifact
+<the revised artifact>
+
+## The register you produced, with the mitigation proposed for each item
+<item → mitigation>
+
+## Answer exactly these three fields.
+
+### Register status
+| item | mitigation | CLOSED / STILL OPEN / MADE WORSE | why |
+An item nobody addressed is STILL OPEN. Silence does not close a risk, and
+neither does a mitigation that only renames it.
+
+### BLACK — residual risk
+What remains AFTER the mitigations. Not your original objection restated: if
+a mitigation genuinely kills your objection, say so — that is the outcome
+this iteration exists to produce. Then name any NEW blocking risk the
+mitigations themselves introduced.
+
+### New class of blocking risk?
+YES only if v2 surfaced a blocking risk of a KIND v1 never considered — a
+legal or regulatory bar, cost materially past what was approved (a doubling,
+say), an unobtainable dependency, a safety exposure. An old objection at
+higher volume is NO. This single answer is what triggers iteration 3, so do
+not inflate it.
+```
+
+Every other seat answers only:
+
+```
+### RED — gut
+One line. How you actually feel about proceeding with v2. No justification,
+and nobody may demand one. If it disagrees with your own analysis, say it
+anyway — that mismatch is the most useful thing you can return here.
+```
+
+## 5. Blue-hat arbitration
+
+You wear the Blue hat. Runs once, after iteration 2 returns.
+
+```
+You are reconciling independent reviews of one artifact. The seats worked
+blind and in parallel — a Dreamer, a Realist, a Critic acting as assigned
+devil's advocate, and any specialists.
 
 ## The artifact
 <same artifact>
 
 ## Reviews
 <all reports, IN RANDOMISED ORDER>
+
+## Verification results
+<the table and its counts>
+
+## Iteration 2 returns
+<the Green/Yellow mitigations, the Critic's register status and Black, and
+every seat's Red line>
 
 ## Rules
 
@@ -76,14 +286,22 @@ blind and in parallel.
 2. Agreement is weak evidence. All reviewers share one base model, so
    correlated errors are expected and unanimity confirms little. Do not
    promote a finding because several reviewers raised it.
-3. Arbitrate ONLY genuine contradictions — one reviewer says do X, another
+3. Apply the verification results: REFUTED promotes to blocking and withdraws
+   what rested on it; UNVERIFIABLE may not carry blocking severity and may not
+   be the sole basis for a decision.
+4. Arbitrate ONLY genuine contradictions — one reviewer says do X, another
    says do not-X. Two reviewers describing the same issue in different words
    is not a contradiction; merge it.
-4. One rebuttal round maximum. If a contradiction survives, escalate it with
-   both positions stated in full. Do not silently pick a side.
-5. Ignore report length. Ignore report order.
-6. If the artifact was authored by the same model reviewing it, add a
+5. No further rounds. The Six Hats pass was the one rebuttal. Anything still
+   open goes to the decision owner with both positions stated in full.
+6. Ignore report length. Ignore report order.
+7. If the artifact was authored by the same model reviewing it, add a
    self-review warning to the output.
+8. If the panel produced ZERO blocking objections, say so as a warning, not
+   as a result. Re-read the Critic's kill-case before accepting it.
+9. Read the RED fields. A seat whose gut contradicts its own analysis is
+   flagging something the analytic fields did not capture — surface it, do
+   not average it away.
 
 ## Output format
 
@@ -93,24 +311,129 @@ blind and in parallel.
 ### Major / Minor
 <grouped, each with location>
 
-### Contradictions — needs a human decision
-<position A, position B, what turns on it>
+### Open for decision
+<position A, position B, what turns on it, and what evidence would settle it>
 
-### Coverage diagnostic
+### Diagnostics
 | point of view | findings | unique to it | unique % |
 Flag any view under ~10–20% unique: its criteria checklist is too close to
 another's, or the view is not earning its slot.
+
+Claims: checked <n> · refuted <n> · unverifiable <n>
+Blocking objections raised: <n>   (zero is a red flag, not a pass)
 
 ### Observations
 <noted, not actioned>
 ```
 
+## 6. Iteration 3 — Go / No-Go, conditional
+
+Runs **only** when the Critic answered YES to "new class of blocking risk" in 4b.
+Not for an old objection at higher volume, not for a preference, not because a
+seat wants another turn. If iteration 2 closed cleanly, skip straight to the
+decision record.
+
+Blue and Red only. No new reviewing seats, no new analysis: the analysis is
+finished, and what is left will not resolve by looking harder.
+
+```
+Iteration 2 surfaced a blocking risk of a class nobody considered in
+iteration 1. This is the final iteration — there is no fourth.
+
+## The new risk
+<what it is, who raised it, and why it is a new class rather than a louder
+version of an existing objection>
+
+## Where the rest of the review landed
+<register status, residual Black, the work assignment as it stood>
+
+## Every seat's Red line
+<one line each, unjustified by design>
+
+## Your job, as Blue
+
+1. State the decision in one sentence: GO or NO-GO.
+2. Give the basis in one paragraph. Cite evidence, never seniority and never
+   the count of seats on each side.
+3. If GO: what the new risk changes about the work assignment, and the
+   observable that would reverse the decision.
+4. If NO-GO: what would have to become true to revisit, and what happens to
+   the work already done.
+5. If you cannot settle it, do NOT run another round. Escalate to the human
+   with both positions in full, every Red line, and your recommendation.
+
+NO-GO is a legitimate outcome. A panel that structurally cannot say no is a
+panel that was never reviewing.
+```
+
+## 7. The decision record
+
+Produced under the Blue hat by the decision owner — you, or the human who owns
+the outcome. This is what closes the review and starts the work.
+
+```markdown
+## Decision — <artifact>, <date>
+
+**Owner:** <name — a person, not a role>
+
+### Verdicts
+| open question | verdict | basis |
+|---|---|---|
+| <the contradiction> | accept A / accept B / defer / block | <the evidence, not the seniority> |
+
+Deferred items carry the trigger that reopens them: "revisit when <observable>".
+
+### Assumptions we are proceeding on
+<every UNVERIFIABLE claim the decision rests on, each with an owner and a
+date to check it by>
+
+### Work assignment
+| what | who (a name, not a team) | by when | who verifies it is done |
+|---|---|---|---|
+
+The Green fields of the Six Hats pass are the source of this table — each
+accepted minimum change becomes a row. A decision with no assignment table
+has not reached execution; it is still an opinion. Hand the table to
+`/writing-plans` when it needs sequencing into an implementation plan.
+
+### Commitment
+Every seat commits to executing this decision. Commitment is to the action,
+not agreement that the objection was wrong.
+| seat | committed | dissent preserved below? |
+
+### Dissent register
+<verbatim, not summarised. Each entry: the objection, who raised it, and the
+observation that would reopen this decision.>
+
+Erasing dissent here to make the record read unanimous rebuilds exactly the
+failure the Critic seat exists to prevent.
+
+### Escalated
+<what the owner could not settle, both positions in full>
+```
+
 ## Why these prompts look like this
 
 Every rule above maps to a measured failure: ungrounded findings to
-confabulation; the mandatory objection to the finding that explicit
-devil's-advocate assignment lifts disagreement from ~48% to ~99% while "strong
-role framing" does nothing; blind parallel dispatch to conformity measured up to
-85.5%; one-round arbitration to debate-to-consensus voting away correct answers;
-randomised order to position bias; the length rule to verbosity bias; the
-unique-% diagnostic to effective-independence collapse (≈2.18 of 9 judges).
+confabulation; the Critic seat to the finding that explicit devil's-advocate
+assignment lifts disagreement to ~99% while a dissent instruction sits at ~55%,
+indistinguishable from a ~48% baseline; blind parallel dispatch to conformity
+measured up to 85.5%; the three-iteration cap, and the rule that an iteration
+requires a *revised artifact*, to debate-to-consensus voting correct answers away
+(oracle gap up to 32.3 points); randomised order to position
+bias; the length rule to verbosity bias; the unique-% diagnostic to
+effective-independence collapse (≈2.18 of 9 judges). The verification pass is not
+a persona mechanism at all — it is there because personas were measured not to
+improve accuracy, so accuracy has to come from checking claims against sources.
+
+Disney Creativity Strategy and Six Thinking Hats supply the *structure* — three
+sharply different seats, then same-hat passes instead of positional argument.
+They are facilitation methods, not measured interventions. What makes them work
+here is the differentiation effect (three reviewers with different criteria
+scored 60.0% against 53.8% for three with the same) and the assigned-advocate
+number above. Do not cite the frameworks themselves as evidence in the output.
+
+The iteration cap and the one-rebuttal rule are the same rule seen twice: what
+the evidence forbids is arguing again about an artifact that did not change.
+Iteration 2 is legitimate because the Critic reads v2; a fourth iteration is not,
+because by then nothing new is being reviewed.
