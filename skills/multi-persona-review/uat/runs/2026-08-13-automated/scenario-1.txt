@@ -1,0 +1,45 @@
+Working directory `/tmp/tmp.MTT2vwfdvZ` is empty, nothing is attached to your message, and the Figma connector in this session is unauthorized. There is no artifact here to review.
+
+## STOP — evidence acquisition required
+
+Two separate gaps, and only one of them is the one you flagged.
+
+**Gate item — status**
+
+| Item | Status | Note |
+|---|---|---|
+| Purpose of the service | `missing` | "public licensing" names a domain, not a purpose |
+| Critical tasks | `missing` | which licence, which applicant, which decision |
+| Class + lifecycle gate | `missing` | needed to select coverage in product mode |
+| **The artifact (screens)** | **`missing`** | **not in the working directory, not attached, Figma not authorized** |
+| User evidence | `missing` | stated by you — no interviews, no task observations |
+| Operational evidence | `missing` | volumes, current channel, backlog, error/rework rates |
+| Expert evidence | `missing` | prior accessibility, legal or security review |
+| Decision owner | `missing` | nobody named to hold Blue's verdict |
+
+The blocking one is the artifact, not the missing research. A panel with no packet would be four subagents inventing a licensing flow and reviewing their own invention — that is the fabrication this skill forbids, and it would read exactly like a real review.
+
+Your stated gap — no interviews, no task observations — is real but not fatal on its own. Once the screens exist here, expert review still runs. What it cannot do is return a user-outcome verdict: no seat count substitutes for a user, and this panel is one base model with correlated errors, so unanimity across seats would confirm nothing.
+
+## Evidence plan
+
+**To open the panel at all (blocking):**
+
+1. **The screens.** Put the files in `/tmp/tmp.MTT2vwfdvZ` — a PDF export, PNGs, an HTML prototype, or a repo path. If they live in Figma, that connector needs authorizing in your claude.ai connector settings from an interactive session; this session cannot run the OAuth flow. A static export is faster.
+2. **One paragraph of purpose** — which licence, who applies, what the applicant is trying to get done, what the agency is trying to decide.
+3. **The critical task list** — the two or three end-to-end paths that must not fail (e.g. first-time application, renewal, correcting a rejected submission).
+4. **Class and lifecycle gate** — is this a concept probe, a pre-build prototype, or a pre-launch candidate? The gate decides how hard the bar is and which perspectives are warranted.
+5. **The decision owner, by name.** Blue assigns work at the end; a decision with no assignment table is an opinion.
+
+**To later attach a user-outcome verdict (not blocking, runs in parallel):**
+
+6. **Task observations, 5–8 applicants**, recruited to the actual eligibility profile — not colleagues. Real applications, real documents, think-aloud, time and error per critical task. This is the single highest-value item and the cheapest of the four.
+7. **Operational data you already own** — submission volumes, abandonment point, rejection reasons, call-centre and counter enquiry topics, rework rate. Public licensing almost always has this sitting in an existing system; it is evidence you don't have to collect.
+8. **Statutory and accessibility constraints in writing** — mandatory fields, retention rules, identity assurance level, the accessibility standard you are bound to. In a public service these are frequently the S3-class findings, and a panel cannot verify against a standard it was never shown.
+9. **Prior expert review**, if any exists — legal, security, or accessibility. Feeds verification in step 5, so reviewers check claims against a source rather than against each other.
+
+**What arriving with 1–5 buys:** a full five-seat panel — Dreamer, Realist, Critic, plus two specialists (public-service accessibility and legal/regulatory compliance are the likely pair for licensing) — union findings, verified decisive claims, a risk register and an owned decision. Every user-experience finding will be tagged `[INFERRED]`, and that tag will not be upgraded later.
+
+**What 6–9 additionally buys:** the right to say anything about what applicants actually do.
+
+Send the screens and I'll run it.

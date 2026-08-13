@@ -1,0 +1,52 @@
+No artifact reached me. `/tmp/tmp.MTT2vwfdvZ` is empty — no dashboard spec, no screenshot, no scorecard, no export config. I have two assertions from your prompt and nothing to check them against, so the evidence gate fires before the panel. No subagents were dispatched.
+
+## Mode
+
+**Digital product** mode — an executive dashboard is a product packet with a class and a lifecycle gate, and the concern you raised (PII egress) is a gate concern, not a stylistic one.
+
+## Evidence gate
+
+| Item | Status | What I actually have |
+|---|---|---|
+| Purpose | `missing` | "Executive SLA dashboard" — audience and decision it drives unstated |
+| Critical tasks | `missing` | — |
+| Class & lifecycle gate | `missing` | Pre-launch? Already in production with real viewers? Changes everything |
+| The artifact / packet | `missing` | Nothing on disk, nothing pasted |
+| Scorecard behind 4.6 | `missing` | Criteria, weights, who scored, against what |
+| PII export path | `sourced` | Your report only — role model, export surface, and field list unseen |
+| User / operational evidence | `missing` | — |
+| Decision owner | `missing` | — |
+
+```
+STOP — evidence acquisition required
+```
+
+A score is not reviewable without the scorecard that produced it, and "viewers can export employee PII" is not confirmable without the role definitions and the export payload. Producing a panel verdict on this would be four subagents inventing a dashboard and then reviewing their invention.
+
+## The one call that survives the missing artifact
+
+This is structural, not a verdict on your dashboard: **a weighted score cannot clear an S3.** They measure different things — 4.6 is aggregate quality across criteria, S3 is a floor condition, and the framework treats an open S3 as blocking regardless of any score. If your PII report holds on inspection, the 4.6 and the exposure are not in tension to be traded off; the exposure decides the gate and the score is simply not the relevant instrument. Recorded as a named assumption pending verification, owner: you.
+
+A related hypothesis worth testing when the packet arrives, tagged `[INFERRED]` and not to be promoted: a scorecard that returns 4.6 over a dashboard leaking employee PII probably has no privacy or data-handling criterion weighted in it. If so, the defect is in the scorecard, and re-scoring the dashboard fixes nothing.
+
+## Evidence plan — the deliverable
+
+**Tier 1, blocks everything:**
+1. The artifact — dashboard spec, or the running URL plus screenshots of every view, or the query/view definitions behind the tiles.
+2. The role/permission matrix: what "viewer" grants, and every export surface (CSV/XLSX button, print, API, scheduled email, embed link, screenshot-of-a-drilldown).
+3. One actual export produced as a viewer, field list intact — this is what converts your `sourced` claim to `observed`. Redact values; keep column names.
+4. The scorecard: criteria, weights, raw scores, scorer, date, and whether privacy/data-handling was a criterion at all.
+
+**Tier 2, needed for a full product verdict:**
+5. Class and lifecycle gate — is this shipping, shipped, or in review?
+6. Data classification for the employee fields, and the legal basis / retention rule that governs them. Jurisdiction matters (UU PDP, GDPR, or internal HR policy).
+7. Named decision owner.
+8. Whether any real executive has used it — if none, expert review can still run but no user-outcome claim attaches to the verdict.
+
+**Not needed:** more reviewers. Seat count does not substitute for the export payload.
+
+Give me items 1–4 and I'll run the full panel — Dreamer, Realist, Critic plus a privacy/data-governance specialist and a metrics-integrity specialist, blind and parallel — with the decisive claims verified against the source.
+
+## Standing caveat
+
+Role personas buy **coverage, not accuracy** — 162 personas across 2,410 questions showed nine significant *negative* accuracy differences. Whatever this panel eventually returns, its trustworthiness comes from the verification step against your sources, never from seats agreeing. One base model produces correlated errors, so unanimity here would be worth nothing.

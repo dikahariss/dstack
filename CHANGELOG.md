@@ -12,6 +12,32 @@ Phase 2 work toward v1. Not yet tagged.
 
 ### Changed
 
+- **`/multi-persona-review` reviews digital products, not just artifacts**
+  (0.4.0 → 0.5.0). It keeps the existing artifact-review workflow unchanged and
+  adds a product mode: pick one product class (transactional service, internal
+  operations, public information, dashboard, report, infographic) at one
+  lifecycle gate, and the skill selects review coverage from a reusable library
+  of 18 perspectives instead of inventing a persona set per application. A
+  twenty-application portfolio reuses one standard twenty times.
+  **It will not manufacture user findings.** Perspectives are split by the
+  evidence they need — real participants, real stakeholders, or expert analysis
+  — and an AI seat may analyse research, UAT, analytics or support records but
+  never speak as a user. When the gate's evidence is missing, the output is an
+  evidence-acquisition plan and `no verdict`, not a score.
+  Findings became `PR-nnn` records with S0-S3 severities carrying an owner, a
+  verifier and a due condition; **an S3 blocks release regardless of the
+  scorecard**, and no overall score is emitted when a required dimension has no
+  evidence. The skill is now genuinely read-only — `Write`/`Edit` were dropped to
+  match the `side_effects: readonly` it already declared, so it returns a
+  proposed v2 as text rather than editing what it reviewed.
+  Every measured claim moved into a new `references/evidence-base.md` where each
+  one is traced to a source that was actually reached. That audit corrected three
+  figures the skill had been overstating, withdrew one that could not be traced
+  at all, and found two that support the existing five-seat cap.
+  `scripts/benchmark.sh` and `scripts/uat-proxy.sh` were fixed at the same time:
+  both ran `claude -p` from the repository root, so the model under test could
+  read the skill source and the expected answers off disk. They now run in an
+  isolated sandbox, which affects every skill benchmarked with them.
 - **Seven skills renamed; every id is now ≤3 words**
   ([ADR-0027](docs/adr/0027-skill-naming-convention.md)). A skill id names
   the activity it performs, in at most three hyphen-separated words —

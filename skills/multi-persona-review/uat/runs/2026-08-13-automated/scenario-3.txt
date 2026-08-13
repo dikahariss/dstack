@@ -1,0 +1,60 @@
+No artifact was supplied. `/tmp/tmp.MTT2vwfdvZ` is empty, and nothing in the request carries the infographic, its source data, or its copy — only a description of what they would contain. The skill's evidence gate stops here rather than reviewing a description of a thing.
+
+# STOP — evidence acquisition required
+
+**Mode:** general artifact (one published asset, differentiated expert concerns). Not digital-product mode — no class, no lifecycle gate.
+
+## Evidence gate
+
+| Item | Status | Note |
+|---|---|---|
+| The chart / infographic file | `missing` | Nothing at the working dir or in the message |
+| Source data | `missing` | Named, not provided |
+| Copy (headline, standfirst, captions, footnotes) | `missing` | Named, not provided |
+| Text alternative | `sourced` | Requester states there is none — an assertion, unverified against the file |
+| Purpose (what the reader should take away) | `missing` | |
+| Critical tasks (what a reader must be able to do with it) | `missing` | |
+| Publication surface (web / print / social / embed) | `missing` | Decides which accessibility criteria even apply |
+| User evidence (comprehension testing, support tickets, analytics) | `missing` | |
+| Expert evidence (prior stats review, editorial sign-off) | `missing` | |
+| Decision owner | `missing` | Nobody named who can accept or reject findings |
+
+**Consequence:** no verdict, no score, no findings. A score computed over a missing artifact is a fabricated number, and the missing human evidence separately bars any claim about what readers understand — that bar does not lift at any seat count.
+
+One thing is worth stating now because it does not need the panel: *"no text alternative"* is a conformance failure on its face (WCAG 2.2 **1.1.1 Non-text Content**, Level A) for any web publication, and an infographic's alternative is not a one-line `alt` — it needs a long description conveying the data relationship. That is the requester's own description, so it is pending verification against the file, not a finding.
+
+## What this review will not buy you, once it runs
+
+- **Coverage, not accuracy.** Role personas do not improve factual accuracy — 162 personas over 2,410 questions, replicated on six models, nine significant *negative* differences. What holds up is coverage, and only through genuine differentiation; measured accuracy peaks at three to four differentiated roles.
+- **Agreement is not confirmation.** One base model across all seats means correlated errors. If five seats agree the chart is fine, that is one opinion five times.
+- **No user research.** A seat can analyse comprehension-test notes. It cannot *be* six readers.
+- Accuracy comes from the verification pass against your source data — not from the panel.
+
+## Evidence plan — the deliverable
+
+Hand over these six, and the panel runs immediately.
+
+1. **The artifact as published.** The image file (PNG/SVG/PDF), at delivered resolution. If it is an interactive or HTML chart, the page or a URL plus the rendered state. Acceptance: every number and label in it is legible at the size a reader receives it.
+2. **The source data.** CSV/XLSX of the exact series plotted — not the upstream database, the rows that became the marks. Include: units, denominators, collection period, sample size (if survey), margin of error or CI, and the publisher/citation of the original statistic. Acceptance: I can recompute every plotted value and every number in the copy from this file alone. This is what makes step 5 (verify the decisive claims) possible; without it the review is opinion about a picture.
+3. **The copy, as text.** Headline, standfirst, all annotations, axis and legend labels, footnotes, source line, date. Plain text or the layout file — not retyped from the image.
+4. **Purpose and audience, in two sentences.** What one thing should a reader leave with, and who is the reader (general public / press / policy). This decides whether a defect is a defect.
+5. **Surface and constraints.** Where it publishes, whether it must meet a conformance target (WCAG 2.1/2.2 AA, EN 301 549, a national public-sector accessibility rule), and any fixed template or brand constraints the panel must treat as given rather than attack.
+6. **Decision owner, by name.** Who accepts, rejects, or defers each finding, and who applies the v2. Absent this, iteration 2 produces an assignment table with empty cells, which is an opinion wearing a schedule.
+
+Optional but changes what can be claimed: any comprehension testing, screen-reader test output, or reader feedback. Supply it and user-outcome findings become available; withhold it and every reader-comprehension observation stays tagged `[INFERRED]`.
+
+## Panel I will seat when the packet arrives
+
+Five seats, the trio mandatory, two specialists carrying two perspectives each — both checklists intact and separately labelled.
+
+| Seat | Hat (It1) | Perspectives carried |
+|---|---|---|
+| **Dreamer** | Green | What this infographic could be if the format were not assumed |
+| **Realist** | White | Production path, template constraints, what the redraw actually costs |
+| **Critic** | Black | Assigned devil's advocate — the ranked case for not publishing |
+| **Specialist 1** | White | (a) statistical integrity: denominators, base rates, causal language over correlational data, cherry-picked window · (b) visual encoding: axis truncation, area/volume scaling, dual axes, colour as sole channel |
+| **Specialist 2** | Black | (a) accessibility conformance: WCAG 1.1.1, 1.4.1, 1.4.3, 1.4.11, reflow, screen-reader path · (b) plain-language editorial: reading level, numeracy framing, headline-vs-data fidelity |
+
+**Uncovered and named as a gap:** legal / official-statistics disclosure rules (pre-release access, revision policy, mandated source attribution) and localisation. If either is live for you, say so — that is a second packet, not a sixth seat, because merging a third checklist onto a seat rebuilds the condition measured as no better than a single reviewer.
+
+Send the six items and I will run iteration 1 blind and in parallel, verify the decisive numbers against your source data, and return a risk register plus a proposed v2 as concrete replacement text — including the long description the artifact currently lacks.

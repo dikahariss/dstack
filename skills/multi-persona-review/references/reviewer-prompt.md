@@ -4,8 +4,72 @@ In the order the three iterations use them.
 
 **Iteration 1** — the blind reviewer (Dreamer, Realist, any specialist), the
 Critic, then the verification pass. **Iteration 2** — the Dreamer/Realist patch
-pass, the Critic's re-check of v2, and Blue-hat arbitration. **Iteration 3, only
-if it fires** — the Go/No-Go. Then the decision record, which closes any of them.
+pass, the Critic's re-check of the proposed v2, and Blue-hat arbitration.
+**Iteration 3, only if it fires** — the Go/No-Go. Then the decision record, which
+closes any of them.
+
+**Both modes use these prompts.** In **general artifact mode**, skip section 0
+and the scorecard in section 4c, and use the legacy severity words
+(`blocking / major / minor / observation`) if you prefer — everything else is
+unchanged from 0.4.0. In **digital product mode**, start at section 0 and use
+`PR-nnn` records with S0-S3. **Product-only fields are omitted in general mode,
+never guessed.**
+
+## 0. Product intake — product mode only
+
+Fill this before selecting any perspective. It is not a formality: the last two
+rows decide whether the review may produce a verdict at all.
+
+```markdown
+## Review packet
+
+**Product:** <name and stable id>
+**Primary class:** A transactional | B internal operations | C public information
+                 | D dashboard | E report | F infographic
+**Secondary class:** <only for a distinct surface with its own critical task, or none>
+**Lifecycle gate:** 1 problem | 2 concept | 3 prototype usability | 4 expert
+                    | 5 pre-release | 6 post-launch
+**Critical tasks:** <the 1-5 tasks this product exists to let someone complete>
+**Decision owner:** <a person, not a role>
+
+### Evidence map
+| evidence type | present? | what it is | tag |
+|---|---|---|---|
+| user research / task observation | | | observed / sourced / inferred / missing |
+| UAT or test results | | | |
+| analytics | | | |
+| support or helpdesk records | | | |
+| accessibility evaluation | | | |
+| domain, policy or regulatory sources | | | |
+
+### Selected coverage
+| perspective | layer | required/conditional | why selected | evidence available | AI seat or external evidence owner |
+|---|---|---|---|---|---|
+
+### Seat map
+| seat | perspective(s) — at most 2 | why these two may share a seat |
+|---|---|---|
+
+### Unresolved evidence gaps
+| gap | blocks which claim | method that would close it |
+|---|---|---|
+```
+
+**Produce `no verdict` — and keep reviewing — when** the gate's minimum evidence
+is missing, or a user-outcome claim was requested with no participant evidence in
+the map. The gate withholds the verdict and the score, nothing else: still seat
+the panel over whatever artifact exists, still return `PR-nnn` findings, and
+still emit the coverage table and the evidence plan. Each finding carries what it
+does not establish.
+
+Reserve `STOP — evidence acquisition required` for the one case where there is
+**no artifact and no packet at all**. Returning only a gate table when something
+reviewable was supplied is the failure mode this section guards against — it
+reads as rigour and delivers nothing actionable.
+
+**A seat may carry at most two perspectives**, and the third column of the seat
+map must justify the pairing by genuine checklist overlap. If it cannot, split
+the packet rather than merging further.
 
 ## 1. One blind reviewer
 
@@ -23,6 +87,9 @@ You are reviewing one artifact from a single, specific point of view.
 
 ## Your point of view: <name>
 
+<In product mode, when this seat carries two perspectives, paste BOTH
+checklists below under their own headings. Never blend them into one summary.>
+
 You check:
 <criteria checklist>
 
@@ -33,27 +100,54 @@ You do NOT comment on:
 <out-of-scope list> — another reviewer owns each of those. Staying silent
 on them is correct behaviour, not an omission.
 
+## The evidence you were given
+<research notes, UAT records, analytics, support data, sources — or the word
+NONE. This is the only user or stakeholder evidence that exists.>
+
 ## Rules
 
 1. Every finding needs a LOCATION (file:line, or a quoted phrase from the
    artifact). A finding you cannot anchor is dropped — do not include it.
-2. Every finding needs a SEVERITY: blocking / major / minor / observation.
+2. Every finding needs a SEVERITY. Product mode: S0 observation, S1 minor,
+   S2 major, S3 critical. General mode: blocking / major / minor / observation.
    Severity is observable impact. Do not assign business priority — that is
    set by the owner, or by `/prioritizing-work` when the question is where the
    finding sits against other work.
-3. Mark every finding that rests on a factual claim — a number, a citation, a
+3. Every finding needs an EVIDENCE tag: [OBSERVED] in the supplied evidence,
+   [SOURCED] from a named source, [INFERRED] from the artifact alone, or
+   [MISSING] where the evidence needed does not exist.
+   **[INFERRED] may never be rewritten as [OBSERVED].** If the section above
+   said NONE, you have no [OBSERVED] findings — not one.
+   **An [INFERRED] finding may not carry S3.** Raise it as a named assumption.
+4. If your perspective requires participant or stakeholder evidence and none was
+   supplied, **do not speak as that person.** Report what the artifact suggests,
+   tagged [INFERRED], and list what evidence would settle it.
+5. Mark every finding that rests on a factual claim — a number, a citation, a
    stated capability — with [CLAIM] and name the source you would check. A
    later pass verifies these; do not verify them yourself from memory.
-4. Do not restate the artifact back to me. Findings only.
-5. Length is not a quality signal here. Six grounded findings beat twenty
+6. Do not restate the artifact back to me. Findings only.
+7. Length is not a quality signal here. Six grounded findings beat twenty
    padded ones.
-6. You MUST answer the objection field, even if the artifact looks fine.
+8. You MUST answer the objection field, even if the artifact looks fine.
 
 ## Output format
 
 ### Findings
+
+General mode:
 - [severity] <location> — <what is wrong> — <why it matters> — <what to do>
   [CLAIM: <the factual claim> | source to check: <where>]   (only if applicable)
+
+Product mode, one block per finding:
+
+### PR-<nnn> — <short title>
+**Perspective/layer:** <which of your perspectives raised it, and its layer>
+**Task and artifact location/state:** ...
+**Problem and impact:** ...
+**Evidence:** [OBSERVED|SOURCED|INFERRED|MISSING] — <the evidence or its absence>
+**Severity:** S0 | S1 | S2 | S3
+**Recommendation:** <the smallest testable change>
+**Owner / verifier / due condition:** <or UNASSIGNED for the arbiter to fill>
 
 ### The one thing I would block this for
 <the single strongest objection you can construct. If you genuinely believe
@@ -61,7 +155,9 @@ nothing is blocking, name the strongest candidate anyway and then say why it
 falls short of blocking. "Nothing" alone is not an acceptable answer.>
 
 ### What I did not look at
-<one line — so the arbiter knows your blind spots>
+<one line — so the arbiter knows your blind spots. In product mode this is
+mandatory and must name any perspective you carried but could not evaluate for
+lack of evidence.>
 ```
 
 ## 2. The Critic
@@ -255,6 +351,63 @@ and nobody may demand one. If it disagrees with your own analysis, say it
 anyway — that mismatch is the most useful thing you can return here.
 ```
 
+## 4c. The scorecard — product mode only
+
+Runs **after** findings are reconciled, never before. Scores rank follow-up and
+compare like-for-like packets; they never close a finding.
+
+```
+Score this packet on the fifteen standard dimensions. The findings are already
+reconciled — you are not re-reviewing, you are rating what the evidence shows.
+
+## Reconciled findings
+<the union list with severities>
+
+## Evidence map
+<the intake evidence map>
+
+## Weight profile
+<operator | executive | public user | a stated custom profile>
+
+## Rules
+
+1. Score ONLY dimensions the evidence supports. A dimension with no evidence is
+   NE — not a guess, not a 3, not "probably fine".
+2. NA needs a stated reason. "Not applicable" with no reason is NE.
+3. Record the evidence and the weight on every rated row.
+4. S3 blocks independently of score.
+5. Emit NO overall score when any required dimension is NE. Report the rows and
+   the gap instead.
+6. S3 blocks independently of score.
+
+## Output format
+
+| dimension | 1-5 / NE / NA | weight | evidence | note |
+|---|---|---|---|---|
+| user-need fit | | | | |
+| task success | | | | |
+| ease of use | | | | |
+| learnability | | | | |
+| efficiency | | | | |
+| content clarity | | | | |
+| information architecture | | | | |
+| accessibility | | | | |
+| error prevention and recovery | | | | |
+| trust and transparency | | | | |
+| visual hierarchy | | | | |
+| cross-device behaviour | | | | |
+| perceived performance | | | | |
+| data accuracy | | | | |
+| decision and actionability | | | | |
+
+**Weight profile used:** <name it>
+**Overall:** <the weighted mean, or `NOT EMITTED — <dimension> is NE`>
+**Open S3 count:** <n>   (any non-zero value blocks release regardless of the row above)
+```
+
+Rule 6 repeats rule 4 deliberately. A scoring pass is where an S3 gets averaged
+away, and the instruction is cheap.
+
 ## 5. Blue-hat arbitration
 
 You wear the Blue hat. Runs once, after iteration 2 returns.
@@ -305,22 +458,39 @@ every seat's Red line>
 
 ## Output format
 
-### Blocking
-<findings that must be resolved, each with location + why>
+### Packet header — product mode only
+Product / class / gate · coverage completeness (n of n selected perspectives
+actually evaluated) · unresolved evidence gaps · open S2 count · open S3 count ·
+score profile used, or `no score — <dimension> is NE`.
 
-### Major / Minor
+### Blocking (S3)
+<findings that must be resolved, each with location + why + owner + verifier>
+
+### Major / Minor (S2 / S1)
 <grouped, each with location>
 
 ### Open for decision
 <position A, position B, what turns on it, and what evidence would settle it>
 
+### Release verdict — product mode only
+`pass | conditional | block | no verdict`
+
+**`no verdict` is mandatory** when the requested gate lacks its minimum evidence,
+or when a user-outcome verdict was requested with no participant evidence. It is
+not a failure to decide; it is the honest state. `conditional` requires a named
+remediation, a named verifier, and the observable that closes it.
+**Any open S3 forces `block`, whatever the score says.**
+
 ### Diagnostics
-| point of view | findings | unique to it | unique % |
-Flag any view under ~10–20% unique: its criteria checklist is too close to
-another's, or the view is not earning its slot.
+| perspective | findings | unique to it | unique % |
+Computed **per perspective, not per seat** — a merged seat returning findings for
+only one of its two perspectives must show up as an uncovered perspective, not a
+healthy seat. Flag any perspective under ~10–20% unique: its criteria checklist
+is too close to another's, or it is not earning its slot.
 
 Claims: checked <n> · refuted <n> · unverifiable <n>
 Blocking objections raised: <n>   (zero is a red flag, not a pass)
+Findings tagged [INFERRED]: <n>   (none of these may carry S3)
 
 ### Observations
 <noted, not actioned>
@@ -371,10 +541,23 @@ panel that was never reviewing.
 Produced under the Blue hat by the decision owner — you, or the human who owns
 the outcome. This is what closes the review and starts the work.
 
+**This record is returned in the response. This skill writes nowhere.** The
+identifiers below are stable so the record is repository-ready, but choosing a
+storage path is a separate, user-authorised action — the skill does not invent
+one, and `allowed-tools` carries no `Write` or `Edit`.
+
 ```markdown
-## Decision — <artifact>, <date>
+## Decision — <artifact or product>, <date>
 
 **Owner:** <name — a person, not a role>
+**Product / class / gate:** <product-id · class · gate>   (product mode)
+**Release verdict:** pass | conditional | block | no verdict   (product mode)
+
+### Proposed v2
+<the concrete replacement text produced in iteration 2 — the rewritten section,
+the changed rows, the new wording. Applying it to the source is a separate
+task the user must authorise. If iteration 2 produced only arguments and no
+replacement text, say so: there was no v2, and iteration 2 did not occur.>
 
 ### Verdicts
 | open question | verdict | basis |
@@ -429,9 +612,17 @@ improve accuracy, so accuracy has to come from checking claims against sources.
 Disney Creativity Strategy and Six Thinking Hats supply the *structure* — three
 sharply different seats, then same-hat passes instead of positional argument.
 They are facilitation methods, not measured interventions. What makes them work
-here is the differentiation effect (three reviewers with different criteria
-scored 60.0% against 53.8% for three with the same) and the assigned-advocate
-number above. Do not cite the frameworks themselves as evidence in the output.
+here is the differentiation effect — **multiple agents** sharing one role
+description scored 53.8%, exactly what a single agent scored, while diverse role
+prompts scored 60.0%, and accuracy peaks at three to four differentiated roles
+before declining at five — plus the assigned-advocate number above. Do not cite
+the frameworks themselves as evidence in the output.
+
+**Every figure on this page is scoped in `evidence-base.md`. Check it before
+repeating one.** The ablation above used two agents over two discussion turns,
+not three; the oracle gap is one model on one dataset; and the product guidance
+carries its own constraints, including that "4-8 participants" is per round
+rather than per user group.
 
 The iteration cap and the one-rebuttal rule are the same rule seen twice: what
 the evidence forbids is arguing again about an artifact that did not change.

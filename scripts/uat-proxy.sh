@@ -15,6 +15,15 @@ SKILL_DIR="$REPO_ROOT/skills/$SKILL_ID"
 OUT_DIR="$SKILL_DIR/uat/runs/$(date +%Y-%m-%d)-automated"
 mkdir -p "$OUT_DIR"
 
+# Run the model from an empty directory, never the repo. Invoked from the repo
+# root, `claude -p` can read the skill source, its eval/cases.jsonl answers, and
+# any in-flight plan — so it answers from the files instead of from the injected
+# body, and the run measures nothing. Observed 2026-08-13: responses cited
+# `cases.jsonl` and used lifecycle-gate vocabulary that existed only in an
+# unreleased plan document.
+SANDBOX="$(mktemp -d)"
+trap 'rm -rf "$SANDBOX"' EXIT
+
 BODY=$(awk 'BEGIN{n=0} /^---$/{n++; next} n==2{print}' "$SKILL_DIR/SKILL.md")
 
 # Extract scenario prompts from scenarios.md (lines starting with "> ")
@@ -24,7 +33,7 @@ awk '/^> "/{print}' "$SKILL_DIR/uat/scenarios.md" | while IFS= read -r line; do
   PROMPT=$(echo "$line" | sed 's/^> "//;s/"$//')
   echo "[$SKILL_ID scenario-$SCENARIO] ${PROMPT:0:80}..."
   OUT_FILE="$OUT_DIR/scenario-$SCENARIO.txt"
-  echo "$BODY" | claude -p --append-system-prompt "$BODY" "$PROMPT" > "$OUT_FILE" 2>&1 || echo "(call failed)" >> "$OUT_FILE"
+  ( cd "$SANDBOX" && echo "$BODY" | claude -p --append-system-prompt "$BODY" "$PROMPT" ) > "$OUT_FILE" 2>&1 || echo "(call failed)" >> "$OUT_FILE"
   echo "  → $OUT_FILE ($(wc -c < "$OUT_FILE") bytes)"
 done
 

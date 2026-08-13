@@ -23,6 +23,14 @@ fi
 
 mkdir -p "$OUT_DIR/responses"
 
+# Run the model from an empty directory, never the repo. Invoked from the repo
+# root, `claude -p` can read the skill source and the `anti_pattern` field of
+# the very case it is being scored on, which turns a head-to-head into a
+# reading-comprehension test. Observed 2026-08-13 during the
+# multi-persona-review 0.5.0 RED run.
+SANDBOX="$(mktemp -d)"
+trap 'rm -rf "$SANDBOX"' EXIT
+
 # Read skill bodies (strip frontmatter for cleaner system-prompt injection)
 strip_frontmatter() {
   awk 'BEGIN{n=0} /^---$/{n++; next} n==2{print}' "$1"
@@ -60,12 +68,12 @@ while IFS= read -r line; do
   # Run skill A
   echo "  → spawn $NAME_A (anonymised as $LETTER_A)..."
   RESP_A_FILE="$OUT_DIR/responses/${CASE_ID}-${LETTER_A}.txt"
-  echo "$BODY_A" | claude -p --append-system-prompt "$BODY_A" "$PROMPT" > "$RESP_A_FILE" 2>&1 || echo "(skill A failed)" >> "$RESP_A_FILE"
+  ( cd "$SANDBOX" && echo "$BODY_A" | claude -p --append-system-prompt "$BODY_A" "$PROMPT" ) > "$RESP_A_FILE" 2>&1 || echo "(skill A failed)" >> "$RESP_A_FILE"
 
   # Run skill B
   echo "  → spawn $NAME_B (anonymised as $LETTER_B)..."
   RESP_B_FILE="$OUT_DIR/responses/${CASE_ID}-${LETTER_B}.txt"
-  echo "$BODY_B" | claude -p --append-system-prompt "$BODY_B" "$PROMPT" > "$RESP_B_FILE" 2>&1 || echo "(skill B failed)" >> "$RESP_B_FILE"
+  ( cd "$SANDBOX" && echo "$BODY_B" | claude -p --append-system-prompt "$BODY_B" "$PROMPT" ) > "$RESP_B_FILE" 2>&1 || echo "(skill B failed)" >> "$RESP_B_FILE"
 
   # Judge prompt
   RESP_A="$(cat "$RESP_A_FILE")"
@@ -101,16 +109,29 @@ Reply with ONLY a JSON object, no other text, in this exact format:
 {\"scores\":{\"X\":{\"groundedness\":N,\"procedure\":N,\"anti_pattern\":N,\"specificity\":N},\"Y\":{\"groundedness\":N,\"procedure\":N,\"anti_pattern\":N,\"specificity\":N}},\"winners\":{\"groundedness\":\"X|Y|tie\",\"procedure\":\"X|Y|tie\",\"anti_pattern\":\"X|Y|tie\",\"specificity\":\"X|Y|tie\",\"overall\":\"X|Y|tie\"},\"rationale\":\"one sentence\"}"
 
   echo "  → judge..."
-  JUDGE_RAW="$(claude -p "$JUDGE_PROMPT" 2>&1 || echo '{"error":"judge failed"}')"
-  # Extract JSON from judge response (strip any prose)
-  JUDGE_JSON="$(echo "$JUDGE_RAW" | grep -o '{.*}' | head -1 || echo "$JUDGE_RAW")"
+  # stdin MUST be /dev/null: this loop reads $CASES on stdin, and a claude call
+  # without a redirect inherits it and swallows the remaining cases.
+  JUDGE_RAW="$(claude -p "$JUDGE_PROMPT" </dev/null 2>&1 || echo '{"error":"judge failed"}')"
+  # Extract JSON from judge response (strip any prose). -z so a pretty-printed
+  # multi-line object still matches; without it `grep -o '{.*}'` catches only a
+  # single line and returns a fragment.
+  JUDGE_JSON="$(printf '%s' "$JUDGE_RAW" | grep -zoP '(?s)\{.*\}' | tr -d '\0' | head -c 100000)"
+  # A judge that answered with prose, or died, must not abort the whole run —
+  # one unparseable verdict used to kill every remaining case under `set -e`.
+  if [ -z "$JUDGE_JSON" ] || ! printf '%s' "$JUDGE_JSON" | jq -e . >/dev/null 2>&1; then
+    echo "  ! judge returned unparseable output for $CASE_ID — recording as error"
+    JUDGE_JSON="$(jq -n --arg raw "$(printf '%s' "$JUDGE_RAW" | head -c 500)" \
+      '{error: "unparseable judge output", raw: $raw}')"
+  fi
 
   # De-anonymise: map X/Y → skill names
   DEANON="$(jq -n --arg a "$LETTER_A" --arg b "$LETTER_B" --arg na "$NAME_A" --arg nb "$NAME_B" \
     '{($a): $na, ($b): $nb}')"
 
-  # Emit result row
-  jq -n \
+  # Emit result row. -c keeps this a real JSONL file — the name always claimed
+  # that and the default pretty-printer never delivered it, so every downstream
+  # line count was wrong.
+  jq -nc \
     --arg case_id "$CASE_ID" \
     --arg prompt "$PROMPT" \
     --argjson deanon "$DEANON" \

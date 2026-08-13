@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.18.0
+    version: 0.19.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -90,7 +90,7 @@ language they used. One row can fire more than once in a task.
 | New feature, bugfix, behavior change | `/test-driven-development` — it decides how much discipline the change earned; the full cycle is **not** the default |
 | About to claim done / fixed / passing | `/verifying-before-done` |
 | Acceptance-test a RUNNING app via browser (UAT) | `/running-uat` |
-| One artifact, several expert points of view → a decision | `/multi-persona-review` |
+| One artifact or product-review packet needs independent user, operational, and expert coverage → a decision | `/multi-persona-review` |
 | Reviewers agreeing too readily; need someone to attack it | `/multi-persona-review` |
 | Destructive or risky command, or prod | `/guarding-destructive-commands` |
 | Need an isolated workspace | `/using-git-worktrees` |
@@ -133,6 +133,9 @@ ordering; a plan whose first task produces nothing visible gets rejected there.
   `/finishing-development-branch`.
 - Bug: `/debugging` → `/test-driven-development` (a bug fix is always inside a
   risk tier — the reproducing test is mandatory) → `/verifying-before-done`.
+- Product quality: running product evidence → `/running-uat` →
+  `/multi-persona-review` packet review (class + lifecycle gate, human evidence
+  kept separate from AI seats) → `/writing-plans`.
 - Shipping a UI change: tests green → `/running-uat` (browser, per point of view)
   → fix → `/finishing-development-branch`. A green suite is never the evidence
   a screen works.
@@ -190,6 +193,14 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.19.0** — Registered `multi-persona-review` 0.5.0's product-review
+  expansion. The router row now says what the skill actually covers — one
+  artifact **or one product-review packet**, across user, operational and expert
+  coverage — and a product-quality chain routes running-product evidence through
+  `/running-uat` before the packet review. The catalog entry carries the new
+  boundary: coverage is selected by product class and lifecycle gate, human
+  evidence is never substituted by an AI seat, and the five-seat cap now has a
+  two-perspectives-per-seat limit under it.
 - **0.18.0** — Repointed the catalog at `writing-plans` 0.9.0. The chain column
   now runs both ways between it and `multi-persona-review`: a decision record is
   carried into a plan, and an expensive plan goes back out for independent
