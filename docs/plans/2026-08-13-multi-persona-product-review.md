@@ -31,10 +31,27 @@ plan complete. Use `/requesting-code-review` after the behavioral checks.
 **Updated:** 2026-08-13 · **Branch:** `feat/multi-persona-product-review` ·
 **Next:** confirm benchmark run 2, then `/finishing-development-branch`
 
-**Open at commit time:** the 12-case benchmark re-run (D14) was still executing
-when the commit was made. The regression it found in run 1 is verified fixed by
-the targeted check recorded in Task 8's evidence; run 2 is confirmatory. If run 2
-disagrees, that is a follow-up commit on this branch — nothing has been pushed.
+**Benchmark run 2 result (D15).** Gate 1 **passed** — no legacy `anti_pattern`
+regression. Case 5, which failed run 1, is now won by 0.5.0, and the judge's
+reason inverts the earlier verdict: 0.4.0 "closes by offering to re-run the
+Critic on the unchanged v1 — the exact anti-pattern — while X holds the
+boundary". Case 1 moved from a 0.4.0 win to a tie once the verified figures went
+back into the body. Case 7 was recorded as a judge error, but its truncated raw
+output is readable and scores `anti_pattern` a tie, so it is not a regression.
+
+Gate 2 landed at **4 of 5** — case 11 lost. Cause was the last residue of D14:
+the gate no longer halted the review, but the model still "defers most seat cards
+pending an artifact and stays comparatively abstract" while 0.4.0 filled every
+card from the library. Fixed with one line in `SKILL.md` — fill each seat card
+from the library now; a deferred card is an unfilled seat. Verified by re-running
+case 11 against the corrected body: the response returns "Panel terpilih — 5
+seat, 9 perspektif" with populated seat cards (6 failure catalogues, 5
+out-of-scope owners, 5 objections) and **zero** deferral language, against a
+prior response the judge called abstract.
+
+Body 4,493 → 4,494 after the change, which required trimming the 0.4.0 and 0.5.0
+change entries to stay under 4,500. This is D11's warning arriving: the body has
+no slack left, and the next addition must move something to `references/` first.
 
 | Task | State | Evidence |
 |---|---|---|

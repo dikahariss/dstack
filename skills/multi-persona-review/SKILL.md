@@ -143,7 +143,8 @@ the cap is on same-model subagents. Dispatch with the host's mechanism (Claude
 Code's `Agent`); if none exists, say so and claim no independent review.
 
 Specs for every stance, perspective and test context:
-`references/perspective-library.md`.
+`references/perspective-library.md`. **Fill each seat card from it now** — a
+deferred card is an unfilled seat, and seating does not wait on the artifact.
 
 ## Specify each point of view
 
@@ -297,17 +298,15 @@ All under `references/`.
   name conflated: a **perspective** is coverage, an **AI seat** is execution, a
   **test context** is a condition, not a person. Product mode selects coverage by
   **class and lifecycle gate**; an **evidence gate** withholds a user-outcome
-  verdict when no user evidence exists — without halting the review, which an
-  earlier draft did. 6-10 perspectives map onto the unchanged five-seat cap under
-  a **two-per-seat limit**. Severities became **S0-S3**, **S3 blocking regardless
-  of score**. `Write`/`Edit` dropped to match the declared
-  `side_effects: readonly`, so iteration 2 returns a proposed v2 as text.
-  Measured claims moved to **`evidence-base.md`**, whose audit corrected three
-  and withdrew one untraceable.
+  verdict when no user evidence exists, without halting the review. 6-10
+  perspectives map onto the unchanged five-seat cap under a **two-per-seat
+  limit**. Severities became **S0-S3**, **S3 blocking regardless of score**.
+  `Write`/`Edit` dropped to match the declared `side_effects: readonly`, so
+  iteration 2 returns a proposed v2 as text. Measured claims moved to
+  **`evidence-base.md`**, whose audit corrected three and withdrew one.
 - **0.4.0** — Made the trio mandatory, capped iterations at three, required an
-  owned decision. Disney dispatched **blind and parallel** rather than in its
-  original sequence, which would recreate the conformity failure this skill
-  exists to avoid. **The Critic became the assigned devil's advocate** — 0.3.0
+  owned decision, and dispatched Disney **blind and parallel** rather than in its
+  original sequence. **The Critic became the assigned devil's advocate** — 0.3.0
   named it the strong mechanism and shipped only the weaker dissent instruction.
   A **verification step** buys the accuracy personas do not. Budget 4000 → 5000.
 - **0.3.0** — `reviewer-prompt.md` named where an escalated finding goes.
