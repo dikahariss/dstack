@@ -37,11 +37,11 @@ batch, which stays one logical change per CLAUDE.md.
 
 ## Status
 
-**Updated:** 2026-08-14 · **Branch:** `feat/unhobbling-skill-catalog` · **Next:** Task 10 (blocked — needs paired runs)
+**Updated:** 2026-08-14 · **Branch:** `main` (the feature branch was fast-forwarded and deleted) · **Next:** the four unrun ablations named in Tasks 11–12
 
 | Task | State | Evidence |
 |---|---|---|
-| 1 `closed-enumeration` warning | done | uncommitted — flags exactly **30**, matching the dry-run baseline |
+| 1 `closed-enumeration` warning | done | `446b587` — flags exactly **30**, matching the dry-run baseline |
 | 2 ADR-0030 | done | written, indexed in 3 places, ADR-0025 marked superseded-in-part; 4 live-rule docs repointed |
 | 3 `/writing-skills` shape rules | done | 0.6.0; renders within budget after the tier change |
 | 4 sweep — deterministic-dominant | done | 12 skills; ledger 29 → **17** as predicted |
@@ -50,15 +50,16 @@ batch, which stays one logical change per CLAUDE.md.
 | 7 sweep — special bands | done | 3 skills; ledger → **0** |
 | 8 gate | done | `bun test` **102/102**, typecheck clean, `validate` 0, `build --strict` **exit 0, zero warnings**, `doctor` **33/33 OK** |
 | 9 ablation procedure | done | `docs/procedures/skill-ablation.md` |
-| 10 ablate `verifying-before-done` | prepared | Stages 1–2 done in `docs/ablations/2026-08-verifying-before-done.md`: 3 real tasks selected from transcripts by claim shape (`19ad64f1`, `df54b54d`, `32e54100`), free version written, decision rule and honesty guard fixed. Stage 3 needs 6 real sessions and its tables are deliberately empty. |
-| 11 ablate subagent trio | partial | `dispatching-parallel-agents`: **complete** — 0 real invocations, procedure §1 terminates the run and that is the result. `subagent-driven-development` (4) and `multi-persona-review` (30) clear the bar but need paired runs. |
-| 12 re-justify the 13 bands | partial | Narrow-bridge test run: `docs/ablations/2026-08-narrow-bridge-test.md` — 4 pass, 2 contested, 7 fail. **No band moved**: ADR-0030 §5 charges an ablation per move and none has run. |
+| 10 ablate `verifying-before-done` | **done** | `docs/ablations/2026-08-verifying-before-done.md` — 6 real Sonnet 5 runs, planted-defect oracle. All 6 caught it; left column empty 3/3. Band → `judgment-dominant`, body 2375 → 1550 tokens. Commit `a02ae37`. |
+| 11 ablate subagent trio | partial | `docs/ablations/2026-08-subagent-trio.md`. `dispatching-parallel-agents` **complete** (0 invocations → procedure §1 terminates). `subagent-driven-development` and `multi-persona-review` clear the bar but are **not run**; bands unchanged. |
+| 12 re-justify the 13 bands | partial | `writing-specs` demoted `deterministic-dominant` → `workflow` on direct evidence (`docs/ablations/2026-08-writing-specs.md`, 6 runs, both versions caught all 3 planted traps; rails bought a BLOCKED gate on 1/3 at 2.1× tokens / 4.9× tool calls). The other 4 ablatable candidates are **not run**; 2 more (`modelling-*`) cannot be ablated at 0 invocations. Distribution 13/17/1/2 → **11/18/2/2**. |
 
 **Deviations from plan:**
-- **No commits this run.** The user asked for manual review of the working
-  tree before anything is committed (2026-08-14). Every task's commit step is
-  therefore skipped, and Evidence cells read `uncommitted` plus the observed
-  verification instead of a SHA. Nothing else about the tasks changes.
+- **Commits were withheld, then made.** The user asked for manual review of the
+  working tree before anything was committed, so Tasks 1–9 ran uncommitted. After
+  UAT passed, the work was committed and fast-forwarded to `main`. Tasks 4–7 were
+  specified as four per-batch commits and landed as one (`e65aee4`) — a real
+  departure from the plan, recorded here rather than smoothed over.
 - **Task 6 found a real detector bug, fixed with a regression test.** The
   `OPENNESS_MARKER` regex used a literal space, so a marker wrapping across a
   line break (`**not\nexhaustive**` — how Markdown prose actually wraps) re-flagged
@@ -82,11 +83,20 @@ batch, which stays one logical change per CLAUDE.md.
   skills (`pdf-to-rag`, `literature-*`) got a version bump with no entry. Found
   by auditing every skill's frontmatter version against its changelog; all 33
   now pair correctly.
-- **Tasks 10–12 are honestly incomplete.** Stage 1 of the ablation procedure ran
-  across the whole catalog (`docs/ablations/2026-08-invocation-census.md`) and
-  produced real findings, including six never-invoked skills. Stages 2–4 need
-  paired Sonnet 5 runs — roughly 20 real skill executions — which cannot be
-  derived from analysis and were not fabricated.
+- **Two ablations were run; four remain.** 12 real Sonnet 5 sessions across
+  `verifying-before-done` and `writing-specs`, each against a planted-defect
+  oracle rather than a judgement of output quality. Both moved a band, which is
+  the first time a rail has ever been removed from this catalog. Four ablations
+  are still unrun (`subagent-driven-development`, `multi-persona-review`,
+  `discovering-requirements`, `prioritizing-work`, `wireframing-interfaces`,
+  `diagramming-architecture` — six skills, of which the last four share one
+  shape) and two more are permanently blocked at 0 invocations. Their bands do
+  not move on the evidence of a different skill; the records say so explicitly.
+- **The ablations found a bug nobody was looking for.** Four of the six runs in
+  Task 10 independently reported that `test/fixtures/skills/missing-prompt/orphan/`
+  was an untracked empty directory, so the suite read 102/102 here and 101/1 on
+  CI — true since 2026-05-17. Verified and fixed (`9c240b2`). Every "102/102
+  green" claimed earlier in this plan was machine-local.
 - **Task 3 hit the token budget, resolved by shortening.** The added Shape
   rules section pushed `writing-skills` to 3167 tokens against a 3000 budget,
   and `bun run build` aborts on the first error — which made the ledger read

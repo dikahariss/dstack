@@ -12,9 +12,8 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.6.1
+    version: 0.7.0
     type: semantic
-    calibration: deterministic-dominant
     side_effects: local
     agency: deliberative
     context_budget_tokens: 5000
@@ -303,26 +302,27 @@ entry gate.
 
 ## Changes
 
+- **0.7.0** — Band `deterministic-dominant` → **`workflow`** (flag removed — the
+  default). Six Sonnet 5 runs against planted traps: **both** versions caught all
+  three; the rails bought a BLOCKED gate on 1 of 3 tasks, below the 2-of-3 bar,
+  at 2.1× tokens and 4.9× tool calls. Gates stay.
+  Evidence: `docs/ablations/2026-08-writing-specs.md`.
 - **0.6.1** — ADR-0030 list openness: the red-flag table is open.
 - **0.6.0** — Routing row for `/prioritizing-work`: agreed requirements with no
-  agreed order otherwise land here, and designing all of them is the mis-route.
-- **0.5.0** — English-only pass (`using-dstack` 0.7.0); reach kept via
-  "architecture design" and "process flow section", not "business process",
-  which `modelling-business-processes` owns.
-- **0.4.0** — Reciprocated the two design-artifact skills: a diagram that must
-  leave the document is `/diagramming-architecture`; the screens behind the step
-  table are `/wireframing-interfaces`.
-- **0.3.0** — Reciprocated `designing-test-cases`: `AC-n` rows are its input,
-  not test cases — one criterion becomes many cases.
-- **0.2.0** — Rebuilt after a five-point-of-view review (six blocking findings)
-  and a subagent trial (ten more). Two reviewers independently caught that 0.1.0
-  dropped the Light depth path its own discovery required. Gates now record
-  evidence on PASS, name the escalation target, define `BLOCKED-PENDING`, and
-  read `n/a` when their subject is absent. Added the identity-versus-proof rule
-  for paths; entity grain, key stability and temporality; contract consistency;
-  build order; altitude and `EXTERNAL`; a mandatory structural decision row;
-  reversibility; non-success terminal outcomes; assertion level per AC; and a
-  reviewer log.
-- **0.1.0** — Initial. Built from `docs/discovery/2026-07-28-writing-specs.md`:
-  the plan skill consumed a spec nothing produced, and discovery is gated on
-  *not* naming a solution, so design was decided inside implementation.
+  agreed order land here otherwise, and designing all of them is the mis-route.
+- **0.5.0** — English-only pass (`using-dstack` 0.7.0); "business process" left
+  to `modelling-business-processes`.
+- **0.4.0** — Reciprocated the design-artifact skills: a diagram that must leave
+  the document is `/diagramming-architecture`; screens are `/wireframing-interfaces`.
+- **0.3.0** — Reciprocated `designing-test-cases`: `AC-n` rows are its input, not
+  test cases.
+- **0.2.0** — Rebuilt after a five-point-of-view review and a subagent trial;
+  two reviewers independently caught that 0.1.0 dropped the Light depth path its
+  own discovery required. Gates now record evidence on PASS, name the escalation
+  target, define `BLOCKED-PENDING`, and read `n/a` when their subject is absent.
+  Added the rules for entity grain and key stability, contract consistency,
+  altitude and `EXTERNAL`, a mandatory structural decision row, reversibility,
+  and assertion level per AC.
+- **0.1.0** — Initial, from `docs/discovery/2026-07-28-writing-specs.md`: the plan
+  skill consumed a spec nothing produced, so design was decided inside
+  implementation.
