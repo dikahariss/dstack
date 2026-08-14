@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read Grep Glob Agent
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.2.1
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -93,7 +93,8 @@ HEAD_SHA=$(git rev-parse HEAD)
 
 Never skip review because "it's simple", ignore a Critical issue,
 proceed with an unfixed Important issue, or argue with valid technical
-feedback.
+feedback. Those are the recurring ones and are **not exhaustive** — any
+reason to avoid a review belongs here.
 
 If the reviewer is wrong: push back with technical reasoning, show the
 code or tests that prove it works, or ask for clarification.
@@ -102,6 +103,7 @@ See the dispatch template in `code-reviewer.md`.
 
 ## Changes
 
+- **0.2.1** — ADR-0030 list openness: the red-flag list is open — any reason to avoid a review belongs there.
 - **0.2.0** — Named the judgment surface (crafting the reviewer's context
   sets the review's ceiling); workflow band (ADR-0025; flag omitted as the
   default).

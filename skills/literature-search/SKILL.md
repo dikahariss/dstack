@@ -18,7 +18,7 @@ allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.4.0
+    version: 0.4.1
     context_budget_tokens: 4500
     side_effects: local
     agency: deliberative
@@ -190,6 +190,9 @@ or TDM programme, or ask.
   title+year) → one corpus + a count report. Run with `--help`.
 
 ## Common mistakes
+
+The recurring ones, **not exhaustive** — a new vendor brings its own.
+
 | Mistake | Fix |
 |---|---|
 | Porting another database's syntax verbatim | Each engine differs — read the adapter, verify live |
@@ -203,6 +206,7 @@ or TDM programme, or ask.
 | Chasing every synonym | Stop at diminishing returns — new term, no new relevant hits |
 
 ## Changes
+- **0.4.1** — ADR-0030 list openness: common-mistakes table open — a new vendor brings its own.
 - **0.4.0** — Dropped the one Indonesian trigger phrase (the literal translation
   of "search literature") from the description and the trigger list under the
   English-only rule (`/using-dstack` 0.7.0): models translate intent rather than

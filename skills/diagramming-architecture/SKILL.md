@@ -13,7 +13,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.4.1
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -183,6 +183,9 @@ diagram adds maintenance and no information. Say so and stop.
 
 ## Red flags
 
+The ones measured so far, **not exhaustive** — a new renderer or format will
+bring its own, and the probe-first rule generalizes to all of them.
+
 | Thought | Reality |
 |---|---|
 | "I'll render it and see" | Probe first. A run that assumes the program is present reports files that do not exist. |
@@ -208,6 +211,7 @@ replacement for its fence. Send a set that will be reviewed by others through
 
 ## Changes
 
+- **0.4.1** — ADR-0030 list openness: the red-flag table is open.
 - **0.4.0** — Indonesian trigger phrases dropped from the description and the
   trigger list under the English-only rule. `/using-dstack` 0.7.0 settled the
   reasoning: models match on intent and translate, so the phrases spent tokens

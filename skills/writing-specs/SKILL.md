@@ -12,7 +12,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.6.0
+    version: 0.6.1
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -273,6 +273,9 @@ states what it gives up. That is the whole difference.
 
 ## Red flags
 
+The recurring ones, **not exhaustive** — any thought ending in "decide it
+while coding" belongs here.
+
 | Thought | Reality |
 |---|---|
 | "The requirements are obvious enough to skip" | Then citing their IDs costs nothing. If you cannot cite one, you are designing something nobody asked for. |
@@ -300,6 +303,7 @@ entry gate.
 
 ## Changes
 
+- **0.6.1** — ADR-0030 list openness: the red-flag table is open.
 - **0.6.0** — Routing row for `/prioritizing-work`: agreed requirements with no
   agreed order otherwise land here, and designing all of them is the mis-route.
 - **0.5.0** — English-only pass (`using-dstack` 0.7.0); reach kept via

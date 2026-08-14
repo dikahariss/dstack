@@ -18,7 +18,7 @@ description: >
 allowed-tools: Agent Read Grep Glob Skill
 metadata:
   dstack:
-    version: 0.5.0
+    version: 0.5.1
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -127,9 +127,8 @@ measured up to 85.5%. Sequencing is only right when the artifact does not exist
 yet — that is `/brainstorm`.
 
 Add up to **two specialists** whose concerns barely overlap the trio. Hard cap
-**5 seats** — measured accuracy peaks at three to four differentiated roles and
-declines at five. The verification pass is not a seat, and neither is the Blue
-hat: that one is yours.
+**5 seats**, for the reason given above. The verification pass is not a seat,
+and neither is the Blue hat: that one is yours.
 
 **Coverage is not seats.** A product may need 6-10 perspectives while the panel
 stays at five. A seat carries **at most two**, only where their checklists
@@ -151,7 +150,9 @@ deferred card is an unfilled seat, and seating does not wait on the artifact.
 A job title buys nothing. Every seat needs a **criteria checklist** (the causal
 ingredient — without it reviews converge), a **failure catalogue**, an
 **out-of-scope** list naming who owns each excluded concern, and a **mandatory
-objection**. Filled cards: `references/perspective-library.md`.
+objection**. That library is **not exhaustive**: the artifact decides its seats,
+so write a card for one it never anticipated. The trio is the floor, not the
+roster.
 
 **Dissent must be an assigned role, not an instruction.** Across 480 team
 decisions, an objection field, strong role framing and "please disagree" were all
@@ -294,21 +295,21 @@ All under `references/`.
 
 ## Changes
 
+- **0.5.1** — ADR-0030 list openness: perspective library open; the trio is the floor, not the roster.
 - **0.5.0** — Added a **digital-product mode** and split the vocabulary the old
   name conflated: a **perspective** is coverage, an **AI seat** is execution, a
   **test context** is a condition, not a person. Product mode selects coverage by
   **class and lifecycle gate**; an **evidence gate** withholds a user-outcome
   verdict when no user evidence exists, without halting the review. 6-10
   perspectives map onto the unchanged five-seat cap under a **two-per-seat
-  limit**. Severities became **S0-S3**, **S3 blocking regardless of score**.
-  `Write`/`Edit` dropped to match the declared `side_effects: readonly`, so
-  iteration 2 returns a proposed v2 as text. Measured claims moved to
-  **`evidence-base.md`**, whose audit corrected three and withdrew one.
+  limit**. Severities became **S0-S3**, S3 blocking regardless of score.
+  `Write`/`Edit` dropped to match `side_effects: readonly`. Measured claims
+  moved to **`evidence-base.md`**.
 - **0.4.0** — Made the trio mandatory, capped iterations at three, required an
-  owned decision, and dispatched Disney **blind and parallel** rather than in its
-  original sequence. **The Critic became the assigned devil's advocate** — 0.3.0
-  named it the strong mechanism and shipped only the weaker dissent instruction.
-  A **verification step** buys the accuracy personas do not. Budget 4000 → 5000.
+  owned decision, and dispatched Disney **blind and parallel** rather than in
+  sequence. **The Critic became the assigned devil's advocate**; 0.3.0 had named
+  that mechanism but shipped only the weaker dissent instruction. A
+  **verification step** buys the accuracy personas do not. Budget 4000 → 5000.
 - **0.3.0** — `reviewer-prompt.md` named where an escalated finding goes.
 - **0.2.0** — Dropped Indonesian triggers under the English-only rule.
 - **0.1.0** — Initial. Coverage not accuracy, differentiation not multiplicity,

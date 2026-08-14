@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.3.1
     type: semantic
     side_effects: external
     agency: deliberative
@@ -226,6 +226,10 @@ git worktree prune  # Self-healing: clean up any stale registrations
 
 ## Common mistakes
 
+These are the recurring ones and are **not exhaustive**. The four options in
+the process above, by contrast, are closed by design — they are the decision
+the user is being asked to make.
+
 **Skipping test verification**
 - **Problem:** Merge broken code, create failing PR
 - **Fix:** Always verify tests before offering options
@@ -285,6 +289,7 @@ git worktree prune  # Self-healing: clean up any stale registrations
 
 ## Changes
 
+- **0.3.1** — ADR-0030 list openness: the common-mistakes list is open; the four end-of-branch options are closed by design.
 - **0.3.0** — Managed-worktree cleanup is scoped to `.worktrees/`, `worktrees/`,
   or whatever directory `/using-git-worktrees` selected this session, replacing
   a hard-coded inherited global path that does not exist here. The guard against

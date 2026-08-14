@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Edit Write Bash
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.3.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -115,6 +115,9 @@ After all tasks complete and verified:
 - You don't understand an instruction
 - Verification fails repeatedly
 
+That list is **not exhaustive** — anything that would make you guess at the
+plan's intent is a stop.
+
 **Ask for clarification rather than guessing.**
 
 A blocker is written down, not just spoken: set the task's row to `blocked`
@@ -150,6 +153,7 @@ and retries the thing that already failed.
 
 ## Changes
 
+- **0.3.1** — ADR-0030 list openness: the stop-and-ask list is open — anything that would make you guess at the plan belongs there.
 - **0.3.0** — Made this the **resume** skill it always claimed to be. It was
   described as the separate-session executor but had no way to find where the
   work stopped: Step 1 read the plan and created a session-local todo per task,

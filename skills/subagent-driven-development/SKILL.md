@@ -9,7 +9,7 @@ description: |
 allowed-tools: Agent Read Bash
 metadata:
   dstack:
-    version: 0.5.0
+    version: 0.5.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -220,6 +220,9 @@ a one-file change.
 
 ## Red flags
 
+The recurring ones, **not exhaustive** — anything that lets unreviewed work
+reach the plan belongs here.
+
 **Never:**
 - Start implementation on main/master branch without explicit user consent
 - Skip reviews (spec compliance OR code quality)
@@ -266,6 +269,7 @@ a one-file change.
 
 ## Changes
 
+- **0.5.1** — ADR-0030 list openness: the red-flag list is open.
 - **0.5.0** — Added status write-back to the plan's `## Status` block
   (`/writing-plans` 0.7.0), owned by the orchestrator so parallel subagents
   cannot clobber the file. Without it, same-session execution finished tasks

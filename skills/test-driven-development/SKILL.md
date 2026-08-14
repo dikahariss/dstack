@@ -13,7 +13,7 @@ description: |
 allowed-tools: Read Write Edit Bash
 metadata:
   dstack:
-    version: 0.7.0
+    version: 0.7.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -55,7 +55,8 @@ Inside a tier the law is absolute: production code written before its test gets
 
 ## Is this change inside a risk tier?
 
-One yes puts it inside.
+One yes puts it inside. These six are **closed by design** — other skills name
+tasks by tier, so the set is a contract. Widen a tier by ADR; never invent one.
 
 | Tier | Why the cycle earns its cost here |
 |---|---|
@@ -290,6 +291,7 @@ Either way → the product was shown working, not just the suite
 
 ## Changes
 
+- **0.7.1** — ADR-0030 list openness: the six risk tiers are closed by design — /writing-plans makes every task name one, so the set is a contract other skills read.
 - **0.7.0** — English-only pass (`using-dstack` 0.7.0). Trigger is now `does
   this need tdd`; 0.6.0's quotations are English reported speech.
 - **0.6.0** — **The cycle is no longer the default for every change.** Owner's

@@ -10,7 +10,7 @@ description: |
 allowed-tools: Agent Bash Read
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.2.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -124,6 +124,9 @@ Return: Summary of what you found and what you fixed.
 
 ## Common mistakes
 
+The recurring ones, **not exhaustive** — any prompt that leaves the agent
+guessing at scope belongs here.
+
 | Mistake | Instead |
 |---|---|
 | Too broad: "Fix all the tests" — agent gets lost | Specific: "Fix agent-tool-abort.test.ts" — focused scope |
@@ -197,6 +200,7 @@ git diff --stat          # confirm only intended files changed, no overlap
 
 ## Changes
 
+- **0.2.1** — ADR-0030 list openness: the common-mistakes table is open.
 - **0.2.0** — Named the judgment (deciding failures are truly independent)
   and added an integrate-time verify command. Hardening (v3 plan):
   converted the graphviz when-to-use block and the ❌/✅ mistakes to tables;

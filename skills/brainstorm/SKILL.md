@@ -10,7 +10,7 @@ description: |
 allowed-tools: AskUserQuestion Read Grep Glob
 metadata:
   dstack:
-    version: 0.5.0
+    version: 0.5.1
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -173,7 +173,8 @@ Do not declare alignment until:
 
 ## When to stop early
 
-Stop when:
+Stop when — and this list is **not exhaustive**, since reading the room is the
+judgment this skill is built around:
 
 - The user signals "enough", "let's just build it", or "you decide
   the rest". Record any open questions and move on; do not keep
@@ -218,6 +219,7 @@ uses it as the brief for the implementation.
 
 ## Changes
 
+- **0.5.1** — ADR-0030 list openness: the stop-early list is open — reading the room is the judgment this skill is built around.
 - **0.5.0** — Resolved the dangling "worth building at all" pointer, which
   named no destination: comparative worth is `/prioritizing-work`, per-item
   go/no-go is `/discovering-requirements` §2.5. Budget 2500 → 3000; the body sat

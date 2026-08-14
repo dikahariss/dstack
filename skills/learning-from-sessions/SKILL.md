@@ -13,7 +13,7 @@ description: >
 allowed-tools: Bash Read Write Edit Grep Glob
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.2.1
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -99,7 +99,8 @@ drifts out of sync and the copies start contradicting each other.
 
 You are grading your own past behavior, and models prefer their own output by a
 measured margin. The guards below exist because good intentions do not survive
-that.
+that. They are the failures seen so far, **not exhaustive** — a retro invents
+new ways to flatter itself, and a new one gets a row.
 
 | Failure | Guard |
 |---|---|
@@ -151,6 +152,7 @@ The miner reports, over 14 days:
 
 ## Changes
 
+- **0.2.1** — ADR-0030 list openness: the guard table is open — a retro invents new ways to flatter itself.
 - **0.2.0** — Indonesian trigger phrases and prose removed under the English-only
   rule (using-dstack 0.7.0: models translate intent, so the phrases cost tokens
   without adding reach). The description and `metadata.dstack.triggers` now carry

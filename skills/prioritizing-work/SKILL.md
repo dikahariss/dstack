@@ -13,7 +13,7 @@ description: |
 allowed-tools: Read Grep Glob Write AskUserQuestion
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.1.1
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -254,6 +254,8 @@ number is right.
 
 ## Red flags — you are rationalizing
 
+Recurring ones; **not exhaustive**.
+
 | Thought | Answer |
 |---|---|
 | "Everything here is genuinely a Must" | That is undecomposed scope, not a priority |
@@ -303,6 +305,7 @@ owns doubt about which of several.
 
 ## Changes
 
+- **0.1.1** — ADR-0030 list openness: the red-flag table is open.
 - **0.1.0** — Initial. The catalog assigned MoSCoW labels in
   `/discovering-requirements` Stage 6 with no criteria for deciding which
   label a requirement earns, and ranked nothing across items: no

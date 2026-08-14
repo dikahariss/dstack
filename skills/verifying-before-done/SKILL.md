@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read
 metadata:
   dstack:
-    version: 0.5.0
+    version: 0.5.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -52,7 +52,8 @@ Apply this gate before any of these:
 - Moving to the next task in the queue.
 - Handing work back to the user.
 
-The rule covers exact phrases, paraphrases, synonyms, and anything
+That list is **not exhaustive** — it names the common shapes, not the
+set. The rule covers exact phrases, paraphrases, synonyms, and anything
 that implies completion or correctness.
 
 ## The gate function
@@ -135,6 +136,7 @@ State the exit code of each step in the claim:
 
 ## Changes
 
+- **0.5.1** — ADR-0030 list openness: both the trigger list and the red-flag list are open — they name common shapes, not the set.
 - **0.5.0** — Reciprocated `/test-driven-development` 0.6.0's product-evidence
   rule: a claim table row and a gate step for user-visible work — a green
   suite alone no longer satisfies "done" for anything with a screen.
@@ -164,7 +166,9 @@ If you catch yourself about to do any of these:
 - Think "just this once".
 - Feel tired and want the work to be over.
 
-Each of these means: stop. Run the command. Then claim.
+Each of these means: stop. Run the command. Then claim. The list is a
+sample of the feeling, not a checklist to match against — any impulse to
+claim before evidence belongs here.
 
 ## Common excuses, defused
 

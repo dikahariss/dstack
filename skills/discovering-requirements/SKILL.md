@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Grep Glob Write WebSearch WebFetch AskUserQuestion Bash Skill
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.4.1
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -291,6 +291,8 @@ example, goal to traceability, is in `references/worked-example.md`.
 
 ## Red flags — you are skipping discovery
 
+Recurring ones; **not exhaustive**.
+
 | Thought | Reality |
 |---|---|
 | "The request is clear enough" | A clear *request* is not a stated *problem*. Frame it anyway. |
@@ -318,19 +320,19 @@ a panel of simulated experts does not substitute for Stage 3's real actors.
 
 ## Changes
 
+- **0.4.1** — ADR-0030 list openness: red-flag table open.
 - **0.4.0** — Stage 6 re-scoped to first-cut selection *inside this document*.
   It assigned `MUST`/`SHOULD`/`COULD` with no criteria for which label a row
-  earns — `SHOULD` and `COULD` were defined nowhere — so they delegate to
-  `/prioritizing-work`. One label cannot carry two gates a set can split.
+  earns, so they delegate to `/prioritizing-work`.
 - **0.3.0** — English-only pass (`using-dstack` 0.7.0); reach kept via the
   English triggers. `KAK`/`TOR` stay — document types, not prose.
-- **0.2.0** — Rebuilt after a five-point-of-view review (seven blocking
-  findings) and a subagent trial (eight more). Gates gained written verdicts,
-  downstream semantics, and legal/BLOCKED carve-outs on never-block. Added
-  Stage 2.5 viability, a human-granted `AGREED`, Light/Full depth, actor
-  classes, regime scoping, downward traceability, and ranked assumptions. The
-  trial fixed an unsatisfiable MUST-ratio gate and an evidence gate that passed
-  on all-`INFERRED` rows. Calibration `workflow` → `deterministic-dominant`
+- **0.2.0** — Rebuilt after a five-point-of-view review and a subagent trial.
+  Gates gained written verdicts, downstream semantics, and legal/BLOCKED
+  carve-outs on never-block. Added Stage 2.5 viability, a human-granted
+  `AGREED`, Light/Full depth, actor classes, regime scoping, downward
+  traceability, and ranked assumptions. The trial fixed an unsatisfiable
+  MUST-ratio gate and an evidence gate that passed on all-`INFERRED` rows.
+  Calibration `workflow` → `deterministic-dominant`
   (ADR-0025), owner-approved: the default told cheap models they had ~70%
   freedom over a spine with eight gates.
 - **0.1.0** — Initial. Spine from impact mapping; requirement levels and quality

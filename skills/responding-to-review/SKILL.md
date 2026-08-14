@@ -10,7 +10,7 @@ allowed-tools: Read Bash Grep Glob Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.4.0
+    version: 0.4.1
     context_budget_tokens: 3500
     side_effects: local
     agency: deliberative
@@ -82,7 +82,9 @@ For every review item:
 
 ## Forbidden responses
 
-Never write any of these, no matter how true they feel:
+Never write any of these, no matter how true they feel. The list names the
+common shapes and is **not exhaustive** — any phrase that performs agreement
+in place of a fix belongs here:
 
 - "You're absolutely right!"
 - "Great point!" / "Excellent feedback!"
@@ -275,6 +277,7 @@ No performative agreement. Technical rigor always.
 
 ## Changes
 
+- **0.4.1** — ADR-0030 list openness: the forbidden-responses list is open — any phrase performing agreement in place of a fix belongs there.
 - **0.4.0** — Renamed `code-review` → `responding-to-review`. The old
   name read as "perform a review" while the skill actually handles review
   feedback you *received*, and it collided with `requesting-code-review`.

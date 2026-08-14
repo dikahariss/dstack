@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.4.1
     type: semantic
     context_budget_tokens: 1500
     side_effects: readonly
@@ -51,11 +51,12 @@ next build recreates them. Treat them as cache, not data.
 
 ## The table is a floor, not a whitelist
 
-The only judgment here: is a destructive command NOT in the table (e.g.
-`terraform destroy`, `flyctl apps destroy`, `gh repo delete`, `bq rm`)
-still destructive? If it is irreversible or hits shared/prod state, run
-the pause protocol as if it were listed. Do not improvise a faster path.
-The call to pause is yours; everything else follows the protocol.
+The table is **not exhaustive** and never will be. The only judgment here:
+is a destructive command NOT in the table (e.g. `terraform destroy`,
+`flyctl apps destroy`, `gh repo delete`, `bq rm`) still destructive? If it
+is irreversible or hits shared/prod state, run the pause protocol as if it
+were listed. Do not improvise a faster path. The call to pause is yours;
+everything else follows the protocol.
 
 ## The pause protocol
 
@@ -85,6 +86,7 @@ does, so the guardrail stays advisory.
 
 ## Changes
 
+- **0.4.1** — ADR-0030 list openness: the command table is explicitly a floor, now marked not exhaustive.
 - **0.4.0** — Renamed `careful` → `guarding-destructive-commands`. A bare
   adjective is exactly the "vague name" Anthropic's naming guidance warns
   against; the new name states the action. The "be careful"/"careful mode"

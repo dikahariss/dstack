@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.19.0
+    version: 0.19.1
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -70,6 +70,9 @@ About to plan a creative change and not yet aligned? `/brainstorm` first.
 Match on **intent, not wording**. The user may write in any language; translate
 their request into the situations below before matching, and reply in the
 language they used. One row can fire more than once in a task.
+
+The table is **not exhaustive** — the catalog grows. A situation with no row
+is a routing gap, never a licence to skip the check.
 
 | Situation | Skill |
 |---|---|
@@ -193,6 +196,7 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.19.1** — ADR-0030 list openness: the router table is open by construction — the catalog grows, and a situation with no row is a routing gap, never a licence to skip the check.
 - **0.19.0** — Registered `multi-persona-review` 0.5.0's product-review
   expansion. The router row now says what the skill actually covers — one
   artifact **or one product-review packet**, across user, operational and expert

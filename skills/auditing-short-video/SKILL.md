@@ -14,7 +14,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob Grep
 metadata:
   dstack:
-    version: 1.3.0
+    version: 1.3.1
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -110,7 +110,7 @@ language:
 
 Read `references/benchmarks.md`. It is deliberately short: everything that could
 not name a year, a population and a sample size was deleted. Rules that prevent
-known mistakes:
+known mistakes — **not exhaustive**, so add one when a new misreading shows up:
 
 - Beat sync: report `cut_beat_sync_lift` **and** `cut_beat_sync_p`. Above 0.05
   the edit is indistinguishable from random placement, whatever the lift looks
@@ -127,6 +127,10 @@ known mistakes:
 Read `references/persona_checklist.md`. Score all 36 items, each with a measured
 evidence string, and set `applicable` honestly — absent-by-design is
 `applicable=false`, not 0. Write `<audit_dir>/scores.csv`.
+
+The 36 items are **closed by design**: scores concatenate across videos into one
+corpus, so a run that scores 35 or 37 is not comparable to the others. Extend the
+instrument by editing the reference, never mid-run.
 
 ## Step 5 — Rank the fixes
 
@@ -204,6 +208,7 @@ what stop a wrong answer — but deliver only what was asked.
 
 ## Changes
 
+- **1.3.1** — ADR-0030 list openness: the benchmark rules are open; the 36 checklist items are closed by design, because scores concatenate into one corpus and 35 or 37 is not comparable.
 - **1.3.0** — Indonesian trigger phrases removed under the English-only rule
   (using-dstack 0.7.0: models translate intent, so the phrases cost tokens
   without adding reach). The four Indonesian phrases in the description became

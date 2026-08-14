@@ -10,7 +10,7 @@ description: |
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.3.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -200,6 +200,9 @@ Ready to implement <feature-name>
 
 ## Common mistakes
 
+These are the recurring ones, **not exhaustive** — a new harness or a new
+platform will invent its own, and the fix pattern below generalizes.
+
 ### Fighting the harness
 
 - **Problem:** Using `git worktree add` when the platform already provides isolation
@@ -252,6 +255,7 @@ Ready to implement <feature-name>
 
 ## Changes
 
+- **0.3.1** — ADR-0030 list openness: the common-mistakes list is open.
 - **0.3.0** — Replaced an inherited hard-coded global worktree path with generic
   external-directory detection (`../*worktrees*`). That path does not exist on
   this machine and never did; it was import residue presented as live

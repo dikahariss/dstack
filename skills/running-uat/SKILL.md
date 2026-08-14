@@ -13,7 +13,7 @@ description: >
 allowed-tools: Bash Read Write Edit Agent Skill Glob Grep
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.4.1
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -130,6 +130,10 @@ evidence.
 
 ## False PASS — the guards
 
+These are the failure modes seen so far and are **not exhaustive**. A UAT run
+invents new ways to pass without evidence; when one appears, guard it the same
+way and add the row.
+
 | Failure | Guard |
 |---|---|
 | Assumed outcome — acted, narrated success, never re-observed | Re-observe after every action, before any claim |
@@ -181,6 +185,7 @@ escalate — do not resolve it in the build's favour.
 
 ## Changes
 
+- **0.4.1** — ADR-0030 list openness: the false-PASS guard table is open — a UAT run invents new ways to pass without evidence.
 - **0.4.0** — The priority refusal now names a destination. "Propose it, then
   escalate" left an escalation with nowhere to go; it routes to the owner, or to
   `/prioritizing-work` when the question is where the defect sits against other

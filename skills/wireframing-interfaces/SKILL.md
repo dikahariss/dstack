@@ -11,7 +11,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.3.1
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -175,6 +175,9 @@ pretending the cap is free.
 
 ## Red flags
 
+The ones seen so far, **not exhaustive** — any thought that ends in drawing
+fewer states or prettier ones belongs here.
+
 | Thought | Reality |
 |---|---|
 | "The populated state is the interesting one" | It is the one everyone already imagines correctly. The empty and denied states are where screens are actually wrong. |
@@ -201,6 +204,7 @@ experts is not the operator whose objection the artifact exists to invite.
 
 ## Changes
 
+- **0.3.1** — ADR-0030 list openness: the red-flag table is open.
 - **0.3.0** — Indonesian trigger phrases dropped from the description and the
   trigger list under the English-only rule. `/using-dstack` 0.7.0 settled the
   reasoning: models match on intent and translate, so the phrases spent tokens

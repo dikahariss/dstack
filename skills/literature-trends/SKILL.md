@@ -14,7 +14,7 @@ allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.2.0
+    version: 0.2.1
     context_budget_tokens: 3000
     side_effects: local
     agency: deliberative
@@ -88,6 +88,9 @@ the partial current year. The scripts are rails; the interpretation is yours.
   scripts are stdlib-only.
 
 ## Common mistakes
+
+The recurring ones, **not exhaustive** — a new corpus shape brings its own.
+
 | Mistake | Fix |
 |---|---|
 | Using the corpus's year distribution as the trend | It is relevance/cap-skewed — use the **population** counts |
@@ -98,6 +101,7 @@ the partial current year. The scripts are rails; the interpretation is yours.
 | Summing per-topic counts for an "overall" line | Topics overlap → double-counts; use an umbrella query or the deduped corpus |
 
 ## Changes
+- **0.2.1** — ADR-0030 list openness: common-mistakes table open.
 - **0.2.0** — Dropped the three Indonesian trigger phrases (the literal
   translations of "trend analysis", "group the topics", and "trend map") from the
   description and the trigger list under the English-only rule (`/using-dstack`

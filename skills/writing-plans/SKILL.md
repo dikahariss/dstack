@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Grep Glob Write
 metadata:
   dstack:
-    version: 0.9.0
+    version: 0.9.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -261,8 +261,8 @@ Run: `bun test test/path/file.test.ts` → PASS
 
 ## No placeholders
 
-Every step carries the actual content. These are plan failures — never
-write them:
+Every step carries the actual content. These are plan failures — never write
+them. **Not exhaustive**: anything deferring content out of a step belongs here.
 
 - "TBD", "TODO", "implement later", "fill in details"
 - "Add appropriate error handling / validation / edge cases"
@@ -314,6 +314,7 @@ next, the Status block is under-filled — fix the block, not the prompt.
 
 ## Changes
 
+- **0.9.1** — ADR-0030 list openness: no-placeholders list open.
 - **0.9.0** — Reciprocated `/multi-persona-review` 0.4.0, whose catalog entry
   already claimed this skill "carries the assignment table" while nothing here
   said so — the unenforced-precondition defect 0.3.0 and 0.4.0 fixed for other
@@ -335,19 +336,18 @@ next, the Status block is under-filled — fix the block, not the prompt.
   outranks any incoming order. Budget 4000 → 4500 to hold 0.7.0's Status block.
 - **0.7.0** — Added the **Status block**: a task-state table under the header
   with a branch, a `Next:` pointer, evidence on `done` rows, and append-only
-  Deviations. Transcript mining across ~60 plan documents found thousands of
-  `- [ ]` steps and effectively zero ticked — one plan shipped 12 commits with
-  all 72 boxes unticked — while both model and user independently hand-invented
-  the missing artifact elsewhere. Step checkboxes were demoted to in-task scratch
-  rather than mandated harder: a rule at 0% compliance over 60 documents is not
-  fixed by repeating it. The block replaces the written hand-off prompt.
+  Deviations. Transcript mining across ~60 plan documents found effectively zero
+  `- [ ]` steps ticked, while both model and user hand-invented the missing
+  artifact elsewhere. Step checkboxes were demoted to in-task scratch rather than
+  mandated harder: a rule at 0% compliance is not fixed by repeating it. The
+  block replaces the written hand-off prompt.
 - **0.6.0** — English-only sweep: dropped the two Indonesian trigger phrases
   under `using-dstack` 0.7.0's rule that models translate intent. `task ordering`
   already covered one; `frontend first` was added for the other. Nothing here is
   Indonesian data to match, so nothing was preserved.
 - **0.5.0** — Added the **visible-slice-first ordering rule** and made test steps
-  tier-aware. Transcript mining found 12+ pushback turns about the visible product
-  arriving late, the archetype being 78 green server tests answered with "I still
+  tier-aware. Transcript mining found repeated pushback about the visible product
+  arriving late, the archetype being green server tests answered with "I still
   cannot see any result". Task 1 must now put something on screen, the header
   declares the visible slice or why there is none, and the self-review leads with
   the check that rejects a mis-ordered plan. Tasks carry a risk tier, so

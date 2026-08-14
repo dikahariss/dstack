@@ -13,7 +13,7 @@ allowed-tools: Bash Read Write Edit Workflow Grep Glob
 metadata:
   dstack:
     type: hybrid
-    version: 0.6.0
+    version: 0.6.1
     triggers:
       - convert pdf to markdown
       - pdf to rag
@@ -152,6 +152,9 @@ Proven on real Indonesian government docs incl. a 279-page DIGITAL Permenhub (de
 path) and a 23-page SCANNED Inpres with an 18-page matrix lampiran (vision/matrix path).
 
 ## Common mistakes
+
+Recurring ones; **not exhaustive**.
+
 | Mistake | Fix |
 |---|---|
 | Auto-applying `grounded=false` without re-reading the image | Verify-before-fix: most flags are omitted chrome or reviewer misreads, not defects |
@@ -164,16 +167,14 @@ path) and a 23-page SCANNED Inpres with an 18-page matrix lampiran (vision/matri
 | Dropping page markers / no cost recap | Keep `<!-- page N -->`; sum each Workflow's `subagent_tokens` at the end |
 
 ## Changes
+- **0.6.1** — ADR-0030 list openness: common-mistakes table open.
 - **0.6.0** — English-only pass (using-dstack 0.7.0's rule): dropped the four
   Indonesian routing phrases from the description and `triggers` — models translate
   intent, so the phrases cost tokens without adding reach; "prepare for RAG" now
-  carries that intent in English. PRESERVED as data, not prose: the proper nouns (Permenhub,
-  Inpres, Juknis, UU, Peraturan, SK/Keputusan), every literal the vision profiles
-  must MATCH in an Indonesian source page (`Menginstruksikan:`, `Kepada :`, `Untuk :`,
-  `Salinan sesuai dengan aslinya`, `JABATAN FUNGSIONAL DAN JABATAN PELAKSANA`, the
-  `Ya/Tidak` decision labels, the `Bagan alur …` / `BAGAN STRUKTUR ORGANISASI …`
-  headings, BAB/Bagian/Pasal/Paragraf, the KESATU…/PERTAMA… dictum, Rencana Aksi),
-  the `yangmenjadi` → `yang menjadi` word-split example, and the `eval/` prompts.
+  carries that intent in English. PRESERVED as data, not prose: the proper nouns, and
+  every Indonesian literal the vision profiles must MATCH on a source page — page
+  chrome, structural headings, dictum markers and decision labels. They live in
+  `references/` and `eval/`, where the profiles use them; not re-listed here.
 - **0.5.0** — Quality pass from two field tests (multi-lens audit). (1) **Verify-before-fix**
   replaces "auto-fix any grounded=false page": a 23-page scanned run flagged 18/23 but
   only 2 were real (rest = omitted chrome or single-letter reviewer misreads); blind

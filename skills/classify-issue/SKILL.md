@@ -5,7 +5,7 @@ allowed-tools: Read
 metadata:
   dstack:
     type: schema-semantic
-    version: 0.2.0
+    version: 0.2.1
     context_budget_tokens: 1500
     side_effects: readonly
     agency: deliberative
@@ -77,6 +77,10 @@ is yours.
 
 ## Misclassification traps
 
+The `kind` enum is **closed by design** — downstream consumers parse it, so a
+seventh value breaks them; force the issue into the nearest one and say why in
+`reasoning`. The traps below are **not exhaustive**.
+
 | Looks like | Actually | Why |
 |---|---|---|
 | Feature request phrased as a bug ("X is broken, it won't Y") | `feature` | Y never existed; it is a new capability, not a defect. |
@@ -105,6 +109,7 @@ returning.
 
 ## Changes
 
+- **0.2.1** — ADR-0030 list openness: the kind enum is closed by design (consumers parse it, so a seventh value breaks them); the misclassification traps are open.
 - **0.2.0** — calibration: schema-meta (ADR-0025; determinism is the
   output schema, not a procedure). Named the judgment (kind/severity/area
   are your call; the schema fixes the shape). Added a misclassification

@@ -14,7 +14,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.2.1
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -102,7 +102,9 @@ Write the actor set down once. Both models below use it and nothing else.
 One `rectangle` naming the system, the use cases inside it, the actors outside,
 associations across the line. Rules, the include/extend trap, and the
 decomposition failure that produces forty tiny use cases are in
-`references/use-case.md`. Three that decide whether the model is worth anything:
+`references/use-case.md`. The UML element set itself is **closed by design** —
+the notation defines it. The three rules below are the ones that most often
+decide whether the model is worth anything, and are **not exhaustive**:
 
 - **A use case is a goal, not a step.** `Submit application` is a goal;
   `Click submit`, `Validate field`, `Open form` are steps of it.
@@ -223,6 +225,7 @@ path is already a test case waiting to be named.
 
 ## Changes
 
+- **0.2.1** — ADR-0030 list openness: the UML element set is closed by design (the notation defines it); the three rules shown are open.
 - **0.2.0** — Dropped the Indonesian trigger phrases from the description and
   the trigger list, and put the example ask into English, under the English-only
   rule (`using-dstack` 0.7.0): models translate intent rather than matching

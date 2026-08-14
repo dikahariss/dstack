@@ -14,7 +14,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.2.1
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -99,10 +99,13 @@ Write the `<bpmn:collaboration>`, the participant, the `<bpmn:laneSet>`, the flo
 nodes and the sequence flows. **Write no `<bpmndi:BPMNDiagram>`** — stage 3 owns
 geometry, and hand-written coordinates are how a model becomes unreadable.
 
-The element vocabulary, the naming rules, and the five patterns that cover most
+The element vocabulary, the naming rules, and five patterns that cover most
 real processes — approval chain, revision loop, wait-for-external, parallel
-review, escalation — are in `references/notation.md`. Two rules decide whether
-the model is worth anything:
+review, escalation — are in `references/notation.md`. The vocabulary is
+**closed by design**: BPMN 2.0 defines it and a process engine rejects
+anything else. The five patterns are **not exhaustive** — model the process
+the interviews actually describe, and name the pattern if it is a sixth.
+Two rules decide whether the model is worth anything:
 
 - **A gateway asks a question**: its name ends in `?` and every outgoing flow
   carries the answer as its name. An unlabelled branch is a coin flip.
@@ -234,6 +237,7 @@ operations reviewer and an engineer object to different things.
 
 ## Changes
 
+- **0.2.1** — ADR-0030 list openness: the BPMN vocabulary is closed by design (a process engine rejects anything else); the five patterns are open.
 - **0.2.0** — Dropped the Indonesian trigger phrases from the description and
   the trigger list, and put the example ask into English, under the English-only
   rule (`using-dstack` 0.7.0): models translate intent rather than matching

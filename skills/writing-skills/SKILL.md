@@ -9,11 +9,11 @@ description: |
 allowed-tools: Read Write Edit Bash Grep Glob Agent
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.6.0
     type: semantic
     side_effects: local
     agency: deliberative
-    context_budget_tokens: 3000
+    context_budget_tokens: 4500
     triggers:
       - write a skill
       - create a skill
@@ -89,19 +89,37 @@ Body, scaled to the skill:
 - **The pattern / steps** — tables and prose. Reserve a tiny inline
   flowchart for a genuinely non-obvious decision; dstack skills favor
   tables and numbered lists over diagrams.
-- **Spine + named judgment, then pick a band** (ADR-0025, playbook §1.15)
+- **Spine + named judgment, then pick a band** (ADR-0025 bands, ADR-0030 governance, playbook §1.15)
   — the body needs a deterministic spine (steps + a gate + a
   table/checklist; exact commands where applicable) AND one sentence
   naming where the agent's judgment takes over. Then pick a calibration
   band: `workflow` (~30% det, the default — omit the flag),
   `judgment-dominant` (10–20%), `deterministic-dominant` (60–80%+), or
   `schema-meta`. Set `metadata.dstack.calibration` only when NOT
-  `workflow`. Moving to `judgment-dominant` needs benchmark/UAT/test
-  evidence + owner approval (record in `## Changes`). Exemplar:
+  `workflow`. Moving off it in **either** direction costs one ablation run
+  + owner approval, recorded in `## Changes` (ADR-0030 §5). Exemplar:
   `skills/responding-to-review` (the reference hybrid: deterministic spine + named judgment).
 - **One excellent example** — complete, runnable, commented with WHY.
   Not five mediocre ones in five languages.
 - **Common mistakes** — what goes wrong and the fix.
+
+## Shape rules (ADR-0030)
+
+Sonnet 5 is the daily driver; it reads lists literally and will not
+generalize past them. So:
+
+1. **Every list of 3+ declares itself** — "not exhaustive, extend it" or
+   "closed by design because <reason>". Neither trips the
+   `closed-enumeration` build warning.
+2. **Exit criteria over step order.** Fix the order only on a narrow
+   bridge: destructive commands, migrations, deploys.
+3. **Never restate what the model knows.** Write our conventions, commands
+   and definition of good — not the general technique. On Sonnet 5 our
+   shorter version replaces the model's fuller one.
+4. **Enumeration-as-product** is exempt from rule 1's *open* marker, not
+   from declaring. Say it is the deliverable, and why.
+
+These four are closed by design; a fifth needs an ADR.
 
 ## The description decides discovery
 
@@ -210,6 +228,19 @@ official authoring guidance. Add a behavioral check under the skill's
 
 ## Changes
 
+- **0.6.0** — `context_budget_tokens` 3000 → 4500. Not headroom for bloat: this
+  skill now carries permanent ADR-0030 doctrine every skill author must read,
+  and 3000 was mis-tiered against its peers — `/writing-plans`, `/writing-specs`,
+  `/discovering-requirements` and `/prioritizing-work` all sit at 5000. The
+  0.5.0 section could not fit under 90% of 3000 at any reasonable terseness.
+  Owner-approved 2026-08-14 after the alternative (cutting ~297 tokens of
+  existing content) was judged to damage the skill to satisfy a threshold.
+- **0.5.0** — Carried the ADR-0030 shape rules. Anthropic's Sonnet 5 guide
+  says the model "does not silently generalize an instruction from one item
+  to another", so with Sonnet 5 as daily driver a closed list caps the
+  model's own knowledge; only 2 of 33 skills declared any list open on
+  2026-08-14. Band governance corrected too: ADR-0030 charges an ablation
+  run in **either** direction, ADR-0025 charged evidence only for freedom.
 - **0.4.0** — Two rules from mined session history, both recurring
   corrections: a skill must be project-agnostic (no rule lifted from the
   repo it was written in), and a new skill ships registered in the
