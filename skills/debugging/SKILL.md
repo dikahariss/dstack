@@ -10,7 +10,7 @@ description: |
 allowed-tools: Read Bash Grep
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.2.1
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -58,6 +58,9 @@ Do not skip when:
 - You are in a hurry. Rushing guarantees rework.
 - The user wants it fixed now. The systematic loop is faster than
   thrashing.
+
+Both lists are samples, not exhaustive — any situation that tempts a fix
+before a cause qualifies.
 
 ## Triage by failure shape
 
@@ -121,7 +124,11 @@ raise the rate, not to add a retry.
 
 ## The four phases
 
-Complete each phase before moving to the next.
+Complete each phase before moving to the next. The phase order is closed by
+design — a fix before a named cause is the failure this skill exists to
+prevent. The activities inside each phase are a floor, not exhaustive: any
+probe that yields evidence (a debugger, `git bisect`, bisecting the input)
+counts.
 
 ### Phase 1 — Root-cause investigation
 
@@ -233,7 +240,8 @@ patching?" Do not attempt fix number four without that conversation.
 
 ## Red flags — stop and return to Phase 1
 
-If you catch yourself thinking any of these:
+If you catch yourself thinking any of these — a sample, not exhaustive; any
+thought that reaches for a fix before a named cause belongs here:
 
 - "Quick fix for now, investigate later."
 - "Just try changing X and see if it works."
@@ -246,7 +254,7 @@ If you catch yourself thinking any of these:
   investigation.
 - "One more fix attempt" — after already trying two.
 
-User signals you are doing it wrong:
+User signals you are doing it wrong — not exhaustive:
 
 - "Is that not happening?" — you assumed without verifying.
 - "Will it show us…?" — you should have added evidence gathering.
@@ -254,6 +262,8 @@ User signals you are doing it wrong:
 - "We are stuck?" — your approach is not working; restart Phase 1.
 
 ## Rationalizations and reality
+
+Not exhaustive — counter a new excuse the same way: name the reality it dodges.
 
 | Excuse | Reality |
 |---|---|
@@ -306,6 +316,7 @@ Otherwise → stay in Phase 1 or raise it with the user
 
 ## Changes
 
+- **0.2.1** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.2.0** — Added the "Triage by failure shape" table mapping
   symptom → first probe → tooling, plus worked examples for
   multi-layer boundary instrumentation and flake reproduction. Phase

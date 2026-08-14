@@ -13,7 +13,7 @@ description: |
 allowed-tools: Read Grep Glob Write AskUserQuestion
 metadata:
   dstack:
-    version: 0.1.1
+    version: 0.1.2
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -45,10 +45,8 @@ unmet gate. That, not judgment, decides which framework wins.
 
 ## When to use — and when not
 
-Use when **≥5 candidate items** compete for one capacity and no agreed
-order exists; when the instruction is to do all of it (the order is still
-a decision, just an unstated one); when a plan's phases no longer match
-what was built; when a review or UAT escalates a priority nobody owns.
+Floor: **≥5 candidate items** competing for one capacity with no agreed
+order; the description carries the full trigger list.
 
 Not for: fewer than 5 items; a bug, an incident, or a legal obligation
 (those route out at Stage 1); doubt about a single idea (`/brainstorm`);
@@ -114,10 +112,10 @@ Record `blocked_by` (item ids) or `clear` per item, plus every pair where
 doing B first shrinks or deletes A — sequence those explicitly or score
 them as one item.
 
-Then rank assumptions with the impact × (1 − confidence) table in
-`/discovering-requirements` `references/discovery-doc.md`, which owns
-those anchors. Each carries a **cheapest falsifier** naming a cost in
-person-days and an observable outcome.
+Then rank assumptions with the impact × (1 − confidence) anchors owned
+by `/discovering-requirements` (its bundled `references/discovery-doc.md`;
+if not installed, say so and rank unanchored). Each carries a **cheapest
+falsifier** naming a cost in person-days and an observable outcome.
 
 **R1 — falsifier position.** The #1 assumption's falsifier occupies
 sequence position `≤ max(1, ceil(0.2 × N))`, N = admitted items.
@@ -223,7 +221,7 @@ departure with its reason, or states `none`. A round that presents the
 sorted table as the decision has misused the framework even when every
 number is right.
 
-## Self-check — run before showing output
+## Self-check — run before showing output; not exhaustive — flag any alarm beyond S1–S13
 
 | # | Alarm | Remedy |
 |---|---|---|
@@ -241,7 +239,7 @@ number is right.
 | S12 | Two lanes in one sorted list | R11 — split the output |
 | S13 | A re-run gives a different lane, enum value, or top tier | Reconcile against the recorded deciding-rung string; irreproducible is a defect, not a nuance |
 
-## Refusals — each names its destination
+## Refusals — not exhaustive; each names its destination (an unlisted missing input follows R4)
 
 | Situation | Do this instead |
 |---|---|
@@ -305,7 +303,8 @@ owns doubt about which of several.
 
 ## Changes
 
-- **0.1.1** — ADR-0030 list openness: the red-flag table is open.
+- **0.1.2** — ADR-0030 sweep + panel review (2026-08-14): red-flag table open;
+  self-contained refs; economy.
 - **0.1.0** — Initial. The catalog assigned MoSCoW labels in
   `/discovering-requirements` Stage 6 with no criteria for deciding which
   label a requirement earns, and ranked nothing across items: no

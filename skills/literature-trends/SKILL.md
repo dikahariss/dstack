@@ -14,7 +14,7 @@ allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.2.1
+    version: 0.2.2
     context_budget_tokens: 3000
     side_effects: local
     agency: deliberative
@@ -71,6 +71,7 @@ manual SLR work); harvesting the records (use `/literature-search`).
    ranking bar (+ growth), `topic×year` heatmap (row-normalized to show shape),
    indexed trajectories (base year = 100), keyword-frequency bar, and a
    volume-vs-growth **positioning** scatter (small+fast-growing = emerging niche).
+   That set is a floor, **not exhaustive** — add charts this corpus warrants.
    Mark any partial year on every chart.
 6. **Report.** Rank + interpret (emerging vs mature), name the fastest growers and
    the biggest-but-declining, and recommend keywords / gaps.
@@ -101,6 +102,7 @@ The recurring ones, **not exhaustive** — a new corpus shape brings its own.
 | Summing per-topic counts for an "overall" line | Topics overlap → double-counts; use an umbrella query or the deduped corpus |
 
 ## Changes
+- **0.2.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.2.1** — ADR-0030 list openness: common-mistakes table open.
 - **0.2.0** — Dropped the three Indonesian trigger phrases (the literal
   translations of "trend analysis", "group the topics", and "trend map") from the

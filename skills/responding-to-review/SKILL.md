@@ -10,7 +10,7 @@ allowed-tools: Read Bash Grep Glob Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.4.1
+    version: 0.4.3
     context_budget_tokens: 3500
     side_effects: local
     agency: deliberative
@@ -144,6 +144,8 @@ Before implementing, verify:
 5. Does the reviewer have full context, or are they missing
    something?
 
+Not exhaustive — also verify whatever the specific claim touches.
+
 If the suggestion looks wrong, push back with technical reasoning.
 If you cannot verify without more info: "I cannot verify this
 without X. Should I investigate, ask, or proceed?"
@@ -185,6 +187,9 @@ Push back when:
   did not see.
 - It conflicts with an architectural decision in an ADR or agreed
   with the user.
+
+These are the common cases, not exhaustive — push back on any suggestion
+you verified to be wrong, whatever the reason.
 
 How:
 
@@ -261,6 +266,9 @@ Thread replies keep the response attached to the line under review.
 | Partial implementation | Clarify all items first. |
 | Cannot verify, proceed anyway | State the limitation, ask the user. |
 
+The table is not exhaustive — when a new mistake appears, add the row and
+its fix.
+
 ## Cross-references
 
 - `/verifying-before-done` — every implemented fix is gated by running the
@@ -277,6 +285,10 @@ No performative agreement. Technical rigor always.
 
 ## Changes
 
+- **0.4.3** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
+- **0.4.2** — ADR-0030 per-list audit: push-back reasons, the external-reviewer
+  verification checklist, and the common-mistakes table declared open; the
+  0.4.1 marker covered only the forbidden-responses list.
 - **0.4.1** — ADR-0030 list openness: the forbidden-responses list is open — any phrase performing agreement in place of a fix belongs there.
 - **0.4.0** — Renamed `code-review` → `responding-to-review`. The old
   name read as "perform a review" while the skill actually handles review

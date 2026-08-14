@@ -9,7 +9,7 @@ description: |
 allowed-tools: Agent Read Bash
 metadata:
   dstack:
-    version: 0.5.1
+    version: 0.5.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -49,7 +49,7 @@ Walk this decision table:
 want them done now without babysitting each step. Tasks run **one at a time** —
 the parallelism here is context isolation, not concurrency.
 
-**Not this skill — nearest neighbours:**
+**Not this skill — nearest neighbours** (the closest confusions, not exhaustive):
 
 | Situation | Use instead | Why |
 |---|---|---|
@@ -82,7 +82,7 @@ the parallelism here is context isolation, not concurrency.
 
 ## Model selection
 
-Use the least powerful model that can handle each role to conserve cost and increase speed.
+Use the least powerful model that can handle each role to conserve cost and increase speed. The categories and signals below are heuristics, not exhaustive — judge the task in front of you.
 
 **Mechanical implementation tasks** (isolated functions, clear specs, 1-2 files): use a fast, cheap model. Most implementation tasks are mechanical when the plan is well-specified.
 
@@ -97,7 +97,7 @@ Use the least powerful model that can handle each role to conserve cost and incr
 
 ## Handling implementer status
 
-Implementer subagents report one of four statuses. Handle each appropriately:
+Implementer subagents report one of four statuses — closed by design: the Report Format in `references/implementer-prompt.md` fixes this vocabulary. Handle each appropriately:
 
 **DONE:** Proceed to spec compliance review.
 
@@ -105,7 +105,7 @@ Implementer subagents report one of four statuses. Handle each appropriately:
 
 **NEEDS_CONTEXT:** The implementer needs information that wasn't provided. Provide the missing context and re-dispatch.
 
-**BLOCKED:** The implementer cannot complete the task. Assess the blocker:
+**BLOCKED:** The implementer cannot complete the task. Assess the blocker — these four are the recurring diagnoses, not exhaustive:
 1. If it's a context problem, provide more context and re-dispatch with the same model
 2. If the task requires more reasoning, re-dispatch with a more capable model
 3. If the task is too large, break it into smaller pieces
@@ -269,6 +269,7 @@ reach the plan belongs here.
 
 ## Changes
 
+- **0.5.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.5.1** — ADR-0030 list openness: the red-flag list is open.
 - **0.5.0** — Added status write-back to the plan's `## Status` block
   (`/writing-plans` 0.7.0), owned by the orchestrator so parallel subagents

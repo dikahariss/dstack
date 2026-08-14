@@ -13,7 +13,7 @@ allowed-tools: Bash Read Write Edit Workflow Grep Glob
 metadata:
   dstack:
     type: hybrid
-    version: 0.6.1
+    version: 0.6.2
     triggers:
       - convert pdf to markdown
       - pdf to rag
@@ -115,10 +115,9 @@ enough); non-PDF sources.
 | 5 | Gate *(digital only)* | `scripts/anti_drift_gate.py`: revert any fix-chunk that added/lost letters | py |
 | 6 | Ground | `ground` profile vs PNG — **pipelined with phase 2**, one pass over ALL vision pages → review queue → verify-before-fix | verify |
 
-A **fully-scanned** doc skips phases 4–5 (no text layer to dewrap/gate); it is built
-purely from vision via `splice.py assemble`, with grounding as the faithfulness guard.
-
 ## Deciding the path & per-page profile
+The doc fork is closed by design — exactly two paths. The page signals are **not
+exhaustive**: route any page you distrust to vision.
 | Signal | Verdict |
 |---|---|
 | Doc: Tagged:no + full-page image/page + empty/garbled OCR | **scanned path** — vision every page |
@@ -167,6 +166,7 @@ Recurring ones; **not exhaustive**.
 | Dropping page markers / no cost recap | Keep `<!-- page N -->`; sum each Workflow's `subagent_tokens` at the end |
 
 ## Changes
+- **0.6.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.6.1** — ADR-0030 list openness: common-mistakes table open.
 - **0.6.0** — English-only pass (using-dstack 0.7.0's rule): dropped the four
   Indonesian routing phrases from the description and `triggers` — models translate

@@ -14,7 +14,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.2.1
+    version: 0.2.2
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -50,6 +50,8 @@ NEVER CLAIM A FILE THIS MACHINE DID NOT PRODUCE.
 | Who wants what from the system, or a message ordering | `/modelling-system-behaviour` |
 | The process needs only a fence inside the spec | `/writing-specs` — its lane flowchart is enough |
 | Nobody has agreed what the process *is* yet | `/discovering-requirements` first |
+
+Not exhaustive — route by the request's intent, not by whether its phrasing appears above.
 
 **"Activity diagram", "process flow diagram" and "business process flowchart"
 all land here.** The answer is a BPMN process in every case — say which term was
@@ -218,6 +220,8 @@ for, and that no branch depends on, is narration. Leave it out and say you did.
 | "The happy path is the process" | The rejection path is the half stakeholders recognise, and the half that gets built wrong. |
 | "It rendered, so the model is fine" | Rendering proves geometry exists, not that the process is right. The lint gate is what proves anything. |
 
+Not exhaustive — any thought that argues a gate away belongs in this table and gets the same answer: run the gate.
+
 ## Hand-off
 
 Input from `/discovering-requirements` (its actor table becomes the lanes) and
@@ -237,6 +241,7 @@ operations reviewer and an engineer object to different things.
 
 ## Changes
 
+- **0.2.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.2.1** — ADR-0030 list openness: the BPMN vocabulary is closed by design (a process engine rejects anything else); the five patterns are open.
 - **0.2.0** — Dropped the Indonesian trigger phrases from the description and
   the trigger list, and put the example ask into English, under the English-only

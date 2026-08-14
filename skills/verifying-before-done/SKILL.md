@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read
 metadata:
   dstack:
-    version: 0.6.0
+    version: 0.6.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -85,6 +85,9 @@ above.
 
 ## Honest-claim shape
 
+The pattern, not the set — every claim gets the same treatment: command,
+exit code, counts.
+
 | Wrong | Right |
 |---|---|
 | "Looks good, tests should pass." | "bun test: 92/92 pass, exit 0. Done." |
@@ -101,6 +104,7 @@ above.
 
 ## Changes
 
+- **0.6.1** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.6.0** — Band `deterministic-dominant` → **`judgment-dominant`**, and the
   body cut roughly in half. Evidence:
   `docs/ablations/2026-08-verifying-before-done.md` — six real Sonnet 5 runs,

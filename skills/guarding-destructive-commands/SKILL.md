@@ -6,10 +6,10 @@ description: |
   destructive operations. Use when touching prod, debugging live systems, or
   working in a shared environment. Use when asked to "be careful", "safety
   mode", "prod mode", or "careful mode".
-allowed-tools: Bash Read
+allowed-tools: Bash Read AskUserQuestion
 metadata:
   dstack:
-    version: 0.4.1
+    version: 0.4.2
     type: semantic
     context_budget_tokens: 1500
     side_effects: readonly
@@ -47,7 +47,10 @@ do, and confirm with the user.
   `build` / `.turbo` / `coverage`
 
 These are build-artifact directories. Removing them is reversible — the
-next build recreates them. Treat them as cache, not data.
+next build recreates them. Treat them as cache, not data. This list is
+**not exhaustive**: any directory the build fully recreates (`target/`,
+`.gradle/`, `.venv/`) qualifies. Unsure whether a path is artifact or
+data? Confirm.
 
 ## The table is a floor, not a whitelist
 
@@ -86,6 +89,7 @@ does, so the guardrail stays advisory.
 
 ## Changes
 
+- **0.4.2** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
 - **0.4.1** — ADR-0030 list openness: the command table is explicitly a floor, now marked not exhaustive.
 - **0.4.0** — Renamed `careful` → `guarding-destructive-commands`. A bare
   adjective is exactly the "vague name" Anthropic's naming guidance warns

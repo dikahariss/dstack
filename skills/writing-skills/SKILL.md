@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Write Edit Bash Grep Glob Agent
 metadata:
   dstack:
-    version: 0.6.0
+    version: 0.6.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -82,7 +82,8 @@ metadata:
 ---
 ```
 
-Body, scaled to the skill:
+Body, scaled to the skill — a starting point, not a limit; add or drop
+sections as the skill needs:
 
 - **Overview** — what it is, core principle in 1–2 sentences.
 - **When to use** — symptoms and triggers, and when NOT to use.
@@ -98,7 +99,7 @@ Body, scaled to the skill:
   `schema-meta`. Set `metadata.dstack.calibration` only when NOT
   `workflow`. Moving off it in **either** direction costs one ablation run
   + owner approval, recorded in `## Changes` (ADR-0030 §5). Exemplar:
-  `skills/responding-to-review` (the reference hybrid: deterministic spine + named judgment).
+  `/responding-to-review` (the reference hybrid: deterministic spine + named judgment).
 - **One excellent example** — complete, runnable, commented with WHY.
   Not five mediocre ones in five languages.
 - **Common mistakes** — what goes wrong and the fix.
@@ -191,9 +192,11 @@ See `testing-skills-with-subagents.md` for the full method (pressure
 types, plugging holes), `persuasion-principles.md` for why explicit
 counters work, and `anthropic-best-practices.md` for Anthropic's
 official authoring guidance. Add a behavioral check under the skill's
-`eval/` folder — see `skills/brainstorm/eval/` for the pattern.
+`eval/` folder — see `/brainstorm`'s bundled `eval/` for the pattern.
 
 ## Anti-patterns
+
+Not exhaustive — the recurring ones; flag anything with the same shape.
 
 - **Project bias** — a rule lifted from the repo you happen to be in.
   Encode the technique, not one project's conventions; those belong in
@@ -206,6 +209,9 @@ official authoring guidance. Add a behavioral check under the skill's
 - **Documenting a mechanical rule** — automate it instead.
 
 ## Checklist (track one todo per item)
+
+Closed by design: this checklist is the shipping gate — every row becomes a
+todo, and rows enter or leave only by editing this skill.
 
 - [ ] `bun run new <id>`; `name` equals the directory
 - [ ] Name states the activity, **≤3 words** (gerund; no abbreviation/adjective/generic noun)
@@ -228,6 +234,7 @@ official authoring guidance. Add a behavioral check under the skill's
 
 ## Changes
 
+- **0.6.1** — ADR-0030 catalog review (list openness, enumeration-as-product declared, self-contained refs); panel-verified, see the 2026-08-14 review workflow.
 - **0.6.0** — `context_budget_tokens` 3000 → 4500. Not headroom for bloat: this
   skill now carries permanent ADR-0030 doctrine every skill author must read,
   and 3000 was mis-tiered against its peers — `/writing-plans`, `/writing-specs`,

@@ -15,7 +15,7 @@ allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.4.1
+    version: 0.4.2
     context_budget_tokens: 2750
     side_effects: external
     agency: deliberative
@@ -117,7 +117,7 @@ assume CC-BY.
 ## Common mistakes
 
 The recurring ones, **not exhaustive** — a new host brings its own. The
-legal/ethical gate above, by contrast, is closed by design.
+legal/ethical gate above is **closed by design** — policy, never judgment.
 
 | Mistake | Fix |
 |---|---|
@@ -132,6 +132,7 @@ legal/ethical gate above, by contrast, is closed by design.
 | Assuming every Neliti PDF is CC-BY | Neliti aggregates many publishers — read the license per record, don't assume |
 
 ## Changes
+- **0.4.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.4.1** — ADR-0030 list openness: common-mistakes table open; the legal/ethical gate is closed by design.
 - **0.4.0** — English-only pass (`using-dstack` 0.7.0: models translate intent,
   so the phrase only cost tokens); "download articles for these DOIs" and "get

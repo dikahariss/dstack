@@ -13,7 +13,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.4.1
+    version: 0.4.2
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -61,7 +61,7 @@ success is worse than one that refuses.
 | Input | Source | If missing |
 |---|---|---|
 | What the diagram must answer, in one sentence | the request, the spec | stop — a picture with no question becomes decoration |
-| Its altitude | context / container / component / data / process | pick one, say which, and say why |
+| Its altitude | context / container / component / data / process — not exhaustive; name another (e.g. deployment) if the question needs it | pick one, say which, and say why |
 | The design it depicts | `docs/specs/…`, the code | draw nothing you cannot cite |
 | Output root | `docs/design/YYYY-MM-DD-<slug>/` | a user or repo preference overrides |
 
@@ -211,6 +211,7 @@ replacement for its fence. Send a set that will be reviewed by others through
 
 ## Changes
 
+- **0.4.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.4.1** — ADR-0030 list openness: the red-flag table is open.
 - **0.4.0** — Indonesian trigger phrases dropped from the description and the
   trigger list under the English-only rule. `/using-dstack` 0.7.0 settled the

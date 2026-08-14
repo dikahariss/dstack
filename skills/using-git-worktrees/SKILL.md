@@ -10,7 +10,7 @@ description: |
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.3.1
+    version: 0.3.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -38,6 +38,8 @@ ignore-check, and project setup all follow the protocol below.
 
 ## When NOT to use
 
+Not exhaustive — weigh unlisted cases against whether isolation buys anything.
+
 - You are already in an isolated workspace (Step 0 detects this) — work in place.
 - The user has declined a worktree, or declared a work-in-place preference.
 - The task is a quick read-only inspection that mutates nothing.
@@ -59,7 +61,7 @@ BRANCH=$(git branch --show-current)
 git rev-parse --show-superproject-working-tree 2>/dev/null
 ```
 
-**If `GIT_DIR != GIT_COMMON` (and not a submodule):** You are already in a linked worktree. Skip to Step 3 (Project Setup). Do NOT create another worktree.
+**If `GIT_DIR != GIT_COMMON` (and not a submodule):** You are already in a linked worktree. Skip to Step 2 (Project setup). Do NOT create another worktree.
 
 Report with branch state:
 - On a branch: "Already in isolated workspace at `<path>` on branch `<name>`."
@@ -71,7 +73,7 @@ Has the user already indicated their worktree preference in your instructions? I
 
 > "Would you like me to set up an isolated worktree? It protects your current branch from changes."
 
-Honor any existing declared preference without asking. If the user declines consent, work in place and skip to Step 3.
+Honor any existing declared preference without asking. If the user declines consent, work in place and skip to Step 2.
 
 ## Step 1: Create the isolated workspace
 
@@ -79,7 +81,7 @@ Honor any existing declared preference without asking. If the user declines cons
 
 ### 1a. Native worktree tools (preferred)
 
-The user has asked for an isolated workspace (Step 0 consent). Do you already have a way to create a worktree? It might be a tool with a name like `EnterWorktree`, `WorktreeCreate`, a `/worktree` command, or a `--worktree` flag. If you do, use it and skip to Step 3.
+The user has asked for an isolated workspace (Step 0 consent). Do you already have a way to create a worktree? It might be a tool with a name like `EnterWorktree`, `WorktreeCreate`, a `/worktree` command, or a `--worktree` flag. If you do, use it and skip to Step 2.
 
 Native tools handle directory placement, branch creation, and cleanup automatically. Using `git worktree add` when you have a native tool creates phantom state your harness can't see or manage.
 
@@ -91,7 +93,7 @@ Only proceed to Step 1b if you have no native worktree tool available.
 
 #### Directory selection
 
-Follow this priority order. Explicit user preference always beats observed filesystem state.
+Follow this priority order — closed by design: the fixed order is what makes placement deterministic across sessions. Explicit user preference always beats observed filesystem state.
 
 1. **Check your instructions for a declared worktree directory preference.** If the user has already specified one, use it without asking.
 
@@ -140,33 +142,17 @@ cd "$path"
 
 **Sandbox fallback:** If `git worktree add` fails with a permission error (sandbox denial), tell the user the sandbox blocked worktree creation and you're working in the current directory instead. Then run setup and baseline tests in place.
 
-## Step 3: Project setup
+## Step 2: Project setup
 
-Auto-detect and run appropriate setup:
+Detect the project's toolchain from its manifests and lockfiles and run
+its own install and build steps. The lockfile picks the tool — `bun.lock`
+means `bun install`, not `npm install`. Not exhaustive: any ecosystem the
+project actually uses counts; do not limit setup to ecosystems you have a
+recipe for.
 
-```bash
-# Node.js
-if [ -f package.json ]; then npm install; fi
+## Step 3: Verify the clean baseline
 
-# Rust
-if [ -f Cargo.toml ]; then cargo build; fi
-
-# Python
-if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-if [ -f pyproject.toml ]; then poetry install; fi
-
-# Go
-if [ -f go.mod ]; then go mod download; fi
-```
-
-## Step 4: Verify the clean baseline
-
-Run tests to ensure workspace starts clean:
-
-```bash
-# Use project-appropriate command
-npm test / cargo test / pytest / go test ./...
-```
+Run the project's own test suite, complete — not a subset.
 
 **If tests fail:** Report failures, ask whether to proceed or investigate.
 
@@ -230,6 +216,9 @@ platform will invent its own, and the fix pattern below generalizes.
 
 ## Red flags
 
+Not exhaustive — any impulse to skip detection, the native tool, or the
+ignore check belongs here.
+
 **Never:**
 - Create a worktree when Step 0 detects existing isolation
 - Use `git worktree add` when you have a native worktree tool (e.g., `EnterWorktree`). This is the #1 mistake — if you have it, use it.
@@ -251,10 +240,11 @@ platform will invent its own, and the fix pattern below generalizes.
 - `/finishing-development-branch` — the wrap-up counterpart that tears
   down the worktree this skill creates.
 - `/executing-plans` — set up isolation here before executing a plan.
-- `/verifying-before-done` — run the clean-baseline gate (Step 4) through it.
+- `/verifying-before-done` — run the clean-baseline gate (Step 3) through it.
 
 ## Changes
 
+- **0.3.2** — ADR-0030 catalog review (list openness, cut restated general knowledge, consistency); panel-verified, see the 2026-08-14 review workflow.
 - **0.3.1** — ADR-0030 list openness: the common-mistakes list is open.
 - **0.3.0** — Replaced an inherited hard-coded global worktree path with generic
   external-directory detection (`../*worktrees*`). That path does not exist on

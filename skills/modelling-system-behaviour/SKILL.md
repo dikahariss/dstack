@@ -14,7 +14,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.2.1
+    version: 0.2.2
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -56,6 +56,8 @@ as though it were complete.
 | What talks to what, structurally | `/diagramming-architecture` |
 | A quick interaction fence inside a spec | `/writing-specs` — its Mermaid `sequenceDiagram` is enough |
 | Nobody has agreed who the actors are | `/discovering-requirements` first — this skill consumes an actor list, it does not invent one |
+
+Not exhaustive — route by the request's intent, not by whether its phrasing appears above.
 
 A sequence diagram of *internal* calls with no actor is an architecture picture
 wearing UML notation. Send it to `/diagramming-architecture` instead.
@@ -121,7 +123,8 @@ is inside the rectangle.
 One `.puml` per scenario, named for the use case it realises. Draw the main
 success path and **at least one thing going wrong** — a rejection, a timeout, a
 refusal. Components, fragments, and the activation rules are in
-`references/sequence.md`.
+`references/sequence.md`. The three rules below are the most often
+decisive, and are **not exhaustive**:
 
 - **Declare every lifeline.** PlantUML silently invents one for any undeclared
   name, so a typo becomes a participant nobody notices.
@@ -206,6 +209,8 @@ timeout. That choice is the design, not a drawing decision.
 | "The sequence has a new actor, I'll just add it" | Then the use case model is wrong, or the actor is not an actor. Fix the model, not the drawing. |
 | "Mermaid would be quicker" | Mermaid has no use case diagram at all, and no combined fragments. Fine inside a spec; not for a model that must hold. |
 
+Not exhaustive — any thought that argues a gate away belongs in this table and gets the same answer: run the gate.
+
 ## Hand-off
 
 Input from `/discovering-requirements` — its actor table *is* the actor set, and
@@ -225,6 +230,7 @@ path is already a test case waiting to be named.
 
 ## Changes
 
+- **0.2.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.2.1** — ADR-0030 list openness: the UML element set is closed by design (the notation defines it); the three rules shown are open.
 - **0.2.0** — Dropped the Indonesian trigger phrases from the description and
   the trigger list, and put the example ask into English, under the English-only

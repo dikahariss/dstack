@@ -1,15 +1,14 @@
 ---
 name: writing-plans
 description: |
-  Turn a spec or requirements into a step-by-step implementation plan
-  before any code is written. Each task names exact files, carries the
-  real code and the test, and a command with expected output. Use when
-  the user hands you a spec, says "write a plan", "plan this", or asks
-  for an implementation plan for a multi-step change.
+  Use when the user hands you a spec or agreed requirements for a
+  multi-step change and no plan exists yet — the user says "write a
+  plan", "plan this", or asks for an implementation plan. Also use
+  when a plan's Status block must be brought back to true.
 allowed-tools: Read Grep Glob Write
 metadata:
   dstack:
-    version: 0.9.1
+    version: 0.9.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -314,6 +313,7 @@ next, the Status block is under-filled — fix the block, not the prompt.
 
 ## Changes
 
+- **0.9.2** — ADR-0030 catalog review (consistency); panel-verified 2026-08-14.
 - **0.9.1** — ADR-0030 list openness: no-placeholders list open.
 - **0.9.0** — Reciprocated `/multi-persona-review` 0.4.0, whose catalog entry
   already claimed this skill "carries the assignment table" while nothing here

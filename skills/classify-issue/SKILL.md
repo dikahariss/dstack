@@ -5,7 +5,7 @@ allowed-tools: Read
 metadata:
   dstack:
     type: schema-semantic
-    version: 0.2.1
+    version: 0.2.2
     context_budget_tokens: 1500
     side_effects: readonly
     agency: deliberative
@@ -62,7 +62,8 @@ is yours.
 2. Pick a `kind` from the enum. If the issue is mostly "how do I…",
    choose `question`. If it used to work and stopped, choose
    `regression`.
-3. Rate `severity` from 1 to 5:
+3. Rate `severity` from 1 to 5 — anchors closed by design, the
+   schema fixes the range:
    - 1: cosmetic typo, docs-only nit
    - 2: minor inconvenience, easy workaround
    - 3: feature broken for some users, no data loss
@@ -90,8 +91,7 @@ seventh value breaks them; force the issue into the nearest one and say why in
 
 ## Output
 
-Emit exactly one JSON object. No prose before or after. Example
-shape:
+Example shape:
 
 ```json
 {
@@ -109,6 +109,7 @@ returning.
 
 ## Changes
 
+- **0.2.2** — ADR-0030 catalog review (list openness, economy); panel-verified, see the 2026-08-14 review workflow.
 - **0.2.1** — ADR-0030 list openness: the kind enum is closed by design (consumers parse it, so a seventh value breaks them); the misclassification traps are open.
 - **0.2.0** — calibration: schema-meta (ADR-0025; determinism is the
   output schema, not a procedure). Named the judgment (kind/severity/area

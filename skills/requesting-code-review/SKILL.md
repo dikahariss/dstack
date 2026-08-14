@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read Grep Glob Agent
 metadata:
   dstack:
-    version: 0.2.1
+    version: 0.2.3
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -45,7 +45,9 @@ Mandatory:
 - Before merge to main
 
 Optional but valuable: when stuck (fresh perspective), before a refactor
-(baseline read), after fixing a subtle bug.
+(baseline read), after fixing a subtle bug. Neither list is exhaustive —
+a plan or the user can mandate more, and any moment a fresh read would
+help qualifies.
 
 ## How to request
 
@@ -103,6 +105,10 @@ See the dispatch template in `code-reviewer.md`.
 
 ## Changes
 
+- **0.2.3** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
+- **0.2.2** — ADR-0030 per-list audit: the when-to-request lists (mandatory
+  and optional) declared open; the 0.2.1 marker covered only the red-flag
+  list.
 - **0.2.1** — ADR-0030 list openness: the red-flag list is open — any reason to avoid a review belongs there.
 - **0.2.0** — Named the judgment surface (crafting the reviewer's context
   sets the review's ceiling); workflow band (ADR-0025; flag omitted as the

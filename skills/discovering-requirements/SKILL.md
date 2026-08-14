@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Grep Glob Write WebSearch WebFetch AskUserQuestion Bash Skill
 metadata:
   dstack:
-    version: 0.4.1
+    version: 0.4.2
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -188,10 +188,10 @@ where every row says `INFERRED` passes on form and certifies nothing.
 
 ### 4. Constraints and compliance
 
-Sourcing comes second. **Scope first:** enumerate the candidate regimes — sector
+**Scope first:** enumerate the candidate regimes — sector
 regulator, personal-data law, records and archival law, procurement or contract,
-internal policy — and record each `APPLIES` / `DOES NOT APPLY` with a reason. A
-regime nobody named cannot be sourced.
+internal policy; not exhaustive — and record each `APPLIES` / `DOES NOT APPLY` with a
+reason. A regime nobody named cannot be sourced.
 
 Then source each constraint from the document that owns it. Status is
 constrained: **you may not write `VERIFIED`.** The agent writes
@@ -211,12 +211,11 @@ rights, and transfer or residency.
 | Business | `BR-n` | why the organisation wants this | traces to a goal |
 | Stakeholder | `SR-n` | what an actor needs to be able to do | implementation-free |
 | Functional | `FR-n` | what the system must do | traces to an `SR-n` |
-| Non-functional | `NFR-n` | how well — performance, security, privacy, availability, accessibility, observability, operability | has a **pass condition**; traces to a `BR-n` or `C-n` |
+| Non-functional | `NFR-n` | how well — performance, security, privacy, availability, accessibility, observability, operability (not exhaustive) | has a **pass condition**; traces to a `BR-n` or `C-n` |
 
 A legal constraint `C-n` is a legitimate trace parent, and a requirement whose
-only parent is a `C-n` is MUST by default. "Has a pass condition" replaces "has
-a number" deliberately: conformance and lawful basis have no number, and a
-numbers-only rule ejects exactly the requirements that matter most.
+only parent is a `C-n` is MUST by default. "Has a pass condition", not "has a
+number": conformance and lawful basis have no number.
 
 Requirements must be **necessary, singular, unambiguous, complete, verifiable,
 feasible, correct, and traceable** — the bar, the smells, and the bad → good
@@ -320,6 +319,7 @@ a panel of simulated experts does not substitute for Stage 3's real actors.
 
 ## Changes
 
+- **0.4.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.4.1** — ADR-0030 list openness: red-flag table open.
 - **0.4.0** — Stage 6 re-scoped to first-cut selection *inside this document*.
   It assigned `MUST`/`SHOULD`/`COULD` with no criteria for which label a row

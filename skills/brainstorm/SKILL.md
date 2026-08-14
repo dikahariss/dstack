@@ -1,16 +1,16 @@
 ---
 name: brainstorm
 description: |
-  Interviews the user about a plan, design, or idea until reaching
-  shared understanding. Walks every branch of the decision tree,
-  asks one question at a time, and recommends an answer with each
-  question. Use when the user asks to "brainstorm", "grill me",
-  "stress test this plan", "interview me", or "what do you think
-  about this idea".
+  Use when the user asks to "brainstorm", "grill me", "stress test
+  this plan", "interview me", or "what do you think about this
+  idea" — or when a plan, design, or idea needs stress-testing and
+  explicit alignment before any file changes. Not for an unwritten
+  problem behind a request; that is /discovering-requirements.
+
 allowed-tools: AskUserQuestion Read Grep Glob
 metadata:
   dstack:
-    version: 0.5.1
+    version: 0.5.2
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -45,7 +45,8 @@ more of the codebase, the ADRs, the recent commits first.
 This skill is intentionally judgment-dominant (ADR-0025): the spine is
 only recommendation-first + the keep/stop gates; which branch to walk and
 what to recommend is your judgment — research the code and latest context
-freely.
+freely. Every list in this skill is a starting point, not a limit —
+extend it when the situation warrants.
 
 ### What this looks like in one sentence
 
@@ -219,6 +220,7 @@ uses it as the brief for the implementation.
 
 ## Changes
 
+- **0.5.2** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
 - **0.5.1** — ADR-0030 list openness: the stop-early list is open — reading the room is the judgment this skill is built around.
 - **0.5.0** — Resolved the dangling "worth building at all" pointer, which
   named no destination: comparative worth is `/prioritizing-work`, per-item

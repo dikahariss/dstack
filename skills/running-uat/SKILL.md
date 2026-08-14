@@ -13,7 +13,7 @@ description: >
 allowed-tools: Bash Read Write Edit Agent Skill Glob Grep
 metadata:
   dstack:
-    version: 0.4.1
+    version: 0.4.3
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -66,7 +66,9 @@ job.
 
 ## Entry gate — refuse to start if any row fails
 
-Refusing is a valid and cheap outcome. Report the failing row and stop.
+Refusing is a valid and cheap outcome. Report the failing row and stop. The
+rows are not exhaustive — any missing precondition that would invalidate a
+verdict blocks the same way.
 
 - [ ] **Acceptance criteria enumerated**, Given/When/Then, each naming an
       *observable* consequence. No criteria → no UAT. `/designing-test-cases`
@@ -105,9 +107,11 @@ driving a browser is not.**
 
 ## Evidence — what a PASS must cite
 
-Ranked strongest first. **A PASS requires a DOM/accessibility assertion on a
-named element, plus at least one of: the network response, or a post-reload
-re-read proving persistence.**
+Ranked strongest first; the kinds are not exhaustive — slot other evidence (a
+direct DB read, server logs) by what it proves. The floor is closed by design
+because the judge relies on it: **a PASS requires a DOM/accessibility assertion
+on a named element, plus at least one of: the network response, or a
+post-reload re-read proving persistence.**
 
 | Rank | Evidence | Proves |
 |---|---|---|
@@ -185,6 +189,10 @@ escalate — do not resolve it in the build's favour.
 
 ## Changes
 
+- **0.4.3** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
+- **0.4.2** — ADR-0030 per-list audit: the entry gate declared an open floor;
+  the evidence section split into open kinds plus a closed-by-design PASS
+  floor. The 0.4.1 marker covered only the false-PASS table.
 - **0.4.1** — ADR-0030 list openness: the false-PASS guard table is open — a UAT run invents new ways to pass without evidence.
 - **0.4.0** — The priority refusal now names a destination. "Propose it, then
   escalate" left an escalation with nowhere to go; it routes to the owner, or to

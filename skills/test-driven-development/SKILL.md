@@ -13,7 +13,7 @@ description: |
 allowed-tools: Read Write Edit Bash
 metadata:
   dstack:
-    version: 0.7.1
+    version: 0.7.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -179,7 +179,9 @@ spots — you test the branches you remember writing. **Derive the cases from th
 contract** (what the behavior promises), not from the code. That is what makes
 the set unbiased.
 
-Walk all four rows before calling a behavior covered:
+Walk all four rows before calling a behavior covered. The four classes are
+closed by design — the final checklist walks them — while every *Typical
+cases* cell is a sample, not exhaustive:
 
 | Class | Ask | Typical cases |
 |---|---|---|
@@ -196,13 +198,11 @@ return a partial result, or answer twice.
 **Bias check before moving on:** could this test set pass against an
 implementation you know is wrong? If yes, a case is missing.
 
-## Why order matters — inside a tier
-
-The excuse-vs-reality table ("I'll write tests after to verify", "I already
-manually tested it", sunk cost) lives in `references/runners-and-example.md`.
-None of them survives the tier table above.
-
 ## Red flags — stop and restart the cycle
+
+Neither list below is exhaustive — any rationalization with the same effect
+counts. The excuse-vs-reality table lives in
+`references/runners-and-example.md`; none of it survives the tier table above.
 
 **Inside a tier**, any of these means: revert the production code, write the
 test first, start the cycle over.
@@ -286,12 +286,13 @@ Either way → the product was shown working, not just the suite
 
 ## Bundled files
 
-- `references/runners-and-example.md` — the per-stack runner commands, a full
-  worked red → green → refactor bug fix, and the when-stuck table.
+- `references/runners-and-example.md` — runners, worked cycle, excuse table,
+  when-stuck table.
 
 ## Changes
 
-- **0.7.1** — ADR-0030 list openness: the six risk tiers are closed by design — /writing-plans makes every task name one, so the set is a contract other skills read.
+- **0.7.2** — ADR-0030 sweep + panel review (2026-08-14): six risk tiers
+  closed by design — a contract other skills name tasks by; economy pass.
 - **0.7.0** — English-only pass (`using-dstack` 0.7.0). Trigger is now `does
   this need tdd`; 0.6.0's quotations are English reported speech.
 - **0.6.0** — **The cycle is no longer the default for every change.** Owner's

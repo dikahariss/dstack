@@ -18,7 +18,7 @@ allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.4.1
+    version: 0.4.2
     context_budget_tokens: 4500
     side_effects: local
     agency: deliberative
@@ -97,9 +97,9 @@ break the spine — **Neliti has no operators at all** (bag-of-words); the adapt
 tells you when the method itself must bend.
 
 ## The adapter contract
-Databases differ in syntax and mechanics, and **vendor documentation is often
-wrong** — verify on the live site. A per-vendor `references/<vendor>.md` fills
-every slot below:
+**Vendor documentation is often wrong** — verify on the live site. A per-vendor
+`references/<vendor>.md` fills every slot below — the seven slots are **closed
+by design** (the contract this skill reads); vendor quirks get extra sections:
 
 | Slot | What the adapter specifies |
 |---|---|
@@ -124,12 +124,8 @@ and fill every slot **empirically** (run the probe tests in that template).
 | Emerald Insight | copy `references/adding-a-vendor.md` | not yet built |
 
 > **Adapter shapes differ — the export slot is decisive.** Some *export* RIS in
-> bulk (ScienceDirect, Taylor & Francis); others don't: **ProQuest guest** scrapes
-> detail pages to build RIS; **Springer** is export-poor (1,000-row CSV → harvest
-> DOIs, enrich via CrossRef/API); **Neliti** has no bulk export, **no search
-> operators**, and a `robots.txt` that disallows its own RIS endpoint — so RIS is
-> built from detail-page `<meta>` tags. The adapter names the shape and its harvest
-> step.
+> bulk (ScienceDirect, Taylor & Francis); the rest harvest RIS another way — the
+> status table and the bundled-files notes name each shape and its harvest step.
 
 ## Driving the web UI
 Drive the browser with the **`/claude-in-chrome`** skill (load its tools via
@@ -206,6 +202,7 @@ The recurring ones, **not exhaustive** — a new vendor brings its own.
 | Chasing every synonym | Stop at diminishing returns — new term, no new relevant hits |
 
 ## Changes
+- **0.4.2** — ADR-0030 catalog review (list openness, economy); panel-verified, see the 2026-08-14 review workflow.
 - **0.4.1** — ADR-0030 list openness: common-mistakes table open — a new vendor brings its own.
 - **0.4.0** — Dropped the one Indonesian trigger phrase (the literal translation
   of "search literature") from the description and the trigger list under the

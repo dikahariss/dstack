@@ -11,7 +11,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.3.1
+    version: 0.3.2
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -45,6 +45,9 @@ that shade of blue", and the first sentence is the one worth having.
 
 ## When to use — and when not
 
+Common neighbours, not exhaustive — route an unlisted request by what it
+must produce.
+
 | Instead of this skill | Use |
 |---|---|
 | No spec step table to draw from | `/writing-specs` first — do not invent screens |
@@ -53,6 +56,9 @@ that shade of blue", and the first sentence is the one worth having.
 | Proving accessibility conformance | `/designing-test-cases` derives it, `/running-uat` runs it |
 
 ## Stage 0 — Inputs
+
+Closed by design — this table is the declared input contract; screens are
+derived from nothing outside it.
 
 | Input | Source | If missing |
 |---|---|---|
@@ -204,6 +210,7 @@ experts is not the operator whose objection the artifact exists to invite.
 
 ## Changes
 
+- **0.3.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.3.1** — ADR-0030 list openness: the red-flag table is open.
 - **0.3.0** — Indonesian trigger phrases dropped from the description and the
   trigger list under the English-only rule. `/using-dstack` 0.7.0 settled the

@@ -12,7 +12,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Skill
 metadata:
   dstack:
-    version: 0.5.0
+    version: 0.5.1
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -121,7 +121,8 @@ Per criterion, name each input variable and split its range into classes the
 spec gives the **same reason** to accept or reject — never "the same code path",
 which you cannot see. Partition the invalid side by reason too.
 
-Then classify the **shape**. Shapes compose: a condition containing a range
+Then classify the **shape** — not exhaustive: an unlisted shape still gets a
+technique by the same reasoning. Shapes compose: a condition containing a range
 carries its own boundary analysis.
 
 | Shape | Technique |
@@ -265,6 +266,8 @@ boundary around it, not exhaustiveness. Name the boundary and what it accepts.
 
 ## Red flags
 
+Not exhaustive — extend it.
+
 | Thought | Reality |
 |---|---|
 | "I'll write the cases as I implement" | Then they test what you built, not what was promised. |
@@ -293,6 +296,7 @@ never thinks of are the point.
 
 ## Changes
 
+- **0.5.1** — ADR-0030 catalog review (list openness, economy); panel-verified, see the 2026-08-14 review workflow.
 - **0.5.0** — Stage 5 states that `impact × likelihood` orders the *run*, not
   the requirements. Several ranking formulas now exist in the catalog, and
   reading run order as business priority is the confusion this one would cause.
@@ -304,21 +308,15 @@ never thinks of are the point.
   risk tiers; elsewhere tests come after the code, making this list the only
   thing between them and the implementation bias they would inherit. The
   freeze-before-implementation rule became unconditional.
-- **0.2.0** — Rebuilt after a five-point-of-view review (QA lead, implementer,
-  release manager, non-functional tester, holistic) returning six blocking
-  findings, plus a subagent trial that derived 60 cases from a real criteria set
-  and found nine more. Three of this skill's own rules were contradicting each
-  other: one-case-one-criterion forbade its own showcase case, the non-happy
-  share penalised correctly-derived lifecycle cases, and "cannot fail" forbade
-  the absence scans a universal negative needs. Fixed by adding `R-n` derived
-  risks, making the share diagnostic, and defining the verdict as one decision
-  rule rather than one assertion. Added: the falsification-target rule;
-  authority, distributional and universal-negative shapes, since non-functional
-  criteria had no derivation path at all; a ban on collapsing
-  subject/role/tenant/owner in a decision table, which folds an entire deny
-  space into one row; release effect separate from risk order; prerequisites;
+- **0.2.0** — Rebuilt after a five-point-of-view review (six blocking findings)
+  and a 60-case subagent trial that exposed three self-contradictions among this
+  skill's own rules. Fixed by adding `R-n` derived risks, making the class share
+  diagnostic, and defining the verdict as one decision rule rather than one
+  assertion. Added: the falsification-target rule; the authority, distributional
+  and universal-negative shapes; the ban on collapsing subject/role/tenant/owner
+  in a decision table; release effect separate from risk order; prerequisites;
   the action column; gap kinds; human-granted `AGREED`; and Stage 4 in the Light
-  path, which previously skipped it while requiring its output.
+  path.
 - **0.1.0** — Initial. Built from
   `docs/discovery/2026-07-28-designing-test-cases.md` and its Light spec: TDD had
   a per-behaviour completeness walk and `running-uat` an entry gate demanding an

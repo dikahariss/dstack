@@ -14,7 +14,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob Grep
 metadata:
   dstack:
-    version: 1.3.1
+    version: 1.3.2
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -80,7 +80,7 @@ reproduce them in the final report.
 ## Step 1b — The data contract
 
 Read `references/schema.md` once per session. Everything you write below
-(`semantic.csv`, `segments.csv`, `scores.csv`, `recommendations.csv`) goes into
+(`semantic.csv`, `segments.csv`, `onscreen_text.csv`, `scores.csv`, `recommendations.csv`) goes into
 `<audit_dir>` with exactly those columns. Schema discipline here is the product.
 
 ## Step 2 — Semantics, before any metric talk
@@ -165,7 +165,7 @@ why they are written first.
 
 ## Step 7 — Deliver
 
-Flowing prose, in the user's language, in this order:
+Flowing prose, in the user's language, in this order — closed by design (limitations before numbers, semantics before metrics); append sections beyond these seven rather than reordering:
 
 1. **What this audit can and cannot see** — the file is not the account; face
    validity only; plus the contents of `limitations.txt`.
@@ -208,6 +208,7 @@ what stop a wrong answer — but deliver only what was asked.
 
 ## Changes
 
+- **1.3.2** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
 - **1.3.1** — ADR-0030 list openness: the benchmark rules are open; the 36 checklist items are closed by design, because scores concatenate into one corpus and 35 or 37 is not comparable.
 - **1.3.0** — Indonesian trigger phrases removed under the English-only rule
   (using-dstack 0.7.0: models translate intent, so the phrases cost tokens

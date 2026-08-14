@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.19.1
+    version: 0.19.2
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -62,8 +62,6 @@ questions.
    proceed without a skill **and say so in one line**.
 5. Announce: "Using <skill> to <purpose>."
 6. If the skill has a checklist, create a todo per item. Follow the skill.
-
-About to plan a creative change and not yet aligned? `/brainstorm` first.
 
 ## Which skill — quick router
 
@@ -123,7 +121,7 @@ an API with no screen), the first executable task must produce a screen the
 user can open and click — stubbed data is fine. `/writing-plans` enforces the
 ordering; a plan whose first task produces nothing visible gets rejected there.
 
-**Common chains:**
+**Common chains** (samples, not exhaustive):
 - Feature: `/discovering-requirements` (problem not yet written; `/brainstorm`
   alongside it if the idea itself is in doubt) → `/prioritizing-work` (several
   candidates; also fires standalone on a multi-item instruction with no prior
@@ -161,6 +159,9 @@ plan mode, hooks, MCP, effort/model — use `/help` or see code.claude.com/docs.
 
 ## Red flags — you are rationalizing
 
+The recurring ones, not exhaustive — any thought that defers the skill check
+counts.
+
 | Thought | Reality |
 |---|---|
 | "This is just a simple question" | Questions are tasks. Check for skills. |
@@ -191,11 +192,11 @@ The skill itself tells you which.
 
 ## Bundled files
 
-- `references/skill-catalog.md` — full skill catalog: triggers, scope, and
-  hand-off rules. Loads on demand; read it per the conditions above.
+- `references/skill-catalog.md` — read per the conditions above.
 
 ## Changes
 
+- **0.19.2** — ADR-0030 catalog review (list openness, economy); panel-verified, see the 2026-08-14 review workflow.
 - **0.19.1** — ADR-0030 list openness: the router table is open by construction — the catalog grows, and a situation with no row is a routing gap, never a licence to skip the check.
 - **0.19.0** — Registered `multi-persona-review` 0.5.0's product-review
   expansion. The router row now says what the skill actually covers — one

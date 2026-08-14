@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.3.1
+    version: 0.3.2
     type: semantic
     side_effects: external
     agency: deliberative
@@ -260,6 +260,9 @@ the user is being asked to make.
 
 ## Red flags
 
+The Never list is a floor, **not exhaustive** — an unlisted action that
+irreversibly loses work or breaks a workspace still qualifies.
+
 **Never:**
 - Proceed with failing tests
 - Merge without verifying tests on result
@@ -285,19 +288,19 @@ the user is being asked to make.
   not the gate.
 - `/using-git-worktrees` — the counterpart that sets up the isolated
   workspace this skill tears down.
-- `/responding-to-review` — request a review before choosing merge or PR.
+- `/requesting-code-review` — request a review before choosing merge or PR.
 
 ## Changes
 
+- **0.3.2** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
 - **0.3.1** — ADR-0030 list openness: the common-mistakes list is open; the four end-of-branch options are closed by design.
 - **0.3.0** — Managed-worktree cleanup is scoped to `.worktrees/`, `worktrees/`,
   or whatever directory `/using-git-worktrees` selected this session, replacing
   a hard-coded inherited global path that does not exist here. The guard against
-  removing a harness-owned worktree is unchanged.
-
-- **0.3.0** — Reciprocated `/test-driven-development` 0.6.0: Step 1 now also
-  requires `/running-uat` PASS evidence for user-visible work before the
-  merge/PR menu — tests green alone no longer qualifies the branch.
+  removing a harness-owned worktree is unchanged. Same release reciprocated
+  `/test-driven-development` 0.6.0: Step 1 requires `/running-uat` PASS
+  evidence for user-visible work before the merge/PR menu — tests green alone
+  no longer qualifies the branch.
 - **0.2.0** — calibration: deterministic-dominant (ADR-0025; side_effects
   external, the exact bash is the value). Named the bounded judgment
   (confirm the base branch when `merge-base` is ambiguous). Hardening

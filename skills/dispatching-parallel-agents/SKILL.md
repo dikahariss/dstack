@@ -4,13 +4,12 @@ description: |
   Use when facing 2+ independent tasks that can be worked on without
   shared state or sequential dependencies — e.g. several test files
   failing with different root causes, or multiple subsystems broken
-  independently. Dispatch one subagent per problem domain and let them
-  work concurrently. Triggers: "parallel agents", "fan out", "independent
+  independently. Triggers: "parallel agents", "fan out", "independent
   failures".
 allowed-tools: Agent Bash Read
 metadata:
   dstack:
-    version: 0.2.1
+    version: 0.2.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -56,6 +55,9 @@ Walk this decision table top to bottom:
 - Failures are related (fix one might fix others)
 - Need to understand full system state
 - Agents would interfere with each other
+
+Both lists sample symptoms — not exhaustive; the decision table above is
+the rule.
 
 ## The pattern
 
@@ -134,13 +136,6 @@ guessing at scope belongs here.
 | No constraints: agent might refactor everything | "Do NOT change production code" / "Fix tests only" |
 | Vague output: "Fix it" — you don't know what changed | "Return a summary of root cause and changes" |
 
-## When NOT to use
-
-**Related failures:** Fixing one might fix others - investigate together first
-**Need full context:** Understanding requires seeing entire system
-**Exploratory debugging:** You don't know what's broken yet
-**Shared state:** Agents would interfere (editing same files, using same resources)
-
 ## Real example
 
 **Scenario:** 6 test failures across 3 files after major refactoring
@@ -168,13 +163,6 @@ Agent 3 → Fix tool-approval-race-conditions.test.ts
 
 **Time saved:** 3 problems solved in parallel vs sequentially
 
-## Key benefits
-
-1. **Parallelization** - Multiple investigations happen simultaneously
-2. **Focus** - Each agent has narrow scope, less context to track
-3. **Independence** - Agents don't interfere with each other
-4. **Speed** - 3 problems solved in time of 1
-
 ## Verification
 
 After agents return:
@@ -200,6 +188,7 @@ git diff --stat          # confirm only intended files changed, no overlap
 
 ## Changes
 
+- **0.2.2** — ADR-0030 catalog review (list openness, cut restated general knowledge, economy, consistency); panel-verified, see the 2026-08-14 review workflow.
 - **0.2.1** — ADR-0030 list openness: the common-mistakes table is open.
 - **0.2.0** — Named the judgment (deciding failures are truly independent)
   and added an integrate-time verify command. Hardening (v3 plan):

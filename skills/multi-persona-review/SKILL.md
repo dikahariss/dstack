@@ -18,7 +18,7 @@ description: >
 allowed-tools: Agent Read Grep Glob Skill
 metadata:
   dstack:
-    version: 0.5.1
+    version: 0.5.2
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -250,10 +250,10 @@ Who wears what is in the table above. Exact field wording:
 ### Iteration 3 — Go / No-Go, conditional
 
 Runs **only** when iteration 2 surfaced a **new blocking finding of a class
-iteration 1 never considered** — a legal or regulatory bar, cost materially past
-what was approved, an unobtainable dependency, a safety exposure. Not for an old
-objection restated louder, a preference, or a seat wanting another turn. If
-iteration 2 closed cleanly, the review is over.
+iteration 1 never considered** — for example a legal or regulatory bar, cost
+materially past what was approved, an unobtainable dependency, a safety
+exposure; the class list is not exhaustive. Not for an old objection restated
+louder, a preference, or a seat wanting another turn.
 
 Blue and Red only: no new seats, no new analysis. What remains is a judgment
 under uncertainty that will not resolve by looking harder. Every seat gives one
@@ -295,7 +295,7 @@ All under `references/`.
 
 ## Changes
 
-- **0.5.1** — ADR-0030 list openness: perspective library open; the trio is the floor, not the roster.
+- **0.5.2** — ADR-0030 panel review 2026-08-14: perspective library open; trio is the floor, not the roster.
 - **0.5.0** — Added a **digital-product mode** and split the vocabulary the old
   name conflated: a **perspective** is coverage, an **AI seat** is execution, a
   **test context** is a condition, not a person. Product mode selects coverage by

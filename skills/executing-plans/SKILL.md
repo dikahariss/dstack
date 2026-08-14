@@ -2,14 +2,14 @@
 name: executing-plans
 description: |
   Use when you have a written implementation plan to execute in a
-  separate session with review checkpoints. Load the plan, review it
-  critically, execute every task in order, stop on blockers, and finish
-  the branch. Triggers: "execute plan", "run the plan", "implement this
-  plan".
+  separate session with review checkpoints, or when resuming a
+  half-done plan from its Status block. Triggers: "execute plan", "run
+  the plan", "implement this plan", "resume the plan", "continue where
+  we left off".
 allowed-tools: Read Edit Write Bash
 metadata:
   dstack:
-    version: 0.3.1
+    version: 0.3.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -30,12 +30,6 @@ metadata:
 Load plan, review critically, execute all tasks, report when complete.
 
 **Announce at start:** "Using executing-plans to implement this plan."
-
-**Note:** This works much better with subagents. Claude Code provides
-the `Agent` tool — when subagents are available, prefer
-`/subagent-driven-development` for same-session execution. Use this
-skill when executing a plan in a separate session with review
-checkpoints.
 
 ## When to use
 
@@ -133,14 +127,7 @@ and retries the thing that already failed.
 **Don't force through blockers** - stop and ask.
 
 ## Remember
-- Resume from the Status block; don't re-derive it from the codebase
-- Review plan critically first
-- Follow plan steps exactly
-- Write the status back in the same commit as the code
-- Record deviations; never silently rewrite a task to match the code
-- Don't skip verifications
-- Reference skills when plan says to
-- Stop when blocked, don't guess
+- Reference skills when the plan says to
 - Never start implementation on main/master branch without explicit user consent
 
 ## Cross-references
@@ -153,6 +140,7 @@ and retries the thing that already failed.
 
 ## Changes
 
+- **0.3.2** — ADR-0030 catalog review (economy, consistency); panel-verified, see the 2026-08-14 review workflow.
 - **0.3.1** — ADR-0030 list openness: the stop-and-ask list is open — anything that would make you guess at the plan belongs there.
 - **0.3.0** — Made this the **resume** skill it always claimed to be. It was
   described as the separate-session executor but had no way to find where the

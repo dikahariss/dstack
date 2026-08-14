@@ -13,7 +13,7 @@ description: >
 allowed-tools: Bash Read Write Edit Grep Glob
 metadata:
   dstack:
-    version: 0.2.1
+    version: 0.2.2
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -93,7 +93,9 @@ number and has you grading your own homework.
 | A fact that will be stale next month | nowhere | say so; do not enshrine it |
 
 **One home per lesson.** The same rule in CLAUDE.md and a skill and a memory
-drifts out of sync and the copies start contradicting each other.
+drifts out of sync and the copies start contradicting each other. The homes
+above are **not exhaustive** — a lesson a validator, hook, or script could
+enforce routes to automation, not prose; name the new home when you use one.
 
 ## Guards
 
@@ -152,6 +154,7 @@ The miner reports, over 14 days:
 
 ## Changes
 
+- **0.2.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.2.1** — ADR-0030 list openness: the guard table is open — a retro invents new ways to flatter itself.
 - **0.2.0** — Indonesian trigger phrases and prose removed under the English-only
   rule (using-dstack 0.7.0: models translate intent, so the phrases cost tokens
