@@ -9,133 +9,112 @@ description: |
 allowed-tools: Bash Read
 metadata:
   dstack:
-    version: 0.5.1
+    version: 0.6.0
     type: semantic
     side_effects: local
     agency: deliberative
-    calibration: deterministic-dominant
+    calibration: judgment-dominant
     context_budget_tokens: 3500
     triggers:
       - verify
       - prove it
       - before declaring done
       - evidence before claim
+      - a subagent said it worked
 ---
 # /verifying-before-done
 
-Evidence before claim. Before saying work is done, run the
-verification command in **this** turn, read the output, and only
-then make the claim.
+Evidence before claim. Before saying work is done, run the command that
+proves it **in this turn**, read the output, then claim.
 
-## The iron law
+Confidence is not evidence. Evidence from an earlier turn is stale — the
+code, the environment, or the dependencies may have moved since.
 
-```
-NO COMPLETION CLAIMS WITHOUT FRESH VERIFICATION EVIDENCE
-```
+## Where the judgment is
 
-If you have not run the verification command in this turn, you
-cannot claim it passes. Evidence from an earlier turn is stale —
-code may have changed, environment may have shifted, dependencies
-may have been re-installed.
+Deciding **which command actually proves this claim** is the whole skill.
+A passing unit suite does not prove a screen renders; a clean typecheck
+does not prove a migration is reversible; `git status` clean does not
+prove the change landed on the right branch. Pick the command that would
+*fail* if the claim were false, and run that one.
 
-Confidence is not evidence.
+## The gate
 
-## When to use this skill
+1. Name the command that proves the claim.
+2. Run it, complete — not a subset.
+3. Read the output. Check the exit code. Count the failures.
+4. Claim only what the output supports, **with** the evidence: the
+   command, the exit code, the counts.
 
-Apply this gate before any of these:
+If the output does not support the claim, state the real status instead.
+That is a finished task, not a failed one.
 
-- Any variation of "complete", "done", "fixed", "working", "ready",
-  "all set".
-- Any expression of satisfaction with the work.
-- Any positive statement about the state of the code.
-- Committing, pushing, opening a PR, marking a task complete.
-- Moving to the next task in the queue.
-- Handing work back to the user.
+## After a subagent reports success
 
-That list is **not exhaustive** — it names the common shapes, not the
-set. The rule covers exact phrases, paraphrases, synonyms, and anything
-that implies completion or correctness.
+This is the case the surrounding harness does **not** cover, and the
+reason this skill still exists. A harness rule tells you to report *your
+own* outcomes faithfully. It says nothing about a subagent's report.
 
-## The gate function
+A subagent's success message is a claim, not evidence. Re-run its
+verification yourself, or read the artifact it says it produced. Measured
+2026-08-14: a subagent correctly reported the test suite was green on this
+machine and red on CI — believing either half without checking would have
+been wrong practice, and the half that was right was right by luck of
+which machine it ran on.
 
-Before any claim:
+## Default gate when the repo names none
 
-1. **Identify** the command that proves this claim.
-2. **Run** the full command (fresh, complete — not a partial subset).
-3. **Read** the full output. Check the exit code. Count failures.
-4. **Verify** that the output confirms the claim.
-   - If it does not: state the actual status with evidence. Do not
-     claim done.
-   - If it does: state the claim **with** the evidence — name the
-     command, the exit code, the pass/fail count.
-5. **Only then** make the claim.
-
-Skipping any step is lying, not verifying.
-
-## Claim → required evidence
-
-| Claim | Required evidence | Not sufficient |
-|---|---|---|
-| Tests pass | Test command output: zero failures, expected count | "Should pass", a previous run, "the file looks right" |
-| Linter clean | Linter output: zero errors | Partial check, extrapolation, fewer warnings than before |
-| Build succeeds | Build command exit 0 | Linter passing, "logs look fine" |
-| Type check clean | `tsc --noEmit` exit 0 | Build worked, IDE shows no red squiggle |
-| Bug fixed | Re-run the test that reproduces the bug — passes | Code changed and assumed fixed |
-| Regression test works | Red-green-revert-red cycle verified | Test passes once |
-| Subagent completed | VCS diff shows the changes you requested | Subagent self-reports "success" |
-| Requirements met | Line-by-line checklist against the plan | Tests pass alone |
-| User-visible feature works | `/running-uat` evidence: the running app driven and observed passing | A green suite alone — tests say nothing about the screen |
-
-## Default verification gate (use this when no CLAUDE.md rule applies)
-
-If the repo has its own gate (a CLAUDE.md "verification" section, a
-`make verify`, a `bun run check`, etc.) use that exact command. When
-unsure, the **default gate** is:
+Use the repo's own gate if it has one — a CLAUDE.md verification section,
+`make verify`, `bun run check`. Otherwise, in order, stopping at the first
+non-zero exit:
 
 ```bash
-# Numbered gate. Stop at the first non-zero exit.
-
-# 1. Type system
-bun run typecheck              # exit 0 = pass
-
-# 2. Test suite
-bun test                       # exit 0 = pass; expected pass count visible
-
-# 3. Lint / validator (catalog-specific for dstack)
-bun run validate --strict      # exit 0 = pass
-
-# 4. The change-specific check
-# e.g., for a refactor: run the test most directly touched
-# e.g., for a bug fix: re-run the regression test
-bun test path/to/changed.test.ts
-
-# 5. Touches a screen? Product-level evidence: open it, or /running-uat
+bun run typecheck                 # exit 0
+bun test                          # exit 0, pass count visible
+bun run validate --strict         # exit 0
+bun test path/to/changed.test.ts  # the check specific to THIS change
 ```
 
-For a refactor touching the auth module specifically, the
-change-specific check might be:
+A screen was touched? A green suite is not evidence it renders. Open it,
+or run `/running-uat`.
 
-```bash
-bun test test/integration/auth   # the suite that exercises the refactor
-git diff --stat src/auth          # confirm the refactor scope is what was claimed
-```
+These four steps are **not exhaustive** — they are the floor for a
+TypeScript/Bun repo. A change to infrastructure, data, or a published
+contract needs its own proving command, and naming it is the judgment
+above.
 
-State the exit code of each step in the claim:
-
-> "Verified: typecheck exit 0, bun test 92/92 pass, validate --strict
-> exit 0, integration/auth 14/14 pass. Auth refactor complete."
-
-### Honest-claim shape
+## Honest-claim shape
 
 | Wrong | Right |
 |---|---|
 | "Looks good, tests should pass." | "bun test: 92/92 pass, exit 0. Done." |
 | "I ran the tests." | "bun test path/to/file: 14/14 pass, exit 0. Done." |
 | "Everything works." | "typecheck 0, test 92/92, validate --strict 0. Done." |
-| "All set." | (run the gate; state the exit codes; then claim) |
+| "The subagent said it's fixed." | "Re-ran its command myself: 14/14, exit 0." |
+
+## Cross-references
+
+- `/test-driven-development` — decides what test the change owed in the
+  first place.
+- `/running-uat` — product-level evidence for anything with a screen.
+- `/finishing-development-branch` — runs this gate before integrating.
 
 ## Changes
 
+- **0.6.0** — Band `deterministic-dominant` → **`judgment-dominant`**, and the
+  body cut roughly in half. Evidence:
+  `docs/ablations/2026-08-verifying-before-done.md` — six real Sonnet 5 runs,
+  three tasks × railed/free, each with a real planted defect as the oracle.
+  **All six caught it; the "railed caught, free missed" column was empty in 3
+  of 3 tasks**, and on one task the free version went further. Per ADR-0030 §6
+  no rail was restored. Dropped: the iron-law block, the six-item trigger list,
+  the red-flag list, the defused-excuses section and the response templates —
+  none of it was doing work the goal plus exit criteria did not already do.
+  Kept and promoted: **the post-subagent check**, the one gap the harness
+  system prompt genuinely leaves open. Confound recorded in the ablation: that
+  harness already carries an evidence-before-claim rule, so neither instruction
+  text can be credited — which argues for less text, not more. Re-run at the
+  next major model release.
 - **0.5.1** — ADR-0030 list openness: both the trigger list and the red-flag list are open — they name common shapes, not the set.
 - **0.5.0** — Reciprocated `/test-driven-development` 0.6.0's product-evidence
   rule: a claim table row and a gate step for user-visible work — a green
@@ -153,124 +132,3 @@ State the exit code of each step in the claim:
   deliberative`). Driven by a v3 Track C benchmark case-1 loss on
   specificity + groundedness.
 - **0.1.0** — Initial port from v1 skill catalog.
-
-## Red flags — stop before claiming
-
-If you catch yourself about to do any of these:
-
-- Use "should", "probably", or "seems to" about the outcome.
-- Type "Great!", "Perfect!", "Done!" before running anything.
-- Commit, push, or open a PR without running verification.
-- Trust a subagent's success message without checking the diff.
-- Rely on partial verification (one file, only the exit code).
-- Think "just this once".
-- Feel tired and want the work to be over.
-
-Each of these means: stop. Run the command. Then claim. The list is a
-sample of the feeling, not a checklist to match against — any impulse to
-claim before evidence belongs here.
-
-## Common excuses, defused
-
-| Excuse | Reply |
-|---|---|
-| "Should work now." | Run the verification. |
-| "I am confident." | Confidence is not evidence. |
-| "Just this once." | No exceptions. |
-| "Linter passed." | The linter does not run the compiler or the tests. |
-| "The subagent said success." | Verify independently against the diff. |
-| "I am tired." | Exhaustion is not a reason to skip. |
-| "Partial check is enough." | Partial proves nothing about the rest. |
-| "Different words so the rule does not apply." | Spirit over letter. |
-
-## Key patterns
-
-**Tests.**
-
-```
-Run the test command. Read the output: "34 passed, 0 failed."
-Claim: "All tests pass — 34 passed, 0 failed (bun test)."
-
-Not: "Should pass now." Not: "Looks correct."
-```
-
-**Regression test (red-green-revert discipline — same as `/test-driven-development`).**
-
-```
-Write the test → run it → fails for the right reason.
-Apply the fix → run again → passes.
-Revert the fix → run again → MUST FAIL.
-Restore the fix → run again → passes.
-Only now: "Regression test verified."
-
-Not: "I wrote a regression test."
-```
-
-**Build.**
-
-```
-Run the full build. Read the exit code. "Build passes, exit 0."
-
-Not: "Linter passed." (The linter does not compile.)
-```
-
-**Requirements.**
-
-```
-Re-read the plan or task description.
-Make a line-by-line checklist against it.
-Tick each line only after observing the evidence.
-Report what is done, what is not, what is deferred.
-
-Not: "Tests pass, phase complete."
-```
-
-**Subagent delegation.**
-
-```
-The subagent reports success.
-Run `git diff` (or check the VCS state).
-Verify the changes match what was requested.
-Report the actual state to the user.
-
-Not: trust the subagent's self-report.
-```
-
-## Response templates
-
-**All claims verified:**
-
-```
-Done — ran <command> (exit 0). <Specific evidence: 34/34 tests
-passed, build artifact at X, diff at file:line>.
-```
-
-**Partial completion:**
-
-```
-Items 1, 2, 4 done — ran <command>, output confirms.
-Item 3 not done because <reason>. Item 5 deferred — see
-<follow-up>.
-```
-
-**Cannot verify in this environment:**
-
-```
-Cannot verify <claim> here because <reason>. The check that would
-verify it is <command>. Want me to run it, or accept the
-limitation?
-```
-
-## Cross-references
-
-- `/test-driven-development` — the green-verification step is the same gate. Re-run
-  the test, do not say "should pass now".
-- `/debugging` — Phase 4 step 3 ("verify the fix") is this gate.
-- `/responding-to-review` — when applying review fixes, each implemented
-  item is gated by running the test, not by "fixed".
-
-## Bottom line
-
-Run the command. Read the output. **Then** claim the result.
-
-Non-negotiable.
