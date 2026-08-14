@@ -50,7 +50,7 @@ batch, which stays one logical change per CLAUDE.md.
 | 7 sweep — special bands | done | 3 skills; ledger → **0** |
 | 8 gate | done | `bun test` **102/102**, typecheck clean, `validate` 0, `build --strict` **exit 0, zero warnings**, `doctor` **33/33 OK** |
 | 9 ablation procedure | done | `docs/procedures/skill-ablation.md` |
-| 10 ablate `verifying-before-done` | blocked | Stage 1 done (7 real invocations, ≥3 bar cleared). Stages 2–4 need 3 paired Sonnet 5 runs that cannot be produced from analysis. |
+| 10 ablate `verifying-before-done` | prepared | Stages 1–2 done in `docs/ablations/2026-08-verifying-before-done.md`: 3 real tasks selected from transcripts by claim shape (`19ad64f1`, `df54b54d`, `32e54100`), free version written, decision rule and honesty guard fixed. Stage 3 needs 6 real sessions and its tables are deliberately empty. |
 | 11 ablate subagent trio | partial | `dispatching-parallel-agents`: **complete** — 0 real invocations, procedure §1 terminates the run and that is the result. `subagent-driven-development` (4) and `multi-persona-review` (30) clear the bar but need paired runs. |
 | 12 re-justify the 13 bands | partial | Narrow-bridge test run: `docs/ablations/2026-08-narrow-bridge-test.md` — 4 pass, 2 contested, 7 fail. **No band moved**: ADR-0030 §5 charges an ablation per move and none has run. |
 
