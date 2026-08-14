@@ -76,11 +76,12 @@ Each ADR has six sections. Aim for under 80 lines per ADR.
 | [0016](0016-per-tier-token-budget.md) | Per-tier token budget (body ≤ 5000, bundled unlimited) | Accepted | Cheap |
 | [0017](0017-bundled-resources.md) | Bundled resources support (scripts/, references/, assets/) | Accepted | Moderate |
 | [0024](0024-catalog-breadth-over-yagni.md) | Catalog breadth over strict YAGNI for proven reference skills | Accepted | Cheap |
-| [0025](0025-hybrid-by-default-doctrine.md) | Hybrid by default: spine + judgment + calibration flag | Accepted | Cheap |
+| [0025](0025-hybrid-by-default-doctrine.md) | Hybrid by default: spine + judgment + calibration flag | Superseded by [0030](0030-sonnet5-calibrated-skill-shape.md) | Cheap |
 | [0026](0026-broaden-project-purpose.md) | Broaden project purpose: skills + non-skill content | Superseded by [0028](0028-renderer-only-scope.md) | Cheap |
 | [0027](0027-skill-naming-convention.md) | Skill names state the activity; no bare abbreviations or adjectives | Accepted | Cheap |
 | [0028](0028-renderer-only-scope.md) | Narrow scope back to renderer-only; remove non-skill content | Accepted | Moderate |
 | [0029](0029-portable-source-consumption.md) | One renderer, portable source consumption | Accepted | Cheap |
+| [0030](0030-sonnet5-calibrated-skill-shape.md) | Sonnet-5 calibrated skill shape; ablation replaces the ADR-0025 ratchet | Accepted | Cheap |
 
 *Numbers 0018–0023 are reserved for v3 milestones (see
 [v3 ROADMAP](../plans/v3/ROADMAP.md), M41–M48/M59) and are not yet

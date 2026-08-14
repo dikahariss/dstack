@@ -291,11 +291,12 @@ Read in number order if you want the full reasoning.
 | [0016](adr/0016-per-tier-token-budget.md) | Per-tier token budget (body ≤ 5000, bundled unlimited) | Accepted |
 | [0017](adr/0017-bundled-resources.md) | Bundled resources support (scripts/, references/, assets/) | Accepted |
 | [0024](adr/0024-catalog-breadth-over-yagni.md) | Catalog breadth over strict YAGNI for proven reference skills | Accepted |
-| [0025](adr/0025-hybrid-by-default-doctrine.md) | Hybrid by default: spine + judgment + calibration flag | Accepted |
+| [0025](adr/0025-hybrid-by-default-doctrine.md) | Hybrid by default: spine + judgment + calibration flag | Superseded by [0030](adr/0030-sonnet5-calibrated-skill-shape.md) |
 | [0026](adr/0026-broaden-project-purpose.md) | Broaden project purpose: skills + non-skill content | Superseded by [0028](adr/0028-renderer-only-scope.md) |
 | [0027](adr/0027-skill-naming-convention.md) | Skill names state the activity; no bare abbreviations or adjectives | Accepted |
 | [0028](adr/0028-renderer-only-scope.md) | Narrow scope back to renderer-only; remove non-skill content | Accepted |
 | [0029](adr/0029-portable-source-consumption.md) | One renderer, portable source consumption | Accepted |
+| [0030](adr/0030-sonnet5-calibrated-skill-shape.md) | Sonnet-5 calibrated skill shape; ablation replaces the ADR-0025 ratchet | Accepted |
 
 "Accepted" means the decision is in force. If we change our minds, we
 write a new ADR that supersedes the old one. We do not edit accepted

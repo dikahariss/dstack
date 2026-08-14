@@ -110,7 +110,8 @@ concrete adapters happens there and nowhere else.
 | Typed errors only — no `throw new Error("...")` in domain | `throw new SkillSpecError(id, field, problem, source?)` |
 | Prefer `readonly` and `const` everywhere | All domain types are immutable |
 | No comments unless WHY is non-obvious | If you must explain WHAT, rename the identifier |
-| Skills are hybrid by default | Body: deterministic spine + a named judgment surface. Pick a calibration band (default `workflow` ~30%). Set `metadata.dstack.calibration` if not `workflow`. See ADR-0025 + playbook §1.15. |
+| Skills are hybrid by default | Body: deterministic spine + a named judgment surface. Pick a calibration band (default `workflow` ~30%). Set `metadata.dstack.calibration` if not `workflow`. Moving off `workflow` in **either** direction costs one ablation run + owner approval. See ADR-0025 (bands) + ADR-0030 (governance) + playbook §1.15. |
+| Every list of 3+ declares itself | Say "not exhaustive" where the list is a starting point, or "closed by design" with the reason where the list is the deliverable. Sonnet 5 reads a closed list as a ceiling. Enforced by the `closed-enumeration` build warning. See ADR-0030. |
 | Strict TS settings are on | `noUncheckedIndexedAccess`, `exactOptionalPropertyTypes`. Respect them; don't disable. |
 | Path aliases for non-sibling imports | `import { Skill } from '@domain/skill/Skill'` (NOT `'../../domain/skill/Skill'`). Aliases: `@domain/*`, `@app/*`, `@adapters/*`, `@obs/*`. Sibling (`./X`) stays relative. See [ADR-0011](docs/adr/0011-import-path-aliases.md). |
 

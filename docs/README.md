@@ -68,11 +68,12 @@ the context, the decision, the trade-offs, and the reversibility.
 | [0016](adr/0016-per-tier-token-budget.md) | Per-tier token budgets |
 | [0017](adr/0017-bundled-resources.md) | Bundled resource support |
 | [0024](adr/0024-catalog-breadth-over-yagni.md) | Catalog breadth for proven reference skills |
-| [0025](adr/0025-hybrid-by-default-doctrine.md) | Hybrid-by-default doctrine |
+| [0025](adr/0025-hybrid-by-default-doctrine.md) | Hybrid-by-default doctrine, governance superseded by 0030 |
 | [0026](adr/0026-broaden-project-purpose.md) | Broadened project purpose, later superseded by 0028 |
 | [0027](adr/0027-skill-naming-convention.md) | Activity-based skill naming |
 | [0028](adr/0028-renderer-only-scope.md) | Renderer-only scope |
 | [0029](adr/0029-portable-source-consumption.md) | One renderer, portable source consumption |
+| [0030](adr/0030-sonnet5-calibrated-skill-shape.md) | Sonnet-5 calibrated skill shape; ablation replaces the 0025 ratchet |
 
 See [adr/README.md](adr/README.md) for ADR format, status definitions,
 and how to add a new ADR.

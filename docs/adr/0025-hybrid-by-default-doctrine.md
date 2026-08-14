@@ -1,8 +1,18 @@
 # ADR-0025 — Hybrid by default: deterministic spine + named judgment, with a calibration flag
 
-- **Status:** Accepted
+- **Status:** Superseded by [ADR-0030](0030-sonnet5-calibrated-skill-shape.md)
 - **Date:** 2026-06-04
 - **Reversibility:** Cheap.
+
+> **Superseded in part (2026-08-14).** The four calibration bands below are
+> carried forward by [ADR-0030](0030-sonnet5-calibrated-skill-shape.md)
+> unchanged, and every `metadata.dstack.calibration` value keeps its meaning.
+> What ADR-0030 replaces is the **governance clause** — the asymmetry where
+> rails cost a written rationale and freedom costs empirical evidence. That
+> asymmetry proved to be a one-way ratchet: by 2026-08-14 the catalog held 13
+> `deterministic-dominant` skills against 1 `judgment-dominant`, with no
+> procedure that had ever removed a rail. ADR-0030 charges both directions the
+> same evidence and defines an ablation protocol to produce it.
 
 ## Context
 

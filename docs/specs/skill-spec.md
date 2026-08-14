@@ -101,12 +101,12 @@ metadata:
       # How autonomously the skill acts. Defaults to `reactive`.
 
     calibration: deterministic-dominant | workflow | judgment-dominant | schema-meta
-      # Freedom-calibration band (ADR-0025). Defaults to `workflow`.
-      # Independent of `type`. Rendered into output frontmatter so the
-      # consuming model sees the band — except for `type: deterministic`,
-      # where the type already conveys the ~100% end and the band is
-      # omitted. Moving off `workflow` is owner-decided; see ADR-0025
-      # Governance.
+      # Freedom-calibration band (ADR-0025 bands, ADR-0030 governance).
+      # Defaults to `workflow`. Independent of `type`. Rendered into output
+      # frontmatter so the consuming model sees the band — except for
+      # `type: deterministic`, where the type already conveys the ~100% end
+      # and the band is omitted. Moving off `workflow` in EITHER direction
+      # costs one ablation run plus owner approval; see ADR-0030 §5-6.
 
     triggers: [string]
       # Natural-language phrases the host may use for routing.
@@ -295,6 +295,7 @@ dstack uses semantic versioning:
 - [ADR-0013](../adr/0013-single-file-skill-md.md) — single-file source format.
 - [ADR-0014](../adr/0014-metadata-namespace.md) — `metadata.dstack.*` namespace.
 - [ADR-0015](../adr/0015-type-taxonomy-adoption.md) — type / side_effects / agency.
-- [ADR-0025](../adr/0025-hybrid-by-default-doctrine.md) — the `calibration` axis.
+- [ADR-0025](../adr/0025-hybrid-by-default-doctrine.md) — the `calibration` axis (bands).
+- [ADR-0030](../adr/0030-sonnet5-calibrated-skill-shape.md) — Sonnet-5 skill shape; replaces ADR-0025's governance.
 - [ADR-0016](../adr/0016-per-tier-token-budget.md) — body-only token budget.
 - [ADR-0017](../adr/0017-bundled-resources.md) — bundled-resource contract.

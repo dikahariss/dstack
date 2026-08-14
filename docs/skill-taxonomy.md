@@ -115,7 +115,8 @@ LLM produces the structured data directly.
 ### Computation type is not the calibration doctrine
 
 The four types answer *how work runs* (code vs LLM). They are distinct
-from the **calibration** axis ([ADR-0025](adr/0025-hybrid-by-default-doctrine.md)):
+from the **calibration** axis ([ADR-0025](adr/0025-hybrid-by-default-doctrine.md)
+bands, [ADR-0030](adr/0030-sonnet5-calibrated-skill-shape.md) governance):
 how much freedom the prompt gives the agent (judgment-dominant → workflow
 → deterministic-dominant → schema-meta). A `type: semantic` skill normally
 still has a deterministic spine. Do not set `type: hybrid` to satisfy the
