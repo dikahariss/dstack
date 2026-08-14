@@ -24,4 +24,5 @@ export type WarningKind =
   | 'token-near-budget'
   | 'comprehensive-skill'
   | 'type-structure-mismatch'
-  | 'missing-spine';
+  | 'missing-spine'
+  | 'closed-enumeration';

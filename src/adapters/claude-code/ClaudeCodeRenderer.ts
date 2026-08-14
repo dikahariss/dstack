@@ -5,6 +5,7 @@ import { RenderResult, Warning } from '@domain/render/RenderResult';
 import { SkillSpec } from '@domain/skill/SkillSpec';
 import {
   COMPREHENSIVE_MODULE_THRESHOLD,
+  ENUMERATION_MIN_ITEMS,
 } from '@domain/skill/SkillSpec';
 import { approximateTokenCount } from './tokens';
 
@@ -87,6 +88,16 @@ export class ClaudeCodeRenderer implements HostRenderer {
       });
     }
 
+    if (enumerates(skill.prompt) && !OPENNESS_MARKER.test(skill.prompt)) {
+      warnings.push({
+        kind: 'closed-enumeration',
+        message:
+          `${skill.spec.id.value}: body enumerates without saying whether the list is closed. ` +
+          `Sonnet 5 does not generalize past a written list (ADR-0030). Say "not exhaustive" ` +
+          `where the list is a starting point, or "closed by design" where the list is the deliverable.`,
+      });
+    }
+
     return {
       path: `${skill.spec.id.value}/SKILL.md`,
       content,
@@ -152,6 +163,20 @@ function quoteScalar(value: string): string {
 /** ADR-0025: a body has a deterministic spine if it has an ordered list, a table, or a checklist. */
 function hasDeterministicSpine(body: string): boolean {
   return /^\s*\d+\.\s/m.test(body) || /^\s*\|.*\|/m.test(body) || /- \[ \]/.test(body);
+}
+
+/**
+ * `\s+` rather than a literal space: Markdown prose wraps, so a marker
+ * routinely straddles a line break (`**not\nexhaustive**`). Matching only a
+ * literal space silently re-flags a skill that did declare itself.
+ */
+const OPENNESS_MARKER =
+  /not\s+exhaustive|non-exhaustive|extend\s+this\s+list|beyond\s+this\s+list|others\s+may\s+apply|closed\s+by\s+design/i;
+
+function enumerates(body: string): boolean {
+  const bullets = (body.match(/^\s*[-*]\s+\S/gm) ?? []).length;
+  const ordered = (body.match(/^\s*\d+\.\s+\S/gm) ?? []).length;
+  return bullets >= ENUMERATION_MIN_ITEMS || ordered >= ENUMERATION_MIN_ITEMS;
 }
 
 /**

@@ -64,6 +64,13 @@ export const DETERMINISTIC_BODY_TOKEN_THRESHOLD = 500;
 /** Module-folder count above which the validator emits `comprehensive-skill`. SkillsBench. */
 export const COMPREHENSIVE_MODULE_THRESHOLD = 4;
 
+/**
+ * Below this many list items a body is making a point, not enumerating a
+ * space the model could extend. Three is where a list starts reading as
+ * "the set" rather than "an example" (ADR-0030).
+ */
+export const ENUMERATION_MIN_ITEMS = 3;
+
 export class SkillSpec implements SkillSpecData {
   readonly id: SkillId;
   readonly version: string;

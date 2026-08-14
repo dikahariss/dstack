@@ -70,4 +70,31 @@ describe('warning fixtures', () => {
     expect(aOverlap[0]!.message).toContain('overlap-b');
     expect(bOverlap[0]!.message).toContain('overlap-a');
   });
+
+  test('closed-enumeration: emitted when a body enumerates with no openness marker', async () => {
+    const results = await new BuildCatalog(bucket('warnings-closed-enum'), new ClaudeCodeRenderer(), new NoopTelemetry())
+      .execute({ host: HOST, now: new Date(0) });
+    expect(results.length).toBe(1);
+    const kinds = results[0]!.rendered.warnings.map((w) => w.kind);
+    expect(kinds).toContain('closed-enumeration');
+  });
+
+  test('closed-enumeration: suppressed when the body declares the list open', async () => {
+    const results = await new BuildCatalog(bucket('warnings-open-enum'), new ClaudeCodeRenderer(), new NoopTelemetry())
+      .execute({ host: HOST, now: new Date(0) });
+    expect(results.length).toBe(1);
+    const kinds = results[0]!.rendered.warnings.map((w) => w.kind);
+    expect(kinds).not.toContain('closed-enumeration');
+  });
+
+  // Regression: the marker regex first used a literal space, so a marker that
+  // wrapped across a line break ("**not\nexhaustive**") re-flagged a skill that
+  // had declared itself. Caught on multi-persona-review during the ADR-0030 sweep.
+  test('closed-enumeration: suppressed when the openness marker wraps a line break', async () => {
+    const results = await new BuildCatalog(bucket('warnings-wrapped-marker'), new ClaudeCodeRenderer(), new NoopTelemetry())
+      .execute({ host: HOST, now: new Date(0) });
+    expect(results.length).toBe(1);
+    const kinds = results[0]!.rendered.warnings.map((w) => w.kind);
+    expect(kinds).not.toContain('closed-enumeration');
+  });
 });
