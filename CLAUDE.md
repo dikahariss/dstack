@@ -25,6 +25,7 @@ follow them literally.
 | [docs/plans/v1/DEFERRED.md](docs/plans/v1/DEFERRED.md) | What is deliberately NOT being built and why. | When tempted to add something big. |
 | [docs/adr/](docs/adr/) | Why each design choice was made. Read the relevant one before changing it. | When changing architecture. |
 | [docs/specs/](docs/specs/) | Contracts for the render pipeline, skill schema, installer, host. | When implementing or modifying these. |
+| [docs/procedures/claude-web-skill-sync.md](docs/procedures/claude-web-skill-sync.md) | How a changed skill reaches the claude.ai web account, and the collision rule that makes batching wrong for updates. | When a skill changed and a build or install is requested. |
 
 ## Commands
 
@@ -43,6 +44,35 @@ bun test                     # all tests, ~500 ms
 
 The CLI entry point is `src/adapters/cli/main.ts`. All wiring of
 concrete adapters happens there and nowhere else.
+
+### A build is not finished at `bun run build`
+
+`bun run build` renders to `./.claude/skills/` in this repo. That is one
+install target out of four, and a rendered file is not an installed skill.
+When skills changed and the user asks for a build, sync every target they
+use — do not stop at the render and call it done:
+
+| Target | How |
+|---|---|
+| This repo (`./.claude/skills/`) | `bun run build` |
+| Claude config dirs (`~/.claude`, `~/.claude-zai`, `~/.claude-helium`, `~/.claude-kimi`) | README § *Installing skills into Claude config dirs* |
+| Codex / Gemini CLI | README §§ *Installing skills into Codex* / *Gemini CLI* |
+| **claude.ai (web)** | [docs/procedures/claude-web-skill-sync.md](docs/procedures/claude-web-skill-sync.md) |
+
+The first three are directories on a machine, so a copy loop reaches them.
+claude.ai is not: it holds an uploaded **copy** and never re-reads this repo,
+so a skill changed here is stale on the web until someone uploads it. Sync it
+by default rather than asking — it needs a browser, not a decision.
+
+Two rules keep that sync honest:
+
+- **Batching is for new skills only.** Uploading a name that already exists
+  raises a per-file confirmation and drops the remaining files in the batch.
+  Updates go one skill per upload.
+- **Report what was actually synced.** If the browser session or the login is
+  unavailable, say so and name the skills still pending. A build reported as
+  done while claude.ai is stale is a false claim, and the web account gives no
+  way to notice it later.
 
 ## Critical rules — do NOT violate
 

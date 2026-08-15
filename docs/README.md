@@ -78,6 +78,16 @@ the context, the decision, the trade-offs, and the reversibility.
 See [adr/README.md](adr/README.md) for ADR format, status definitions,
 and how to add a new ADR.
 
+### `procedures/` — Repeatable operations
+
+Step-by-step operations that produce evidence, or that change state outside
+this repo. Read one when you are about to perform it, not before.
+
+| Procedure | Scope |
+|---|---|
+| [procedures/skill-ablation.md](procedures/skill-ablation.md) | The evidence run a skill must pass before it changes calibration band, in either direction. Required by [ADR-0030](adr/0030-sonnet5-calibrated-skill-shape.md). |
+| [procedures/claude-web-skill-sync.md](procedures/claude-web-skill-sync.md) | Getting a changed skill into the claude.ai web account — the one install target that holds a copy this repo cannot reach. |
+
 ## How specs, ADRs, and taxonomy relate
 
 These document types serve different purposes and link to each other.

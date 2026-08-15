@@ -329,6 +329,35 @@ for DIR in ~/.claude ~/.claude-zai ~/.claude-helium ~/.claude-kimi; do rm -rf "$
 > manual copy above targets the flat `~/.claude/skills/<id>/` layout and the
 > alternate config dirs, which `--global` does not reach.
 
+### Installing skills into Claude.ai (web)
+
+Every target above is a directory this repo can write to. Claude.ai is not: an
+uploaded skill is a **copy**, and nothing on claude.ai re-reads this repository.
+A skill changed here reaches the web account only when someone uploads it.
+
+Package one zip per rendered skill, then upload through **sidebar → Customize →
+Skills**:
+
+```bash
+bun run build                                    # render to ./.claude/skills/
+
+OUT=/tmp/dstack-skill-zips
+rm -rf "$OUT" && mkdir -p "$OUT"
+cd .claude/skills
+for d in */; do zip -qr "$OUT/${d%/}.zip" "${d%/}"; done
+```
+
+The one rule worth knowing before you start: **`Add → Upload a skill` batches
+new skills, but stops at the first name that already exists** and drops the
+rest of the batch. Updates therefore go one skill at a time, either by
+confirming *Upload and replace* or through the skill's **⋮ → Replace**. Both
+replace in place; neither duplicates.
+
+Full procedure — packaging, choosing what changed, the collision rules, how to
+verify a bundled skill actually arrived whole, and the native-file-picker trap
+that freezes an automated browser session — is in
+[`docs/procedures/claude-web-skill-sync.md`](docs/procedures/claude-web-skill-sync.md).
+
 ## Configuration (optional)
 
 dstack runs with defaults and needs no configuration. The only opt-in
