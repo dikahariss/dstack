@@ -61,6 +61,39 @@ Agent tool (general-purpose):
     - In existing codebases, follow established patterns. Improve code you're touching
       the way a good developer would, but don't restructure things outside your task.
 
+    ## Comments
+
+    Comment density is inherited from the file you are editing, never introduced.
+    Read the file first: if the surrounding code carries no comments, your diff
+    carries none. If every export there has a doc block, match that — the codebase
+    decides, not you.
+
+    A comment earns its place only where it records a **why** the code cannot show:
+    a non-obvious constraint, a workaround with a ticket or spec reference, an
+    invariant enforced elsewhere, a deliberate deviation from the obvious
+    implementation. One or two lines, about the code — never about you, the task,
+    or the change.
+
+    Everything below is deleted on sight, inside a function body above all. The
+    shapes are the recurring ones, **not exhaustive** — any line whose removal
+    loses no information belongs here:
+
+    | Shape | Example | Write instead |
+    |---|---|---|
+    | Narrates the next line | `// Loop through the users` | Nothing. The line already says it. |
+    | Step banner in a body | `// 1. Validate` … `// 2. Transform` | Named functions, or nothing. |
+    | Addressed to the reviewer | `// Added error handling as requested`, `// NEW`, `// Fixed the null case` | Nothing. That is the commit message. |
+    | Restates the signature | `/** Gets the user by id. @param id the id */` | Nothing, unless the codebase documents every export. |
+    | Teaches the language | `// async/await keeps this readable` | Nothing. |
+    | Commented-out code | the previous implementation kept "just in case" | Delete it. Git has it. |
+    | TODO with no owner or date | `// TODO: handle this properly later` | Fix it now, or file it with an owner. |
+
+    Reach for a rename before a comment. A block that needs a comment to be
+    followed wants to be a named function instead.
+
+    Narration is the clearest tell of machine-written code and it costs the author
+    credibility with every reader of the diff.
+
     ## When You're in Over Your Head
 
     It is always OK to stop and say "this is too hard for me." Bad work is worse than
@@ -91,6 +124,7 @@ Agent tool (general-purpose):
     - Is this my best work?
     - Are names clear and accurate (match what things do, not how they work)?
     - Is the code clean and maintainable?
+    - Did I introduce a comment that narrates the code rather than recording a why?
 
     **Discipline:**
     - Did I avoid overbuilding (YAGNI)?

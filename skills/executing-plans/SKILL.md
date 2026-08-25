@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Edit Write Bash
 metadata:
   dstack:
-    version: 0.3.2
+    version: 0.4.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -89,6 +89,16 @@ The write-back is not bookkeeping — it is the only thing that survives this
 session. A task finished but not written back is a task the next session
 re-derives from scratch.
 
+**The code carries no narration.** Comment density is inherited from the file
+you are editing, not introduced: if the surrounding code has none, the diff has
+none. A comment earns its place only where it records a *why* the code cannot
+show — a constraint, a workaround with a reference, an invariant held
+elsewhere. Never one inside a function body to narrate the next line, banner
+the steps, restate the signature, or address the reviewer (`// Added as
+requested`, `// NEW`). Rename before commenting; a block that needs a comment
+to be followed wants to be a named function. Leave no commented-out code and no
+unowned TODO.
+
 **When the plan turns out to be wrong**, append a line to `Deviations from plan`
 saying what changed and why, and carry on. Do not silently rewrite the task text
 to match what you built — that hides the change from review. If the deviation is
@@ -140,25 +150,23 @@ and retries the thing that already failed.
 
 ## Changes
 
-- **0.3.2** — ADR-0030 catalog review (economy, consistency); panel-verified, see the 2026-08-14 review workflow.
-- **0.3.1** — ADR-0030 list openness: the stop-and-ask list is open — anything that would make you guess at the plan belongs there.
-- **0.3.0** — Made this the **resume** skill it always claimed to be. It was
-  described as the separate-session executor but had no way to find where the
-  work stopped: Step 1 read the plan and created a session-local todo per task,
-  which dies at `/clear`. New Step 1 resumes from the `## Status` block
+- **0.4.0** — Put the comment-discipline rule in Step 3, the step where this
+  skill writes production code itself rather than delegating it. The owner
+  reported generated code arriving padded with comments that narrate it, which
+  reads as machine-written and costs credibility at senior level.
+- **0.3.1–0.3.2** — ADR-0030 catalog review (economy, consistency), and the
+  stop-and-ask list declared open — anything that would make you guess at the
+  plan belongs there.
+- **0.3.0** — Made this the **resume** skill it always claimed to be. It had no
+  way to find where the work stopped: Step 1 built a session-local todo per
+  task, which dies at `/clear`. It now resumes from the `## Status` block
   (`/writing-plans` 0.7.0), verifies its commit evidence against `git log`, and
-  forbids re-deriving from the codebase what the block already states. Task
-  completion now writes the status back **in the same commit as the code**,
-  deviations are appended rather than silently folded into the task text, and a
-  blocker is recorded in the row before stopping. Driven by mining 180 sessions:
-  the median session spent 25 tool calls before its first edit (p90 47, max 91),
-  62% of session-start shell work was `cat`/`ls`/`grep` re-orientation, and the
-  user was manually asking for hand-off prompts because nothing durable carried
-  the state.
-- **0.2.0** — Named the judgment (the Step 2 plan review) and made
-  `/verifying-before-done` an explicit, mandatory completion gate. Hardening
-  (v3 plan): added When to use / When NOT to use; replaced TodoWrite with
-  host-accurate phrasing; added the `/verifying-before-done` cross-reference;
-  normalised headings to dstack voice.
-- **0.1.0** — Initial. The subagent note points at the Claude Code `Agent`
-  tool and `/subagent-driven-development` for same-session execution.
+  forbids re-deriving from the codebase what the block already states; task
+  completion writes the status back **in the same commit as the code**. Driven
+  by mining 180 sessions: the median spent 25 tool calls before its first edit
+  (p90 47), 62% of session-start shell work was `cat`/`ls`/`grep`
+  re-orientation, and the user was manually asking for hand-off prompts because
+  nothing durable carried the state.
+- **0.1.0–0.2.0** — Initial, pointing at `/subagent-driven-development` for
+  same-session execution; then named the judgment (the Step 2 plan review) and
+  made `/verifying-before-done` an explicit, mandatory completion gate.

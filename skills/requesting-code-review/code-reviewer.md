@@ -43,6 +43,7 @@ Task tool (general-purpose):
     - Type safety where applicable?
     - DRY without premature abstraction?
     - Edge cases handled?
+    - Comments introduced by this diff record a why, not narration?
 
     **Architecture:**
     - Sound design decisions?
@@ -112,9 +113,11 @@ Task tool (general-purpose):
     - Explain WHY each issue matters
     - Acknowledge strengths
     - Give a clear verdict
+    - Flag comments this diff introduced that narrate rather than record a why (Minor)
 
     **DON'T:**
     - Say "looks good" without checking
+    - Ask for explanatory comments — say what to rename, split, or test instead
     - Mark nitpicks as Critical
     - Give feedback on code you didn't actually read
     - Be vague ("improve error handling")

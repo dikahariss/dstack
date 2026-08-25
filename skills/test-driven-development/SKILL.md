@@ -13,7 +13,7 @@ description: |
 allowed-tools: Read Write Edit Bash
 metadata:
   dstack:
-    version: 0.7.2
+    version: 0.8.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -159,6 +159,17 @@ code?
    extract helpers. Keep tests green. Do not add behavior.
 6. **Next.** Pick the next failing test. Repeat.
 
+**Minimal includes the comments.** Code that passes the test carries nothing
+added to it, narration included. Comment density is inherited from the file you
+edit, never introduced: surrounding code with none means a diff with none. A
+comment earns its place only where it records a *why* the code cannot show — a
+constraint, a workaround with a reference, an invariant held elsewhere, among
+others. Never one that narrates the next line, banners the steps, restates the
+signature, or addresses the reviewer (`// NEW`), nor any other line whose
+removal loses no information. Rename before commenting; a block needing a
+comment to be followed wants to be a named function. REFACTOR leaves no
+commented-out code and no unowned TODO.
+
 ## What a good test looks like
 
 - **Minimal** — one behavior per test. If the test name needs the
@@ -243,6 +254,8 @@ Every change, whichever path it took:
 - [ ] All four classes walked: happy path, edge/boundary, invalid/error,
       and at least one **chaos** case (dependency failure, timeout,
       duplicate or concurrent call) — or a stated reason none applies.
+- [ ] The diff introduces no comment that narrates code, banners steps, or
+      addresses the reviewer; no commented-out code; no unowned TODO.
 - [ ] All tests pass, and the runner output is pristine — no warnings,
       no unrelated errors.
 - [ ] **Evidence of the product working** — feature/flow → `/running-uat`;
@@ -291,47 +304,32 @@ Either way → the product was shown working, not just the suite
 
 ## Changes
 
-- **0.7.2** — ADR-0030 sweep + panel review (2026-08-14): six risk tiers
-  closed by design — a contract other skills name tasks by; economy pass.
-- **0.7.0** — English-only pass (`using-dstack` 0.7.0). Trigger is now `does
-  this need tdd`; 0.6.0's quotations are English reported speech.
+- **0.8.0** — Comment discipline attached to the cycle and to the final
+  checklist. The owner reported generated code arriving padded with comments
+  that narrate it; narration reads as machine-written and costs credibility
+  with every reader of the diff. GREEN already said minimal code; nobody read
+  that as covering narration.
+- **0.7.0–0.7.2** — English-only pass; the trigger became `does this need tdd`.
+  ADR-0030 sweep + panel review (2026-08-14): the six risk tiers are closed by
+  design — a contract other skills name tasks by.
 - **0.6.0** — **The cycle is no longer the default for every change.** Owner's
   transcripts across three CLI installs made this the catalog's most expensive
-  skill — median 90 min to the next human turn, p90 460 min (n=6; the metric
-  includes user idle time, an upper bound) — while
-  `designing-test-cases` cost 27 min; the owner reported it slow, off-target,
-  and still needing heavy manual testing. The research splits the same way:
-  agent-written tests barely move task resolution (74.4% vs 71.8%; suppressing
-  them cuts input tokens 33–49% for 1.8–2.6 pt —
-  [2602.07900](https://arxiv.org/html/2602.07900v2)), yet tests generated
-  after faulty code catch 14% of faults vs 25% for independent derivation
-  ([2607.05139](https://arxiv.org/pdf/2607.05139)). The derivation carries the
-  value, not the ceremony. Added six mandatory risk tiers, a
-  freeze-list-then-implement path outside them, a named-tier decision, and the
-  "green tests are not a working product" gate — the archetypal correction being
-  78 green server tests answered with the owner still seeing no result. Scoped
-  the drill, excuse table, red flags and checklist per path; moved the runner
-  table and worked example to `references/`.
+  skill — median 90 min to the next human turn, p90 460 min (n=6, an upper
+  bound: the metric includes user idle time) — against 27 min for
+  `designing-test-cases`, and the owner still reported heavy manual testing
+  afterwards. The research splits the same way; both papers are cited in the
+  body above. The derivation carries the value, not the ceremony. Hence the six
+  risk tiers, the freeze-list-then-implement path outside them, the named-tier
+  decision, and the "green tests are not a working product" gate — the
+  archetypal correction being 78 green server tests answered with the owner
+  still seeing no result.
 - **0.5.0** — Reciprocated the `designing-test-cases` boundary: a case set is
   consumed one row at a time, because a batch of simultaneous red tests defeats
   the watched-failing step this skill exists to protect.
-- **0.4.0** — Added **"Cover more than the happy path"**: the four test classes
-  (happy / edge / invalid / **chaos-failure-injection**) with the bias rule —
-  derive cases from the contract, not from the implementation you just wrote —
-  and a "could this pass against a wrong implementation?" gate. Added a
-  stack-agnostic run-command table (Bun, npm, Angular, .NET, Python, Go, Rust,
-  PHP) after finding the skill named only TypeScript tooling while the owner's
-  repos are majority .NET, Node, and Python. Moved `## Changes` to the end of
-  the body — it had been sitting mid-document, splitting "What a good test
-  looks like" from its own Good/Bad examples.
-
-- **0.3.0** — Renamed `tdd` → `test-driven-development`: the abbreviation
-  was opaque to newcomers and broke the catalog's gerund/descriptive naming
-  convention. The `tdd` trigger keyword is kept, so "do TDD" still routes
-  here.
-- **0.2.0** — Added the numbered habit-fix drill for "I write tests
-  after the code" plus the honest-test diagnostic table. Added v2
-  schema fields (`type: semantic`, `side_effects: local`, `agency:
-  deliberative`). Driven by a v3 Track C benchmark case-2 loss on
-  specificity + procedure.
-- **0.1.0** — Initial port from v1 skill catalog.
+- **0.4.0** — Added the four test classes (happy / edge / invalid / **chaos**)
+  with the derive-from-the-contract bias rule, and a stack-agnostic runner
+  table: the skill had named only TypeScript tooling while the owner's repos
+  are majority .NET, Node, and Python.
+- **0.1.0–0.3.0** — Initial port from the v1 catalog; the habit-fix drill and
+  the honest-test diagnostic; renamed `tdd` → `test-driven-development`
+  (ADR-0027), with `tdd` kept as a trigger so "do TDD" still routes here.

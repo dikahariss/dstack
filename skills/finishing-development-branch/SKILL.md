@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.3.2
+    version: 0.4.0
     type: semantic
     side_effects: external
     agency: deliberative
@@ -57,6 +57,17 @@ Stop. Don't proceed to Step 2.
 **If tests pass:** for user-visible work, also require the `/running-uat`
 PASS evidence (run log or artifact paths) before offering options — a green
 suite alone does not qualify the branch. Then continue to Step 2.
+
+**Before offering any option, read the branch diff:**
+
+```bash
+git diff <base-branch>...HEAD
+```
+
+The branch is not offered for merge while that diff carries commented-out code,
+leftover debug logging, or a comment it introduced that narrates the code or
+addresses the reviewer instead of recording a *why* the code cannot show — the
+recurring shapes, **not exhaustive**. Clean them first, then offer options.
 
 ### Step 2: Detect environment
 
@@ -292,6 +303,10 @@ irreversibly loses work or breaks a workspace still qualifies.
 
 ## Changes
 
+- **0.4.0** — Step 1 gains a second gate: read the branch diff before offering
+  any option. The owner reported generated code arriving padded with comments
+  that narrate it, which reads as machine-written and costs credibility at
+  senior level; the last gate before merge is where that has to stop.
 - **0.3.2** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
 - **0.3.1** — ADR-0030 list openness: the common-mistakes list is open; the four end-of-branch options are closed by design.
 - **0.3.0** — Managed-worktree cleanup is scoped to `.worktrees/`, `worktrees/`,

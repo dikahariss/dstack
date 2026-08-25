@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.19.2
+    version: 0.20.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -121,6 +121,16 @@ an API with no screen), the first executable task must produce a screen the
 user can open and click — stubbed data is fine. `/writing-plans` enforces the
 ordering; a plan whose first task produces nothing visible gets rejected there.
 
+**The code carries no narration.** Comment density is inherited from the file
+you are editing, not introduced: if the surrounding code has none, the diff has
+none. A comment earns its place only where it records a *why* the code cannot
+show — a constraint, a workaround with a reference, an invariant held
+elsewhere. Never one inside a function body to narrate the next line, banner the
+steps, restate the signature, or address the reviewer (`// Added as requested`,
+`// NEW`) — the recurring shapes, not exhaustive. Rename before commenting; a
+block that needs a comment to be followed wants to be a named function. Leave no
+commented-out code and no unowned TODO.
+
 **Common chains** (samples, not exhaustive):
 - Feature: `/discovering-requirements` (problem not yet written; `/brainstorm`
   alongside it if the idea itself is in doubt) → `/prioritizing-work` (several
@@ -196,8 +206,14 @@ The skill itself tells you which.
 
 ## Changes
 
-- **0.19.2** — ADR-0030 catalog review (list openness, economy); panel-verified, see the 2026-08-14 review workflow.
-- **0.19.1** — ADR-0030 list openness: the router table is open by construction — the catalog grows, and a situation with no row is a routing gap, never a licence to skip the check.
+- **0.20.0** — Added the comment-discipline rule as a third cross-cutting
+  paragraph: the owner reported generated code arriving padded with narration,
+  which reads as machine-written and costs credibility at senior level. It sits
+  in the always-on router because no implementation skill fires in every session.
+- **0.19.1–0.19.2** — ADR-0030 catalog review (list openness, economy),
+  panel-verified. The router table is open by construction: the catalog grows,
+  and a situation with no row is a routing gap, never a licence to skip the
+  check.
 - **0.19.0** — Registered `multi-persona-review` 0.5.0's product-review
   expansion. The router row now says what the skill actually covers — one
   artifact **or one product-review packet**, across user, operational and expert
@@ -223,12 +239,11 @@ The skill itself tells you which.
   actually type is "do all of it", never "which comes first" — so the
   do-everything paragraph keys on the **omission** of an order rather than on
   the word "prioritize", and states the under-five-items exception.
-- **0.15.0** — English-only sweep of `references/skill-catalog.md`; 0.14.0's
-  quoted complaint became English reported speech. Enforces 0.7.0 below.
-  Preserved as data: the document types `pdf-to-rag` matches (Permenhub,
-  Inpres, Juknis, UU) and the names Neliti and perpusnas e-resources.
-  `context_budget_tokens` re-targeted 3000 → 4000: the router grew a
-  frontend-first rule and longer chains, and 3000 no longer described it.
+- **0.15.0** — English-only sweep of `references/skill-catalog.md`, enforcing
+  0.7.0 below; the document types `pdf-to-rag` matches (Permenhub, Inpres,
+  Juknis, UU) and the names Neliti and perpusnas e-resources are preserved as
+  data. Budget 3000 → 4000: the router had grown a frontend-first rule and
+  longer chains.
 - **0.14.0** — Stopped routing every behavior change into the full red-green
   cycle, and put the visible slice first. Transcript mining across three CLI
   installs measured `/test-driven-development` as the catalog's most expensive
@@ -236,21 +251,14 @@ The skill itself tells you which.
   still had to test manually afterwards; separately, 12+ pushback turns are
   about the visible product arriving late or wrong — the archetype being a
   report of 78 green server tests answered by the owner saying he still could
-  not see any result. The TDD row now says the skill decides the tier and the cycle is not the
-  default; the bug chain says a fix is always inside a tier; the feature chain
-  routes through `/running-uat` before `/verifying-before-done`; and a
-  frontend-first rule sits above the chains, scoped to product/app/SaaS work
-  and exempting genuinely backend-only work. "Rigid" now names the gate that is
-  non-negotiable rather than implying the whole cycle always runs.
-- **0.13.0** — Registered `modelling-business-processes` (a business process as
-  a real `.bpmn`) and `modelling-system-behaviour` (use case and sequence models
-  in UML), plus a modelling chain. Both sit beside `diagramming-architecture`
-  rather than inside it: the draw.io CLI cannot read `.bpmn` at all, and Mermaid
-  has no use case diagram, so neither notation is reachable from that skill.
-- **0.12.0** — Registered `auditing-short-video` (audit a short-form video file;
-  build a per-video dataset and a multi-video corpus).
-- **0.11.0** — Registered `diagramming-architecture` and `wireframing-interfaces`:
-  design artifacts that leave the spec document as editable files.
+  not see any result. "Rigid" now names the gate that is non-negotiable rather
+  than implying the whole cycle always runs.
+- **0.11.0–0.13.0** — Registered `diagramming-architecture`,
+  `wireframing-interfaces`, `auditing-short-video`,
+  `modelling-business-processes` and `modelling-system-behaviour`, plus a
+  modelling chain. The two modelling skills sit beside
+  `diagramming-architecture` rather than inside it: the draw.io CLI cannot read
+  `.bpmn` at all and Mermaid has no use case diagram.
 - **0.8.0–0.10.0** — Registered the specification chain at the head of the
   feature chain: `discovering-requirements` → `writing-specs` →
   `designing-test-cases` → `writing-plans`.
@@ -258,20 +266,10 @@ The skill itself tells you which.
   on an unverified claim that cheap models match lexically rather than
   translating, and cost 500 tokens for a capability every model already has.
   Skills stay English; one line says match on intent, reply in the user's
-  language. Kept the mechanical rule — near-match invokes, no match falls
-  through to the catalog then to an explicit "no skill applied" line.
-- **0.6.0** — Registered `learning-from-sessions` (mine the `~/.claude/projects`
-  transcript store into durable rule/skill/memory changes) in the router and
-  catalog.
-- **0.5.0** — Registered `running-uat` (acceptance-testing a running app)
-  and `multi-persona-review` (one artifact, several expert points of view)
-  in the router, catalog, and chains.
-- **0.4.0** — Repointed router, catalog, and chains at the five renamed skills
-  (ADR-0027); budget 2000→2500 for the longer names.
-- **0.3.1–0.3.4** — Registered `pdf-to-rag` and the literature pipeline across
-  router, catalog, and chains; dropped a brittle skill count.
-- **0.3.0** — calibration: schema-meta (ADR-0025). The judgment: deciding
-  whether a borderline skill applies.
-- **0.2.0** — Inline router + chains + bundled `references/skill-catalog.md`
-  + `eval/cases.jsonl` (ADR-0016/0017).
-- **0.1.0** — Initial. Reduced to dstack's single host (Claude Code).
+  language.
+- **0.1.0–0.6.0** — Initial, reduced to dstack's single host (Claude Code);
+  inline router and chains plus the bundled `references/skill-catalog.md` and
+  `eval/cases.jsonl` (ADR-0016/0017); `calibration: schema-meta` (ADR-0025);
+  registered `pdf-to-rag`, the literature pipeline, `running-uat`,
+  `multi-persona-review` and `learning-from-sessions`; repointed at the five
+  renamed skills (ADR-0027).

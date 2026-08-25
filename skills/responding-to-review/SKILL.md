@@ -10,7 +10,7 @@ allowed-tools: Read Bash Grep Glob Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.4.3
+    version: 0.5.0
     context_budget_tokens: 3500
     side_effects: local
     agency: deliberative
@@ -102,6 +102,11 @@ Instead:
 If you catch yourself about to type "Thanks" or "You're right",
 **delete the phrase**. State the fix instead.
 
+The same rule applies inside the diff. `// Fixed as requested`, `// NEW`,
+and `// Addressed review comment` are those gratitude expressions in code
+form — addressed to the reviewer, not about the code. The commit message
+and the reply carry that; the fix itself carries none of it.
+
 ## Unclear feedback
 
 If any item in a review is unclear, stop. Do not implement anything
@@ -187,6 +192,10 @@ Push back when:
   did not see.
 - It conflicts with an architectural decision in an ADR or agreed
   with the user.
+- The reviewer asks for comments explaining unclear code. The diagnosis
+  is correct and the prescription is wrong — prose above unclear code
+  leaves it unclear. Answer with the rename, the smaller function, or
+  the test that shows the behavior, and say that is what you are doing.
 
 These are the common cases, not exhaustive — push back on any suggestion
 you verified to be wrong, whatever the reason.
@@ -285,6 +294,12 @@ No performative agreement. Technical rigor always.
 
 ## Changes
 
+- **0.5.0** — Comment discipline on both sides of a review, because the owner
+  reported generated code arriving padded with comments that narrate it, which
+  reads as machine-written and costs credibility at senior level. A request for
+  explanatory comments is now a push-back case — right diagnosis, wrong fix —
+  and reviewer-addressed comments are named as the code form of the gratitude
+  expressions this skill already forbids.
 - **0.4.3** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
 - **0.4.2** — ADR-0030 per-list audit: push-back reasons, the external-reviewer
   verification checklist, and the common-mistakes table declared open; the

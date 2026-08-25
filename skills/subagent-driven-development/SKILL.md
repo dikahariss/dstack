@@ -9,7 +9,7 @@ description: |
 allowed-tools: Agent Read Bash
 metadata:
   dstack:
-    version: 0.5.2
+    version: 0.6.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -269,6 +269,10 @@ reach the plan belongs here.
 
 ## Changes
 
+- **0.6.0** — Generated code arrived padded with comments that narrate it, which
+  reads as machine-written and costs credibility at senior level. The comment
+  rule now sits in `references/implementer-prompt.md`, which the implementer
+  reads before writing code, and in `references/code-quality-reviewer-prompt.md`.
 - **0.5.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.5.1** — ADR-0030 list openness: the red-flag list is open.
 - **0.5.0** — Added status write-back to the plan's `## Status` block

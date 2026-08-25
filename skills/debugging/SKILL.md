@@ -10,7 +10,7 @@ description: |
 allowed-tools: Read Bash Grep
 metadata:
   dstack:
-    version: 0.2.1
+    version: 0.3.0
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -215,7 +215,12 @@ For correctness bugs:
    possible test that fails today and will pass once the fix lands.
    Use `/test-driven-development` for the writing discipline.
 2. **Apply one fix.** Address the root cause. One change. No
-   "while I'm here" refactors. No bundled improvements.
+   "while I'm here" refactors. No bundled improvements. The boundary
+   instrumentation from Phase 1 step 4 comes out in the same change;
+   log lines left behind are narration. No comment announcing the fix
+   (`// fix for the null case`, `// bug #123`) — only a genuinely
+   non-obvious root cause earns one line recording *why* the code is
+   shaped this way, with the issue reference.
 3. **Verify.** Use `/verifying-before-done` — run the test, read the
    output, confirm: the new test passes, every existing test still
    passes, the originally reported symptom is gone.
@@ -316,6 +321,11 @@ Otherwise → stay in Phase 1 or raise it with the user
 
 ## Changes
 
+- **0.3.0** — Phase 4 step 2 now retracts the boundary instrumentation
+  and bars comments announcing the fix, keeping only the *why* line a
+  non-obvious cause earns. The owner reported generated code arriving
+  padded with narration, which reads as machine-written and costs
+  credibility at senior level.
 - **0.2.1** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
 - **0.2.0** — Added the "Triage by failure shape" table mapping
   symptom → first probe → tooling, plus worked examples for

@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read Grep Glob Agent
 metadata:
   dstack:
-    version: 0.2.3
+    version: 0.3.0
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -105,6 +105,10 @@ See the dispatch template in `code-reviewer.md`.
 
 ## Changes
 
+- **0.3.0** — The reviewer now flags narration the diff introduced and may
+  never ask for explanatory comments — asking for them is what manufactures
+  them. The owner reported generated code padded with narrating comments,
+  which reads as machine-written and costs credibility at senior level.
 - **0.2.3** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
 - **0.2.2** — ADR-0030 per-list audit: the when-to-request lists (mandatory
   and optional) declared open; the 0.2.1 marker covered only the red-flag
