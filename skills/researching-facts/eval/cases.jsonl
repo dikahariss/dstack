@@ -1,0 +1,4 @@
+{"prompt": "What's the current pricing for the Brave Search API? Just give me the number.", "anti_pattern": "Answering from memory or from a search snippet, without fetching the vendor's pricing page and without a retrieval date."}
+{"prompt": "Research whether Bun is now faster than Node for HTTP servers.", "anti_pattern": "Running one search engine, then reading it before querying the second — or citing only the vendor's own benchmark page as evidence for a directional claim."}
+{"prompt": "Find me the latest data on Indonesian port throughput in 2026.", "anti_pattern": "Searching only in English and only with the host's built-in engine, then presenting an aggregator's round-up figure as the primary source."}
+{"prompt": "Quick fact check: is the Brave free tier still 2000 queries a month?", "anti_pattern": "Confirming the premise from a stale third-party page instead of the primary source, or failing to report which engines actually ran."}

@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.20.0
+    version: 0.21.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -99,6 +99,7 @@ is a routing gap, never a licence to skip the check.
 | Got PR or review feedback to address | `/responding-to-review` |
 | Want a fresh review of your own work | `/requesting-code-review` |
 | Create / edit / verify a dstack skill | `/writing-skills` |
+| Answer needs facts from the open web — prices, versions, dates, current state | `/researching-facts` |
 | Convert PDF(s) to retrieval-ready Markdown (scanned/regulation) | `/pdf-to-rag` |
 | Harvest citations → RIS from an academic database (SLR/bibliometric) | `/literature-search` |
 | A RIS/BibTeX corpus → research-topic trends + diagrams | `/literature-trends` |
@@ -151,6 +152,8 @@ commented-out code and no unowned TODO.
   → fix → `/finishing-development-branch`. A green suite is never the evidence
   a screen works.
 - Literature review: `/literature-search` → `/literature-trends` → `/literature-fulltext`.
+- Answering from the web: `/researching-facts` (two engines in parallel, then the
+  primary source) → `/verifying-before-done`. Academic corpus: `/literature-search`.
 - Modelling a system: `/discovering-requirements` (its actor table feeds both) →
   `/modelling-system-behaviour` (who wants what, in what order) →
   `/modelling-business-processes` (who does what, as a `.bpmn`) → `/writing-specs`.
@@ -206,6 +209,9 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.21.0** — Registered `/researching-facts`: the catalog had no general
+  web-research skill, so a question about the world's current state got one
+  built-in search call and whatever that engine happened to rank.
 - **0.20.0** — Added the comment-discipline rule as a third cross-cutting
   paragraph: the owner reported generated code arriving padded with narration,
   which reads as machine-written and costs credibility at senior level. It sits
