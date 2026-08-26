@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Write Edit Bash Grep Glob Agent
 metadata:
   dstack:
-    version: 0.6.1
+    version: 0.7.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -203,6 +203,9 @@ Not exhaustive — the recurring ones; flag anything with the same shape.
   that repo's CLAUDE.md.
 - **Shipping unregistered** — absent from the `/using-dstack` router is
   a skill nobody finds. Register it in the same commit.
+- **A currency sign before a digit** — invoking a skill with arguments
+  substitutes `$N` in the body with the Nth word of those arguments, so a price
+  silently arrives as a word lifted from the user's question. Write `USD 5`.
 - **Narrative** — "In session 2025-10-03 we found…". Not reusable.
 - **Multi-language dilution** — the same example in JS, Py, Go. Pick one.
 - **Workflow in the description** — see the discovery section above.
@@ -234,6 +237,10 @@ todo, and rows enter or leave only by editing this skill.
 
 ## Changes
 
+- **0.7.0** — Added the currency-sign-before-a-digit anti-pattern.
+  `/researching-facts` 0.1.0 wrote its metered-API costs with a currency sign;
+  invoked with an argument string they reached the model as words from that
+  argument, so the section written to bound spend was the one that got corrupted.
 - **0.6.1** — ADR-0030 catalog review (list openness, enumeration-as-product declared, self-contained refs); panel-verified, see the 2026-08-14 review workflow.
 - **0.6.0** — `context_budget_tokens` 3000 → 4500. Not headroom for bloat: this
   skill now carries permanent ADR-0030 doctrine every skill author must read,

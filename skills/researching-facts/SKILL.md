@@ -16,7 +16,7 @@ allowed-tools: WebSearch WebFetch Bash Read Write
 metadata:
   dstack:
     type: hybrid
-    version: 0.1.0
+    version: 0.1.1
     context_budget_tokens: 4500
     side_effects: external
     agency: deliberative
@@ -113,10 +113,10 @@ still unverified rather than padding the answer with what you happen to have.
 
 ## Cost and degradation
 
-Brave's API is **metered**: $5 per 1,000 requests, with $5 of credit each month
+Brave's API is **metered**: USD 5 per 1,000 requests, with USD 5 of credit each month
 (≈1,000 requests) and a card on file whose overage has no spending cap — verified
 2026-08-26 on `api-dashboard.search.brave.com/documentation/pricing`. One request
-= one query variant, so the default fan-out costs ≈$0.015. The script prints the
+= one query variant, so the default fan-out costs ≈USD 0.015. The script prints the
 month-to-date count after every run and logs it to `~/.config/brave-search/usage.log`.
 
 Keep an ordinary question under **12 Brave requests**; say so and ask before a
@@ -148,7 +148,7 @@ scripts/brave_search.py \
 The merge showed the vendor page and two independent outlets, one of them
 (`implicator.ai`, 2026-06-08) reporting the free tier's removal — a story the
 vendor's own page does not tell. Fetching the vendor's pricing doc gave the
-authoritative numbers. Answer: no free tier; $5 per 1,000 requests, $5 monthly
+authoritative numbers. Answer: no free tier; USD 5 per 1,000 requests, USD 5 monthly
 credit, 50 req/s, card required, overages billed (retrieved 2026-08-26).
 
 One engine alone gets you the price. Two engines plus the fetch get you the price
@@ -180,6 +180,12 @@ result-shape details the script does not expose.
 
 ## Changes
 
+- **0.1.1** — Wrote every money figure as `USD 5`, never with a currency sign
+  before a digit. Invoking a skill with arguments substitutes `$N` in the body
+  with the Nth word of those arguments, so the metered-cost figures reached the
+  model as words lifted out of the user's question — corrupting the one section
+  that exists to bound unattended spend. Caught by invoking this skill with an
+  argument string.
 - **0.1.0** — Initial. Written when the catalog had no general web-research skill:
   research meant one built-in `WebSearch` call and whatever it happened to rank.
   Adds a second independent index (Brave), the same-message parallel rule, RRF
