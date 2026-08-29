@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.21.0
+    version: 0.22.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -82,6 +82,7 @@ is a routing gap, never a licence to skip the check.
 | A business process needs a real `.bpmn` — roles, lanes, gateways | `/modelling-business-processes` |
 | Use case or sequence diagram — actors, goals, message order | `/modelling-system-behaviour` |
 | Spec says what a screen does; nobody can see it yet | `/wireframing-interfaces` |
+| A picture must be created, not found or drawn — a scene, cover, placeholder photo | `/generating-images` |
 | Ambiguous/creative plan or design, not aligned | `/brainstorm` |
 | Have a spec; need a step-by-step plan | `/writing-plans` |
 | Execute a written plan (separate session) | `/executing-plans` |
@@ -209,6 +210,12 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.22.0** — Registered `/generating-images`. Asking for a picture routed to
+  nothing: the catalog covers charts, diagrams and screens, but an image that
+  has to be *created* fell through to whatever the model improvised. Measurement
+  on both CLI routes showed why that is expensive — neither honours a requested
+  size, both self-report dimensions they never measured, and shipped code was
+  found recording `1080×1920` for files that were 768×1376.
 - **0.21.0** — Registered `/researching-facts`: the catalog had no general
   web-research skill, so a question about the world's current state got one
   built-in search call and whatever that engine happened to rank.
@@ -221,25 +228,17 @@ The skill itself tells you which.
   and a situation with no row is a routing gap, never a licence to skip the
   check.
 - **0.19.0** — Registered `multi-persona-review` 0.5.0's product-review
-  expansion. The router row now says what the skill actually covers — one
-  artifact **or one product-review packet**, across user, operational and expert
-  coverage — and a product-quality chain routes running-product evidence through
-  `/running-uat` before the packet review. The catalog entry carries the new
-  boundary: coverage is selected by product class and lifecycle gate, human
-  evidence is never substituted by an AI seat, and the five-seat cap now has a
-  two-perspectives-per-seat limit under it.
-- **0.18.0** — Repointed the catalog at `writing-plans` 0.9.0. The chain column
-  now runs both ways between it and `multi-persona-review`: a decision record is
-  carried into a plan, and an expensive plan goes back out for independent
-  reviewers. The row also names what the plan carries, since the previous entry
-  claimed the hand-off from the review side while the plan side was silent.
-- **0.17.0** — Repointed the router and catalog at `multi-persona-review` 0.4.0,
-  which now seats a mandatory Dreamer / Realist / Critic trio and ends in an
-  owned decision rather than a findings list. Added a second router row keyed on
-  the symptom users actually report — reviewers agreeing too readily — since
-  nobody types "multi persona review" when what they notice is that nothing is
-  being challenged. Budget 4000→4500 — the router was already at 88% and every
-  registration adds to it.
+  expansion: the row now covers one artifact **or one product-review packet**,
+  a product-quality chain routes running-product evidence through `/running-uat`
+  first, and the catalog carries the new boundary (coverage by product class and
+  lifecycle gate; an AI seat never substitutes for human evidence).
+- **0.18.0** — Repointed the catalog at `writing-plans` 0.9.0 and made its chain
+  with `multi-persona-review` run both ways; the plan side had been silent about
+  a hand-off the review side already claimed.
+- **0.17.0** — Repointed at `multi-persona-review` 0.4.0 (Dreamer / Realist /
+  Critic, ending in an owned decision). Added a router row keyed on the symptom
+  users actually report — reviewers agreeing too readily — since nobody types
+  "multi persona review". Budget 4000→4500.
 - **0.16.0** — Registered `/prioritizing-work`: router row, feature chain, and
   catalog entry. The router row alone would not have fired — the phrase users
   actually type is "do all of it", never "which comes first" — so the
@@ -251,14 +250,12 @@ The skill itself tells you which.
   data. Budget 3000 → 4000: the router had grown a frontend-first rule and
   longer chains.
 - **0.14.0** — Stopped routing every behavior change into the full red-green
-  cycle, and put the visible slice first. Transcript mining across three CLI
-  installs measured `/test-driven-development` as the catalog's most expensive
-  skill (median 90 min to the next human turn, p90 460 min) while the owner
-  still had to test manually afterwards; separately, 12+ pushback turns are
-  about the visible product arriving late or wrong — the archetype being a
-  report of 78 green server tests answered by the owner saying he still could
-  not see any result. "Rigid" now names the gate that is non-negotiable rather
-  than implying the whole cycle always runs.
+  cycle, and put the visible slice first. Transcript mining measured
+  `/test-driven-development` as the catalog's most expensive skill (median 90
+  min to the next human turn, p90 460) while the owner still tested manually
+  afterwards, and 12+ pushback turns were about the visible product arriving
+  late — the archetype being 78 green server tests answered with "I still
+  cannot see any result". "Rigid" now names the gate, not the whole cycle.
 - **0.11.0–0.13.0** — Registered `diagramming-architecture`,
   `wireframing-interfaces`, `auditing-short-video`,
   `modelling-business-processes` and `modelling-system-behaviour`, plus a
