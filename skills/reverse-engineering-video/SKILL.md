@@ -224,12 +224,10 @@ twice or two entities read once.
   whole decode pass. Budget 3000 → 3500: the rules above are permanent doctrine,
   and 3000 was a guess made when the skill was smaller.
 
-- **0.1.0** — Initial. Written because the catalog's only video skill audited
-  short form against a hook-and-retention instrument, which answers "is this any
-  good" and not "how was this made". Detection uses ffmpeg alone (PySceneDetect
-  optional): measured 96 shots from a 232 s file in 8.4 s, and a detection-only
-  pass over a 60.7-minute file in 1 min 30 s. The per-shot sampling ladder
-  replaces a global rate after the frame-budget evidence showed accuracy rising
-  to ~256 frames and falling past it, while high frame rates bought fine motion
-  rather than comprehension. Threshold calibration was added when a fixed 0.3
-  returned 4 cuts on a window where 0.08 returned 30.
+- **0.1.0** — Initial. The catalog's only video skill audited short form against
+  a hook-and-retention instrument, which answers "is this any good", not "how was
+  this made". Detection is ffmpeg alone: 96 shots from a 232 s file in 8.4 s, and
+  a detection-only pass over 60.7 minutes in 1 min 30 s. The per-shot ladder
+  replaced a global rate after the frame-budget evidence showed accuracy peaking
+  near 256 frames and falling past it. Threshold calibration was added when a
+  fixed 0.3 found 4 cuts on a window where 0.08 found 30.
