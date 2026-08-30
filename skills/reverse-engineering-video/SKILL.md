@@ -19,7 +19,7 @@ metadata:
     type: hybrid
     side_effects: local
     agency: deliberative
-    context_budget_tokens: 3000
+    context_budget_tokens: 3500
     triggers:
       - reverse engineer video
       - video to prompt
@@ -202,6 +202,21 @@ all, and — at merge — whether two differing descriptions are one entity read
 twice or two entities read once.
 
 ## Changes
+
+- **0.2.0** — Reworked for how the generators actually take input, after a run
+  on a real file. Two stills per shot (start frame and end frame) rather than
+  one; a `no change` end state means one image serves both. Every motion prompt
+  ends in an explicit silence clause, because audio-backed engines bake audio in
+  and it cannot be removed afterwards — it fights the voice-over and bed
+  generated later. Each still after the first carries a computed continuity
+  anchor naming the earlier shot that established each entity it shares.
+  Package order is now the production order: stills, video, audio, backsound,
+  assemble. The clip-length fit is reported per shot: short-form cuts far faster
+  than any generator's 4-second minimum — on the test file no shot reached it —
+  so a rebuild is 68 s of material for a 31 s video and every clip needs
+  retiming or trimming. `audio_map.csv` became opt-in; a rebuild never reads it
+  and it cost a whole decode pass. Budget 3000 → 3500: the four rules above are
+  permanent doctrine, and 3000 was a guess made when the skill was smaller.
 
 - **0.1.0** — Initial. Written because the catalog's only video skill audited
   short form against a hook-and-retention instrument, which answers "is this any
