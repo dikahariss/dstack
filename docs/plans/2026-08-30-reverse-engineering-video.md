@@ -32,13 +32,25 @@ Steps use `- [ ]` checkboxes.
 
 ## Status
 
-**Updated:** 2026-08-30 · **Branch:** `feat/reverse-engineering-video` · **Next:** Task 3
+**Updated:** 2026-08-30 · **Branch:** `feat/reverse-engineering-video` · **Next:** complete
 
 | Task | State | Evidence |
 |---|---|---|
-| 1 Scaffold + survey | done | `9bcc4e1` — 11 tests green; 232 s file → 96 shots, mean 2.42 s, 908 frames → 3 agents, 8.4 s wall clock |
+| 1 Scaffold + survey | done | `9bcc4e1`, `7d62777` — 11 tests green; 232 s file → 96 shots, mean 2.42 s, 908 frames → 3 agents, 8.4 s |
 | 2 Dense in-shot extraction | done | `9bcc4e1` — 8 tests green; exact planned frame count per shot, over-budget slice exits 2 |
-| 3–15 | todo | — |
+| 3 Shot schema | done | `f0a1e2c` — `shots_deep.csv` 11 groups + `bible.json`, `assembly.csv`, `graphics.csv` |
+| 4 Craft vocabulary | done | `f0a1e2c` — 182 lines, under the 250 cap; dolly-vs-zoom parallax rule is the worked case |
+| 5 Prompt formats | done | `f0a1e2c` — engine-union order + 5 sibling formats; worked example is real shot `sh0000` |
+| 6 Fan-out protocol | done | `f0a1e2c` — 400-frame cap, agent contract, 3 merge checks |
+| 7 SKILL.md | done | `4b8c9d1` — 2383/3000 tokens, `bun run validate` OK |
+| 8 Package validator | done | `4b8c9d1` — 18 tests green |
+| 9 Eval cases | done | `4b8c9d1` — 8 cases, valid JSON |
+| 10 Rename to auditing-video | done | `c00369e` — v2.0.0, old ids kept as triggers |
+| 11 format_class gate | done | `c00369e` — 8 new pipeline regressions, ALL PASS |
+| 12 Stale reference sweep | done | `c00369e` — only historical records retain the old id |
+| 13 Router + catalog | done | `c00369e` — using-dstack 0.23.0, and ~430 tokens cheaper per session |
+| 14 Verification gate | done | typecheck clean; `bun test` 102/102; validate 36 OK 0 ERR 0 warn; `build --strict` clean; 37 Python tests green |
+| 15 Sync all targets | done | 4 Claude dirs + Codex + Gemini + claude.ai; file counts verified 13/15/3; old id removed from all seven |
 
 **Deviations from plan:**
 - **A1 was measured too narrowly.** The 87× realtime figure covered shot
@@ -58,6 +70,14 @@ Steps use `- [ ]` checkboxes.
   returned 47 shots at a 77.5 s mean, which is either genuine long-take material
   or a mis-set threshold; the survey could not tell the difference and said
   nothing. It now writes the ambiguity into `limitations.txt`.
+- **Task 15 found the claude.ai UI had moved.** Skills are now at
+  `claude.ai/customize/skills`; Settings → Capabilities only links there, the
+  menu is `Add skill`, and the file count renders as a `Contents · N` tab rather
+  than the `N files` label the procedure was written against. A rename also
+  turned out to be two web operations, not one: the new id uploads as a new
+  skill and the old one stays behind serving a stale copy. All recorded in
+  `docs/procedures/claude-web-skill-sync.md`, together with the CDP path that
+  works when the Claude-in-Chrome extension has no local browser.
 - **A3 was wrong.** numpy 2.5.1 and pillow 10.2.0 are present system-wide; the
   original check imported `cv2` first and the whole line failed on that. Only
   `cv2` and `scenedetect` are absent, and the survey needs neither.

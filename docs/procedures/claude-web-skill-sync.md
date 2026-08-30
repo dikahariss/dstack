@@ -6,9 +6,18 @@ skill is a **copy**, not a link, and nothing on claude.ai re-reads this
 repository. Every change that should land in the web account is uploaded
 deliberately.
 
-Verified against claude.ai on 2026-08-16 with the 33-skill catalog. There is no
-API behind the UI to automate against — `/api/organizations/{uuid}/skills`
-returns 404 — so the browser is the only path.
+Verified against claude.ai on 2026-08-16 with the 33-skill catalog, and again on
+2026-08-30 with 36. There is no API behind the UI to automate against —
+`/api/organizations/{uuid}/skills` returns 404 — so the browser is the only path.
+
+**The page moved (2026-08-30).** Settings → Capabilities now carries only a
+notice: *Skills have moved to Customize*. The list lives at
+**`claude.ai/customize/skills`**, reachable as sidebar → Customize → Skills. The
+`Add` menu is now labelled **Add skill** with three items — *Upload skill*,
+*Create a skill*, *Create with Claude* — and the per-skill overflow menu reads
+*Try in chat / Edit / Edit with Claude / Replace / Download / **Remove***. A
+skill's file count shows as a **`Contents · N`** tab, not the `N files` label
+step 4 was written against.
 
 ## What claude.ai accepts
 
@@ -49,14 +58,20 @@ from in the sync commit message. Nothing else tracks it.
 
 ## 3. Upload
 
-Open **sidebar → Customize → Skills**. (`claude.ai/settings/capabilities`
-redirects into the same modal; setting the URL hash directly does not open it.)
+Open **`claude.ai/customize/skills`** (sidebar → Customize → Skills).
+`claude.ai/settings/capabilities` no longer holds the list — it only links here.
 
 ### New skills — batch them
 
 **Add → Upload a skill**, then hand it every zip at once. Batches of 8 are
 verified; the input is `multiple` and was not tested higher. A clean batch ends
 with a `Uploaded N skills` toast.
+
+**A rename is two operations, not one.** The new id uploads as a *new* skill and
+the old id stays behind, so the account serves both — including the stale one.
+Remove the old entry by hand: open it, **⋮ → Remove**, confirm **Remove** in the
+*Remove skill?* dialog. Do this only after verifying the replacement's
+`Contents · N`.
 
 ### Changed skills — one at a time
 
@@ -87,8 +102,10 @@ sync, reload the page and check:
 
 1. The row count under `by You` equals the number of skills you expect, and no
    name appears twice.
-2. For any skill that carries bundled files, the detail panel's `N files`
-   matches `find <id> -type f | wc -l` in `.claude/skills/`.
+2. For any skill that carries bundled files, the detail panel's **`Contents · N`**
+   tab matches `find <id> -type f | wc -l` in `.claude/skills/`. Verified
+   2026-08-30: `auditing-video` 13, `reverse-engineering-video` 15,
+   `using-dstack` 3 — all three matched.
 3. The skill's toggle is on.
 
 A skill that silently arrived as `SKILL.md` alone will still look installed in
@@ -101,7 +118,18 @@ cannot see or dismiss it, and it freezes the browser session.
 
 - **`⋮ → Replace` calls `input.click()` directly** and opens that picker. Patch
   `HTMLInputElement.prototype.click` to capture file inputs instead of clicking
-  them *before* opening the menu, and restore the prototype afterward.
+  them *before* opening the menu, and restore the prototype afterward. Opening
+  the ⋮ menu for any *other* item (`Remove`, `Download`) is safe — only `Replace`
+  touches the input.
+- **Driving Chrome over CDP works and is the better path when the Claude-in-Chrome
+  extension has no local browser** (its `list_connected_browsers` may show only
+  remote devices). A local Chrome on `127.0.0.1:9222` can be driven by the
+  chrome-devtools MCP, whose `upload_file` intercepts the file chooser rather
+  than opening the OS dialog — so both `Add skill → Upload skill` and the ⋮ menu
+  are reachable without the freeze this section warns about.
+- **Synthetic `element.click()` does not switch the settings panes** — the React
+  handlers want a real pointer sequence. Use the snapshot-and-click tool, or
+  dispatch `pointerdown/mousedown/pointerup/mouseup/click` with coordinates.
 - **`Add → Upload a skill` is safe.** It renders a dropzone modal whose hidden
   input (`accept=".zip,.skill,.md"`) is already in the DOM. Never click the
   dropzone — locate the input and drive it with the file-upload tool.
