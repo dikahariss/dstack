@@ -137,13 +137,28 @@ failed, in two different ways, and neither produced an image:
 A 4-of-6 success rate on one batch is not a measured reliability figure, but it
 is enough to say: **check every exit code in a batch, never just the last one.**
 
-**It can return a file instead of making one.** Verified 2026-08-30 by sha256:
-a run whose workspace root held earlier codex `.png` outputs came back with one
-of them, unmodified, as its result. It reported `SUCCESS`, the file was real,
-the dimensions read from the header were real, and the copy-out worked — the
-whole gate passed on an image the engine never drew. The script now hashes the
-result against every reference, the reference directory and the output
-directory. Operationally: **keep prior generations out of the workspace.**
+**It returns an existing file instead of making one, about a third of the time.**
+Verified 2026-08-30 by sha256 across nine reference-carrying calls:
+
+| Outcome | n |
+|---|---|
+| a new image | 3 |
+| **the file it was given**, byte-identical | 3 |
+| `SUCCESS` with an empty path | 3 |
+
+Every failure reported `SUCCESS`, and the reused files passed the whole gate —
+real file, real header dimensions, real copy-out. Only provenance was false.
+
+Clearing the workspace does **not** fix it. A control run whose directory held
+exactly one file, the reference, returned that reference. So this is not
+contamination by stray outputs; given a reference image, agy sometimes answers
+with it. The script now hashes the result against every reference, the reference
+directory and the output directory, and fails on a match — keeping prior
+generations out of the workspace narrows the blast radius but is not a cure.
+
+**On the same nine prompts codex returned nine unique images.** If a series must
+be verifiably generated rather than plausibly generated, that difference
+outweighs agy's speed and its better world knowledge.
 
 **Size is not invariant.** This page recorded 768×1376 JPEG as what agy returns.
 The same run produced a 941×1672 PNG. Which model variant `agy` routes

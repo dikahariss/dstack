@@ -84,7 +84,7 @@ engine answers first silently prefers a worse image.
 | An unusual composition that must hold exactly — a split frame, a hard seam | `codex` | reproduces a stacked two-panel frame literally; agy resolves it into one continuous scene |
 | A subject with strong local or cultural specificity | `agy` | markedly better world knowledge of place, dress, objects |
 | A series where turnaround matters | `agy` | ~34 s against codex's ~95 s on the same prompts |
-| A shot that must match an earlier image — same person, same room | either; `agy` by default | both take a reference: `agy` adds its directory to the workspace, `codex` attaches it with `-i`. Chain them — each image generated with the previous one attached |
+| A shot that must match an earlier image — same person, same room | **`codex`** | both take a reference — `agy` via `--add-dir`, `codex` via `-i` — but on nine measured reference calls agy returned the reference itself three times and an empty path three times, while codex returned nine unique images |
 | Anything with legible text rendered *in* the image | neither by default | both leak or mangle lettering; see `references/engines.md` |
 
 Not exhaustive — these are the axes that have been measured. When two rows
@@ -234,30 +234,22 @@ locations, failure modes, and the paid escalation routes.
   directory and the output directory, and fails on a match. New gate row, and a
   rule: never run a generator in a directory holding earlier generations.
 
-  Same run measured `agy` returning `SUCCESS` with an **empty** path on 3 of 6
-  calls while images sat in its own temp storage — a reporting failure, not a
-  generation failure — and producing a 941×1672 PNG where this reference had
-  recorded 768×1376 JPEG as invariant. Both recorded; the size claim is now
-  qualified.
+  Measured across nine reference-carrying agy calls: 3 new images, 3 that
+  returned the reference byte-identically, 3 `SUCCESS` with an empty path while
+  a real image sat in its own temp storage. Clearing the workspace does not fix
+  it — a control run holding only the reference returned the reference. codex
+  returned nine unique images on the same prompts, so the "which engine holds a
+  subject across calls" row now points at codex, not agy. Also records a
+  941×1672 PNG from agy where this reference had 768×1376 JPEG as invariant.
 
-- **0.2.1** — The copy-out step checked `exists()` where it meant `is_file()`.
-  An engine that reports `"."` as its path passes `exists()`, and the script
-  then died inside `copy2` with a raw `IsADirectoryError` traceback — the
-  silent-failure shape this script exists to prevent, reached by a different
-  door. Observed twice in one six-image agy batch, alongside one
-  `no structured_output`. Both failure modes recorded, and the gate now says to
-  check every call in a batch rather than the last one.
-
-- **0.2.0** — Reference images work on **both** engines, and `agy` is now the
-  default. `codex exec` takes `-i <FILE>`, which the 0.1.0 reference had not
-  found: its "not measured" line was about *editing* a file on disk, a different
-  question, and the gap read as "codex cannot do continuity". Verified with a
-  three-image chain, each generated with the previous attached — one product
-  held across a nursery, a garden bed and a workshop. `--ref` replaces the
-  agy-only `--ref-dir` as the way to pass one; `--ref-dir` stays for a whole
-  directory. Adds the chaining section: the reference carries the subject, not
-  the scene, so the prompt must still describe the new location in full and must
-  name what has to match.
+- **0.2.x** — Reference images work on **both** engines: `codex exec` takes
+  `-i <FILE>`, which 0.1.0 had missed because its "not measured" line was about
+  *editing* a file, a different question. `--ref` passes one on either engine.
+  Verified with a three-image chain — one product held across a nursery, a
+  garden bed and a workshop. Adds the chaining section: the reference carries
+  the subject, not the scene. Also fixed the copy-out guard, which checked
+  `exists()` where it meant `is_file()` and so died inside `copy2` on a reported
+  path of `"."`.
 
 - **0.1.0** — Initial. Written after measuring both CLI routes on one machine:
   neither honours a requested size, both self-report dimensions they did not
