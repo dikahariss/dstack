@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob Grep Agent
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -216,9 +216,13 @@ twice or two entities read once.
   assemble. The clip-length fit is reported per shot: short-form cuts far faster
   than any generator's 4-second minimum — on the test file no shot reached it —
   so a rebuild is 68 s of material for a 31 s video and every clip needs
-  retiming or trimming. `audio_map.csv` became opt-in; a rebuild never reads it
-  and it cost a whole decode pass. Budget 3000 → 3500: the four rules above are
-  permanent doctrine, and 3000 was a guess made when the skill was smaller.
+  retiming or trimming — which is why shots are now **grouped into clips** at the
+  generator's minimum rather than mapped one to one, with each join on a real cut
+  and adjacent clips sharing a boundary frame. Measured on the test file: 9
+  images and 8 prompts, against 32 and 17 for the mapping that seemed natural
+  first. `audio_map.csv` became opt-in; a rebuild never reads it and it cost a
+  whole decode pass. Budget 3000 → 3500: the rules above are permanent doctrine,
+  and 3000 was a guess made when the skill was smaller.
 
 - **0.1.0** — Initial. Written because the catalog's only video skill audited
   short form against a hook-and-retention instrument, which answers "is this any
