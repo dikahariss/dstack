@@ -91,16 +91,30 @@ averaged 1.82 s and *not one reached 4 s*. Generating each shot at the 4-second
 minimum produces 68 seconds of material for a 31-second video, and every clip
 then has to be fitted.
 
-Two ways to fit one, and the choice is per shot, not global:
+**Do not map one detected shot to one clip.** That is the obvious move and it is
+wrong: seventeen shots at the 4-second minimum is 68 seconds of generation for a
+31-second video, and every clip then has to be thrown half away. Group instead.
 
-| Retime factor | What to do |
-|---|---|
-| ≤ ~2.3× | **Retime.** Play the 4 s clip faster. Both frames survive and the shot keeps its length. Safe when the motion is slow — a hand turning an object, a static frame. |
-| > ~3× | **Trim.** Speeding a clip 4× reads as fast-forward. Instead make the start and end frames nearly identical so the generated clip barely moves, then cut any slice of it. The end frame is sacrificed; say so. |
+**The unit of production is the clip, not the shot.** Divide the runtime by the
+minimum clip length, then place the joins on cuts the source already had:
 
-Report the factor per shot. An operator who is told "generate at 4 s" and not
-told the shot is 0.90 s will assemble a video two and a half times too long and
-find out at the sync stage.
+1. `n_clips = round(duration / 4)` — eight for a 30.9 s video.
+2. For each join, take the **nearest real shot boundary** to `k × duration/n`.
+   Splitting mid-shot buys nothing; a join that lands on an existing cut is a
+   join the viewer was going to see anyway.
+3. Each clip covers the shots between its joins, and the frame **morphs** through
+   them rather than cutting. That is the trade for generating 32 s instead of 68.
+
+**Adjacent clips share a boundary frame**, so *n* clips need *n+1* images, not
+*2n*. Frame *k* is the end frame of clip *k* and the start frame of clip *k+1* —
+the same file, used twice. Continuity at every join is then exact by
+construction, not something a prompt has to plead for. Measured on the test
+file: 9 images and 8 prompts, against 32 images and 17 prompts for the
+shot-per-clip mapping that seemed natural first.
+
+Report the fit per clip. Grouping on real boundaries lands most clips within a
+few per cent of the minimum — seven of eight needed no retime at all — but say
+which ones do, and by how much.
 
 ## The image prompts — two per shot, generated first
 
