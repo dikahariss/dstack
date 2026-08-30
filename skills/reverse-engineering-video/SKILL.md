@@ -135,11 +135,21 @@ Never resolve by picking the more detailed answer.
 Per `references/prompt-formats.md`. One general prompt shape carries the union of
 the published engine formulas; the differences are a notes table, not adapters.
 
-Produce: a video prompt per shot; an image prompt for every shot that needs a
-reference still or is a graphic; a speech prompt per line; one sound-effects
-prompt per named sound; one music prompt per bed. Then `assembly.csv` — without
-an edit list the package is a pile of clips nobody can reassemble — and
-`graphics.csv` for titles, lower thirds and captions.
+**The package is ordered for production, in five stages:** (1) a still per shot,
+each carrying a computed continuity reference to the earlier still that
+established each entity it shares; (2) a **silent** motion prompt per shot,
+animated from that still; (3) one voice-over script; (4) one music bed; (5) the
+assembly — `assembly.csv` plus `graphics.csv` for the captions burned on at the
+end.
+
+**Every motion prompt asks for silence.** Engines that generate audio natively
+bake it in, and baked-in audio cannot be removed — it fights the voice-over and
+bed that stages 3 and 4 produce. The shot's real sound is still recorded and
+still becomes its own prompt; it is laid under the picture at assembly.
+
+**Stills are generated before anything is animated,** because a still is the only
+place continuity between shots can be fixed cheaply. Seventeen independently
+generated stills give seventeen different people in seventeen different shirts.
 
 ```bash
 python3 "<skill_dir>/scripts/validate_package.py" "<work_dir>"
@@ -156,13 +166,18 @@ before output, structure before prompts); append sections rather than reordering
 
 1. **What this could and could not recover** — `limitations.txt`, the threshold
    chosen and why, and every `unknown` field group.
+   (The order below is closed at nine; the count changed with the five-stage
+   production order and would change again only for another such reason.)
 2. **What the video is** — and its structure.
 3. **The rights list** — recognizable people, brands, works.
 4. **The bible** — characters, locations, look, audio identity.
-5. **The prompts** — grouped by shot, in playback order.
-6. **The assembly** — the edit list and the on-screen text.
-7. **What to generate first** — the shot that proves the look, and the one
-   detail in the output that confirms it worked.
+5. **The stills** — every image prompt in playback order, each with its
+   continuity reference. This is what gets generated and approved first.
+6. **The motion** — the silent clip prompt per shot.
+7. **The sound** — the voice-over script, then the sound effects, then the bed.
+8. **The assembly** — the edit list and the on-screen text.
+9. **What to generate first** — the shot whose entities are all new, since
+   everything after it inherits what it establishes.
 
 ## What this cannot recover
 

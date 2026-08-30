@@ -1,4 +1,36 @@
-# Prompt formats — one general shape, five outputs
+# Prompt formats — stills first, then motion, then sound
+
+**The production order is not the reading order.** A rebuild is assembled in four
+stages, and the prompts are written to be consumed in that order:
+
+| Stage | What is generated | Why it comes here |
+|---|---|---|
+| 1 · Stills | One image per shot, in playback order | Cheap to iterate, and a still is the only place continuity between shots can actually be fixed. Get all of them right before animating anything. |
+| 2 · Motion | One silent clip per shot, animated from its still | The still is the anchor; the prompt only describes what *moves*. |
+| 3 · Audio | The voice-over take, plus one prompt per named sound effect | Written once against the whole script, and the effects are placed against the finished picture |
+| 4 · Backsound | One music bed under everything | Never changes, so it is generated once |
+| 5 · Assemble | Cut to the edit list, sync the audio, burn the captions | |
+
+Two rules follow from that order and are not negotiable.
+
+**Every motion prompt asks for silence.** Several engines generate audio natively,
+and audio baked into a clip cannot be removed afterwards — it fights the
+voice-over and the bed that stages 3 and 4 produce. So every video prompt ends
+with an explicit *no audio, no dialogue, no music, no sound effects — silent
+clip*. The sound the shot actually had is still recorded in `shots_deep.csv` and
+still becomes a prompt; it is generated separately and laid under the picture.
+
+**Every still after the first carries a continuity reference.** Generating
+seventeen stills independently produces seventeen different people wearing
+seventeen different shirts. For each bible entity a shot uses, find the most
+recent earlier shot that used the same entity and name it: *the same pot as
+sh0003, unchanged*. Where the engine accepts a reference image, feed that earlier
+still in. Where it does not, the repeated bible description is the only anchor
+there is, so it must be reproduced verbatim, not paraphrased.
+
+---
+
+## Prompt formats — one general shape
 
 The engines disagree about syntax and agree about substance. Every published
 formula asks for the same things in a different order, so this skill writes **one
@@ -18,35 +50,60 @@ Nothing in any of them is absent from the general order below.
 
 ---
 
-## The general video prompt
+## The motion prompt — stage 2, animated from the still
 
 ```
-[Camera] [Subject] [Subject action] [Scene] [Light] [Grade] [Motion] [Audio] [Exit]
+Animate from the reference still. [Camera movement] [What moves] [Speed]
+[Exit] — silent clip.
 ```
 
-Built directly from one `shots_deep.csv` row, in that order, as flowing prose —
-not as labelled fields. Rules that decide whether it works:
+Built from one `shots_deep.csv` row, as flowing prose, not as labelled fields.
+Where no still is being used, fall back to the full description —
+`[Camera] [Subject] [Action] [Scene] [Light] [Grade] [Motion] [Exit]` — and
+still end on the silence clause. Rules that decide whether it works:
 
-1. **Every `inferred` field is hedged in the prompt exactly as it is hedged in
+1. **The motion prompt describes movement, not the scene.** The still already
+   fixed the subject, the set and the light. Repeating all of it invites the
+   engine to re-invent what you just approved. Say what moves, how fast, and how
+   the shot ends — then ask for silence.
+2. **Every `inferred` field is hedged in the prompt exactly as it is hedged in
    the data.** "A long-lens look" not "85 mm". The generator does not need the
    false precision, and a hedge is what stops a reading being laundered into a
    fact on its way to a prompt.
-2. **`unknown` fields are omitted, never guessed.** An omitted field lets the
+3. **`unknown` fields are omitted, never guessed.** An omitted field lets the
    engine choose; a guessed one makes it choose wrong with confidence.
-3. **Bible references are expanded, not passed through.** `CHAR_01` means nothing
+4. **Bible references are expanded, not passed through.** `CHAR_01` means nothing
    to a generator. Substitute the bible's full description every time the
    character appears — that repetition *is* the consistency mechanism.
-4. **60–120 words.** Below that the engine improvises; above it, directives start
-   contradicting each other.
-5. **State the duration.** It decides how much action can fit, and every engine
+5. **60–120 words for a full-description prompt.** Below that the engine
+   improvises; above it, directives start contradicting each other. An
+   animate-from-still motion prompt is legitimately shorter — around 55–75 — for
+   the same reason: the still already carries the scene, and restating it is what
+   invites the engine to re-invent an approved frame.
+6. **State the duration.** It decides how much action can fit, and every engine
    caps it.
 
-## The image prompt — first frame or reference still
+## The image prompt — the still, generated first
 
-Same fields minus motion, plus the aspect ratio and an explicit statement of
-what must stay fixed for later shots. Used two ways: to generate a reference
-still that anchors an image-to-video generation, and to rebuild a graphic or
-title card that no video engine should be asked to animate from scratch.
+This is the load-bearing prompt, not a supporting one. Every field except motion,
+plus the aspect ratio, plus the continuity line.
+
+```
+[Framing], [aspect]. [Subject, bible description verbatim].
+[Location, bible description verbatim]. [Light]. [Palette and grade].
+Continuity: same [entity] as [shot_id], unchanged — [what must not drift].
+No on-screen text, no logo, no watermark.
+```
+
+The continuity line is computed, not judged: for each of the shot's bible
+references, the most recent earlier shot sharing that reference is the anchor.
+A shot whose entities are all new has no continuity line, and those shots are
+the ones to generate first and approve hardest — everything after them inherits
+whatever they establish.
+
+Captions are **never** generated into the still. They are burned on at assembly
+from `graphics.csv`, where their text and timing are already recorded; asking an
+image model for text produces misspelled text at the wrong size.
 
 Hand rendering to `/generating-images`; do not invent a rendering path here.
 
@@ -145,7 +202,7 @@ shot is photographic before reading photographic properties into it.
 
 **Rendered prompts:**
 
-*Video* — 4 s, static frame, flat vector motion graphic on an off-white ground. A
+*Video (silent)* — 4 s, static frame, flat vector motion graphic on an off-white ground. A
 rounded navy card draws itself in from a single outline stroke, then fills solid.
 A white club crest and wordmark resolve inside it above a white pill button
 reading SUBSCRIBE. The frame holds. A cursor enters from the lower right, travels
@@ -154,6 +211,15 @@ and a bell icon beside it toggles to filled. Palette is off-white, deep navy and
 gold. Real time throughout, no camera movement, no depth of field. Audio: a
 single soft UI click on the button press, a short two-note notification chime on
 the bell. No music. Ends on a hard cut.
+
+Written for the four-stage order, that same shot's motion prompt drops the scene
+description the still already fixed and ends with the silence clause: *Animate
+from the reference still. Static frame, no camera movement. The card draws itself
+in from a single outline stroke, fills solid, then the crest and wordmark resolve;
+the frame holds; a cursor enters from the lower right, travels to the button and
+clicks; the button flips to a yellow SUBSCRIBED state and a bell icon toggles to
+filled. Real time throughout. No audio, no dialogue, no music, no sound effects —
+silent clip. 4 s, 16:9.*
 
 *Image (first frame)* — Flat vector graphic, 16:9, off-white background, a single
 thin navy rounded-rectangle outline centred at about 35% of frame width, no fill,

@@ -6,16 +6,16 @@ low-rate contact sheets a reader needs before deciding which shots deserve a
 deep pass.
 
 Cost, measured on this class of machine: a 232 s source surveys in about 8 s,
-a 3642 s (60.7 min) source in about 5.5 min. Detection, the loudness pass and
-the sheets each decode the file once, so the wall clock is roughly three times
-the detection cost. Detection results are cached, so changing --threshold
+a 3642 s (60.7 min) source in about 5.5 min with every pass on. Detection and
+the sheets each decode the file once; the loudness pass is off by default
+because a rebuild never reads it. Detection results are cached, so changing --threshold
 afterwards costs nothing.
 
 Outputs, all under <outdir>:
     shots.csv          the contract table Stage 3 agents plan against
     cuts.csv           every candidate boundary above the detection floor
     calibration.txt    what each threshold would have produced
-    audio_map.csv      per-second loudness and the silence ranges
+    audio_map.csv      per-second loudness and silence ranges (--audio-map only)
     survey_sheets/*    time-labelled thumbnail grids at --survey-fps
     probe.json         container facts
     budget.txt         projected Stage 3 cost, in frames and agents
@@ -392,8 +392,11 @@ def main():
     ap.add_argument("--no-sheets", action="store_true",
                     help="skip the contact sheets; one decode cheaper, but "
                          "nobody can read what the video is about")
-    ap.add_argument("--no-audio-map", action="store_true",
-                    help="skip the loudness pass; one decode cheaper")
+    ap.add_argument("--audio-map", action="store_true",
+                    help="write per-second loudness and silence ranges. Off by "
+                         "default: it costs a whole decode pass, and the audio "
+                         "for a rebuild is generated per shot from the deep "
+                         "rows, not read off a per-second curve")
     ap.add_argument("--redetect", action="store_true",
                     help="ignore a cached cuts.csv and decode again")
     args = ap.parse_args()
@@ -441,10 +444,12 @@ def main():
             f"for this content — read calibration.txt and decide before Stage 3, "
             f"because every downstream reading inherits this boundary set.")
 
-    if args.no_audio_map:
-        limitations.append("--no-audio-map: audio_map.csv was not written.")
-    else:
+    if args.audio_map:
         audio_map(src, outdir, duration, facts["n_audio_streams"] > 0, limitations)
+    else:
+        limitations.append("audio_map.csv not written (default). Pass "
+                           "--audio-map if you need the per-second loudness "
+                           "curve; the rebuild does not.")
 
     if args.no_sheets:
         n_sheets = 0

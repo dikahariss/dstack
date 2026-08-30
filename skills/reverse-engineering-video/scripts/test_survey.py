@@ -171,10 +171,23 @@ def test_skipping_the_optional_passes_is_recorded_not_silent():
         make_clip(clip)
         out = pathlib.Path(tmp) / "survey"
         subprocess.run([sys.executable, str(SCRIPT), str(clip), str(out),
-                        "--no-sheets", "--no-audio-map"],
-                       check=True, capture_output=True)
+                        "--no-sheets"], check=True, capture_output=True)
         limits = (out / "limitations.txt").read_text()
-        assert "--no-sheets" in limits and "--no-audio-map" in limits
+        assert "--no-sheets" in limits
+        assert "audio_map.csv not written" in limits, (
+            "the default skip must be recorded, not silent")
+        assert not (out / "audio_map.csv").exists()
+
+
+def test_audio_map_is_written_when_asked_for():
+    with tempfile.TemporaryDirectory() as tmp:
+        clip = pathlib.Path(tmp) / "clip.mp4"
+        make_clip(clip)
+        out = pathlib.Path(tmp) / "survey"
+        subprocess.run([sys.executable, str(SCRIPT), str(clip), str(out),
+                        "--no-sheets", "--audio-map"],
+                       check=True, capture_output=True)
+        assert (out / "audio_map.csv").exists()
 
 
 def test_a_sheet_has_no_empty_cells_beyond_the_last_frame():
