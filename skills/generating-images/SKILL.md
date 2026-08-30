@@ -81,7 +81,9 @@ engine answers first silently prefers a worse image.
 | The request | Engine | Why |
 |---|---|---|
 | A single still, highest fidelity available, lossless | `codex` | ~1.57 MP PNG; no observed text leakage |
+| An unusual composition that must hold exactly — a split frame, a hard seam | `codex` | reproduces a stacked two-panel frame literally; agy resolves it into one continuous scene |
 | A subject with strong local or cultural specificity | `agy` | markedly better world knowledge of place, dress, objects |
+| A series where turnaround matters | `agy` | ~34 s against codex's ~95 s on the same prompts |
 | A shot that must match an earlier image — same person, same room | either; `agy` by default | both take a reference: `agy` adds its directory to the workspace, `codex` attaches it with `-i`. Chain them — each image generated with the previous one attached |
 | Anything with legible text rendered *in* the image | neither by default | both leak or mangle lettering; see `references/engines.md` |
 

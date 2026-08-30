@@ -30,7 +30,8 @@ codex exec --sandbox read-only --skip-git-repo-check \
 | Size | 941×1672 (1.57 MP) on every run, whatever the prompt asked for |
 | Format | PNG, rgb24, lossless, ~2 MB |
 | Location | `$CODEX_HOME/generated_images/<session>/exec-<uuid>.png`; the filename cannot be chosen |
-| Time | 73 s, 80 s |
+| Time | 78–113 s (n=7, mean 95 s); earlier runs 73 s, 80 s |
+| File size | 1.8–3.0 MB |
 | Tokens | ~35 k per call |
 | Text leakage | none observed |
 | Reference images | **yes** — `-i <FILE>` (repeatable) attaches an image to the initial prompt. Verified 2026-08-30: a three-image chain, each generated with the previous one attached, held the same product across a full change of location |
@@ -96,14 +97,29 @@ Aspect ratios verified: `9:16`. The vendor documents `1:1`, `3:2`, `2:3`, `3:4`,
 (`ai.google.dev/gemini-api/docs/image-generation`, retrieved 2026-08-29); the
 rest are unmeasured here.
 
+**Time.** 32–36 s (n=3, mean 34 s), against codex's 95 s on the same three
+prompts — roughly **2.8× faster**. Files are 0.76–0.91 MB JPEG.
+
 **What it is better at.** Same prompt, same subject: codex produced a generic
 tropical waterfront, agy produced regionally correct dress, boats and objects.
-Its world knowledge of place is the reason to reach for it.
+Its world knowledge of place is the reason to reach for it. Corroborated on a
+second subject (2026-08-30): asked for an Indonesian nursery, agy rendered raised
+seedbeds with rows of black polybags and concrete edging, while codex produced a
+generic white-canopy greenhouse. Same prompt, same run.
 
-**Character consistency, verified.** Pass an earlier image with `--add-dir` and
-ask for the same subject in a new pose: face, clothing and setting held across a
-separate call (108 s). This is the one capability the codex route does not have,
-and it is what makes multi-shot sequences possible.
+**What codex is better at, beyond resolution.** The same run found a trade the
+other way. The source frame was a *stacked two-panel* composition — an upper
+scene and a lower scene meeting at a hard horizontal seam, a common short-form
+device. codex reproduced the seam literally; agy resolved it into one continuous
+perspective scene with the lower content as foreground. So: agy for the place,
+codex for an unusual composition you need held exactly.
+
+**Character consistency, verified.** Pass an earlier image with `--add-dir`,
+**name its path in the prompt**, and ask for the same subject in a new pose:
+face, clothing and setting held across a separate call (108 s). The directory
+only puts the file in the workspace; agy will not look at it unless the prompt
+says which file to look at. This differs from codex, where `-i` attaches the
+image directly and the prompt need only say what must match.
 
 **Text leakage, verified.** With `Constraints: no text, no logo, no watermark`
 in the prompt, one run still lettered a boat hull. The constraint is advisory.
