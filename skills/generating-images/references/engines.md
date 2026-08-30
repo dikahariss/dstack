@@ -10,7 +10,7 @@ trusting a figure on a newer version.
 | Route | Works without a paid API key? | Output |
 |---|---|---|
 | `codex exec` → built-in `image_gen` | yes, on a ChatGPT subscription | PNG 941×1672 |
-| `agy --print` → built-in `generate_image` | yes, on an Antigravity account | JPEG 768×1376 |
+| `agy --print` → built-in `generate_image` | yes, on an Antigravity account | JPEG 768×1376, but see *Size is not invariant* |
 | `gemini -p` on the individual free tier | **no — the tier was removed** | — |
 | `gemini` + the `nanobanana` extension | no, needs a metered API key | 1K–4K |
 | The codex fallback CLI (`gpt-image-2`) | no, needs a metered API key | up to 2160×3840 |
@@ -30,9 +30,11 @@ codex exec --sandbox read-only --skip-git-repo-check \
 | Size | 941×1672 (1.57 MP) on every run, whatever the prompt asked for |
 | Format | PNG, rgb24, lossless, ~2 MB |
 | Location | `$CODEX_HOME/generated_images/<session>/exec-<uuid>.png`; the filename cannot be chosen |
-| Time | 73 s, 80 s |
+| Time | 78–113 s (n=7, mean 95 s); earlier runs 73 s, 80 s |
+| File size | 1.8–3.0 MB |
 | Tokens | ~35 k per call |
 | Text leakage | none observed |
+| Reference images | **yes** — `-i <FILE>` (repeatable) attaches an image to the initial prompt. Verified 2026-08-30: a three-image chain, each generated with the previous one attached, held the same product across a full change of location |
 
 **Authentication.** `~/.codex/auth.json` with `auth_mode: chatgpt`. The built-in
 tool needs no `OPENAI_API_KEY` and bills against the subscription. Check with
@@ -46,6 +48,15 @@ tool needs no `OPENAI_API_KEY` and bills against the subscription. Check with
 | `--skip-git-repo-check` | outside a trusted git directory the command dies with `Not inside a trusted directory` and prints nothing else |
 | `--sandbox read-only` | sufficient — the agent still runs read commands such as `identify` |
 | `- < prompt.txt` | the prompt arrives on stdin, which avoids quoting problems on long prompts |
+
+**The quota is real and it stops you mid-batch.** Observed 2026-08-30: after
+roughly nineteen image calls in one session the CLI began exiting 1 with
+`ERROR: You've hit your usage limit`, three calls in a row, killing the last
+third of a nine-image run. It is not retryable and not a transient error — plan
+a long batch to survive being cut off partway, and check every call rather than
+assuming a batch that started well finished well. The exact allowance depends on
+the plan and on whatever else used the subscription that day, so nineteen is an
+observation, not a limit.
 
 **Size cannot be requested.** A prompt demanding `2160x3840`, quoting the tool's
 own published constraints back at it, returned 941×1672. The built-in tool
@@ -95,18 +106,74 @@ Aspect ratios verified: `9:16`. The vendor documents `1:1`, `3:2`, `2:3`, `3:4`,
 (`ai.google.dev/gemini-api/docs/image-generation`, retrieved 2026-08-29); the
 rest are unmeasured here.
 
+**Time.** 32–36 s (n=3, mean 34 s), against codex's 95 s on the same three
+prompts — roughly **2.8× faster**. Files are 0.76–0.91 MB JPEG.
+
 **What it is better at.** Same prompt, same subject: codex produced a generic
 tropical waterfront, agy produced regionally correct dress, boats and objects.
-Its world knowledge of place is the reason to reach for it.
+Its world knowledge of place is the reason to reach for it. Corroborated on a
+second subject (2026-08-30): asked for an Indonesian nursery, agy rendered raised
+seedbeds with rows of black polybags and concrete edging, while codex produced a
+generic white-canopy greenhouse. Same prompt, same run.
 
-**Character consistency, verified.** Pass an earlier image with `--add-dir` and
-ask for the same subject in a new pose: face, clothing and setting held across a
-separate call (108 s). This is the one capability the codex route does not have,
-and it is what makes multi-shot sequences possible.
+**What codex is better at, beyond resolution.** The same run found a trade the
+other way. The source frame was a *stacked two-panel* composition — an upper
+scene and a lower scene meeting at a hard horizontal seam, a common short-form
+device. codex reproduced the seam literally; agy resolved it into one continuous
+perspective scene with the lower content as foreground. So: agy for the place,
+codex for an unusual composition you need held exactly.
+
+**Character consistency, verified.** Pass an earlier image with `--add-dir`,
+**name its path in the prompt**, and ask for the same subject in a new pose:
+face, clothing and setting held across a separate call (108 s). The directory
+only puts the file in the workspace; agy will not look at it unless the prompt
+says which file to look at. This differs from codex, where `-i` attaches the
+image directly and the prompt need only say what must match.
 
 **Text leakage, verified.** With `Constraints: no text, no logo, no watermark`
 in the prompt, one run still lettered a boat hull. The constraint is advisory.
 Inspect the result whenever stray lettering would matter.
+
+**Failure modes, observed in one six-image batch (2026-08-30).** Two of six
+failed, in two different ways, and neither produced an image:
+
+| Symptom | What it is |
+|---|---|
+| `agy returned no structured_output` | the call ran and returned nothing parseable. Re-run it. |
+| `status: SUCCESS` with `path: ""` | **the worst of the three.** The call ran ~44 s, spent 96 k tokens, wrote a real image into its own `.tempmediaStorage`, and reported success with no path. Not a generation failure — a reporting failure. `Path("")` is `.` in Python, which is where the directory error came from. |
+| the returned file is one that already existed | asked to generate, agy returned a **byte-identical copy of an earlier codex output** sitting in its workspace. See below. |
+
+A 4-of-6 success rate on one batch is not a measured reliability figure, but it
+is enough to say: **check every exit code in a batch, never just the last one.**
+
+**It returns an existing file instead of making one, about a third of the time.**
+Verified 2026-08-30 by sha256 across nine reference-carrying calls:
+
+| Outcome | n |
+|---|---|
+| a new image | 3 |
+| **the file it was given**, byte-identical | 3 |
+| `SUCCESS` with an empty path | 3 |
+
+Every failure reported `SUCCESS`, and the reused files passed the whole gate —
+real file, real header dimensions, real copy-out. Only provenance was false.
+
+Clearing the workspace does **not** fix it. A control run whose directory held
+exactly one file, the reference, returned that reference. So this is not
+contamination by stray outputs; given a reference image, agy sometimes answers
+with it. The script now hashes the result against every reference, the reference
+directory and the output directory, and fails on a match — keeping prior
+generations out of the workspace narrows the blast radius but is not a cure.
+
+**On the same nine prompts codex returned nine unique images.** If a series must
+be verifiably generated rather than plausibly generated, that difference
+outweighs agy's speed and its better world knowledge.
+
+**Size is not invariant.** This page recorded 768×1376 JPEG as what agy returns.
+The same run produced a 941×1672 PNG. Which model variant `agy` routes
+`generate_image` to is still unmeasured (see below), so treat the size as
+observed-per-run, not fixed — which is the whole reason the script reads the
+header instead of trusting a claim.
 
 **Housekeeping.** Generated files accumulate under
 `~/.gemini/antigravity-cli/brain/` and nothing prunes them. Copy what you need
@@ -163,11 +230,15 @@ path.
 
 Named so nobody assumes otherwise.
 
-- Rate limits and daily quotas on either subscription.
+- The exact daily quota on either subscription. codex's exists and was hit after
+  ~19 calls in one session (see above); agy's is unknown, though one run returned
+  `RESOURCE_EXHAUSTED` in place of a path.
 - Behaviour of parallel calls against either engine.
 - Which model variant `agy` routes `generate_image` to — `agy models` lists text
   models only.
-- Whether the codex built-in tool can edit a file on disk. Its own skill states
-  the image must first be in conversation context via `view_image`.
+- Whether the codex built-in tool can **edit** an existing file on disk. Its own
+  skill states the image must first be in conversation context via `view_image`.
+  This is a different question from attaching a reference, which `-i` does and
+  which is now measured.
 - Any local or offline generator. Not investigated; it needs a GPU that no probe
   here checked for.

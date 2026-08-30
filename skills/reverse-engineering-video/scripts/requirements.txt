@@ -1,0 +1,7 @@
+numpy>=1.24
+pillow>=10.0
+
+# Optional upgrade. `detect-adaptive` handles fades and slow dissolves that the
+# ffmpeg scene filter scores below threshold. Without it the survey still runs —
+# shot detection is pure ffmpeg — and limitations.txt records which detector ran.
+# scenedetect[opencv]>=0.6

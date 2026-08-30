@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.22.0
+    version: 0.23.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -105,7 +105,8 @@ is a routing gap, never a licence to skip the check.
 | Harvest citations → RIS from an academic database (SLR/bibliometric) | `/literature-search` |
 | A RIS/BibTeX corpus → research-topic trends + diagrams | `/literature-trends` |
 | Download open-access PDFs for a citation corpus | `/literature-fulltext` |
-| Audit a short-form video file; build a video dataset/corpus | `/auditing-short-video` |
+| Audit a video file — is it any good? build a video dataset/corpus | `/auditing-video` |
+| Take a video apart into shots and rebuild it as generation prompts | `/reverse-engineering-video` |
 | Show or bump VERSION | `/managing-version` |
 | Triage / classify a pasted issue | `/classify-issue` |
 | Learn from past sessions — turn them into durable rules | `/learning-from-sessions` |
@@ -155,6 +156,10 @@ commented-out code and no unowned TODO.
 - Literature review: `/literature-search` → `/literature-trends` → `/literature-fulltext`.
 - Answering from the web: `/researching-facts` (two engines in parallel, then the
   primary source) → `/verifying-before-done`. Academic corpus: `/literature-search`.
+- Rebuilding a video: `/reverse-engineering-video` (survey, then structure) →
+  `/dispatching-parallel-agents` (one agent per sequence once the frame budget
+  exceeds one context) → `/generating-images` (the stills the prompts describe).
+  Judging one instead is `/auditing-video`; a file can go through both.
 - Modelling a system: `/discovering-requirements` (its actor table feeds both) →
   `/modelling-system-behaviour` (who wants what, in what order) →
   `/modelling-business-processes` (who does what, as a `.bpmn`) → `/writing-specs`.
@@ -210,6 +215,14 @@ The skill itself tells you which.
 
 ## Changes
 
+- **0.23.0** — Registered `/reverse-engineering-video`; renamed
+  `/auditing-short-video` to `/auditing-video`. One row could not carry both
+  jobs: the audit answers "is this any good", while rebuilding a video needs a
+  shot bible, an edit list and prompts — routing the second into the first gave
+  a retention critique nobody asked for. The rename is gated, not cosmetic: ten
+  of the audit's 36 items are feed mechanics and `format_class` now turns them
+  off elsewhere. Old ids stay triggers per ADR-0027.
+
 - **0.22.0** — Registered `/generating-images`. Asking for a picture routed to
   nothing: the catalog covers charts, diagrams and screens, but an image that
   has to be *created* fell through to whatever the model improvised. Measurement
@@ -223,56 +236,32 @@ The skill itself tells you which.
   paragraph: the owner reported generated code arriving padded with narration,
   which reads as machine-written and costs credibility at senior level. It sits
   in the always-on router because no implementation skill fires in every session.
-- **0.19.1–0.19.2** — ADR-0030 catalog review (list openness, economy),
-  panel-verified. The router table is open by construction: the catalog grows,
-  and a situation with no row is a routing gap, never a licence to skip the
-  check.
-- **0.19.0** — Registered `multi-persona-review` 0.5.0's product-review
-  expansion: the row now covers one artifact **or one product-review packet**,
-  a product-quality chain routes running-product evidence through `/running-uat`
-  first, and the catalog carries the new boundary (coverage by product class and
-  lifecycle gate; an AI seat never substitutes for human evidence).
-- **0.18.0** — Repointed the catalog at `writing-plans` 0.9.0 and made its chain
-  with `multi-persona-review` run both ways; the plan side had been silent about
-  a hand-off the review side already claimed.
-- **0.17.0** — Repointed at `multi-persona-review` 0.4.0 (Dreamer / Realist /
-  Critic, ending in an owned decision). Added a router row keyed on the symptom
-  users actually report — reviewers agreeing too readily — since nobody types
-  "multi persona review". Budget 4000→4500.
-- **0.16.0** — Registered `/prioritizing-work`: router row, feature chain, and
-  catalog entry. The router row alone would not have fired — the phrase users
-  actually type is "do all of it", never "which comes first" — so the
-  do-everything paragraph keys on the **omission** of an order rather than on
-  the word "prioritize", and states the under-five-items exception.
-- **0.15.0** — English-only sweep of `references/skill-catalog.md`, enforcing
-  0.7.0 below; the document types `pdf-to-rag` matches (Permenhub, Inpres,
-  Juknis, UU) and the names Neliti and perpusnas e-resources are preserved as
-  data. Budget 3000 → 4000: the router had grown a frontend-first rule and
-  longer chains.
-- **0.14.0** — Stopped routing every behavior change into the full red-green
-  cycle, and put the visible slice first. Transcript mining measured
+- **0.19.x** — ADR-0030 catalog review; the router table is open by
+  construction, since a situation with no row is a routing gap, never a licence
+  to skip the check. Registered `multi-persona-review` 0.5.0's product-review
+  expansion, with human evidence kept separate from AI seats.
+- **0.16.0–0.18.0** — Registered `/prioritizing-work` and made the
+  `writing-plans` ↔ `multi-persona-review` chain run both ways. The router row
+  alone would not have fired — users type "do all of it", never "which comes
+  first" — so the do-everything paragraph keys on the **omission** of an order.
+  Repointed at `multi-persona-review` 0.4.0 (Dreamer / Realist / Critic), whose
+  row keys on the symptom users actually report: reviewers agreeing too readily.
+- **0.14.0–0.15.0** — Stopped routing every behavior change into the full
+  red-green cycle and put the visible slice first. Transcript mining measured
   `/test-driven-development` as the catalog's most expensive skill (median 90
   min to the next human turn, p90 460) while the owner still tested manually
-  afterwards, and 12+ pushback turns were about the visible product arriving
-  late — the archetype being 78 green server tests answered with "I still
-  cannot see any result". "Rigid" now names the gate, not the whole cycle.
-- **0.11.0–0.13.0** — Registered `diagramming-architecture`,
-  `wireframing-interfaces`, `auditing-short-video`,
-  `modelling-business-processes` and `modelling-system-behaviour`, plus a
-  modelling chain. The two modelling skills sit beside
-  `diagramming-architecture` rather than inside it: the draw.io CLI cannot read
-  `.bpmn` at all and Mermaid has no use case diagram.
-- **0.8.0–0.10.0** — Registered the specification chain at the head of the
-  feature chain: `discovering-requirements` → `writing-specs` →
-  `designing-test-cases` → `writing-plans`.
-- **0.7.0** — Reverted a bilingual trigger table added the same day: it rested
-  on an unverified claim that cheap models match lexically rather than
+  afterwards, and 12+ pushback turns were about the product arriving late — the
+  archetype being 78 green server tests answered with "I still cannot see any
+  result". "Rigid" now names the gate, not the whole cycle. English-only sweep
+  of the catalog, preserving the Indonesian document types as data.
+- **0.7.0–0.13.0** — Registered the specification chain, the diagramming and
+  modelling skills, and video auditing. Reverted a bilingual trigger table: it
+  rested on an unverified claim that cheap models match lexically rather than
   translating, and cost 500 tokens for a capability every model already has.
   Skills stay English; one line says match on intent, reply in the user's
   language.
 - **0.1.0–0.6.0** — Initial, reduced to dstack's single host (Claude Code);
   inline router and chains plus the bundled `references/skill-catalog.md` and
   `eval/cases.jsonl` (ADR-0016/0017); `calibration: schema-meta` (ADR-0025);
-  registered `pdf-to-rag`, the literature pipeline, `running-uat`,
-  `multi-persona-review` and `learning-from-sessions`; repointed at the five
-  renamed skills (ADR-0027).
+  registered the literature pipeline, `running-uat`, `multi-persona-review` and
+  `learning-from-sessions`; repointed at the five renamed skills (ADR-0027).

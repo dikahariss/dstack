@@ -10,6 +10,33 @@ values below and translated only when rendering the report; a translated
 grouping key fragments every per-persona corpus aggregate. Item text, evidence
 and actions are written in the user's language.
 
+## The format gate — read this before scoring anything
+
+The instrument was calibrated on short vertical video. Ten items only mean
+something there, so they gate on `semantic.csv.format_class`:
+
+| Item | Why it is short-form-only |
+|---|---|
+| CRD-01, CRD-02, CRD-03, CRD-04 | The hook window. A one-second attention test is a feed mechanic; a documentary earns attention over minutes. |
+| CST-02 | Platform duration rules. There is no TikTok monetisation floor for a landscape film. |
+| CST-05 | Loop-ability. Nothing loops a 20-minute video. |
+| GRW-01 | Retention inference. The curve it reasons about is a feed curve. |
+| GRW-05 | Safe zone. There is no UI chrome overlay outside a vertical feed. |
+| BRD-04 | Third-party watermark as a reach cap. The cap is a feed algorithm's. |
+| MON-03 | Paid-media readiness, which is scored against feed ad specs. |
+
+Outside `format_class=short_vertical` these ten are `applicable=false`, and
+`validate_audit.py` **fails** an audit that scores them anyway. The list is
+**closed by design** — it is what makes two audits comparable, so it moves only
+by editing this file *and* `taxonomy.md` and bumping `taxonomy_version`.
+
+The other 26 items are craft and rights items that hold at any duration. Scoring
+a documentary against a hook benchmark does not make the instrument broader; it
+makes the result wrong, and the wrongness is invisible in the final number.
+
+Stratify on `format_class` before pooling any score across videos: the two
+classes have different denominators by construction.
+
 ## The three rules that stop a wrong score
 
 **1. `applicable=false` is a real answer.** An element absent *by design* is not
@@ -50,6 +77,8 @@ ran, not which facts are knowable.
 `awareness`, `engagement`, `community_building`, `brand_identity` or
 `personal_archive`, the Monetization items are `applicable=false`. A top-of-funnel
 video that correctly carries no CTA must not be docked for being built right.
+
+▽ marks an item that gates to `applicable=false` outside `format_class=short_vertical`.
 
 ## Scoring rubric
 
@@ -93,10 +122,10 @@ separate "next time you shoot" list.
 
 | ID | Pillar | Item | Weight | What to measure |
 |---|---|---|---|---|
-| CRD-01 | Hook | Visual motion in the first second | 3 | `motion_score` at t=0.5 s vs `motion_median`; null if `motion_comparable=false` |
-| CRD-02 | Hook | Audio energy in the first second | 3 | `audio_dbfs` at t=0 vs plateau |
-| CRD-03 | Hook | Result or promise shown early | 3 | contact sheets 0–3 s; needs `hook_frames_n >= 4` |
-| CRD-04 | Hook | Human face within first 3 s | 2 | `face_count` in the hook window; if detection is unavailable, look at the first contact sheet and record `evidence_source=vision` |
+| CRD-01 ▽ | Hook | Visual motion in the first second | 3 | `motion_score` at t=0.5 s vs `motion_median`; null if `motion_comparable=false` |
+| CRD-02 ▽ | Hook | Audio energy in the first second | 3 | `audio_dbfs` at t=0 vs plateau |
+| CRD-03 ▽ | Hook | Result or promise shown early | 3 | contact sheets 0–3 s; needs `hook_frames_n >= 4` |
+| CRD-04 ▽ | Hook | Human face within first 3 s | 2 | `face_count` in the hook window; if detection is unavailable, look at the first contact sheet and record `evidence_source=vision` |
 | CRD-05 | Pacing | Shot duration allows processing | 3 | `shot_median_s`, `shot_pct_under_0_5s` vs the genre's own norm |
 | CRD-06 | Pacing | Cuts synced to beat above chance | 2 | `cut_beat_sync_lift` **and** `cut_beat_sync_p`; p>0.05 caps this at 1 |
 | CRD-07 | Pacing | Rhythm variation (breathing room) | 2 | `cuts_in_sec` distribution |
@@ -109,21 +138,21 @@ separate "next time you shoot" list.
 | ID | Pillar | Item | Weight | What to measure |
 |---|---|---|---|---|
 | CST-01 | Structure | Format fits the named platform | 3 | aspect/resolution/codec vs `platform_targets` |
-| CST-02 | Structure | Duration fits platform rules and objective | 3 | `duration_s` vs the platform table; TikTok monetisation needs ≥60 s |
+| CST-02 ▽ | Structure | Duration fits platform rules and objective | 3 | `duration_s` vs the platform table; TikTok monetisation needs ≥60 s |
 | CST-03 | Structure | Clear narrative acts | 2 | your `segments.csv` |
 | CST-04 | Structure | Drop-risk transitions mitigated | 3 | `segments.csv.drop_risk`, taxonomy 3.1+ only. The 3.0 rule made segment 1 `high` on every video, so this item was scoring a constant |
-| CST-05 | Structure | Loop-ability | 2 | `loop_similarity` as a hint, plus your own look at first vs last frame |
+| CST-05 ▽ | Structure | Loop-ability | 2 | `loop_similarity` as a hint, plus your own look at first vs last frame |
 | CST-06 | Message | One clear core message | 2 | can you state it in one sentence? |
 
 ## Growth / Distribution (7 items, weight 18)
 
 | ID | Pillar | Item | Weight | What to measure |
 |---|---|---|---|---|
-| GRW-01 | Retention | Watch-time signals protected | 3 | hook + pacing findings; **inference only — mark it as such** |
+| GRW-01 ▽ | Retention | Watch-time signals protected | 3 | hook + pacing findings; **inference only — mark it as such** |
 | GRW-02 | Distribution | On-screen text carries the message sound-off | 3 | `onscreen_text.csv` rows with `text_role=caption\|kicker`; fall back to `seconds_with_text_pct` when OCR ran |
 | GRW-03 | Distribution | Machine-readable keywords present | 3 | the `text` column of `onscreen_text.csv` (brand, title, topic words) |
 | GRW-04 | Distribution | Audio supports discovery | 2 | **Not scoreable from the file.** Ask the user what sound was used and whether it came from the in-app library. No answer → `applicable=false` |
-| GRW-05 | Distribution | Critical content inside the safe zone | 2 | `onscreen_text.csv.position_band` — `lower_mid`/`bottom` is at risk. `edge_energy_safe_index` is corroboration only; it measures texture, not text |
+| GRW-05 ▽ | Distribution | Critical content inside the safe zone | 2 | `onscreen_text.csv.position_band` — `lower_mid`/`bottom` is at risk. `edge_energy_safe_index` is corroboration only; it measures texture, not text |
 | GRW-06 | Interaction | Comment trigger exists | 3 | a content-intrinsic open loop. "Comment X below" / "tag 3 friends" is engagement bait and is demoted — do not recommend it |
 | GRW-07 | Interaction | Save/share trigger exists | 2 | screenshot-worthy frame, reference value |
 
@@ -134,7 +163,7 @@ separate "next time you shoot" list.
 | BRD-01 | Identity | Own attribution visible and not UI-occluded | 2 | handle/watermark in `ocr_text`, positioned outside the platform margins |
 | BRD-02 | Identity | Recognisable visual signature | 2 | consistent style across sheets; check against the creator's other audits if any exist |
 | BRD-03 | Identity | Differentiator communicated | 2 | is the unique element named or shown? |
-| BRD-04 | Identity | **No third-party platform watermark** | 3 | any `onscreen_text.csv` row with `text_role=watermark_thirdparty`; that is how the boolean is determined. A TikTok watermark on a file posted to Reels is a reach cap, not a branding strength. Present → score 0 and make re-export from source the top fix |
+| BRD-04 ▽ | Identity | **No third-party platform watermark** | 3 | any `onscreen_text.csv` row with `text_role=watermark_thirdparty`; that is how the boolean is determined. A TikTok watermark on a file posted to Reels is a reach cap, not a branding strength. Present → score 0 and make re-export from source the top fix |
 
 ## Performance / Monetization (3 items, weight 7)
 
@@ -145,7 +174,7 @@ all three are `applicable=false`.
 |---|---|---|---|---|
 | MON-01 | Conversion | Explicit CTA present and timed | 3 | **Time the CTA COPY, not the card.** A platform logo is not an ask. Find the frame where the offer text ("now streaming", "link in bio", "shop now") first becomes legible, and report its dwell as a share of runtime. Measured on one real promo: the card appeared at 31.8 s and the offer line at 35.0 s — 1.2 s of 36.2 s (3.3%), and both codings scored it 5/5 off the card |
 | MON-02 | Conversion | Commercial path visible | 2 | price/availability/link cues |
-| MON-03 | Conversion | Paid-media readiness | 2 | three checks: ad-spec safe zone, licensed audio (see ACC-03), platform ad duration cap. Any unknown → `applicable=false` |
+| MON-03 ▽ | Conversion | Paid-media readiness | 2 | three checks: ad-spec safe zone, licensed audio (see ACC-03), platform ad duration cap. Any unknown → `applicable=false` |
 
 ## Community (2 items, weight 4)
 

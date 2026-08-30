@@ -45,11 +45,13 @@ def make_clip(path, seconds=6, audio=True):
     subprocess.run(cmd, check=True, capture_output=True)
 
 
-def analyst_files(d, run_id, objective="awareness", score_mon=False):
+def analyst_files(d, run_id, objective="awareness", score_mon=False,
+                  format_class="short_vertical", short_applicable=True):
     vid = pd.read_csv(f"{d}/video_master.csv").video_id.iloc[0]
     dur = pd.read_csv(f"{d}/video_master.csv").duration_s.iloc[0]
     base = dict(video_id=vid, run_id=run_id, coder_id="test")
     pd.DataFrame([{**base, "taxonomy_version": "3.1", "scored_at_utc": "2026-01-01T00:00:00Z",
+                   "format_class": format_class,
                    "objective": objective, "funnel_stage": "top",
                    "subject_domain": "other", "intent": "entertain",
                    "production_mode": "single_take", "commercial_relationship": "none",
@@ -60,14 +62,22 @@ def analyst_files(d, run_id, objective="awareness", score_mon=False):
                    "segment_type": "hook_reveal", "visual_description": "x",
                    "retention_function": "y", "drop_risk": "low"}]
                  ).to_csv(f"{d}/segments.csv", index=False)
+    short_only = ["CRD-01", "CRD-02", "CRD-03", "CRD-04", "CST-02",
+                  "CST-05", "GRW-01", "GRW-05", "BRD-04", "MON-03"]
+    ids = short_only + [f"XXX-{i:02d}" for i in range(36 - len(short_only))]
     rows = []
-    for i in range(36):
-        iid = f"XXX-{i:02d}"
-        mon = iid in ("MON-01",)
+    for i, iid in enumerate(ids):
+        # MON-03 sits under both gates: it is short-form-only AND a Monetization
+        # item, so an objective outside the gate closes it independently.
+        gated = ((iid in short_only and not short_applicable)
+                 or (iid.startswith("MON-") and not score_mon))
         rows.append({**base, "item_id": iid, "persona": "P", "pillar": "Q",
                      "item": f"real text {i}", "weight": 2,
-                     "applicable": "true", "score": 3 if i == 0 else 5,
-                     "evidence": "e", "evidence_source": "computed", "action": ""})
+                     "applicable": "false" if gated else "true",
+                     "score": "" if gated else (3 if i == 0 else 5),
+                     "evidence": "" if gated else "e",
+                     "evidence_source": "" if gated else "computed",
+                     "action": ""})
     pd.DataFrame(rows).to_csv(f"{d}/scores.csv", index=False)
 
 
@@ -197,6 +207,57 @@ def main():
             hdr = [c.value for c in ws[1]]
             w = ws.column_dimensions[L(hdr.index("text") + 1)].width
             check("free-text column is wide, not 12", w and w >= 40, f"width={w}")
+
+        print("\n[7] format_class gates the ten short-form-only items")
+        SHORT_ONLY = ["CRD-01", "CRD-02", "CRD-03", "CRD-04", "CST-02",
+                      "CST-05", "GRW-01", "GRW-05", "BRD-04", "MON-03"]
+
+        def audit(fmt, short_applicable=True, objective="awareness"):
+            analyst_files(a, "run-f", objective=objective, format_class=fmt,
+                          short_applicable=short_applicable)
+            sc = pd.read_csv(f"{a}/scores.csv")
+            sc["action"] = "do x at 0:01"
+            sc.to_csv(f"{a}/scores.csv", index=False)
+            return run(f"{HERE}/validate_audit.py", a)
+
+        r = audit("long_form", short_applicable=True)
+        errs = [l for l in r.stdout.splitlines() if "FORMAT-GATE" in l and "ERROR" in l]
+        check("long_form with short-only items applicable=true is rejected",
+              r.returncode != 0 and errs, r.stdout[-300:])
+        check("the rejection names the offending items",
+              errs and all(i in errs[0] for i in ("CRD-01", "GRW-05")),
+              errs[0] if errs else "no FORMAT-GATE error")
+
+        r = audit("long_form", short_applicable=False)
+        check("long_form passes once the ten are gated off",
+              r.returncode == 0, r.stdout[-300:])
+
+        r = audit("other", short_applicable=False)
+        check("other gates the same ten", r.returncode == 0, r.stdout[-300:])
+
+        r = audit("short_vertical", short_applicable=True)
+        check("short_vertical still scores all ten", r.returncode == 0,
+              r.stdout[-300:])
+
+        # A deliberate absence inside short_vertical is legal, so this warns
+        # rather than errors — the instrument already treats absent-by-design
+        # as applicable=false (GRW-04 when the user does not answer).
+        r = audit("short_vertical", short_applicable=False)
+        warns = [l for l in r.stdout.splitlines()
+                 if "FORMAT-GATE" in l and "WARNING" in l]
+        check("gating an item off inside short_vertical warns, not errors",
+              r.returncode == 0 and warns, r.stdout[-300:])
+
+        analyst_files(a, "run-f", format_class="vertical-ish")
+        sc = pd.read_csv(f"{a}/scores.csv")
+        sc["action"] = "do x at 0:01"; sc.to_csv(f"{a}/scores.csv", index=False)
+        r = run(f"{HERE}/validate_audit.py", a)
+        check("an illegal format_class is rejected", r.returncode != 0,
+              r.stdout[-300:])
+
+        sem = pd.read_csv(f"{a}/semantic.csv")
+        check("format_class travels on semantic.csv, the analyst table",
+              "format_class" in sem.columns, str(list(sem.columns)))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 

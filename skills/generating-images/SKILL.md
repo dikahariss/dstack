@@ -15,11 +15,11 @@ description: >
 allowed-tools: Read Write Edit Bash Glob
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.4.0
     type: hybrid
     side_effects: local
     agency: deliberative
-    context_budget_tokens: 4000
+    context_budget_tokens: 4500
     triggers:
       - generating images
       - generate an image
@@ -81,8 +81,10 @@ engine answers first silently prefers a worse image.
 | The request | Engine | Why |
 |---|---|---|
 | A single still, highest fidelity available, lossless | `codex` | ~1.57 MP PNG; no observed text leakage |
+| An unusual composition that must hold exactly — a split frame, a hard seam | `codex` | reproduces a stacked two-panel frame literally; agy resolves it into one continuous scene |
 | A subject with strong local or cultural specificity | `agy` | markedly better world knowledge of place, dress, objects |
-| A shot that must match an earlier image — same person, same room | `agy` | accepts a reference image and holds identity across calls |
+| A series where turnaround matters | `agy` | ~34 s against codex's ~95 s on the same prompts |
+| A shot that must match an earlier image — same person, same room | **`codex`** | both take a reference — `agy` via `--add-dir`, `codex` via `-i` — but on nine measured reference calls agy returned the reference itself three times and an empty path three times, while codex returned nine unique images |
 | Anything with legible text rendered *in* the image | neither by default | both leak or mangle lettering; see `references/engines.md` |
 
 Not exhaustive — these are the axes that have been measured. When two rows
@@ -100,8 +102,8 @@ python3 "<skill_dir>/scripts/generate_image.py" \
   --engine codex --prompt-file prompt.txt --out assets/harbour.png
 
 python3 "<skill_dir>/scripts/generate_image.py" \
-  --engine agy --prompt-file prompt.txt --out assets/shot-02.jpg \
-  --ref-dir assets/            # agy only — reference images for continuity
+  --prompt-file prompt.txt --out assets/shot-02.png \
+  --ref assets/shot-01.png     # both engines; repeatable. agy is the default
 ```
 
 One JSON object on stdout, and it is the only thing you may quote:
@@ -126,12 +128,34 @@ failure that has actually shipped.
 
 | # | Check | How |
 |---|---|---|
-| 1 | The script exited 0 | a non-zero exit means there is no asset, whatever the log said |
+| 1 | The script exited 0 | a non-zero exit means there is no asset, whatever the log said. **In a batch, check every call, not the last one** — one run had two of six fail while the tail of the log looked healthy |
 | 2 | The size you quote is `actual`, never `reported` | straight from the JSON |
 | 3 | The asset lives in the project, not the CLI's cache | the script's `--out` did this; confirm the path |
-| 4 | The caller is told the real size **and** the ceiling | in the reply |
+| 4 | The asset was **generated**, not found | the script hashes it against every reference, the reference directory and the output directory, and fails on a match |
+| 5 | The caller is told the real size **and** the ceiling | in the reply |
 
 Row 2 holds even when `matched` is true. The next run is when it will not be.
+
+Row 4 exists because rows 1–3 all passed on an asset that was never generated.
+An agent CLI with filesystem access can satisfy "produce an image of X" by
+**finding** one: asked to generate, `agy` returned a byte-identical copy of an
+earlier `codex` output that happened to sit in its workspace, reported
+`status: SUCCESS`, and the file, its dimensions and the copy-out were all
+genuine. Only the provenance was false, and nothing in the gate looked at
+provenance. **Never run a generator in a directory holding earlier
+generations** — and the check now runs regardless.
+
+## Chaining, when a series must hold together
+
+Generate serially and attach the previous image to the next call. The reference
+carries the subject, not the scene: it holds a product, a person or a palette
+across a change of location, and the prompt still has to describe the new
+location in full. Say in the prompt *what* must match — "the same pot, same
+fibre texture" — because "match the attached image" alone is read as a style
+note.
+
+Verified 2026-08-30 on codex: three images, each generated with the previous
+attached, held one product across a nursery, a garden bed and a workshop.
 
 ## Stage 4 — State the ceiling
 
@@ -165,11 +189,15 @@ Style/medium: candid documentary photography, 35mm, shallow depth of field
 Composition/framing: vertical 9:16, subject lower two thirds, clean headroom
 Constraints: no text, no logo, no watermark, realistic hands, natural skin
 
+Use your built-in image-generation tool. Do NOT draw this with code, SVG,
+matplotlib, PIL or any plotting library.
 Report the absolute path of the saved file and its real pixel dimensions.
 Do not move or copy the file.
 ```
 
-`Constraints: no text` earns its line — without it the generator invents
+The *do not draw this with code* line earns its place the same way: without it,
+one engine returned a flat-polygon vector illustration and a two-colour swatch
+instead of calling its image model. `Constraints: no text` earns its line — without it the generator invents
 lettering that reads as broken signage and ruins the shot. It is advisory, not
 enforced: check the result. The final two lines keep the file where the schema
 says it is, so your copy step is the only thing that moves it.
@@ -184,8 +212,11 @@ Not exhaustive — the shape to watch for is *trusting a number nobody measured*
 | Defaulting a missing dimension to the target size | Same failure, one line later. A missing dimension means the call failed; it does not mean the image is perfect. |
 | Try engine A, fall back to engine B | Ordering is not intent. The faster engine is the lower-resolution one. |
 | Leaving the asset in `$CODEX_HOME` or the agy brain directory | A production dependency on a cache nobody prunes. |
+| Running the generator with earlier outputs in its workspace | It may return one of them instead of generating. Measured: a byte-identical file came back as a fresh result and passed every other check. |
+| Trusting a batch because it exited 0 | The shell reports the last command. One six-image run had two failures with a healthy-looking tail. |
 | Parsing the path out of stdout | Agent logs are interleaved with the answer, and the format changes between versions. |
-| Generating in parallel to save time | Neither subscription's rate limit has been measured. Serial, 30–120 s each. |
+| Generating in parallel to save time | Serial, 30–120 s each. |
+| Planning a long batch as if it will finish | codex's quota is real: ~19 calls into one session it began exiting 1 with `You've hit your usage limit`, three in a row, and the last third of a nine-image run never ran. Order the batch so the images you need most come first. |
 
 ## Where judgment takes over
 
@@ -198,6 +229,40 @@ See `references/engines.md` for per-engine measurements, authentication, output
 locations, failure modes, and the paid escalation routes.
 
 ## Changes
+
+- **0.4.0** — Budget 4000 → 4500: three measured failure modes joined the gate
+  in one session and each has to state its evidence to survive being argued away.
+  **An agent asked for an image may write code to draw one.** Asked
+  for photorealistic frames with no reference attached, `agy` returned flat
+  two-colour swatches and a flat-polygon vector illustration — real PNGs, correct
+  headers, unique files, produced without its image model ever running, and every
+  check in the gate passed. Nine such calls yielded zero usable photographs. The
+  prompt now names the built-in tool and forbids drawing with code; the script
+  reports `bytes_per_pixel` and flags `low_detail` under 0.5 (nine photographs
+  measured 1.18–1.99, four code-drawn files 0.005–0.063). A new gate row says
+  what no automation can: **look at the image** — one detailed vector drawing
+  scored 1.90 and would have passed the signal. Also stops leaving a failed copy
+  on disk: agy returned the path of its own `output.txt`, and the text file was
+  written to the output path before the header read rejected it.
+
+- **0.3.0** — A generator can return a file instead of making one: `agy` handed
+  back a byte-identical copy of an earlier `codex` output sitting in its
+  workspace, reported `SUCCESS`, and passed the whole gate. The script now hashes
+  the result against every reference, the reference directory and the output
+  directory. Measured across nine reference-carrying agy calls: 3 new images, 3
+  that returned the reference, 3 `SUCCESS` with an empty path. Clearing the
+  workspace does not fix it — a control run holding only the reference returned
+  it. codex returned nine unique images on the same prompts, so the
+  hold-a-subject-across-calls row points at codex.
+
+- **0.2.x** — Reference images work on **both** engines: `codex exec` takes
+  `-i <FILE>`, which 0.1.0 had missed because its "not measured" line was about
+  *editing* a file, a different question. `--ref` passes one on either engine.
+  Verified with a three-image chain — one product held across a nursery, a
+  garden bed and a workshop. Adds the chaining section: the reference carries
+  the subject, not the scene. Also fixed the copy-out guard, which checked
+  `exists()` where it meant `is_file()` and so died inside `copy2` on a reported
+  path of `"."`.
 
 - **0.1.0** — Initial. Written after measuring both CLI routes on one machine:
   neither honours a requested size, both self-report dimensions they did not

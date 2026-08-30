@@ -1,34 +1,37 @@
 ---
-name: auditing-short-video
+name: auditing-video
 description: >
-  Use when a short-form video FILE (Reel, TikTok, Shorts, any mp4/webm/mov) needs
-  a structured audit and a dataset the user can keep — a per-video fact row plus
-  per-second, per-shot and OCR tables that concatenate across many videos. Also
-  use when several such audits must be merged into a corpus, or when video
-  measurements must be prepared for a database, warehouse, or ML feature store.
-  Not for a platform URL (this reads local files only) and not for judging a
-  running app. Triggers: "analyze this video", "audit video", "review this video",
-  "extract data from a video", "hook analysis", "retention critique",
-  "why isn't this reel performing", "video dataset", "merge video audits",
-  "video-analyzer".
+  Use when a video FILE of any length needs a structured audit and a dataset the
+  user can keep — a per-video fact row plus per-second, per-shot and OCR tables
+  that concatenate across many videos. Covers short form (Reel, TikTok, Shorts)
+  and long form alike; the platform-specific items gate themselves off by format
+  class. Also use when several such audits must be merged into a corpus, or when
+  video measurements must be prepared for a database, warehouse, or ML feature
+  store. Not for a platform URL (this reads local files only), not for judging a
+  running app, and not for rebuilding a video as generation prompts (that is
+  /reverse-engineering-video). Triggers: "analyze this video", "audit video",
+  "review this video", "extract data from a video", "hook analysis", "retention
+  critique", "why isn't this reel performing", "video dataset", "merge video
+  audits", "auditing-short-video", "video-analyzer".
 allowed-tools: Read Write Edit Bash Glob Grep
 metadata:
   dstack:
-    version: 1.3.2
+    version: 2.0.0
     type: hybrid
     side_effects: local
     agency: deliberative
     context_budget_tokens: 4500
     triggers:
-      - audit short video
-      - analyze video
       - audit video
+      - analyze video
+      - audit short video
       - video hook retention
       - video dataset corpus
+      - auditing-short-video
       - video-analyzer
 ---
 
-# Auditing a short-form video
+# Auditing a video
 
 Turn one video file into (1) a measured dataset, (2) a semantic description of
 what the video actually is, (3) a scored multi-persona audit, and (4) ranked
@@ -37,6 +40,12 @@ fixes the creator can execute.
 **The ordering rule:** never present a metric before you have watched the contact
 sheets and can say what the video is about. Numbers without the semantic layer
 are the failure mode this skill exists to prevent.
+
+**The format rule:** ten of the thirty-six items are feed mechanics — a hook in
+the first second, a safe zone, a platform watermark, loop-ability. Set
+`format_class` in Step 0 and those ten gate to `applicable=false` elsewhere.
+Scoring a documentary against a hook benchmark does not broaden the audit; it
+makes it wrong. To rebuild a video as prompts, use `/reverse-engineering-video`.
 
 **What this cannot tell you.** The file is not the account. Caption, hashtags,
 audio trend status, posting time, follower graph and actual watch-time decide
@@ -55,11 +64,15 @@ the report, before the health index.
    Before auditing anything the user did not make, ask whether they have the
    right to hold that data. Say what is stored and where. Offer `--keep-frames`
    off (the default) so raw frames are deleted after extraction.
-4. **Ask, briefly:** target platform(s), the video's objective, whether it is
+4. **Format class.** `short_vertical` (a vertical clip made for a feed),
+   `long_form` (anything else over ~3 minutes, or any landscape piece), or
+   `other`. It goes on the master row and gates ten checklist items. Decide it
+   from the file and the user's answer, not from duration alone.
+5. **Ask, briefly:** target platform(s), the video's objective, whether it is
    part of a series, whether anything is being sold, and one line on what they
    were going for. Five questions once. Without them the checklist guesses, and
    a deliberate choice gets scored as a defect.
-5. **Prerequisites:** `ffmpeg`/`ffprobe`, and
+6. **Prerequisites:** `ffmpeg`/`ffprobe`, and
    `pip install -r <skill_dir>/scripts/requirements.txt`. Tesseract is optional
    — without it OCR columns are NULL and the two text items are unscored.
 
@@ -127,6 +140,9 @@ known mistakes — **not exhaustive**, so add one when a new misreading shows up
 Read `references/persona_checklist.md`. Score all 36 items, each with a measured
 evidence string, and set `applicable` honestly — absent-by-design is
 `applicable=false`, not 0. Write `<audit_dir>/scores.csv`.
+
+**The format gate first.** Outside `short_vertical` the ten items marked ▽ are
+`applicable=false`, and `validate_audit.py` fails an audit that scores them.
 
 The 36 items are **closed by design**: scores concatenate across videos into one
 corpus, so a run that scores 35 or 37 is not comparable to the others. Extend the
@@ -207,6 +223,23 @@ account. If the user wants only a sub-deliverable, still run Steps 1–2 — the
 what stop a wrong answer — but deliver only what was asked.
 
 ## Changes
+
+- **2.0.0** — Renamed from `auditing-short-video`; ADR-0027 keeps the old id a
+  trigger. The rename is the smaller half. Ten of the thirty-six items are feed
+  mechanics, so widening the name without gating them would score documentaries
+  against a one-second attention test and hide the error inside one number.
+  `format_class` now sits on `semantic.csv`, gates those ten to
+  `applicable=false`, and must stratify any cross-video pooling — the classes
+  have different denominators by construction. 8 new regressions.
+
+  Building it exposed a bug nothing had caught: **pandas 3.0 stopped rendering
+  NaN as `"nan"` under `astype(str)`**, disarming the `evidence_source` guard's
+  own exclusion, so every honestly gated row failed the enum. The
+  `applicable=false` path had no test, so a correct audit would have been
+  rejected on any pandas 3 install. Fixed with `fillna("")`.
+
+  Rebuilding a video as prompts is now `/reverse-engineering-video`; this skill
+  stays the one that answers "is this any good".
 
 - **1.3.2** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
 - **1.3.1** — ADR-0030 list openness: the benchmark rules are open; the 36 checklist items are closed by design, because scores concatenate into one corpus and 35 or 37 is not comparable.
