@@ -140,14 +140,23 @@ def main() -> int:
             print(json.dumps({"error": f"{type(exc).__name__}: {exc}"}))
             return 1
 
-    origin = Path(reported["path"])
-    if not origin.exists():
-        print(json.dumps({"error": f"reported path does not exist: {origin}"}))
+    # is_file(), not exists(): an engine that returns "." or a directory passes
+    # exists() and then dies inside copy2 with an unhandled IsADirectoryError
+    # and a raw traceback, which is exactly the silent-failure shape this
+    # script exists to prevent. Observed on agy, twice in one batch.
+    origin = Path(reported.get("path") or "")
+    if not origin.is_file():
+        print(json.dumps({"error":
+            f"engine reported a path that is not a file: {origin}"}))
         return 1
 
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(origin, args.out)
-    fmt, width, height = read_dimensions(args.out)
+    try:
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(origin, args.out)
+        fmt, width, height = read_dimensions(args.out)
+    except (OSError, GenerationError) as exc:
+        print(json.dumps({"error": f"{type(exc).__name__}: {exc}"}))
+        return 1
 
     print(json.dumps({
         "engine": args.engine,

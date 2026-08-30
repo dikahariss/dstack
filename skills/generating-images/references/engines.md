@@ -125,6 +125,17 @@ image directly and the prompt need only say what must match.
 in the prompt, one run still lettered a boat hull. The constraint is advisory.
 Inspect the result whenever stray lettering would matter.
 
+**Failure modes, observed in one six-image batch (2026-08-30).** Two of six
+failed, in two different ways, and neither produced an image:
+
+| Symptom | What it is |
+|---|---|
+| `agy returned no structured_output` | the call ran and returned nothing parseable. Re-run it. |
+| a reported `path` of `.` | the call claimed success and named a directory. The script now rejects any path that is not a file; before the fix it died inside `copy2` with a raw traceback. |
+
+A 4-of-6 success rate on one batch is not a measured reliability figure, but it
+is enough to say: **check every exit code in a batch, never just the last one.**
+
 **Housekeeping.** Generated files accumulate under
 `~/.gemini/antigravity-cli/brain/` and nothing prunes them. Copy what you need
 out; prune the rest deliberately, never as a side effect of a generation run.

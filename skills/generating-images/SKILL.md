@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.2.1
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -128,7 +128,7 @@ failure that has actually shipped.
 
 | # | Check | How |
 |---|---|---|
-| 1 | The script exited 0 | a non-zero exit means there is no asset, whatever the log said |
+| 1 | The script exited 0 | a non-zero exit means there is no asset, whatever the log said. **In a batch, check every call, not the last one** — one run had two of six fail while the tail of the log looked healthy |
 | 2 | The size you quote is `actual`, never `reported` | straight from the JSON |
 | 3 | The asset lives in the project, not the CLI's cache | the script's `--out` did this; confirm the path |
 | 4 | The caller is told the real size **and** the ceiling | in the reply |
@@ -212,6 +212,14 @@ See `references/engines.md` for per-engine measurements, authentication, output
 locations, failure modes, and the paid escalation routes.
 
 ## Changes
+
+- **0.2.1** — The copy-out step checked `exists()` where it meant `is_file()`.
+  An engine that reports `"."` as its path passes `exists()`, and the script
+  then died inside `copy2` with a raw `IsADirectoryError` traceback — the
+  silent-failure shape this script exists to prevent, reached by a different
+  door. Observed twice in one six-image agy batch, alongside one
+  `no structured_output`. Both failure modes recorded, and the gate now says to
+  check every call in a batch rather than the last one.
 
 - **0.2.0** — Reference images work on **both** engines, and `agy` is now the
   default. `codex exec` takes `-i <FILE>`, which the 0.1.0 reference had not
