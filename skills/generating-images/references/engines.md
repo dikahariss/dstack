@@ -10,7 +10,7 @@ trusting a figure on a newer version.
 | Route | Works without a paid API key? | Output |
 |---|---|---|
 | `codex exec` → built-in `image_gen` | yes, on a ChatGPT subscription | PNG 941×1672 |
-| `agy --print` → built-in `generate_image` | yes, on an Antigravity account | JPEG 768×1376 |
+| `agy --print` → built-in `generate_image` | yes, on an Antigravity account | JPEG 768×1376, but see *Size is not invariant* |
 | `gemini -p` on the individual free tier | **no — the tier was removed** | — |
 | `gemini` + the `nanobanana` extension | no, needs a metered API key | 1K–4K |
 | The codex fallback CLI (`gpt-image-2`) | no, needs a metered API key | up to 2160×3840 |
@@ -131,10 +131,25 @@ failed, in two different ways, and neither produced an image:
 | Symptom | What it is |
 |---|---|
 | `agy returned no structured_output` | the call ran and returned nothing parseable. Re-run it. |
-| a reported `path` of `.` | the call claimed success and named a directory. The script now rejects any path that is not a file; before the fix it died inside `copy2` with a raw traceback. |
+| `status: SUCCESS` with `path: ""` | **the worst of the three.** The call ran ~44 s, spent 96 k tokens, wrote a real image into its own `.tempmediaStorage`, and reported success with no path. Not a generation failure — a reporting failure. `Path("")` is `.` in Python, which is where the directory error came from. |
+| the returned file is one that already existed | asked to generate, agy returned a **byte-identical copy of an earlier codex output** sitting in its workspace. See below. |
 
 A 4-of-6 success rate on one batch is not a measured reliability figure, but it
 is enough to say: **check every exit code in a batch, never just the last one.**
+
+**It can return a file instead of making one.** Verified 2026-08-30 by sha256:
+a run whose workspace root held earlier codex `.png` outputs came back with one
+of them, unmodified, as its result. It reported `SUCCESS`, the file was real,
+the dimensions read from the header were real, and the copy-out worked — the
+whole gate passed on an image the engine never drew. The script now hashes the
+result against every reference, the reference directory and the output
+directory. Operationally: **keep prior generations out of the workspace.**
+
+**Size is not invariant.** This page recorded 768×1376 JPEG as what agy returns.
+The same run produced a 941×1672 PNG. Which model variant `agy` routes
+`generate_image` to is still unmeasured (see below), so treat the size as
+observed-per-run, not fixed — which is the whole reason the script reads the
+header instead of trusting a claim.
 
 **Housekeeping.** Generated files accumulate under
 `~/.gemini/antigravity-cli/brain/` and nothing prunes them. Copy what you need

@@ -11,6 +11,7 @@ error, because no engine on this path honours a requested size.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 import struct
@@ -32,6 +33,37 @@ SCHEMA = {
 
 class GenerationError(RuntimeError):
     pass
+
+
+def digest(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def prior_art(refs, ref_dir: Path | None, out: Path) -> dict[str, Path]:
+    """Everything the engine could have handed back instead of generating.
+
+    An agent CLI with filesystem access can satisfy "produce an image of X" by
+    finding one. Measured: agy returned a byte-identical copy of an earlier
+    codex output that happened to sit in its workspace, and every check in the
+    gate passed — the file was real, the dimensions were real, the copy
+    happened. Only the provenance was false.
+    """
+    seen: dict[str, Path] = {}
+    candidates = list(refs or [])
+    for d in ([ref_dir] if ref_dir else []) + [out.parent]:
+        if d and d.is_dir():
+            candidates += [f for f in d.iterdir() if f.is_file()]
+    for f in candidates:
+        try:
+            if f.is_file():
+                seen.setdefault(digest(f), f)
+        except OSError:
+            continue
+    return seen
 
 
 def read_dimensions(path: Path) -> tuple[str, int, int]:
@@ -152,6 +184,15 @@ def main() -> int:
 
     try:
         args.out.parent.mkdir(parents=True, exist_ok=True)
+        known = prior_art(args.ref, args.ref_dir, args.out)
+        origin_hash = digest(origin)
+        if origin_hash in known:
+            print(json.dumps({"error":
+                "engine returned a file that already existed, byte-identical "
+                f"to {known[origin_hash]} — it found an image instead of "
+                "generating one. Move prior outputs out of the workspace and "
+                "re-run."}))
+            return 1
         shutil.copy2(origin, args.out)
         fmt, width, height = read_dimensions(args.out)
     except (OSError, GenerationError) as exc:

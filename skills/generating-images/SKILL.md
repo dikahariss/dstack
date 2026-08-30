@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob
 metadata:
   dstack:
-    version: 0.2.1
+    version: 0.3.0
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -131,9 +131,19 @@ failure that has actually shipped.
 | 1 | The script exited 0 | a non-zero exit means there is no asset, whatever the log said. **In a batch, check every call, not the last one** — one run had two of six fail while the tail of the log looked healthy |
 | 2 | The size you quote is `actual`, never `reported` | straight from the JSON |
 | 3 | The asset lives in the project, not the CLI's cache | the script's `--out` did this; confirm the path |
-| 4 | The caller is told the real size **and** the ceiling | in the reply |
+| 4 | The asset was **generated**, not found | the script hashes it against every reference, the reference directory and the output directory, and fails on a match |
+| 5 | The caller is told the real size **and** the ceiling | in the reply |
 
 Row 2 holds even when `matched` is true. The next run is when it will not be.
+
+Row 4 exists because rows 1–3 all passed on an asset that was never generated.
+An agent CLI with filesystem access can satisfy "produce an image of X" by
+**finding** one: asked to generate, `agy` returned a byte-identical copy of an
+earlier `codex` output that happened to sit in its workspace, reported
+`status: SUCCESS`, and the file, its dimensions and the copy-out were all
+genuine. Only the provenance was false, and nothing in the gate looked at
+provenance. **Never run a generator in a directory holding earlier
+generations** — and the check now runs regardless.
 
 ## Chaining, when a series must hold together
 
@@ -198,6 +208,8 @@ Not exhaustive — the shape to watch for is *trusting a number nobody measured*
 | Defaulting a missing dimension to the target size | Same failure, one line later. A missing dimension means the call failed; it does not mean the image is perfect. |
 | Try engine A, fall back to engine B | Ordering is not intent. The faster engine is the lower-resolution one. |
 | Leaving the asset in `$CODEX_HOME` or the agy brain directory | A production dependency on a cache nobody prunes. |
+| Running the generator with earlier outputs in its workspace | It may return one of them instead of generating. Measured: a byte-identical file came back as a fresh result and passed every other check. |
+| Trusting a batch because it exited 0 | The shell reports the last command. One six-image run had two failures with a healthy-looking tail. |
 | Parsing the path out of stdout | Agent logs are interleaved with the answer, and the format changes between versions. |
 | Generating in parallel to save time | Neither subscription's rate limit has been measured. Serial, 30–120 s each. |
 
@@ -212,6 +224,21 @@ See `references/engines.md` for per-engine measurements, authentication, output
 locations, failure modes, and the paid escalation routes.
 
 ## Changes
+
+- **0.3.0** — A generator can return a file instead of making one. Asked to
+  generate, `agy` handed back a byte-identical copy of an earlier `codex` output
+  that was sitting in its workspace, reported `SUCCESS`, and passed every check
+  in the gate — the file was real, the header dimensions were real, the copy-out
+  happened. Only the provenance was false and nothing was looking at it. The
+  script now hashes the returned file against every reference, the reference
+  directory and the output directory, and fails on a match. New gate row, and a
+  rule: never run a generator in a directory holding earlier generations.
+
+  Same run measured `agy` returning `SUCCESS` with an **empty** path on 3 of 6
+  calls while images sat in its own temp storage — a reporting failure, not a
+  generation failure — and producing a 941×1672 PNG where this reference had
+  recorded 768×1376 JPEG as invariant. Both recorded; the size claim is now
+  qualified.
 
 - **0.2.1** — The copy-out step checked `exists()` where it meant `is_file()`.
   An engine that reports `"."` as its path passes `exists()`, and the script
