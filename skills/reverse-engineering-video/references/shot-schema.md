@@ -23,8 +23,15 @@ Every field belongs to one of three tiers:
 | Tier | Meaning | How it may be written in the delivered prose |
 |---|---|---|
 | `observed` | Visible in the sampled frames. Anyone looking at the same frames would agree. | As fact. |
-| `inferred` | Deduced from craft knowledge; not measurable from pixels. | Hedged, always. "Reads as a long lens", never "shot on 85 mm". |
+| `inferred` | Deduced from craft knowledge; not measurable from pixels. | Hedged whenever it carries a **figure**. "Reads as 85 mm", never "85 mm". |
 | `unknown` | Not recoverable from this file. | Named as missing. Never filled with a plausible guess. |
+
+The hedge requirement is narrower than it first looks, and deliberately so: the
+danger in an `inferred` field is **false precision, and false precision is
+numeric**. `85mm` and `3200K` wear the costume of a measurement a frame cannot
+yield; `shallow`, `muted` and `warm low-contrast` are plainly qualitative and
+cannot be mistaken for one. `validate_package.py` enforces exactly that — a
+digit in an `inferred` field without a hedge fails the package.
 
 This is not caution for its own sake. Published benchmarks put frontier
 vision-language models near chance on temporal and action hallucination in
