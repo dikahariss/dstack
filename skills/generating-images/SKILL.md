@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob
 metadata:
   dstack:
-    version: 0.1.0
+    version: 0.2.0
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -82,7 +82,7 @@ engine answers first silently prefers a worse image.
 |---|---|---|
 | A single still, highest fidelity available, lossless | `codex` | ~1.57 MP PNG; no observed text leakage |
 | A subject with strong local or cultural specificity | `agy` | markedly better world knowledge of place, dress, objects |
-| A shot that must match an earlier image — same person, same room | `agy` | accepts a reference image and holds identity across calls |
+| A shot that must match an earlier image — same person, same room | either; `agy` by default | both take a reference: `agy` adds its directory to the workspace, `codex` attaches it with `-i`. Chain them — each image generated with the previous one attached |
 | Anything with legible text rendered *in* the image | neither by default | both leak or mangle lettering; see `references/engines.md` |
 
 Not exhaustive — these are the axes that have been measured. When two rows
@@ -100,8 +100,8 @@ python3 "<skill_dir>/scripts/generate_image.py" \
   --engine codex --prompt-file prompt.txt --out assets/harbour.png
 
 python3 "<skill_dir>/scripts/generate_image.py" \
-  --engine agy --prompt-file prompt.txt --out assets/shot-02.jpg \
-  --ref-dir assets/            # agy only — reference images for continuity
+  --prompt-file prompt.txt --out assets/shot-02.png \
+  --ref assets/shot-01.png     # both engines; repeatable. agy is the default
 ```
 
 One JSON object on stdout, and it is the only thing you may quote:
@@ -132,6 +132,18 @@ failure that has actually shipped.
 | 4 | The caller is told the real size **and** the ceiling | in the reply |
 
 Row 2 holds even when `matched` is true. The next run is when it will not be.
+
+## Chaining, when a series must hold together
+
+Generate serially and attach the previous image to the next call. The reference
+carries the subject, not the scene: it holds a product, a person or a palette
+across a change of location, and the prompt still has to describe the new
+location in full. Say in the prompt *what* must match — "the same pot, same
+fibre texture" — because "match the attached image" alone is read as a style
+note.
+
+Verified 2026-08-30 on codex: three images, each generated with the previous
+attached, held one product across a nursery, a garden bed and a workshop.
 
 ## Stage 4 — State the ceiling
 
@@ -198,6 +210,17 @@ See `references/engines.md` for per-engine measurements, authentication, output
 locations, failure modes, and the paid escalation routes.
 
 ## Changes
+
+- **0.2.0** — Reference images work on **both** engines, and `agy` is now the
+  default. `codex exec` takes `-i <FILE>`, which the 0.1.0 reference had not
+  found: its "not measured" line was about *editing* a file on disk, a different
+  question, and the gap read as "codex cannot do continuity". Verified with a
+  three-image chain, each generated with the previous attached — one product
+  held across a nursery, a garden bed and a workshop. `--ref` replaces the
+  agy-only `--ref-dir` as the way to pass one; `--ref-dir` stays for a whole
+  directory. Adds the chaining section: the reference carries the subject, not
+  the scene, so the prompt must still describe the new location in full and must
+  name what has to match.
 
 - **0.1.0** — Initial. Written after measuring both CLI routes on one machine:
   neither honours a requested size, both self-report dimensions they did not

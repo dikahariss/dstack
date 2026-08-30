@@ -33,6 +33,7 @@ codex exec --sandbox read-only --skip-git-repo-check \
 | Time | 73 s, 80 s |
 | Tokens | ~35 k per call |
 | Text leakage | none observed |
+| Reference images | **yes** — `-i <FILE>` (repeatable) attaches an image to the initial prompt. Verified 2026-08-30: a three-image chain, each generated with the previous one attached, held the same product across a full change of location |
 
 **Authentication.** `~/.codex/auth.json` with `auth_mode: chatgpt`. The built-in
 tool needs no `OPENAI_API_KEY` and bills against the subscription. Check with
@@ -167,7 +168,9 @@ Named so nobody assumes otherwise.
 - Behaviour of parallel calls against either engine.
 - Which model variant `agy` routes `generate_image` to — `agy models` lists text
   models only.
-- Whether the codex built-in tool can edit a file on disk. Its own skill states
-  the image must first be in conversation context via `view_image`.
+- Whether the codex built-in tool can **edit** an existing file on disk. Its own
+  skill states the image must first be in conversation context via `view_image`.
+  This is a different question from attaching a reference, which `-i` does and
+  which is now measured.
 - Any local or offline generator. Not investigated; it needs a GPU that no probe
   here checked for.
