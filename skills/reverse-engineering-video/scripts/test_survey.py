@@ -126,6 +126,57 @@ def test_threshold_controls_sensitivity():
         assert loose == 1, f"a threshold of 0.99 should find no cuts, got {loose}"
 
 
+def test_cuts_are_cached_so_a_rerun_at_a_new_threshold_skips_detection():
+    with tempfile.TemporaryDirectory() as tmp:
+        clip = pathlib.Path(tmp) / "clip.mp4"
+        make_clip(clip)
+        out = pathlib.Path(tmp) / "survey"
+        subprocess.run([sys.executable, str(SCRIPT), str(clip), str(out)],
+                       check=True, capture_output=True)
+        assert (out / "cuts.csv").is_file()
+        assert json.loads((out / "probe.json").read_text())["cuts_reused"] is False
+        subprocess.run([sys.executable, str(SCRIPT), str(clip), str(out),
+                        "--threshold", "0.99"], check=True, capture_output=True)
+        probe = json.loads((out / "probe.json").read_text())
+        assert probe["cuts_reused"] is True, "a threshold change must not re-decode"
+        assert probe["n_shots"] == 1, "0.99 keeps no cut, so one shot spans the file"
+
+
+def test_calibration_table_shows_what_each_threshold_would_produce():
+    with tempfile.TemporaryDirectory() as tmp:
+        out = survey(tmp)
+        table = (out / "calibration.txt").read_text()
+        assert "threshold" in table and "n_shots" in table
+        rows = [l.split() for l in table.splitlines() if l.strip()
+                and l.split()[0].replace(".", "").isdigit()]
+        counts = [int(r[1]) for r in rows]
+        assert counts == sorted(counts, reverse=True), (
+            f"a higher threshold can never yield more shots: {counts}")
+
+
+def test_a_long_mean_shot_is_flagged_rather_than_passed_downstream():
+    # One 30 s take: no cuts, so the mean lands far above the long-take warning.
+    with tempfile.TemporaryDirectory() as tmp:
+        clip = pathlib.Path(tmp) / "clip.mp4"
+        make_clip(clip, segments=("red",), seconds=30)
+        out = pathlib.Path(tmp) / "survey"
+        subprocess.run([sys.executable, str(SCRIPT), str(clip), str(out)],
+                       check=True, capture_output=True)
+        assert "Mean shot is" in (out / "limitations.txt").read_text()
+
+
+def test_skipping_the_optional_passes_is_recorded_not_silent():
+    with tempfile.TemporaryDirectory() as tmp:
+        clip = pathlib.Path(tmp) / "clip.mp4"
+        make_clip(clip)
+        out = pathlib.Path(tmp) / "survey"
+        subprocess.run([sys.executable, str(SCRIPT), str(clip), str(out),
+                        "--no-sheets", "--no-audio-map"],
+                       check=True, capture_output=True)
+        limits = (out / "limitations.txt").read_text()
+        assert "--no-sheets" in limits and "--no-audio-map" in limits
+
+
 def main():
     failures = 0
     for name, fn in sorted(globals().items()):

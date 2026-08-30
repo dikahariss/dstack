@@ -8,8 +8,9 @@ rename `auditing-short-video` to `auditing-video` so the catalog's audit skill
 is no longer artificially bound to short form.
 
 **Architecture:** Four stages. **Survey** the whole file cheaply with ffmpeg
-(shot boundaries, low-rate contact sheets, audio map) — measured at 87× realtime,
-so a 60-minute film surveys in ~42 s. **Structure** the shot list into a
+(shot boundaries, low-rate contact sheets, audio map) — measured at 8.4 s for a
+232 s source and 5 min 26 s for a 60.7-minute one, with a detection-only mode
+that skips two of the three decode passes. **Structure** the shot list into a
 scene/sequence tree, which is what makes the file divisible. **Deep-read** each
 sequence in a parallel subagent at 3–5 fps *inside* shots, never globally.
 **Merge** the agent outputs against a shared bible, then render prompts. The
@@ -31,14 +32,35 @@ Steps use `- [ ]` checkboxes.
 
 ## Status
 
-**Updated:** 2026-08-30 · **Branch:** `feat/reverse-engineering-video` · **Next:** Task 1
+**Updated:** 2026-08-30 · **Branch:** `feat/reverse-engineering-video` · **Next:** Task 3
 
 | Task | State | Evidence |
 |---|---|---|
-| 1–15 | todo | — |
+| 1 Scaffold + survey | done | `9bcc4e1` — 11 tests green; 232 s file → 96 shots, mean 2.42 s, 908 frames → 3 agents, 8.4 s wall clock |
+| 2 Dense in-shot extraction | done | `9bcc4e1` — 8 tests green; exact planned frame count per shot, over-budget slice exits 2 |
+| 3–15 | todo | — |
 
 **Deviations from plan:**
-- (none yet)
+- **A1 was measured too narrowly.** The 87× realtime figure covered shot
+  detection alone. The full survey decodes the file three times (detection,
+  loudness, sheets), so a 3 642 s source took **5 min 26 s**, not the ~42 s the
+  architecture paragraph projected. The projection in the header is corrected and
+  `--no-sheets` / `--no-audio-map` were added for a detection-only pass.
+- **Threshold calibration added, unplanned.** On a 300 s window of one source,
+  `--threshold` 0.30 found 4 cuts, 0.15 found 19, 0.08 found 30 — no single value
+  serves all content, and a wrong boundary set is wrong in every downstream
+  reading. Detection now always runs at a 0.05 floor and caches every candidate
+  to `cuts.csv`; `--threshold` filters that table, so changing it costs no
+  decode. `calibration.txt` reports shot count and mean shot length at seven
+  thresholds. Measured on the 232 s source: 0.30 → 96 shots (2.42 s mean),
+  0.15 → 166 (1.40 s), 0.50 → 33 (7.05 s).
+- **A long mean shot is now flagged, not passed on.** The first 60-minute run
+  returned 47 shots at a 77.5 s mean, which is either genuine long-take material
+  or a mis-set threshold; the survey could not tell the difference and said
+  nothing. It now writes the ambiguity into `limitations.txt`.
+- **A3 was wrong.** numpy 2.5.1 and pillow 10.2.0 are present system-wide; the
+  original check imported `cv2` first and the whole line failed on that. Only
+  `cv2` and `scenedetect` are absent, and the survey needs neither.
 
 **Self-review, Critic position (2026-08-30):** the weakest task is Task 4, the
 craft vocabulary — it is the one most likely to drift into restating what the

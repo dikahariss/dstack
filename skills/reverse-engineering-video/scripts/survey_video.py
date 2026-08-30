@@ -3,11 +3,18 @@
 
 Detects shot boundaries, plans a per-shot frame budget, and writes the
 low-rate contact sheets a reader needs before deciding which shots deserve a
-deep pass. Everything here is one pass of ffmpeg over the file: measured at
-87x realtime on a 232 s source, so a 90-minute film surveys in about a minute.
+deep pass.
+
+Cost, measured on this class of machine: a 232 s source surveys in about 8 s,
+a 3642 s (60.7 min) source in about 5.5 min. Detection, the loudness pass and
+the sheets each decode the file once, so the wall clock is roughly three times
+the detection cost. Detection results are cached, so changing --threshold
+afterwards costs nothing.
 
 Outputs, all under <outdir>:
     shots.csv          the contract table Stage 3 agents plan against
+    cuts.csv           every candidate boundary above the detection floor
+    calibration.txt    what each threshold would have produced
     audio_map.csv      per-second loudness and the silence ranges
     survey_sheets/*    time-labelled thumbnail grids at --survey-fps
     probe.json         container facts
@@ -33,6 +40,15 @@ SHOT_COLUMNS = [
     "video_id", "shot_id", "t_start_s", "t_end_s", "duration_s",
     "cut_confidence", "sample_fps", "n_frames_planned", "sequence_id",
 ]
+
+# Detection runs once at this floor and every candidate is cached, so
+# --threshold filters a table instead of re-decoding the file. Measured on a
+# 300 s window of one source: 0.30 found 4 cuts, 0.15 found 19, 0.08 found 30.
+# No single value serves all content, and the wrong one is wrong everywhere
+# downstream, so the choice has to be visible and cheap to change.
+DETECT_FLOOR = 0.05
+CALIBRATION_THRESHOLDS = (0.05, 0.10, 0.15, 0.20, 0.30, 0.40, 0.50)
+LONG_TAKE_WARN_S = 20.0
 
 # The sampling ladder. Closed by design: Stage 3 agents plan their context
 # against these bands, and a fifth band makes two runs of one video
@@ -96,8 +112,38 @@ def probe(src):
     }
 
 
-def detect_cuts(src, threshold, detector, limitations):
-    """Return [(t_seconds, score)] for every detected shot start after t=0."""
+def load_cached_cuts(outdir):
+    path = outdir / "cuts.csv"
+    if not path.is_file():
+        return None, None
+    with path.open() as f:
+        reader = csv.DictReader(f)
+        rows = [(float(r["t_s"]), None if r["score"] == "" else float(r["score"]))
+                for r in reader]
+    meta = json.loads((outdir / "cuts_meta.json").read_text())
+    return rows, meta
+
+
+def save_cuts(outdir, cuts, meta):
+    with (outdir / "cuts.csv").open("w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["t_s", "score"])
+        for t, score in cuts:
+            w.writerow([f"{t:.3f}", "" if score is None else f"{score:.4f}"])
+    (outdir / "cuts_meta.json").write_text(json.dumps(meta, indent=2))
+
+
+def calibration_table(cuts, duration):
+    """What each candidate threshold would produce, so the choice is informed."""
+    lines = ["threshold  n_shots  mean_shot_s"]
+    for t in CALIBRATION_THRESHOLDS:
+        n = sum(1 for _, s in cuts if s is None or s > t) + 1
+        lines.append(f"{t:>9.2f}  {n:>7d}  {duration / n:>11.2f}")
+    return "\n".join(lines) + "\n"
+
+
+def detect_cuts(src, detector, limitations):
+    """Return [(t_seconds, score)] for every candidate boundary above the floor."""
     if detector == "pyscenedetect":
         try:
             import scenedetect  # noqa: F401
@@ -112,7 +158,7 @@ def detect_cuts(src, threshold, detector, limitations):
             return [(round(s.get_seconds(), 3), None) for s, _ in scenes[1:]], "pyscenedetect"
 
     proc = run(["ffmpeg", "-v", "error", "-i", src, "-filter_complex",
-                f"select='gt(scene,{threshold})',metadata=print:file=-",
+                f"select='gt(scene,{DETECT_FLOOR})',metadata=print:file=-",
                 "-an", "-f", "null", "-"])
     cuts, pending = [], None
     for line in proc.stdout.splitlines():
@@ -140,9 +186,11 @@ def plan_sampling(duration):
     return fps, n
 
 
-def build_shots(vid, cuts, duration):
-    boundaries = [0.0] + [t for t, _ in cuts if 0.0 < t < duration] + [round(duration, 3)]
-    scores = [1.0] + [s for t, s in cuts if 0.0 < t < duration]
+def build_shots(vid, cuts, duration, threshold):
+    kept = [(t, s) for t, s in cuts
+            if 0.0 < t < duration and (s is None or s > threshold)]
+    boundaries = [0.0] + [t for t, _ in kept] + [round(duration, 3)]
+    scores = [1.0] + [s for _, s in kept]
     rows = []
     for i, (start, end) in enumerate(zip(boundaries, boundaries[1:])):
         length = round(end - start, 3)
@@ -271,13 +319,22 @@ def main():
     ap.add_argument("video")
     ap.add_argument("outdir")
     ap.add_argument("--threshold", type=float, default=0.3,
-                    help="ffmpeg scene score above which a frame starts a new shot")
+                    help="scene score above which a candidate becomes a cut; "
+                         "read calibration.txt and re-run to change it — "
+                         "re-running is free once cuts.csv exists")
     ap.add_argument("--detector", default="ffmpeg",
                     choices=("ffmpeg", "pyscenedetect"))
     ap.add_argument("--survey-fps", type=float, default=0.25,
                     help="rate for the whole-file contact sheets")
     ap.add_argument("--max-frames", type=int, default=400,
                     help="hard per-agent frame cap the budget is planned against")
+    ap.add_argument("--no-sheets", action="store_true",
+                    help="skip the contact sheets; one decode cheaper, but "
+                         "nobody can read what the video is about")
+    ap.add_argument("--no-audio-map", action="store_true",
+                    help="skip the loudness pass; one decode cheaper")
+    ap.add_argument("--redetect", action="store_true",
+                    help="ignore a cached cuts.csv and decode again")
     args = ap.parse_args()
 
     require_binaries()
@@ -285,43 +342,76 @@ def main():
     if not pathlib.Path(src).is_file():
         sys.exit(f"not a file: {src}")
     outdir = pathlib.Path(args.outdir).expanduser().resolve()
-    for sub in ("survey_sheets", "_frames"):
-        shutil.rmtree(outdir / sub, ignore_errors=True)
     outdir.mkdir(parents=True, exist_ok=True)
+    shutil.rmtree(outdir / "_frames", ignore_errors=True)
 
     limitations = []
     facts = probe(src)
     vid = video_id(src)
-    cuts, detector_used = detect_cuts(src, args.threshold, args.detector, limitations)
-    shots = build_shots(vid, cuts, facts["duration_s"])
+    duration = facts["duration_s"]
 
+    cuts, meta = (None, None) if args.redetect else load_cached_cuts(outdir)
+    if cuts is not None and meta.get("video_id") == vid:
+        detector_used = meta["detector"]
+        reused = True
+    else:
+        cuts, detector_used = detect_cuts(src, args.detector, limitations)
+        save_cuts(outdir, cuts, {"video_id": vid, "detector": detector_used,
+                                 "detect_floor": DETECT_FLOOR,
+                                 "n_candidates": len(cuts)})
+        reused = False
+
+    (outdir / "calibration.txt").write_text(
+        calibration_table(cuts, duration)
+        + "\nRe-run with --threshold <value> to adopt a row. Detection is\n"
+          "cached in cuts.csv, so a different threshold costs no decoding.\n")
+
+    shots = build_shots(vid, cuts, duration, args.threshold)
     with (outdir / "shots.csv").open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=SHOT_COLUMNS)
         w.writeheader()
         w.writerows(shots)
 
-    audio_map(src, outdir, facts["duration_s"], facts["n_audio_streams"] > 0,
-              limitations)
-    n_sheets = contact_sheets(src, outdir, args.survey_fps, limitations)
+    mean_shot = sum(float(r["duration_s"]) for r in shots) / len(shots)
+    if mean_shot > LONG_TAKE_WARN_S:
+        limitations.append(
+            f"Mean shot is {mean_shot:.1f}s at --threshold {args.threshold}. "
+            f"That is either genuine long-take material or a threshold too high "
+            f"for this content — read calibration.txt and decide before Stage 3, "
+            f"because every downstream reading inherits this boundary set.")
+
+    if args.no_audio_map:
+        limitations.append("--no-audio-map: audio_map.csv was not written.")
+    else:
+        audio_map(src, outdir, duration, facts["n_audio_streams"] > 0, limitations)
+
+    if args.no_sheets:
+        n_sheets = 0
+        limitations.append("--no-sheets: survey_sheets/ were not built, so the "
+                           "semantic pass has nothing to read.")
+    else:
+        shutil.rmtree(outdir / "survey_sheets", ignore_errors=True)
+        n_sheets = contact_sheets(src, outdir, args.survey_fps, limitations)
+
     total, agents = write_budget(outdir, shots, args.max_frames)
 
     facts.update(video_id=vid, schema_version=SCHEMA_VERSION,
                  surveyor_version=SURVEYOR_VERSION, detector=detector_used,
-                 threshold=args.threshold, survey_fps=args.survey_fps,
-                 n_shots=len(shots), n_survey_sheets=n_sheets,
-                 source_path=src)
+                 detect_floor=DETECT_FLOOR, threshold=args.threshold,
+                 n_cut_candidates=len(cuts), cuts_reused=reused,
+                 survey_fps=args.survey_fps, n_shots=len(shots),
+                 n_survey_sheets=n_sheets, source_path=src)
     (outdir / "probe.json").write_text(json.dumps(facts, indent=2))
     (outdir / "limitations.txt").write_text(
         "\n".join(limitations) if limitations
         else "Every survey measurement ran on this machine.\n")
 
-    print(f"{len(shots)} shots, mean "
-          f"{sum(float(r['duration_s']) for r in shots) / len(shots):.2f}s, "
-          f"detector={detector_used}")
+    print(f"{len(shots)} shots, mean {mean_shot:.2f}s, detector={detector_used}"
+          f"{' (cuts reused)' if reused else ''}")
     print(f"Stage 3 budget: {total} frames -> {agents} agent(s) "
           f"at {args.max_frames} frames each")
-    print(f"Read {outdir}/limitations.txt, then view "
-          f"{outdir}/survey_sheets/S*.jpg before choosing shots.")
+    print(f"Read {outdir}/calibration.txt and {outdir}/limitations.txt, then "
+          f"view {outdir}/survey_sheets/S*.jpg before choosing shots.")
 
 
 if __name__ == "__main__":
