@@ -61,6 +61,7 @@ FRAMES_CEILING_LONG_TAKE = 48
 
 SHEET_COLS, SHEET_ROWS = 5, 6
 THUMB_W = 320
+LABEL_MIN_PX = 22
 
 
 def run(cmd, **kw):
@@ -255,6 +256,29 @@ def audio_map(src, outdir, duration, has_audio, limitations):
             w.writerow([sec, loud.get(sec, ""), "true" if silent(sec) else "false"])
 
 
+def label_font(thumb_h):
+    """A default-size label is unreadable on a tall thumbnail; scale to it."""
+    from PIL import ImageFont
+    size = max(LABEL_MIN_PX, thumb_h // 18)
+    for path in ("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+                 "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf"):
+        try:
+            return ImageFont.truetype(path, size)
+        except OSError:
+            continue
+    try:
+        return ImageFont.load_default(size)
+    except TypeError:                       # pillow < 10.1 has no size argument
+        return ImageFont.load_default()
+
+
+def label(draw, x, y, text, font):
+    """Dark plate under the text: a yellow label vanishes on a bright frame."""
+    box = draw.textbbox((x, y), text, font=font)
+    draw.rectangle((box[0] - 4, box[1] - 2, box[2] + 4, box[3] + 2), fill="black")
+    draw.text((x, y), text, fill="yellow", font=font)
+
+
 def contact_sheets(src, outdir, survey_fps, limitations):
     try:
         from PIL import Image, ImageDraw
@@ -276,17 +300,23 @@ def contact_sheets(src, outdir, survey_fps, limitations):
     sheets_dir.mkdir(parents=True, exist_ok=True)
     per_sheet = SHEET_COLS * SHEET_ROWS
     thumb_h = Image.open(frames[0]).height
+    font = label_font(thumb_h)
     n_sheets = 0
     for start in range(0, len(frames), per_sheet):
         block = frames[start:start + per_sheet]
-        canvas = Image.new("RGB",
-                           (THUMB_W * SHEET_COLS, thumb_h * SHEET_ROWS), "black")
+        # Size the grid to the frames actually in this block. A fixed 5x6 padded
+        # the last sheet with empty cells, and a vertical source turned 8 frames
+        # into a 1600x3414 image that was mostly black — a reader pays for those
+        # pixels in tokens and learns nothing from them.
+        cols = min(SHEET_COLS, len(block))
+        rows = -(-len(block) // cols)
+        canvas = Image.new("RGB", (THUMB_W * cols, thumb_h * rows), "black")
         draw = ImageDraw.Draw(canvas)
         for i, frame in enumerate(block):
-            x, y = (i % SHEET_COLS) * THUMB_W, (i // SHEET_COLS) * thumb_h
+            x, y = (i % cols) * THUMB_W, (i // cols) * thumb_h
             canvas.paste(Image.open(frame), (x, y))
             seconds = (start + i) / survey_fps
-            draw.text((x + 4, y + 4), f"t={seconds:.0f}s", fill="yellow")
+            label(draw, x + 6, y + 6, f"t={seconds:.0f}s", font)
         canvas.save(sheets_dir / f"S{n_sheets:03d}.jpg", quality=88)
         n_sheets += 1
     shutil.rmtree(frames_dir, ignore_errors=True)

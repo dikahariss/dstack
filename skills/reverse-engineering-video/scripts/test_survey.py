@@ -177,6 +177,32 @@ def test_skipping_the_optional_passes_is_recorded_not_silent():
         assert "--no-sheets" in limits and "--no-audio-map" in limits
 
 
+def test_a_sheet_has_no_empty_cells_beyond_the_last_frame():
+    # A fixed 5x6 grid turned 8 frames from a 9:16 source into a 1600x3414
+    # image that was mostly black. A reader pays for those pixels in tokens.
+    from PIL import Image
+    with tempfile.TemporaryDirectory() as tmp:
+        clip = pathlib.Path(tmp) / "clip.mp4"
+        subprocess.run(
+            ["ffmpeg", "-v", "error", "-y", "-f", "lavfi",
+             "-i", "color=c=red:s=180x320:d=8", "-r", "25", str(clip)],
+            check=True)
+        out = pathlib.Path(tmp) / "survey"
+        subprocess.run([sys.executable, str(SCRIPT), str(clip), str(out),
+                        "--survey-fps", "0.25"], check=True, capture_output=True)
+        sheet = next((out / "survey_sheets").glob("S*.jpg"))
+        img = Image.open(sheet)
+        # 8 s at 0.25 fps is 2 frames, so the grid is 2 cols x 1 row. The thumb
+        # is 320 wide and the source is 9:16, so one row is ~569 px tall; the
+        # old fixed 5x6 grid would have produced 1600 x ~3414.
+        cols, thumb_h = 2, round(320 * 320 / 180)
+        assert img.width == 320 * cols, f"width {img.width}, expected {320*cols}"
+        rows = img.height / thumb_h
+        assert rows < 1.05, (
+            f"sheet is {img.width}x{img.height} = {rows:.1f} rows for 2 frames; "
+            f"every row past the first is empty cells the reader pays for")
+
+
 def main():
     failures = 0
     for name, fn in sorted(globals().items()):
