@@ -127,7 +127,7 @@ def main():
     recs = load_checked(f"{ad}/recommendations.csv", RECS_COLUMNS, "recommendations.csv", ("run_id","coder_id"))
     otext = load_checked(f"{ad}/onscreen_text.csv", TEXT_COLUMNS, "onscreen_text.csv", ("run_id","coder_id"))
 
-    scores["applicable"] = (scores["applicable"].astype(str).str.strip().str.lower()
+    scores["applicable"] = (scores["applicable"].fillna("").astype(str).str.strip().str.lower()
                             .isin(("true", "1", "yes", "y")))
 
     wb = Workbook()

@@ -207,7 +207,8 @@ items are unmeasured — then, and only then, `applicable=false`.
 
 
 `semantic.csv` — 1 row: `video_id, taxonomy_version, analyst_model,
-scored_at_utc, platform_targets (pipe-separated), objective, funnel_stage,
+scored_at_utc, format_class, platform_targets (pipe-separated), objective,
+funnel_stage,
 subject_domain, intent, production_mode, is_branded, subgenre, hook_device,
 hook_interrupts, hook_promises, hook_opens_loop, pull_mechanisms
 (pipe-separated), core_message, spoken_language, onscreen_language,
@@ -274,6 +275,11 @@ touched — remove them separately.
 
 ## Before you run a corpus query
 
+- **Stratify on `format_class` before pooling any score.** Ten of the thirty-six
+  items are `applicable=false` on `long_form` and `other` by construction, so a
+  mean that mixes format classes is computed over two different denominators and
+  reads as a quality difference that is really a gating difference. The health
+  index is already denominator-corrected per video; a cross-video pool is not.
 - Filter or stratify on `ocr_available`, `face_detection_available`,
   `motion_comparable`, `param_sample_fps`, `param_scene_threshold` and
   `param_platform` (every `edge_energy_*` column means something different per

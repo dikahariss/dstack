@@ -31,6 +31,14 @@ REFS = os.path.join(os.path.dirname(HERE), "references")
 MON_ITEMS = {"MON-01", "MON-02", "MON-03"}
 MON_GATE_OBJECTIVES = {"traffic", "lead_gen", "sales"}
 
+# Items that only mean something on short vertical video. Closed by design: the
+# list is what makes two audits comparable, so it lives in taxonomy.md and here
+# and moves in neither alone. Scoring a documentary against a hook benchmark
+# does not broaden the instrument, it invalidates it.
+SHORT_ONLY_ITEMS = {"CRD-01", "CRD-02", "CRD-03", "CRD-04", "CST-02",
+                    "CST-05", "GRW-01", "GRW-05", "BRD-04", "MON-03"}
+SHORT_FORMAT = "short_vertical"
+
 EXPECTED_ITEMS = 36
 
 
@@ -103,7 +111,7 @@ def check_gate(ad, sem, r):
     if "item_id" not in sc.columns:
         return
     mon = sc[sc.item_id.isin(MON_ITEMS)]
-    applicable = mon[mon.applicable.astype(str).str.lower() == "true"]
+    applicable = mon[mon.applicable.fillna("").astype(str).str.lower() == "true"]
     if obj not in MON_GATE_OBJECTIVES and len(applicable):
         r.error("GATE", f"objective='{obj}' does not open the Monetization gate "
                         f"(needs one of {sorted(MON_GATE_OBJECTIVES)}), but "
@@ -112,6 +120,38 @@ def check_gate(ad, sem, r):
     if obj in MON_GATE_OBJECTIVES and len(applicable) == 0 and len(mon):
         r.warning("GATE", f"objective='{obj}' opens the Monetization gate but no "
                           "MON item is applicable — confirm that is deliberate.")
+
+
+def check_format_gate(ad, sem, r):
+    """MUST: outside short_vertical, the ten short-only items are applicable=false."""
+    p = os.path.join(ad, "scores.csv")
+    if sem is None or not os.path.exists(p):
+        return
+    fmt = str(sem.get("format_class", "")).strip()
+    if not fmt:
+        r.error("FORMAT-MISSING", "semantic.csv has no format_class. Ten "
+                                  "checklist items gate on it, so without it "
+                                  "the denominator is undefined.")
+        return
+    sc = pd.read_csv(p, dtype=str)
+    if "item_id" not in sc.columns:
+        return
+    short_rows = sc[sc.item_id.isin(SHORT_ONLY_ITEMS)]
+    applicable = short_rows[short_rows.applicable.fillna("").astype(str).str.lower() == "true"]
+    if fmt != SHORT_FORMAT and len(applicable):
+        r.error("FORMAT-GATE",
+                f"format_class='{fmt}' but {sorted(applicable.item_id)} are "
+                f"applicable=true. Those items are calibrated on short vertical "
+                f"video only — a hook window, a safe zone, a loop and a platform "
+                f"watermark do not mean the same thing here. Set them "
+                f"applicable=false.")
+    if fmt == SHORT_FORMAT:
+        gated = short_rows[short_rows.applicable.fillna("").astype(str).str.lower() == "false"]
+        if len(gated):
+            r.warning("FORMAT-GATE",
+                      f"format_class=short_vertical but {sorted(gated.item_id)} "
+                      f"are applicable=false. That is legal only when the item "
+                      f"is genuinely absent by design — confirm it is.")
 
 
 def check_scores(ad, vocab, r):
@@ -130,11 +170,11 @@ def check_scores(ad, vocab, r):
     if sc.item_id.duplicated().any():
         r.error("DUP", f"duplicate item_id: {sorted(sc.item_id[sc.item_id.duplicated()])}")
 
-    app = sc.applicable.astype(str).str.strip().str.lower()
+    app = sc.applicable.fillna("").astype(str).str.strip().str.lower()
     bad = sc[~app.isin(("true", "false"))]
     if len(bad):
         r.error("APPLICABLE", f"applicable must be exactly true/false; got "
-                              f"{sorted(set(bad.applicable.astype(str)))} on "
+                              f"{sorted(set(bad.applicable.fillna("").astype(str)))} on "
                               f"{sorted(bad.item_id)}. Anything else parses as "
                               "false and silently drops the item from BOTH sums.")
     live = sc[app == "true"]
@@ -153,7 +193,7 @@ def check_scores(ad, vocab, r):
     # the action contract
     if "action" in sc.columns:
         need = live[live.score.notna() & (live.score < 5)]
-        act = need.action.astype(str).str.strip()
+        act = need.action.fillna("").astype(str).str.strip()
         empty = need[need.action.isna() | (act == "")]
         if len(empty):
             r.error("ACTION", f"{len(empty)} below-benchmark items have no action: "
@@ -167,13 +207,16 @@ def check_scores(ad, vocab, r):
             r.error("ACTION-LAZY", f"placeholder actions on {sorted(lazy.item_id)}; "
                                    "use a real edit or 'no change needed'")
     if "item" in sc.columns:
-        ph = sc[sc.item.astype(str).str.match(r"^item [A-Z]{3}-\d\d$")]
+        ph = sc[sc.item.fillna("").astype(str).str.match(r"^item [A-Z]{3}-\d\d$")]
         if len(ph):
             r.error("PLACEHOLDER", f"{len(ph)} items carry placeholder text like "
                                    f"'{ph.item.iloc[0]}' instead of the real item.")
 
     if "evidence_source" in sc.columns:
-        es = sc.evidence_source.astype(str).str.strip().str.lower()
+        # fillna first: pandas 3.0 stopped rendering NaN as the string "nan"
+        # under astype(str), which silently disarmed the exclusion below and
+        # made every honestly gated (applicable=false) row fail the enum.
+        es = sc.evidence_source.fillna("").astype(str).str.strip().str.lower()
         legal_es = vocab.get("evidence_source", set())
         illegal = sorted(set(es[~es.isin(legal_es | {"nan", ""})]))
         if illegal:
@@ -255,6 +298,7 @@ def main():
     check_master(ad, r)
     sem = check_enums(ad, vocab, r)
     check_gate(ad, sem, r)
+    check_format_gate(ad, sem, r)
     check_scores(ad, vocab, r)
     check_segments(ad, r)
     check_provenance(ad, r)

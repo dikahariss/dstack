@@ -84,6 +84,30 @@ the searchable tag.
 
 ---
 
+## `format_class` — decides which items apply at all
+
+The instrument was calibrated on short vertical video. Ten of its thirty-six
+items only mean something there, so a format class has to be set before scoring
+or the audit measures a documentary against a feed video's rules.
+
+| Value | What it is |
+|---|---|
+| `short_vertical` | A vertical clip made for a feed: Reels, TikTok, Shorts. All 36 items apply. |
+| `long_form` | Anything over roughly three minutes, or any landscape piece made to be watched deliberately rather than scrolled past. Ten items gate off. |
+| `other` | Square social video, a stitched carousel, a screen recording with no feed target — anything that is neither. Ten items gate off; say why in `notes`. |
+
+Duration alone does not decide it. A 20-second landscape product film is
+`other`, not `short_vertical`; a four-minute vertical vlog cut for TikTok is
+`short_vertical`. Ask the user, then record it.
+
+The ten items that gate to `applicable=false` outside `short_vertical`:
+CRD-01, CRD-02, CRD-03, CRD-04 (the hook window), CST-02 (platform duration
+rules), CST-05 (loop-ability), GRW-01 (retention inference), GRW-05 (safe zone),
+BRD-04 (third-party watermark), MON-03 (paid-media ad specs). **Closed by
+design** — the list is what makes two audits comparable, so it changes by
+editing this file and bumping `taxonomy_version`, never mid-run. The other 26
+are craft and rights items that hold at any duration.
+
 ## Objective and funnel — ask BEFORE scoring
 
 Without these, an awareness video that correctly carries no CTA loses points for
@@ -243,6 +267,7 @@ subject_domain: art_craft cooking_food beauty_fashion fitness_health tech_gadget
 intent: teach demonstrate entertain inform persuade sell document other
 production_mode: montage_fast_cut single_take voiceover_broll talking_to_camera screen_recording slideshow_text pov interview split_screen other
 commercial_relationship: none creator_sponsored brand_owned first_party_promo affiliate
+format_class: short_vertical long_form other
 objective: awareness engagement traffic lead_gen sales community_building brand_identity personal_archive unknown
 funnel_stage: top middle bottom not_applicable
 hook_device: result_first question_tease bold_claim midaction_start relatable_setup curiosity_object text_promise no_hook other
