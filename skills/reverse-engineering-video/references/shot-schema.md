@@ -70,6 +70,11 @@ vector graphic, which is invention with the shape of expertise.
 
 Notes that decide whether two rows can be compared:
 
+- `subject_ref` resolves against **any** bible section — `characters`, `props`
+  or `locations`. A shot's subject is often not a person: a plant on a stand, a
+  press forming a pot, a room. Forcing the column into `characters` makes an
+  object-led shot record an empty subject, which reads downstream as "nothing
+  is on screen".
 - `subject_ref` and `location_ref` are **keys into `bible.json`**, not prose.
   Write `CHAR_01`, not "the man in the grey coat". The prose lives in the bible
   once; a shot row points at it. This is what makes a character consistent

@@ -203,6 +203,32 @@ def test_a_sheet_has_no_empty_cells_beyond_the_last_frame():
             f"every row past the first is empty cells the reader pays for")
 
 
+def test_a_dip_to_black_is_detected_where_frame_differencing_cannot_see_it():
+    # Two bright segments joined by a fade down and up. No consecutive frame
+    # pair differs much, so the scene filter scores nothing at any threshold;
+    # absolute brightness is the only thing that finds it. Measured on a real
+    # source, a cut at ~4.0 s produced no candidate above a 0.05 floor.
+    with tempfile.TemporaryDirectory() as tmp:
+        clip = pathlib.Path(tmp) / "fade.mp4"
+        subprocess.run(
+            ["ffmpeg", "-v", "error", "-y",
+             "-f", "lavfi", "-i", "color=c=red:s=320x240:d=3",
+             "-f", "lavfi", "-i", "color=c=red:s=320x240:d=3",
+             "-filter_complex",
+             "[0]fade=t=out:st=2.4:d=0.6[a];"
+             "[1]fade=t=in:st=0:d=0.6[b];[a][b]concat=n=2:v=1:a=0",
+             "-r", "25", str(clip)], check=True)
+        out = pathlib.Path(tmp) / "survey"
+        subprocess.run([sys.executable, str(SCRIPT), str(clip), str(out)],
+                       check=True, capture_output=True)
+        with (out / "cuts.csv").open() as f:
+            cuts = [(float(r["t_s"]), r["score"]) for r in csv.DictReader(f)]
+        near = [(t, s) for t, s in cuts if 2.7 < t < 3.3]
+        assert near, f"the fade at ~3.0 s was not detected; cuts={cuts}"
+        assert all(float(s) == 1.0 for _, s in near), (
+            "a fade must score 1.0 so it survives every calibration threshold")
+
+
 def main():
     failures = 0
     for name, fn in sorted(globals().items()):

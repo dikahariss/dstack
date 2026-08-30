@@ -48,6 +48,16 @@ SHOT_COLUMNS = [
 # downstream, so the choice has to be visible and cheap to change.
 DETECT_FLOOR = 0.05
 CALIBRATION_THRESHOLDS = (0.05, 0.10, 0.15, 0.20, 0.30, 0.40, 0.50)
+
+# A second detector, for boundaries frame-differencing cannot see at ANY
+# threshold. A dip to black spreads its change over many frames, so no
+# consecutive pair differs much: measured on one source, a real cut at ~4.0 s
+# produced no candidate at all above a 0.05 floor, while absolute brightness
+# bottomed at YAVG 18/255. The dip is dark, not black, so pic_th=0.98 refuses
+# it. The run must also be SHORT — a genuinely dark scene lasts longer than a
+# transition, and that length is what separates the two.
+BLACK_MIN_S, BLACK_MAX_S = 0.02, 1.0
+BLACK_PIC_TH, BLACK_PIX_TH = 0.85, 0.15
 LONG_TAKE_WARN_S = 20.0
 
 # The sampling ladder. Closed by design: Stage 3 agents plan their context
@@ -171,7 +181,28 @@ def detect_cuts(src, detector, limitations):
         if m and pending is not None:
             cuts.append((round(pending, 3), round(float(m.group(1)), 4)))
             pending = None
+    cuts += detect_fades(src)
+    cuts.sort()
     return cuts, "ffmpeg"
+
+
+def detect_fades(src):
+    """Find dip-to-black transitions, which frame-differencing never scores.
+
+    Scored 1.0 so the boundary survives every threshold in the calibration
+    table: a fade is a cut whatever sensitivity the reader picks.
+    """
+    proc = run(["ffmpeg", "-v", "info", "-i", src, "-vf",
+                f"blackdetect=d={BLACK_MIN_S}:pic_th={BLACK_PIC_TH}"
+                f":pix_th={BLACK_PIX_TH}", "-an", "-f", "null", "-"])
+    out = []
+    for m in re.finditer(r"black_start:([\d.]+)\s+black_end:([\d.]+)",
+                         proc.stderr):
+        start, end = float(m.group(1)), float(m.group(2))
+        if start <= 0.01 or end - start > BLACK_MAX_S:
+            continue                # a black head, or a dark scene, not a dip
+        out.append((round((start + end) / 2, 3), 1.0))
+    return out
 
 
 def plan_sampling(duration):

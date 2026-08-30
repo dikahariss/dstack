@@ -138,6 +138,24 @@ def test_rejects_a_bible_reference_no_bible_entry_defines():
         assert r.returncode == 1 and "CHAR_99" in r.stderr
 
 
+def test_accepts_a_prop_as_the_subject_of_a_shot():
+    # A shot whose subject is an object, not a person: a plant on a stand, a
+    # machine forming a pot. Forcing subject_ref into `characters` would make
+    # such a shot record an empty subject.
+    with tempfile.TemporaryDirectory() as tmp:
+        bible = json.loads(json.dumps(GOOD_BIBLE))
+        bible["props"]["PROP_01"] = {"description": "a hydraulic press",
+                                     "appears_in": ["sh0001"]}
+        r = run(write_pkg(tmp, {"subject_ref": "PROP_01"}, bible=bible))
+        assert r.returncode == 0, r.stderr
+
+
+def test_still_rejects_a_subject_ref_no_section_defines():
+    with tempfile.TemporaryDirectory() as tmp:
+        r = run(write_pkg(tmp, {"subject_ref": "THING_99"}))
+        assert r.returncode == 1 and "THING_99" in r.stderr
+
+
 def test_rejects_a_deep_row_missing_run_id():
     # Without run_id a second reading silently overwrites the first, and the
     # disagreement between two readings is the most useful signal a re-read has.

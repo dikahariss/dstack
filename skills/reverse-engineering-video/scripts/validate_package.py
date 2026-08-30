@@ -92,14 +92,21 @@ def check_speech(row, where, problems):
 
 
 def check_bible_refs(row, where, bible, problems):
-    for column, section in (("subject_ref", "characters"),
-                            ("location_ref", "locations"),
-                            ("prop_ref", "props")):
+    # subject_ref resolves against EVERY section. A shot's subject is often not
+    # a person: a plant on a stand, a press forming a pot. Forcing the column
+    # into `characters` would make an object-led shot record an empty subject,
+    # which reads downstream as "nothing is on screen".
+    sections = {"subject_ref": ("characters", "props", "locations"),
+                "location_ref": ("locations",),
+                "prop_ref": ("props",)}
+    for column, allowed in sections.items():
         key = (row.get(column) or "").strip()
-        if key and key not in bible.get(section, {}):
+        if not key:
+            continue
+        if not any(key in bible.get(sec, {}) for sec in allowed):
             problems.append(
-                f"{where}: {column}={key} but bible.json {section} defines no "
-                f"such key. Propose it, do not invent it.")
+                f"{where}: {column}={key} but bible.json defines no such key in "
+                f"{' / '.join(allowed)}. Propose it, do not invent it.")
 
 
 def check_assembly(path, shot_ids, problems):
