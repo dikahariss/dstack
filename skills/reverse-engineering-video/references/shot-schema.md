@@ -57,7 +57,7 @@ vector graphic, which is invention with the shape of expertise.
 | Group | Fields | Tier |
 |---|---|---|
 | Identity | `video_id`, `shot_id`, `sequence_id`, `t_start_s`, `t_end_s` | — |
-| Subject | `subject_ref`, `subject_description`, `subject_action`, `subject_position` | observed |
+| Subject | `subject_ref`, `subject_description`, `subject_action`, `subject_position`, `end_state` | observed |
 | Scene | `location_ref`, `time_of_day`, `weather`, `set_dressing`, `background_elements` | observed |
 | Camera | `framing`, `angle`, `movement`, `movement_speed` | observed |
 | Optics | `lens_feel`, `depth_of_field`, `focal_length_est` | **inferred** |
@@ -82,6 +82,14 @@ Notes that decide whether two rows can be compared:
 - `subject_description` carries only what is true **in this shot** — the pose,
   the wardrobe state, the visible damage. Anything permanent belongs in the
   bible.
+- `end_state` records what is different in the shot's **last** sampled frame:
+  the pot has turned, the seedling is in the hole, the hand has withdrawn. It
+  exists because every current generator takes a **start frame and an end
+  frame**, and without it the end frame has to be invented. Write only the
+  difference; everything unchanged is already in `subject_description`. Where
+  nothing changes — a locked frame on a still subject — write `no change`, which
+  is a finding, not a gap: it tells the operator the two frames are the same
+  image.
 - `speech_text` is verbatim or empty. A paraphrase is a fabrication with a
   plausible shape. If the audio is unintelligible, leave it empty and set
   `speech_delivery` to `unintelligible`.

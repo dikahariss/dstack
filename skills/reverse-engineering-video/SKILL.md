@@ -135,12 +135,19 @@ Never resolve by picking the more detailed answer.
 Per `references/prompt-formats.md`. One general prompt shape carries the union of
 the published engine formulas; the differences are a notes table, not adapters.
 
-**The package is ordered for production, in five stages:** (1) a still per shot,
-each carrying a computed continuity reference to the earlier still that
-established each entity it shares; (2) a **silent** motion prompt per shot,
-animated from that still; (3) one voice-over script; (4) one music bed; (5) the
+**The package is ordered for production, in five stages:** (1) **two** stills per
+shot — a start frame and an end frame — each carrying a computed continuity
+reference to the earlier still that established each entity it shares; (2) a
+**silent** motion prompt per shot, interpolated between those two frames; (3) one
+voice-over script and one prompt per sound effect; (4) one music bed; (5) the
 assembly — `assembly.csv` plus `graphics.csv` for the captions burned on at the
 end.
+
+**Report the clip-length fit per shot.** Generators emit 4, 6 or 8 second clips
+and short-form video cuts far faster: on one 30.9 s source no shot reached 4 s,
+so every clip needed retiming or trimming. Give each shot its retime factor and
+say which of the two applies — an operator told only "generate at 4 s" assembles
+a video twice too long and discovers it at the sync stage.
 
 **Every motion prompt asks for silence.** Engines that generate audio natively
 bake it in, and baked-in audio cannot be removed — it fights the voice-over and
@@ -171,9 +178,10 @@ before output, structure before prompts); append sections rather than reordering
 2. **What the video is** — and its structure.
 3. **The rights list** — recognizable people, brands, works.
 4. **The bible** — characters, locations, look, audio identity.
-5. **The stills** — every image prompt in playback order, each with its
-   continuity reference. This is what gets generated and approved first.
-6. **The motion** — the silent clip prompt per shot.
+5. **The stills** — start and end frame per shot, in playback order, each with
+   its continuity reference. This is what gets generated and approved first.
+6. **The motion** — the silent clip prompt per shot, with its clip length and
+   its retime-or-trim verdict.
 7. **The sound** — the voice-over script, then the sound effects, then the bed.
 8. **The assembly** — the edit list and the on-screen text.
 9. **What to generate first** — the shot whose entities are all new, since

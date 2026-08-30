@@ -5,8 +5,8 @@ stages, and the prompts are written to be consumed in that order:
 
 | Stage | What is generated | Why it comes here |
 |---|---|---|
-| 1 · Stills | One image per shot, in playback order | Cheap to iterate, and a still is the only place continuity between shots can actually be fixed. Get all of them right before animating anything. |
-| 2 · Motion | One silent clip per shot, animated from its still | The still is the anchor; the prompt only describes what *moves*. |
+| 1 · Stills | **Two** images per shot — a start frame and an end frame — in playback order | Cheap to iterate, and a still is the only place continuity between shots can actually be fixed. Every current generator takes a start frame and an end frame, so both are assets in their own right. |
+| 2 · Motion | One silent clip per shot, interpolated between its two frames | The frames are the anchor; the prompt only describes what *moves between them*. |
 | 3 · Audio | The voice-over take, plus one prompt per named sound effect | Written once against the whole script, and the effects are placed against the finished picture |
 | 4 · Backsound | One music bed under everything | Never changes, so it is generated once |
 | 5 · Assemble | Cut to the edit list, sync the audio, burn the captions | |
@@ -83,10 +83,37 @@ still end on the silence clause. Rules that decide whether it works:
 6. **State the duration.** It decides how much action can fit, and every engine
    caps it.
 
-## The image prompt — the still, generated first
+## The clip-length problem — read this before generating anything
 
-This is the load-bearing prompt, not a supporting one. Every field except motion,
-plus the aspect ratio, plus the continuity line.
+Current generators emit **4, 6 or 8 second** clips. Real short-form video cuts
+much faster than that: measured on one 30.9-second source, seventeen shots
+averaged 1.82 s and *not one reached 4 s*. Generating each shot at the 4-second
+minimum produces 68 seconds of material for a 31-second video, and every clip
+then has to be fitted.
+
+Two ways to fit one, and the choice is per shot, not global:
+
+| Retime factor | What to do |
+|---|---|
+| ≤ ~2.3× | **Retime.** Play the 4 s clip faster. Both frames survive and the shot keeps its length. Safe when the motion is slow — a hand turning an object, a static frame. |
+| > ~3× | **Trim.** Speeding a clip 4× reads as fast-forward. Instead make the start and end frames nearly identical so the generated clip barely moves, then cut any slice of it. The end frame is sacrificed; say so. |
+
+Report the factor per shot. An operator who is told "generate at 4 s" and not
+told the shot is 0.90 s will assemble a video two and a half times too long and
+find out at the sync stage.
+
+## The image prompts — two per shot, generated first
+
+These are the load-bearing prompts, not supporting ones. Every field except
+motion, plus the aspect ratio, plus the continuity line — written **twice**:
+
+- **Start frame** — the shot as it begins.
+- **End frame** — the same prompt with `end_state` substituted for the action,
+  and a line pinning everything that must not drift between the two. The end
+  frame is not a new scene; it is the same frame later.
+
+A shot whose `end_state` is `no change` needs only one image, used as both
+frames. Say that rather than generating the same picture twice.
 
 ```
 [Framing], [aspect]. [Subject, bible description verbatim].
@@ -243,9 +270,16 @@ schedule, not this skill's, so re-check before relying on a number.
 
 | Engine | Clip length | Native audio | Reference inputs | Quirk worth knowing |
 |---|---|---|---|---|
-| Veo 3.1 | 4, 6 or 8 s | yes | reference images for scene, character, object, style | Negative prompts must be phrased as what *is* there ("a landscape with no buildings"), not as "no buildings" |
+| Veo 3.1 / Lite / Fast | 4, 6 or 8 s | **yes** — described as audio-backed, so the silence clause is mandatory | start frame, end frame, reference image | Negative prompts must be phrased as what *is* there ("a landscape with no buildings"), not as "no buildings" |
 | Kling | up to ~15 s; up to 6 labelled shots in one generation | varies by version | image-to-video anchors identity, layout and text | For image-to-video describe how the scene *evolves* from the still, not the whole scene again |
-| Seedance-family | short clips, multi-shot header format | yes | accepts multiple images plus clips and audio | Wants playback speed as an explicit percentage, not "slow motion" |
+| Seedance 2.5 | short clips; separate Edit and Extend modes | yes | start frame, end frame, reference image | Wants playback speed as an explicit percentage, not "slow motion". Extend continues an existing clip — useful when one shot needs more than the maximum |
+| Wan 2.5 | short clips | — | start frame, end frame | — |
+
+Hosts that wrap several of these (Google Flow among them) expose one shared
+control strip: **start frame, end frame, reference image**, then aspect,
+resolution, duration and variant count. Set the aspect deliberately — the
+default is landscape, and a 9:16 source generated at 16:9 is silently wrong in
+every frame.
 
 Where an engine caps clips shorter than a shot, the shot is split in
 `assembly.csv` and each part gets its own prompt — the split is recorded there,
