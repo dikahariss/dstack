@@ -19,7 +19,7 @@ metadata:
     type: hybrid
     side_effects: local
     agency: deliberative
-    context_budget_tokens: 4000
+    context_budget_tokens: 4500
     triggers:
       - generating images
       - generate an image
@@ -229,7 +229,9 @@ locations, failure modes, and the paid escalation routes.
 
 ## Changes
 
-- **0.4.0** — **An agent asked for an image may write code to draw one.** Asked
+- **0.4.0** — Budget 4000 → 4500: three measured failure modes joined the gate
+  in one session and each has to state its evidence to survive being argued away.
+  **An agent asked for an image may write code to draw one.** Asked
   for photorealistic frames with no reference attached, `agy` returned flat
   two-colour swatches and a flat-polygon vector illustration — real PNGs, correct
   headers, unique files, produced without its image model ever running, and every
