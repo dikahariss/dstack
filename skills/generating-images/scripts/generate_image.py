@@ -194,7 +194,19 @@ def main() -> int:
                 "re-run."}))
             return 1
         shutil.copy2(origin, args.out)
-        fmt, width, height = read_dimensions(args.out)
+        try:
+            fmt, width, height = read_dimensions(args.out)
+            # Compressed bytes per pixel. A photograph does not compress far;
+            # a flat or vector drawing does. Measured: nine codex photographs
+            # 1.18-1.99, four code-drawn agy files 0.005-0.063. It is a signal,
+            # not a proof — one detailed vector illustration scored 1.90.
+            bpp = round(args.out.stat().st_size / (width * height), 4)
+        except GenerationError:
+            # Leave nothing behind that looks like a result. agy has returned
+            # the path of its own output.txt and status.md, and the copy landed
+            # a text file at the output path before the header read rejected it.
+            args.out.unlink(missing_ok=True)
+            raise
     except (OSError, GenerationError) as exc:
         print(json.dumps({"error": f"{type(exc).__name__}: {exc}"}))
         return 1
@@ -204,6 +216,8 @@ def main() -> int:
         "out": str(args.out),
         "reported": {"width": reported.get("width"), "height": reported.get("height")},
         "actual": {"width": width, "height": height},
+        "bytes_per_pixel": bpp,
+        "low_detail": bpp < 0.5,
         "matched": (width, height) == (reported.get("width"), reported.get("height")),
         "format": fmt,
         "seconds": round(time.monotonic() - started, 1),

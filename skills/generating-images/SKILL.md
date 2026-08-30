@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.4.0
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -189,11 +189,15 @@ Style/medium: candid documentary photography, 35mm, shallow depth of field
 Composition/framing: vertical 9:16, subject lower two thirds, clean headroom
 Constraints: no text, no logo, no watermark, realistic hands, natural skin
 
+Use your built-in image-generation tool. Do NOT draw this with code, SVG,
+matplotlib, PIL or any plotting library.
 Report the absolute path of the saved file and its real pixel dimensions.
 Do not move or copy the file.
 ```
 
-`Constraints: no text` earns its line — without it the generator invents
+The *do not draw this with code* line earns its place the same way: without it,
+one engine returned a flat-polygon vector illustration and a two-colour swatch
+instead of calling its image model. `Constraints: no text` earns its line — without it the generator invents
 lettering that reads as broken signage and ruins the shot. It is advisory, not
 enforced: check the result. The final two lines keep the file where the schema
 says it is, so your copy step is the only thing that moves it.
@@ -225,22 +229,28 @@ locations, failure modes, and the paid escalation routes.
 
 ## Changes
 
-- **0.3.0** — A generator can return a file instead of making one. Asked to
-  generate, `agy` handed back a byte-identical copy of an earlier `codex` output
-  that was sitting in its workspace, reported `SUCCESS`, and passed every check
-  in the gate — the file was real, the header dimensions were real, the copy-out
-  happened. Only the provenance was false and nothing was looking at it. The
-  script now hashes the returned file against every reference, the reference
-  directory and the output directory, and fails on a match. New gate row, and a
-  rule: never run a generator in a directory holding earlier generations.
+- **0.4.0** — **An agent asked for an image may write code to draw one.** Asked
+  for photorealistic frames with no reference attached, `agy` returned flat
+  two-colour swatches and a flat-polygon vector illustration — real PNGs, correct
+  headers, unique files, produced without its image model ever running, and every
+  check in the gate passed. Nine such calls yielded zero usable photographs. The
+  prompt now names the built-in tool and forbids drawing with code; the script
+  reports `bytes_per_pixel` and flags `low_detail` under 0.5 (nine photographs
+  measured 1.18–1.99, four code-drawn files 0.005–0.063). A new gate row says
+  what no automation can: **look at the image** — one detailed vector drawing
+  scored 1.90 and would have passed the signal. Also stops leaving a failed copy
+  on disk: agy returned the path of its own `output.txt`, and the text file was
+  written to the output path before the header read rejected it.
 
-  Measured across nine reference-carrying agy calls: 3 new images, 3 that
-  returned the reference byte-identically, 3 `SUCCESS` with an empty path while
-  a real image sat in its own temp storage. Clearing the workspace does not fix
-  it — a control run holding only the reference returned the reference. codex
-  returned nine unique images on the same prompts, so the "which engine holds a
-  subject across calls" row now points at codex, not agy. Also records a
-  941×1672 PNG from agy where this reference had 768×1376 JPEG as invariant.
+- **0.3.0** — A generator can return a file instead of making one: `agy` handed
+  back a byte-identical copy of an earlier `codex` output sitting in its
+  workspace, reported `SUCCESS`, and passed the whole gate. The script now hashes
+  the result against every reference, the reference directory and the output
+  directory. Measured across nine reference-carrying agy calls: 3 new images, 3
+  that returned the reference, 3 `SUCCESS` with an empty path. Clearing the
+  workspace does not fix it — a control run holding only the reference returned
+  it. codex returned nine unique images on the same prompts, so the
+  hold-a-subject-across-calls row points at codex.
 
 - **0.2.x** — Reference images work on **both** engines: `codex exec` takes
   `-i <FILE>`, which 0.1.0 had missed because its "not measured" line was about
