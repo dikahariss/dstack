@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.22.0
+    version: 0.23.0
     type: semantic
     side_effects: readonly
     agency: reactive
