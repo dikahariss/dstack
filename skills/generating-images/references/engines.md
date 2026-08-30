@@ -49,6 +49,15 @@ tool needs no `OPENAI_API_KEY` and bills against the subscription. Check with
 | `--sandbox read-only` | sufficient — the agent still runs read commands such as `identify` |
 | `- < prompt.txt` | the prompt arrives on stdin, which avoids quoting problems on long prompts |
 
+**The quota is real and it stops you mid-batch.** Observed 2026-08-30: after
+roughly nineteen image calls in one session the CLI began exiting 1 with
+`ERROR: You've hit your usage limit`, three calls in a row, killing the last
+third of a nine-image run. It is not retryable and not a transient error — plan
+a long batch to survive being cut off partway, and check every call rather than
+assuming a batch that started well finished well. The exact allowance depends on
+the plan and on whatever else used the subscription that day, so nineteen is an
+observation, not a limit.
+
 **Size cannot be requested.** A prompt demanding `2160x3840`, quoting the tool's
 own published constraints back at it, returned 941×1672. The built-in tool
 rounds to an internal pixel budget of roughly 1.5 MP. The `gpt-image-2` size
@@ -221,7 +230,9 @@ path.
 
 Named so nobody assumes otherwise.
 
-- Rate limits and daily quotas on either subscription.
+- The exact daily quota on either subscription. codex's exists and was hit after
+  ~19 calls in one session (see above); agy's is unknown, though one run returned
+  `RESOURCE_EXHAUSTED` in place of a path.
 - Behaviour of parallel calls against either engine.
 - Which model variant `agy` routes `generate_image` to — `agy models` lists text
   models only.

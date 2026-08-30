@@ -215,7 +215,8 @@ Not exhaustive — the shape to watch for is *trusting a number nobody measured*
 | Running the generator with earlier outputs in its workspace | It may return one of them instead of generating. Measured: a byte-identical file came back as a fresh result and passed every other check. |
 | Trusting a batch because it exited 0 | The shell reports the last command. One six-image run had two failures with a healthy-looking tail. |
 | Parsing the path out of stdout | Agent logs are interleaved with the answer, and the format changes between versions. |
-| Generating in parallel to save time | Neither subscription's rate limit has been measured. Serial, 30–120 s each. |
+| Generating in parallel to save time | Serial, 30–120 s each. |
+| Planning a long batch as if it will finish | codex's quota is real: ~19 calls into one session it began exiting 1 with `You've hit your usage limit`, three in a row, and the last third of a nine-image run never ran. Order the batch so the images you need most come first. |
 
 ## Where judgment takes over
 
