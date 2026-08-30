@@ -38,13 +38,13 @@ Steps use `- [ ]` checkboxes.
 |---|---|---|
 | 1 Scaffold + survey | done | `9bcc4e1`, `7d62777` — 11 tests green; 232 s file → 96 shots, mean 2.42 s, 908 frames → 3 agents, 8.4 s |
 | 2 Dense in-shot extraction | done | `9bcc4e1` — 8 tests green; exact planned frame count per shot, over-budget slice exits 2 |
-| 3 Shot schema | done | `f0a1e2c` — `shots_deep.csv` 11 groups + `bible.json`, `assembly.csv`, `graphics.csv` |
-| 4 Craft vocabulary | done | `f0a1e2c` — 182 lines, under the 250 cap; dolly-vs-zoom parallax rule is the worked case |
-| 5 Prompt formats | done | `f0a1e2c` — engine-union order + 5 sibling formats; worked example is real shot `sh0000` |
-| 6 Fan-out protocol | done | `f0a1e2c` — 400-frame cap, agent contract, 3 merge checks |
-| 7 SKILL.md | done | `4b8c9d1` — 2383/3000 tokens, `bun run validate` OK |
-| 8 Package validator | done | `4b8c9d1` — 18 tests green |
-| 9 Eval cases | done | `4b8c9d1` — 8 cases, valid JSON |
+| 3 Shot schema | done | `2d2e6b4` — `shots_deep.csv` 11 groups + `bible.json`, `assembly.csv`, `graphics.csv` |
+| 4 Craft vocabulary | done | `2d2e6b4` — 182 lines, under the 250 cap; dolly-vs-zoom parallax rule is the worked case |
+| 5 Prompt formats | done | `2d2e6b4` — engine-union order + 5 sibling formats; worked example is real shot `sh0000` |
+| 6 Fan-out protocol | done | `2d2e6b4` — 400-frame cap, agent contract, 3 merge checks |
+| 7 SKILL.md | done | `694bd35` — 2383/3000 tokens, `bun run validate` OK |
+| 8 Package validator | done | `694bd35` — 18 tests green |
+| 9 Eval cases | done | `694bd35` — 8 cases, valid JSON |
 | 10 Rename to auditing-video | done | `c00369e` — v2.0.0, old ids kept as triggers |
 | 11 format_class gate | done | `c00369e` — 8 new pipeline regressions, ALL PASS |
 | 12 Stale reference sweep | done | `c00369e` — only historical records retain the old id |
