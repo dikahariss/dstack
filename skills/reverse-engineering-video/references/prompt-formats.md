@@ -116,6 +116,41 @@ Report the fit per clip. Grouping on real boundaries lands most clips within a
 few per cent of the minimum — seven of eight needed no retime at all — but say
 which ones do, and by how much.
 
+## Every image prompt opens with the same context block
+
+A prompt that describes only its own frame produces a set that drifts, and the
+drift lands on the thing that matters most: the recurring object. Measured on a
+nine-image run — one product across nine frames — the pot kept its coarse fibre
+in the four frames where it sat in a hand and turned into smooth moulded card in
+the two frames where it appeared as a tray of many. "Match the attached image"
+was the only anchor, and against a different composition the model read it as a
+style hint rather than an identity.
+
+So each image prompt is **two blocks**, and the first is identical in all of
+them:
+
+```
+CONTEXT — identical for every image in this set.
+Still <k> of <n> from ONE continuous <duration> <aspect> video about <subject>.
+THE RECURRING OBJECT, unchanged in every image: <bible entry, verbatim>
+THE LOOK, unchanged in every image: <palette, grade, camera character>
+Nothing above may vary between images. <the specific properties that must hold>
+
+THIS FRAME:
+<the shot-specific prompt>
+```
+
+The context block is generated from `bible.json` — that is what the bible is
+**for**, and emitting it only as a per-entity substitution wastes it. It costs
+maybe sixty words per call and it is the cheapest continuity you can buy: the
+reference image carries what a picture can carry, and this block carries what a
+picture cannot, namely which properties are identity and which are free to
+change.
+
+Name the properties explicitly. "Same pot" is weaker than "same fibre
+coarseness, same wall thickness, same moulded ring in the base" — the second
+tells the model where it may not improvise.
+
 ## The image prompts — two per shot, generated first
 
 These are the load-bearing prompts, not supporting ones. Every field except

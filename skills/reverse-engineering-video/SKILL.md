@@ -15,11 +15,11 @@ description: >
 allowed-tools: Read Write Edit Bash Glob Grep Agent
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.2.1
     type: hybrid
     side_effects: local
     agency: deliberative
-    context_budget_tokens: 3500
+    context_budget_tokens: 4000
     triggers:
       - reverse engineer video
       - video to prompt
@@ -160,6 +160,12 @@ still becomes its own prompt; it is laid under the picture at assembly.
 place continuity between shots can be fixed cheaply. Seventeen independently
 generated stills give seventeen different people in seventeen different shirts.
 
+**Every image prompt opens with an identical context block** from `bible.json`:
+the recurring object verbatim, the look, and the named properties that may not
+vary. Without it a set drifts on the thing that matters — measured, one product
+kept its coarse fibre in a hand and became smooth card once the composition
+changed.
+
 ```bash
 python3 "<skill_dir>/scripts/validate_package.py" "<work_dir>"
 ```
@@ -204,6 +210,15 @@ all, and — at merge — whether two differing descriptions are one entity read
 twice or two entities read once.
 
 ## Changes
+
+- **0.2.1** — Every image prompt now opens with an identical context block built
+  from `bible.json`. Found by reviewing a real nine-image run: the product kept
+  its coarse coir fibre in the four frames where it sat in a hand and became
+  smooth moulded card in the two where the composition changed to a tray of many.
+  "Match the attached image" was the only anchor, and against a different
+  composition the model read it as a style hint rather than an identity. The
+  bible existed and was being spent only on per-entity substitution. Budget
+  3500 → 4000 to hold it alongside the 0.2.0 doctrine.
 
 - **0.2.0** — Reworked for how the generators actually take input, after a run
   on a real file. Two stills per shot (start frame and end frame) rather than
