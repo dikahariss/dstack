@@ -18,7 +18,7 @@ description: >
 allowed-tools: Agent Read Grep Glob Skill
 metadata:
   dstack:
-    version: 0.5.4
+    version: 0.6.0
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -66,12 +66,19 @@ Majority-voting findings deletes exactly that.
 
 Not exhaustive — route by what the request must produce.
 
-Never fabricate a review to cover a missing artifact. Skip the skill entirely for
-a small single-concern artifact: four subagents on a 50-line config is waste.
+Never fabricate a review to cover a missing artifact. Each seat is a fresh
+agent that re-reads the artifact and reports back; a full review is roughly
+ten to thirteen dispatches over two iterations. Below about one screen of
+artifact, or when one expert concern covers it, review it yourself in the main
+loop and say so — a panel on a 50-line config buys nothing. The roster below
+is the only delegation this skill authorises; reading, merging, verifying and
+the decision stay in your own loop.
 
 ## What this does not do
 
-Say this in output, because the evidence is one-sided.
+State in the record, once: "This panel buys coverage, not accuracy — accuracy
+comes from the verification pass; unanimity is not confirmation; no user
+evidence was synthesised."
 
 **Role personas do not improve factual accuracy** — 162 personas over 2,410
 questions, replicated on six models with nine significant *negative* differences.
@@ -196,9 +203,10 @@ Who wears what is in the table above. Exact field wording:
 
 1. **Seat the panel.** The trio plus at most two specialists whose concerns
    *barely overlap* it, mapped from the coverage table.
-2. **Dispatch one subagent per seat, blind and in parallel.** No sibling output,
-   no shared context, no session narrative. Go wide — this iteration is allowed
-   to be noisy.
+2. **Dispatch one subagent per seat, blind and in parallel** — all seats of an
+   iteration in one message, one tool use per seat, so no seat can see
+   another's output. No shared context, no session narrative. Go wide — this
+   iteration is allowed to be noisy.
 3. **Require grounded findings.** Every finding carries a location (file:line, or
    a quoted section) + severity + the evidence, tagged `[CLAIM]` when it rests on
    a fact someone must check and `[INFERRED]` when it goes beyond the supplied
@@ -217,10 +225,19 @@ Who wears what is in the table above. Exact field wording:
    and may not be the sole basis for the decision — it becomes a named
    assumption with an owner. This is the only step that touches whether a claim
    is true: the panel bought coverage, this buys accuracy.
+
+   Do this in your own loop with the source open; `reviewer-prompt.md §3` is a
+   template for the rare check that needs a context you lack, not a required
+   dispatch.
 6. **Freeze the risk register** — the Critic's ranked kill-case plus every
    blocking and major finding. It is iteration 2's input *and* its exit test.
 
 ### Iteration 2 — converge
+
+Continue each seat through the host's message-to-agent mechanism (Claude Code:
+`SendMessage` to the seat's agent); if that is unavailable, paste the seat's
+iteration-1 report into its prompt and drop the "you reviewed this earlier"
+line.
 
 7. **Dreamer and Realist patch the register** — one dispatch, both blind, wearing
    Green then Yellow: a mitigation per item and the value that survives it. The

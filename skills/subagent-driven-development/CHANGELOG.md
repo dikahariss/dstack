@@ -1,5 +1,7 @@
 # subagent-driven-development — changelog
 
+- **0.7.0** — 2026-09-04: delegation floors and ceilings (ADR-0031 rule 6): a fix of a couple of edits is made in the main loop and a fix subagent is dispatched only when the fix is itself a task; model selection is three sentences with a floor for shipped code; continuous execution reports each Status row instead of asking to continue; the implementer prompt replaces "ask questions now" with a NEEDS_CONTEXT rule for materially different readings and a BLOCKED rule for missing decisions or unlocatable code; the spec reviewer prompt drops the "suspiciously quickly" framing for one instruction to verify the diff against the task text. The worked run moves to `references/example-workflow.md`; the Never list keeps the four items with provenance.
+
 - **0.6.2** — 2026-09-04: the implementer prompt names the proof (run the command, read the output) without invoking `/verifying-before-done` (pointer shape, licensed by the 2026-09 Opus 5 ablation); a review loop is capped at two rounds per task before the reports go to the user (ADR-0031 rule 6). The implementer self-review and the final whole-implementation pass stay until the Task 12 ablation reports.
 
 - **0.6.1** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.

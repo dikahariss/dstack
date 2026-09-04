@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read Grep Glob Agent
 metadata:
   dstack:
-    version: 0.3.1
+    version: 0.4.0
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -38,16 +38,20 @@ This is the *requesting* side. Handling the feedback you get back is
 
 ## When to request
 
+Before merging to main, and at any checkpoint a plan or the user names. Also
+worth it when stuck, before a refactor, or after a subtle bug fix. Never as a
+second check on work you just verified — that check belongs in your own
+loop; a reviewer earns its cost by independence from the author, not by
+re-running the author's checks. One reviewer per request; if other
+independent agents are being launched, send them in the same message.
+
 Mandatory:
 
 - After each task in a multi-task plan
 - After a major feature
 - Before merge to main
 
-Optional but valuable: when stuck (fresh perspective), before a refactor
-(baseline read), after fixing a subtle bug. Neither list is exhaustive —
-a plan or the user can mandate more, and any moment a fresh read would
-help qualifies.
+Not exhaustive — a plan or the user can mandate more.
 
 ## How to request
 

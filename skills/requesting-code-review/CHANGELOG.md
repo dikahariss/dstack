@@ -1,5 +1,7 @@
 # requesting-code-review — changelog
 
+- **0.4.0** — 2026-09-04: a **When to request** block states the floor and the ceiling (ADR-0031 rule 6): before merge and at named checkpoints, never as a second check on work just verified, one reviewer per request launched alongside any other independent agents. The mandatory cadence list stays beside it until the Task 12 cadence ablation reports. The reviewer template names the Agent tool, keeps plan alignment, narration comments and real-behavior tests as the review and lists the rest as starting points, asks for every finding with confidence and severity (the implementer ranks them), and keeps one rule in place of the DO/DON'T lists.
+
 - **0.3.1** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.3.0** — The reviewer now flags narration the diff introduced and may

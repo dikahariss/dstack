@@ -9,7 +9,7 @@ description: |
 allowed-tools: Agent Read Bash
 metadata:
   dstack:
-    version: 0.6.2
+    version: 0.7.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -27,7 +27,7 @@ Execute plan by dispatching fresh subagent per task, with two-stage review after
 
 **Core principle:** Fresh subagent per task + two-stage review (spec then quality) = high quality, fast iteration
 
-**Continuous execution:** Do not pause to check in with the user between tasks. Execute all tasks from the plan without stopping. The only reasons to stop are: BLOCKED status you cannot resolve, ambiguity that genuinely prevents progress, or all tasks complete. "Should I continue?" prompts and progress summaries waste their time — they asked you to execute the plan, so execute it.
+**Continuous execution:** Do not ask the user whether to continue between tasks; report each task's outcome and its Status row as it lands. Stop only for a BLOCKED status you cannot resolve, an ambiguity that genuinely prevents progress, or the last task.
 
 Your judgment is which context each subagent needs (you construct it; they
 never inherit your history) and whether a BLOCKED status means the plan is
@@ -85,18 +85,9 @@ stop and hand the user both reports; do not loop a third time.
 
 ## Model selection
 
-Use the least powerful model that can handle each role to conserve cost and increase speed. The categories and signals below are heuristics, not exhaustive — judge the task in front of you.
-
-**Mechanical implementation tasks** (isolated functions, clear specs, 1-2 files): use a fast, cheap model. Most implementation tasks are mechanical when the plan is well-specified.
-
-**Integration and judgment tasks** (multi-file coordination, pattern matching, debugging): use a standard model.
-
-**Architecture, design, and review tasks**: use the most capable available model.
-
-**Task complexity signals:**
-- Touches 1-2 files with a complete spec → cheap model
-- Touches multiple files with integration concerns → standard model
-- Requires design judgment or broad codebase understanding → most capable model
+Mechanical tasks (one or two files, complete spec): the host's cheaper tier.
+Integration and judgment tasks, and every review: the session's default model.
+Nothing below the cheaper tier for code that ships.
 
 ## Handling implementer status
 
@@ -133,82 +124,11 @@ task text.
 - `references/implementer-prompt.md` - Dispatch implementer subagent
 - `references/spec-reviewer-prompt.md` - Dispatch spec compliance reviewer subagent
 - `references/code-quality-reviewer-prompt.md` - Dispatch code quality reviewer subagent
+- `references/example-workflow.md` - A worked run, two tasks end to end
 
 ## Example workflow
 
-```
-You: I'm using Subagent-Driven Development to execute this plan.
-
-[Read plan file once: docs/plans/feature-plan.md]
-[Extract all 5 tasks with full text and context]
-[Create a todo per task]
-
-Task 1: Hook installation script
-
-[Get Task 1 text and context (already extracted)]
-[Dispatch implementation subagent with full task text + context]
-
-Implementer: "Before I begin - should the hook be installed at user or system level?"
-
-You: "User level"
-
-Implementer: "Got it. Implementing now..."
-[Later] Implementer:
-  - Implemented install-hook command
-  - Added tests, 5/5 passing
-  - Self-review: Found I missed --force flag, added it
-  - Committed
-
-[Dispatch spec compliance reviewer]
-Spec reviewer: ✅ Spec compliant - all requirements met, nothing extra
-
-[Get git SHAs, dispatch code quality reviewer]
-Code reviewer: Strengths: Good test coverage, clean. Issues: None. Approved.
-
-[Mark Task 1 complete]
-
-Task 2: Recovery modes
-
-[Get Task 2 text and context (already extracted)]
-[Dispatch implementation subagent with full task text + context]
-
-Implementer: [No questions, proceeds]
-Implementer:
-  - Added verify/repair modes
-  - 8/8 tests passing
-  - Self-review: All good
-  - Committed
-
-[Dispatch spec compliance reviewer]
-Spec reviewer: ❌ Issues:
-  - Missing: Progress reporting (spec says "report every 100 items")
-  - Extra: Added --json flag (not requested)
-
-[Implementer fixes issues]
-Implementer: Removed --json flag, added progress reporting
-
-[Spec reviewer reviews again]
-Spec reviewer: ✅ Spec compliant now
-
-[Dispatch code quality reviewer]
-Code reviewer: Strengths: Solid. Issues (Important): Magic number (100)
-
-[Implementer fixes]
-Implementer: Extracted PROGRESS_INTERVAL constant
-
-[Code reviewer reviews again]
-Code reviewer: ✅ Approved
-
-[Mark Task 2 complete]
-
-...
-
-[After all tasks]
-[Dispatch final code-reviewer]
-Final reviewer: All requirements met, ready to merge
-
-Done!
-```
+A worked run: `references/example-workflow.md`.
 
 ## What you trade
 
@@ -228,17 +148,9 @@ reach the plan belongs here.
 
 **Never:**
 - Start implementation on main/master branch without explicit user consent
-- Skip reviews (spec compliance OR code quality)
-- Proceed with unfixed issues
 - Dispatch multiple implementation subagents in parallel (conflicts)
 - Make subagent read plan file (provide full text instead)
 - Skip scene-setting context (subagent needs to understand where task fits)
-- Ignore subagent questions (answer before letting them proceed)
-- Accept "close enough" on spec compliance (spec reviewer found issues = not done)
-- Skip review loops (reviewer found issues = implementer fixes = review again)
-- Let implementer self-review replace actual review (both are needed)
-- **Start code quality review before spec compliance is ✅** (wrong order)
-- Move to next task while either review has open issues
 
 **If subagent asks questions:**
 - Answer clearly and completely
@@ -251,9 +163,8 @@ reach the plan belongs here.
 - Two rounds without approval go to the user
 - Don't skip the re-review
 
-**If subagent fails task:**
-- Dispatch fix subagent with specific instructions
-- Don't try to fix manually (context pollution)
+**If a subagent fails its task:** a fix you can make in a couple of edits,
+make yourself; dispatch a fix subagent only when the fix is itself a task.
 
 ## Cross-references
 

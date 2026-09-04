@@ -8,12 +8,13 @@ description: >
   "prepare for RAG", "extract this regulation",
   scanned pages, OCR garble, scrambled tables, word-splits, missing heading
   structure, or when an earlier deterministic extractor (pdf2md, plain pdftotext)
-  produced garbled output. Assumes a Claude Max plan (fan out subagents freely).
+  produced garbled output. Runs autonomously end to end; one vision agent per
+  page that needs vision.
 allowed-tools: Bash Read Write Edit Workflow Grep Glob
 metadata:
   dstack:
     type: hybrid
-    version: 0.6.4
+    version: 0.7.0
     triggers:
       - convert pdf to markdown
       - pdf to rag
@@ -31,15 +32,23 @@ metadata:
 ---
 # /pdf-to-rag
 
-Convert PDFs into retrieval-ready Markdown with **Claude vision + parallel subagent
-Workflows** as the primary engine. The AI reads the page; deterministic tools triage,
-de-wrap clean prose, and assemble. Built for a **Claude Max plan** — fan out freely;
-the constraint is fidelity, not token cost. Supersedes the deterministic `pdf2md`.
+Convert PDFs into retrieval-ready Markdown with **Claude vision + parallel
+subagent Workflows** as the primary engine. The AI reads the page;
+deterministic tools triage, de-wrap clean prose, and assemble.
+
+**The unit of delegation is one vision agent per page, grounded in the same
+pass.** That is the whole fan-out: a document with N vision pages costs N
+transcribe agents and N ground agents, sent through one Workflow at the
+Workflow's own concurrency limit, which the run log names. Do not add agents
+beyond it — no reviewer agents, no per-chunk fix agents unless `dewrap.py`
+demonstrably mis-structured a region (Phase 4 fallback), and never a pilot
+batch before the real one.
 
 ## Run autonomously — one overlapped pass (default)
-Finish end-to-end in one go. Staging (pilot → ask → phase → wait) is what makes a doc
-take an hour — not the compute. Don't pilot, don't ask which approach, don't ask before
-fanning out. The user is on Max and wants speed + fidelity, not approval gates.
+Finish end-to-end in one go. Staging (pilot → ask → phase → wait) is what
+makes a doc take an hour — not the compute. Don't pilot, don't ask which
+approach, don't ask before running the Workflow; ask only on a real blocker
+(missing file, ambiguous target).
 
 **Fork on doc type first (from triage):**
 - **Digital / mixed** (reliable `pdftotext -layout` text layer): build a draft, run
@@ -61,17 +70,16 @@ Then:
    Run `anti_drift_gate.py` only if the AI fix-pass fallback ran (dewrap is
    letter-neutral and needs no gate).
 4. **Verify-before-fix:** `grounded=false` is a suspicion, not a verdict. For each
-   flagged page re-read the PNG and classify every flag as (a) genuine drift, (b)
-   intentionally-omitted chrome, or (c) a reviewer misread; fix only (a) with the Edit
-   tool (a targeted span replace — **never** `splice.py splice`, which would discard the
-   correct rest of the page); default KEEP on a single-letter disagreement; a re-fix
-   must agree with a second read before overwriting. Copy `doc.md` → `doc.pre-ground.md`
-   first. Ask only on a real blocker (missing file, ambiguous target).
+   flagged page re-read the PNG for the `high` and `medium` items and classify each
+   as (a) genuine drift, (b) intentionally-omitted chrome, or (c) a reviewer misread;
+   treat a `low` single-letter claim as KEEP without a re-read. Fix only (a) with the
+   Edit tool (a targeted span replace — **never** `splice.py splice`, which would
+   discard the correct rest of the page); a re-fix must agree with a second read
+   before overwriting. Copy `doc.md` → `doc.pre-ground.md` first.
 
-`dewrap.py` is word-identical to the AI fix-pass (added=0/removed=0 over 245 pages) at
-~10 ms vs ~8.6 min, and grounding runs in one pass — a 279-page doc dropped ~1h → ~6 min,
-same output. ≤30% deterministic holds: de-wrap/triage/assembly/gate are rails; vision +
-grounding (all the judgment) stay AI.
+`dewrap.py` is letter-neutral and word-identical to the AI fix-pass on the benchmark,
+so clean prose never earns an agent; de-wrap, triage, assembly and gate are rails,
+vision and grounding stay AI.
 
 ## When to use
 - Turning PDF(s) into Markdown for a RAG / knowledge base.
@@ -146,9 +154,6 @@ bagan alur / swimlane / org chart / scrambled diagram.
   (`govdoc`, `matrix`, `flowchart`, `ground`) + the digital fix-pass prompt.
 - `references/workflows.md` — the fast one-pass orchestration (doc-type fork + pipelined
   transcribe→ground + verify-before-fix) and per-phase Bash/Workflow templates.
-
-Proven on real Indonesian government docs incl. a 279-page DIGITAL Permenhub (dewrap
-path) and a 23-page SCANNED Inpres with an 18-page matrix lampiran (vision/matrix path).
 
 ## Common mistakes
 

@@ -126,9 +126,14 @@ NONE. This is the only user or stakeholder evidence that exists.>
    stated capability — with [CLAIM] and name the source you would check. A
    later pass verifies these; do not verify them yourself from memory.
 6. Do not restate the artifact back to me. Findings only.
-7. Length is not a quality signal here. Six grounded findings beat twenty
-   padded ones.
-8. You MUST answer the objection field, even if the artifact looks fine.
+7. Report every finding you can anchor, including low-severity and uncertain
+   ones, each with its severity and your confidence; do not filter for
+   importance or confidence — the arbiter does that. It is better to surface
+   a finding that later gets filtered out than to silently drop a real one.
+   Padding is a different failure: no restating, no generic advice.
+8. Answer the objection field even when the artifact looks fine. The arbiter
+   reads it as your blind-spot signal, not as dissent — dissent is the
+   Critic's job.
 
 ## Output format
 

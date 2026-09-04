@@ -1,5 +1,7 @@
 # dispatching-parallel-agents — changelog
 
+- **0.3.0** — 2026-09-04: delegation floor and ceiling stated (ADR-0031 rule 6): dispatch only for independent problems that each need more than a handful of tool calls, one agent per domain as the ceiling and one agent for two file-disjoint domains when it can take both; the description says the same. The post-return steps are stated once, in **Verification**.
+
 - **0.2.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.2.2** — ADR-0030 catalog review (list openness, cut restated general knowledge, economy, consistency); panel-verified, see the 2026-08-14 review workflow.

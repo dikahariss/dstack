@@ -161,6 +161,9 @@ Step 3 — Compare BODY content cell-by-cell / line-by-line and report:
   transcription.
 - altered: any cell/word whose wording, number, date, or spelling DIFFERS from the
   image — quote both as "image: X | md: Y".
+- confidence: every invented / missing / altered item carries high | medium | low —
+  high when the difference is unambiguous at this resolution, low for a
+  single-letter or diacritic call.
 - grounded: true only if invented, missing, and altered are all empty.
 
 NOT defects — never report these as missing or altered (correct-by-design):
@@ -172,7 +175,8 @@ NOT defects — never report these as missing or altered (correct-by-design):
 For a single-letter/diacritic claim, you may be misreading at this resolution —
 only assert `altered` when the difference is unambiguous; otherwise leave it out.
 
-Return only: page=<n>, grounded=<bool>, invented=[..], missing=[..], altered=[..],
+Return only: page=<n>, grounded=<bool>, invented=[{item, confidence}],
+missing=[{item, confidence}], altered=[{"image: X | md: Y", confidence}],
 notes=<one line>.
 ```
 

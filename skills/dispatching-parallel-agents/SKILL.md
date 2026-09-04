@@ -1,15 +1,15 @@
 ---
 name: dispatching-parallel-agents
 description: |
-  Use when facing 2+ independent tasks that can be worked on without
-  shared state or sequential dependencies — e.g. several test files
-  failing with different root causes, or multiple subsystems broken
+  Use when facing independent problems that share no files and each need
+  more than a handful of tool calls — e.g. several test files failing
+  with different root causes, or multiple subsystems broken
   independently. Triggers: "parallel agents", "fan out", "independent
   failures".
 allowed-tools: Agent Bash Read
 metadata:
   dstack:
-    version: 0.2.3
+    version: 0.3.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -29,6 +29,11 @@ You delegate tasks to specialized agents with isolated context. By precisely cra
 When you have multiple unrelated failures (different test files, different subsystems, different bugs), investigating them sequentially wastes time. Each investigation is independent and can happen in parallel.
 
 **Core principle:** Dispatch one agent per independent problem domain. Let them work concurrently.
+
+Dispatch when the problems are independent (no shared files, no shared cause)
+and each is more than a handful of tool calls; a single failure, or two that
+share a cause, is investigated directly. One agent per domain is the ceiling,
+not the goal: if one agent can take two domains that share no files, send one.
 
 Deciding the failures are truly independent — no shared state, no
 "fixing one may fix another" coupling — is your judgment call. The rails
@@ -87,14 +92,6 @@ Agent("Fix batch-completion-behavior.test.ts failures")
 Agent("Fix tool-approval-race-conditions.test.ts failures")
 // All three run concurrently
 ```
-
-### 4. Review and integrate
-
-When agents return:
-- Read each summary
-- Verify fixes don't conflict
-- Run full test suite
-- Integrate all changes
 
 ## Agent prompt structure
 

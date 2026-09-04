@@ -35,7 +35,7 @@ Stage 3, so the split comes from a number rather than a guess, and
 | Situation | What to do |
 |---|---|
 | `total_frames_planned` ≤ 400 | One pass. No agents. The coordination cost buys nothing. |
-| 400 < total, and sequences are known | One agent per sequence; split any sequence over the cap |
+| 400 < total, and sequences are known | One agent per sequence; split any sequence over the cap. Launch all of them in a single message with one Agent call each, so they run concurrently. |
 | 400 < total, sequences not yet known | Run Stage 2 first. Slicing on a budget boundary cuts scenes in half, and a scene split across two agents is described twice and differently. |
 | The user asked for a time range or the top N shots only | Deep-read only those. A full survey is cheap; a full deep pass is not. |
 

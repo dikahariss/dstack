@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob Grep Agent
 metadata:
   dstack:
-    version: 0.3.1
+    version: 0.3.2
     type: hybrid
     side_effects: local
     agency: deliberative
