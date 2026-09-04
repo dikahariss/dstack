@@ -39,6 +39,12 @@ If three real invocations do not exist, the skill has not been used enough to
 have earned rails. Say so in the record and stop; that finding is itself the
 result.
 
+The transcript store keeps about 30 days (`cleanupPeriodDays`; raised to 90
+on 2026-09-04). Count eligibility the week the run starts; a record from an
+earlier window, with its task prompts and free version preserved, may be
+re-run when the live store no longer clears the bar. The monthly archive
+under `~/.claude/dstack-census/` holds the raw invocation lines.
+
 ### 2. Build the free version
 
 Replace the skill body with its **goal, its guardrails, and its exit
