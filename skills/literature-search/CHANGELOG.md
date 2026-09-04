@@ -1,5 +1,7 @@
 # literature-search — changelog
 
+- **0.4.5** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 87 words (120-word tier: the trigger list is the discovery path); quoted trigger phrases kept.
+
 - **0.4.4** — 2026-09-04: the "Not for" line pointed at `/deep-research`, a skill that does not exist; it now points at `/researching-facts`.
 - **0.4.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 

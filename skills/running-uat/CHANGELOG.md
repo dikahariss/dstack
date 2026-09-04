@@ -1,5 +1,7 @@
 # running-uat — changelog
 
+- **0.5.1** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 75 words; quoted trigger phrases kept.
+
 - **0.5.0** — 2026-09-04: deliverable length calibrated (ADR-0031 rule 5): Opus 5 writes longer files than the task needs; one sentence scoped to the written document, never to progress text.
 - **0.4.5** — 2026-09-04: the routing table is declared open (ADR-0031 sweep).
 - **0.4.4** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.

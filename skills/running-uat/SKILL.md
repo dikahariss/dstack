@@ -1,19 +1,17 @@
 ---
 name: running-uat
 description: >
-  Use when acceptance-testing a RUNNING application against acceptance criteria
-  from a stakeholder's point of view — driving the real app through a browser,
-  judging PASS/FAIL on observed evidence, and looping fixes until the exit
-  criteria are met. Covers the entry gate (unit/e2e green first), the evidence
-  rules that stop a false PASS, per-persona points of view, and a hard iteration
-  cap. Not for unit or e2e tests, and not for testing a dstack skill. Triggers:
-  "run UAT", "UAT from a point of view", "acceptance test", "test via browser",
-  "make sure every acceptance criterion passes", "user acceptance testing", "UAT end-to-end",
-  "smoke test the running app".
+  Use when a RUNNING application must be accepted or rejected against
+  enumerated acceptance criteria from a stakeholder's point of view, through a
+  real browser, with a PASS/FAIL verdict per criterion. Not for unit or e2e
+  tests, not for testing a dstack skill, and not to find out whether a build
+  works at all. Triggers: "run UAT", "acceptance test", "test via browser",
+  "user acceptance testing", "smoke test the running app", "make sure every
+  acceptance criterion passes".
 allowed-tools: Bash Read Write Edit Agent Skill Glob Grep
 metadata:
   dstack:
-    version: 0.5.0
+    version: 0.5.1
     type: semantic
     calibration: deterministic-dominant
     side_effects: local

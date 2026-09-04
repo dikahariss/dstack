@@ -1,16 +1,15 @@
 ---
 name: responding-to-review
-description: |
-  Handles code-review feedback with technical rigor. Verifies before
-  implementing, asks before assuming, and pushes back with reasoning
-  when the reviewer is wrong. Use when handling PR comments, inline
-  review threads, or asked to "respond to this review", "address
-  these comments", or "the reviewer said X".
+description: >
+  Use when handling PR comments, inline review threads, or when asked to
+  "respond to this review", "address these comments", or "the reviewer said
+  X"; verifies each claim against the code before acting. Not for a direct
+  instruction from the user.
 allowed-tools: Read Bash Grep Glob Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.6.0
+    version: 0.6.1
     context_budget_tokens: 3500
     side_effects: local
     agency: deliberative

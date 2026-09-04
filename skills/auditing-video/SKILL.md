@@ -1,22 +1,21 @@
 ---
 name: auditing-video
 description: >
-  Use when a video FILE of any length needs a structured audit and a dataset the
-  user can keep — a per-video fact row plus per-second, per-shot and OCR tables
-  that concatenate across many videos. Covers short form (Reel, TikTok, Shorts)
-  and long form alike; the platform-specific items gate themselves off by format
-  class. Also use when several such audits must be merged into a corpus, or when
-  video measurements must be prepared for a database, warehouse, or ML feature
-  store. Not for a platform URL (this reads local files only), not for judging a
-  running app, and not for rebuilding a video as generation prompts (that is
+  Use when a video FILE of any length needs a structured audit and a dataset
+  the user can keep — a per-video fact row plus per-second, per-shot and OCR
+  tables that concatenate across many videos. Short form (Reel, TikTok,
+  Shorts) and long form alike; platform-specific items gate off by format
+  class. Also for merging several audits into a corpus, or preparing video
+  measurements for a warehouse or ML feature store. Not for a platform URL
+  (local files only), a running app, or rebuilding a video as prompts (that is
   /reverse-engineering-video). Triggers: "analyze this video", "audit video",
-  "review this video", "extract data from a video", "hook analysis", "retention
-  critique", "why isn't this reel performing", "video dataset", "merge video
-  audits", "auditing-short-video", "video-analyzer".
+  "review this video", "extract data from a video", "hook analysis",
+  "retention critique", "why isn't this reel performing", "video dataset",
+  "merge video audits", "auditing-short-video", "video-analyzer".
 allowed-tools: Read Write Edit Bash Glob Grep
 metadata:
   dstack:
-    version: 2.1.0
+    version: 2.1.1
     type: hybrid
     side_effects: local
     agency: deliberative

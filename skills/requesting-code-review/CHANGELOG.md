@@ -1,5 +1,7 @@
 # requesting-code-review — changelog
 
+- **0.4.2** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 41 words; quoted trigger phrases kept.
+
 - **0.4.1** — 2026-09-04: `eval/cases.jsonl` added — 3 behavioural cases, each a prompt plus the anti-pattern it must not produce.
 
 - **0.4.0** — 2026-09-04: a **When to request** block states the floor and the ceiling (ADR-0031 rule 6): before merge and at named checkpoints, never as a second check on work just verified, one reviewer per request launched alongside any other independent agents. The mandatory cadence list stays beside it until the Task 12 cadence ablation reports. The reviewer template names the Agent tool, keeps plan alignment, narration comments and real-behavior tests as the review and lists the rest as starting points, asks for every finding with confidence and severity (the implementer ranks them), and keeps one rule in place of the DO/DON'T lists.

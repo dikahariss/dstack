@@ -1,5 +1,7 @@
 # modelling-business-processes — changelog
 
+- **0.2.5** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 75 words; quoted trigger phrases kept.
+
 - **0.2.4** — 2026-09-04: the Stage 0 input table is declared closed by design (ADR-0031 sweep).
 - **0.2.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 

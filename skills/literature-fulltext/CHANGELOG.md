@@ -1,5 +1,7 @@
 # literature-fulltext — changelog
 
+- **0.4.4** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 70 words (120-word tier: the trigger list is the discovery path); quoted trigger phrases kept.
+
 - **0.4.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.4.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.

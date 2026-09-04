@@ -1,15 +1,14 @@
 ---
 name: finishing-development-branch
-description: |
-  Use when implementation is complete, all tests pass, and you need to
-  decide how to integrate the work. Guides completion by verifying
-  tests, detecting the workspace, and presenting structured options for
-  merge, PR, keep, or discard. Triggers: "finish the branch", "wrap up",
-  "merge or PR", "complete this work".
+description: >
+  Use when implementation on a branch is complete and tests pass, and the work
+  must be integrated, handed off, or dropped — presents merge, PR, keep, or
+  discard with the checks each needs. Triggers: "finish the branch", "wrap
+  up", "merge or PR", "complete this work".
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.4.2
+    version: 0.4.3
     type: semantic
     side_effects: external
     agency: deliberative

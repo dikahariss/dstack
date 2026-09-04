@@ -1,11 +1,14 @@
 ---
 name: classify-issue
-description: Classifies a bug report, feature request, or chore into a structured triage record. Use when the user pastes an issue body and asks to "triage this", "classify this issue", or "what kind of issue is this".
+description: >
+  Use when the user pastes an issue body and asks to "triage this", "classify
+  this issue", or "what kind of issue is this"; produces a structured triage
+  record (bug / feature / chore / question / regression).
 allowed-tools: Read
 metadata:
   dstack:
     type: schema-semantic
-    version: 0.2.5
+    version: 0.2.6
     context_budget_tokens: 1500
     side_effects: readonly
     agency: deliberative

@@ -1,16 +1,14 @@
 ---
 name: using-git-worktrees
-description: |
+description: >
   Use when starting feature work that needs isolation from the current
-  workspace, or before executing an implementation plan. Ensures an
-  isolated workspace exists — detect existing isolation first, prefer the
-  platform's native worktree tools (e.g. EnterWorktree), fall back to
-  `git worktree` only when no native tool exists. Triggers: "git
-  worktree", "isolated workspace", "set up a worktree".
+  workspace, or before executing an implementation plan; ensures an isolated
+  workspace exists, preferring the platform's native worktree tool. Triggers:
+  "git worktree", "isolated workspace", "set up a worktree".
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.3.4
+    version: 0.3.5
     type: semantic
     side_effects: local
     agency: deliberative

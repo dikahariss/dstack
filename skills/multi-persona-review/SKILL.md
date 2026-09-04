@@ -4,21 +4,18 @@ description: >
   Use when one artifact — a design, schema, plan, document, or diff — or one
   digital-product review packet needs reviewing from several expert points of
   view at once, and the goal is to SURFACE MORE DISTINCT ISSUES than a single
-  reviewer finds and then close on a decision someone owns. Also use when
-  reviewers are agreeing too readily and the proposal needs someone assigned to
-  attack it, when a product needs review coverage selected by product class and
-  lifecycle gate, or when a review has to end in an execution hand-off rather
-  than a findings list. Not for improving factual accuracy through personas, and
-  never a substitute for user research — see "What this does not do". Triggers:
-  "review from several points of view", "PoV senior data architect", "panel
-  review", "multi perspective review", "reviewer panel", "devil's advocate",
-  "red team this", "digital product review", "review dashboard", "review public
-  service", "Disney Creativity Strategy", "dreamer realist critic", "six
-  thinking hats", "decide as a panel".
+  reviewer finds and then close on a decision someone owns. Not for improving
+  factual accuracy through personas, and never a substitute for user research
+  — see "What this does not do". Triggers: "review from several points of
+  view", "PoV senior data architect", "panel review", "multi perspective
+  review", "reviewer panel", "devil's advocate", "red team this", "digital
+  product review", "review dashboard", "review public service", "Disney
+  Creativity Strategy", "dreamer realist critic", "six thinking hats", "decide
+  as a panel".
 allowed-tools: Agent Read Grep Glob Skill
 metadata:
   dstack:
-    version: 0.6.0
+    version: 0.6.1
     type: semantic
     side_effects: readonly
     agency: deliberative

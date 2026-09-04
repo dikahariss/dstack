@@ -1,15 +1,14 @@
 ---
 name: requesting-code-review
-description: |
-  Dispatch a code-review subagent with crafted context to catch issues
-  before they cascade. The reviewer sees the diff and what the work was
-  meant to do, never your session history. Use after finishing a task or
-  feature, before merging to main, or when stuck and a fresh read would
-  help — e.g. "request review", "get this reviewed", "review before merge".
+description: >
+  Use before merging to main, at a checkpoint a plan names, when stuck, or
+  after a subtle bug fix — a fresh reviewer with a crafted brief catches what
+  the author cannot. Triggers: "request review", "get this reviewed", "review
+  before merge".
 allowed-tools: Bash Read Grep Glob Agent
 metadata:
   dstack:
-    version: 0.4.1
+    version: 0.4.2
     type: semantic
     side_effects: readonly
     agency: deliberative

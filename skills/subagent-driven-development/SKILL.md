@@ -1,15 +1,16 @@
 ---
 name: subagent-driven-development
-description: |
-  Use when executing an implementation plan with independent tasks in
-  the current session. Dispatch a fresh subagent per task, then run a
-  two-stage review after each — spec compliance first, then code quality
-  — looping until both pass. Triggers: "subagent-driven development",
-  "execute plan with subagents", "dispatch a subagent per task".
+description: >
+  Use when executing a written implementation plan with independent tasks in
+  the current session and the plan is too large to hold in one context;
+  dispatches one fresh subagent per task with review between tasks. Not for a
+  one-file change or a plan you can execute directly. Triggers:
+  "subagent-driven development", "execute plan with subagents", "dispatch a
+  subagent per task".
 allowed-tools: Agent Read Bash
 metadata:
   dstack:
-    version: 0.7.1
+    version: 0.7.2
     type: semantic
     side_effects: local
     agency: deliberative

@@ -1,5 +1,7 @@
 # subagent-driven-development — changelog
 
+- **0.7.2** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 59 words; quoted trigger phrases kept.
+
 - **0.7.1** — 2026-09-04: `eval/cases.jsonl` added — 2 behavioural cases, each a prompt plus the anti-pattern it must not produce.
 
 - **0.7.0** — 2026-09-04: delegation floors and ceilings (ADR-0031 rule 6): a fix of a couple of edits is made in the main loop and a fix subagent is dispatched only when the fix is itself a task; model selection is three sentences with a floor for shipped code; continuous execution reports each Status row instead of asking to continue; the implementer prompt replaces "ask questions now" with a NEEDS_CONTEXT rule for materially different readings and a BLOCKED rule for missing decisions or unlocatable code; the spec reviewer prompt drops the "suspiciously quickly" framing for one instruction to verify the diff against the task text. The worked run moves to `references/example-workflow.md`; the Never list keeps the four items with provenance.

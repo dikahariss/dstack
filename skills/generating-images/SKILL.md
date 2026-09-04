@@ -2,20 +2,19 @@
 name: generating-images
 description: >
   Use when an image has to be created rather than found — a scene no stock
-  library holds, a placeholder asset, a cover, a mockup photo — and the machine
-  has an agent CLI that can draw one. Covers which engine to send the request
-  to, the structured-output contract that returns a real path, the pixel
-  verification that stops a false claim, and the resolution ceiling a caller
-  must be told about. Not for charts (`/dataviz`), diagrams
-  (`/diagramming-architecture`), or screen layouts (`/wireframing-interfaces`).
-  Triggers: "generate an image", "buatkan gambar", "bikin ilustrasi", "make me
-  a picture", "AI image", "text to image", "imagegen", "image_gen", "nano
-  banana", "gpt-image", "generate a cover", "generate a thumbnail",
-  "placeholder photo", "generate stills for a video".
+  library holds, a placeholder asset, a cover, a mockup photo — and the
+  machine has an agent CLI that can draw one; generates the image through that
+  CLI with the real size measured. Not for charts (`/dataviz`), diagrams
+  (`/diagramming-architecture`), or screen layouts
+  (`/wireframing-interfaces`). Triggers: "generate an image", "buatkan
+  gambar", "bikin ilustrasi", "make me a picture", "AI image", "text to
+  image", "imagegen", "image_gen", "nano banana", "gpt-image", "generate a
+  cover", "generate a thumbnail", "placeholder photo", "generate stills for a
+  video".
 allowed-tools: Read Write Edit Bash Glob
 metadata:
   dstack:
-    version: 0.5.0
+    version: 0.5.1
     type: hybrid
     side_effects: local
     agency: deliberative

@@ -1,19 +1,16 @@
 ---
 name: learning-from-sessions
 description: >
-  Use when turning your own past sessions into durable improvements — mining the
-  transcript store under `~/.claude/projects` for recurring corrections, repeated
-  tool errors, refused actions, and rework, then converting each recurring pattern
-  into a written rule, a skill edit, or a memory entry. Run it on a cadence
-  (weekly) or after a session that went badly. The exit condition is a written
-  change — committed when the user asks — never a report. Triggers: "retrospective", "weekly retro", "evaluate
-  Claude usage", "what can we improve", "lessons from yesterday's session",
-  "review conversation history", "lessons learned", "analyze recurring mistakes",
-  "learn from past sessions", "improve week over week".
+  Use when turning your own past sessions into durable improvements — a
+  written rule, a skill edit, or a memory entry per recurring pattern — by
+  mining the transcript store under `~/.claude/projects`. Run it weekly or
+  after a session that went badly. Triggers: "retrospective", "weekly retro",
+  "evaluate Claude usage", "what can we improve", "lessons learned", "analyze
+  recurring mistakes", "learn from past sessions", "improve week over week".
 allowed-tools: Bash Read Write Edit Grep Glob
 metadata:
   dstack:
-    version: 0.2.4
+    version: 0.2.5
     type: hybrid
     side_effects: local
     agency: deliberative

@@ -1,21 +1,18 @@
 ---
 name: literature-fulltext
 description: >
-  Use when downloading full-text PDFs for a citation
-  corpus — resolving open-access availability by DOI via Unpaywall or the
-  database's own OA flag, fetching ONLY legitimately open-access or
-  institution-licensed content, politely rate-limited, with a license manifest.
-  Covers the no-DOI paths too: browser-driven OA download of ProQuest
-  dissertations, and Neliti's self-hosted OA PDFs. Stage 3 after /literature-search
-  and /literature-trends. Triggers:
-  "download OA PDF", "fetch full text", "unpaywall", "download
-  articles for these DOIs", "open access download", "get the PDFs", "download open
-  access", "download dissertation PDF", "ProQuest full text", "Neliti PDF".
+  Use when full-text PDFs must be fetched for a citation corpus and only
+  legitimately open-access or institution-licensed copies may be taken;
+  produces the PDFs plus a license manifest, with Unpaywall for DOIs and the
+  source's own OA flag for the no-DOI cases (ProQuest dissertations, Neliti).
+  Stage 3 after /literature-search and /literature-trends. Triggers: "download
+  OA PDF", "fetch full text", "unpaywall", "get the PDFs", "download
+  dissertation PDF", "ProQuest full text", "Neliti PDF".
 allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.4.3
+    version: 0.4.4
     context_budget_tokens: 2750
     side_effects: external
     agency: deliberative

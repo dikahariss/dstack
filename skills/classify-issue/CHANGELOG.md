@@ -1,5 +1,7 @@
 # classify-issue — changelog
 
+- **0.2.6** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 37 words; quoted trigger phrases kept.
+
 - **0.2.5** — 2026-09-04: `eval/cases.jsonl` added — 2 behavioural cases, each a prompt plus the anti-pattern it must not produce.
 
 - **0.2.4** — 2026-09-04: the closing "triple-check" line states the consequence instead (ADR-0031 rule 7): an out-of-enum kind or an over-long area is rejected downstream, not repaired.

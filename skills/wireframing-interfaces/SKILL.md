@@ -1,17 +1,17 @@
 ---
 name: wireframing-interfaces
 description: >
-  Use when a spec says what a screen must do but nobody can see it yet — before
-  implementation invents the layout, or when someone needs to check the flow
-  rather than read a table of states. Draws one rough panel per state the spec
-  names and records every state it did not draw. Never decides colour, typeface,
-  or spacing. Triggers: "wireframe", "mockup", "screen sketch", "screen layout",
-  "low fidelity", "what does the screen look like", "screen design",
-  "draw.io mockup", "excalidraw wireframe".
+  Use when a spec says what a screen must do but nobody can see it yet —
+  before implementation invents the layout, or when someone needs to check the
+  flow rather than read a table of states. Draws one rough panel per state the
+  spec names; never decides colour, typeface, or spacing. Triggers:
+  "wireframe", "mockup", "screen sketch", "screen layout", "low fidelity",
+  "what does the screen look like", "screen design", "draw.io mockup",
+  "excalidraw wireframe".
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.3.4
+    version: 0.3.5
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local

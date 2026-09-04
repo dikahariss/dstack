@@ -2,19 +2,16 @@
 name: modelling-business-processes
 description: >
   Use when a business process, procedure, or workflow must exist as a real
-  BPMN 2.0 file — one that opens in a modeller and can be handed to a process
-  engine — rather than as a picture trapped inside a document. Covers the
-  pool and lane discipline, the element vocabulary, the approval, revision-loop
-  and wait patterns, and the lint gate. `.bpmn` is the mandatory artifact;
-  rendered and inline views are optional. Requests for an "activity diagram"
-  or a "flowchart of the process" land here too. Not for architecture pictures
-  and not for UML use case or sequence models. Triggers: "bpmn", "business
-  process", "process diagram", "activity diagram", "approval flow",
-  "swimlane", "workflow diagram", "process model", "camunda", "zeebe".
+  BPMN 2.0 file — one a modeller opens and an engine can run — not as a
+  picture inside a document. Produces a lint-clean `.bpmn`; renders are
+  optional. Not for architecture pictures and not for UML use case or sequence
+  models. Triggers: "bpmn", "business process", "process diagram", "activity
+  diagram", "flowchart of the process", "approval flow", "swimlane", "workflow
+  diagram", "process model", "camunda", "zeebe".
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.2.4
+    version: 0.2.5
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local

@@ -1,5 +1,7 @@
 # diagramming-architecture — changelog
 
+- **0.4.6** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 76 words; quoted trigger phrases kept.
+
 - **0.4.5** — 2026-09-04: the legibility-check reason is stated in the present tense with its measured count (7 findings vs 2) instead of as an anecdote about the first run.
 - **0.4.4** — 2026-09-04: the "Instead of this skill" table is declared open (ADR-0031 sweep; the changelog marker had been silencing the detector).
 - **0.4.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.

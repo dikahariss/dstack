@@ -1,24 +1,20 @@
 ---
 name: literature-search
 description: >
-  Use when harvesting bibliographic records from an academic database's web
-  search for a systematic literature review (SLR), scoping review, or
-  bibliometric/trend study — designing a boolean concept-block query, applying
-  year / article-type / subject / open-access filters, exporting results to RIS,
-  and logging hit counts for PRISMA. Empirically tested adapters: ScienceDirect
-  (Elsevier), Taylor & Francis (Atypon Literatum), Springer Nature Link, ProQuest
-  Dissertations & Theses (guest/public — scrape-not-export), and Neliti (Indonesian
-  index — bag-of-words, robots-constrained); Emerald and others plug in as per-vendor
-  adapters. Triggers: "SLR search", "literature search", "search string", "boolean
-  query", "literature keyword strategy", "export/download RIS", "harvest citations",
-  "ScienceDirect search", "Taylor & Francis search", "tandfonline", "Springer
-  search", "ProQuest search", "ProQuest dissertations", "harvest dissertations",
-  "Neliti", "perpusnas e-resources", "build a reference corpus".
+  Use when citations must be harvested from an academic database's WEB search
+  for a systematic, scoping, or bibliometric review; produces a RIS corpus
+  with PRISMA hit counts. Tested adapters: ScienceDirect, Taylor & Francis
+  (tandfonline), Springer Nature Link, ProQuest Dissertations & Theses
+  (guest), Neliti / Perpusnas e-resources; Emerald and others plug in as
+  adapters. Not for a database with a query API, and not for open-web
+  research. Triggers: "SLR search", "literature search", "search string",
+  "boolean query", "export RIS", "harvest citations", "build a reference
+  corpus", any database name above.
 allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.4.4
+    version: 0.4.5
     context_budget_tokens: 4500
     side_effects: local
     agency: deliberative

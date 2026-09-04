@@ -1,19 +1,17 @@
 ---
 name: diagramming-architecture
 description: >
-  Use when a diagram needs to leave the document it lives in — to be opened,
-  edited, or handed to someone who does not write Mermaid; when a picture is
-  wanted for a review, a slide, or a whiteboard; or when a spec's inline fence
-  should also exist as a file. Produces the source plus editable and viewable
-  files, and states per output what this machine could and could not produce.
-  Triggers: "draw a diagram", "architecture diagram", "excalidraw", "draw.io",
-  "drawio", "export diagram", "editable diagram", "C4 diagram", "ER diagram as
-  an editable file", "architecture flowchart" — a flowchart of a business
-  process is `/modelling-business-processes`.
+  Use when a diagram needs to leave the document it lives in — opened, edited,
+  or handed to someone who does not write Mermaid; a picture for a review or a
+  slide; or a spec's inline fence that should also exist as a file. Produces
+  the source plus editable and viewable diagram files. Triggers: "draw a
+  diagram", "architecture diagram", "excalidraw", "draw.io", "drawio", "export
+  diagram", "editable diagram", "C4 diagram", "ER diagram as an editable
+  file", "architecture flowchart".
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.4.5
+    version: 0.4.6
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local

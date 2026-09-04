@@ -1,5 +1,7 @@
 # wireframing-interfaces — changelog
 
+- **0.3.5** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 73 words; quoted trigger phrases kept.
+
 - **0.3.4** — 2026-09-04: the legibility-check reason is stated in the present tense with its measured count (3 of 3 panels, two labels) instead of as an anecdote about the first run.
 - **0.3.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 

@@ -4,10 +4,10 @@ description: >
   Use when the problem behind a request has not been written down — a feature
   ask, a redesign, a "build me system X" brief, a BRD / SRS / KAK / TOR to be
   drafted, or a schema about to be modelled with no stated goal, no named
-  actors, and no verified constraints. Also use when a request names a solution
-  but never the problem it solves, when actors or permissions are unclear, or
-  when the work touches regulated, contractual, or personal-data territory. Run
-  it before any spec, design, model, or plan. Triggers: "requirements
+  actors, and no verified constraints. Also when a request names a solution
+  but not the problem it solves, when actors or permissions are unclear, or
+  when the work touches regulated, contractual, or personal-data territory.
+  Run before any spec, design, model, or plan. Triggers: "requirements
   gathering", "requirements analysis", "functional requirements", "business
   requirements", "schema design", "build a new module", "problem statement",
   "BRD", "SRS", "KAK", "TOR", "user story", "acceptance criteria", "user
@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Grep Glob Write WebSearch WebFetch AskUserQuestion Bash Skill
 metadata:
   dstack:
-    version: 0.5.1
+    version: 0.5.2
     type: semantic
     calibration: deterministic-dominant
     side_effects: local

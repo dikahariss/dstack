@@ -1,5 +1,7 @@
 # researching-facts — changelog
 
+- **0.1.4** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 117 words (120-word tier: the trigger list is the discovery path); quoted trigger phrases kept.
+
 - **0.1.3** — 2026-09-04: the Bash examples call the bundled script as `python3 "<skill_dir>/scripts/brave_search.py"` instead of a cwd-relative path that fails outside this repo.
 - **0.1.2** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 

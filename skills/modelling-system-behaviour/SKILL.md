@@ -1,20 +1,17 @@
 ---
 name: modelling-system-behaviour
 description: >
-  Use when the behaviour a system owes its users must be modelled in UML —
-  a use case diagram naming who wants what and where the system boundary
-  falls, or a sequence diagram fixing the order of messages between an actor
-  and the parts that serve them. Covers the components, the notation rules,
-  the include/extend traps, combined fragments, and the cross-check that the
-  actors in a sequence are the actors someone actually agreed to. Produces
-  `.puml` sources plus renders. Not for BPMN process models and not for
-  architecture pictures. Triggers: "use case diagram", "sequence diagram",
-  "UML", "plantuml", "system actors", "system boundary", "interaction
-  scenario", "interaction diagram", "message flow", "lifeline".
+  Use when the behaviour a system owes its users must be modelled in UML — a
+  use case diagram naming who wants what and where the system boundary falls,
+  or a sequence diagram fixing the order of messages between an actor and the
+  parts that serve them. Produces `.puml` sources plus renders. Not for BPMN
+  process models or architecture pictures. Triggers: "use case diagram",
+  "sequence diagram", "UML", "plantuml", "system actors", "system boundary",
+  "interaction scenario", "interaction diagram", "message flow", "lifeline".
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.2.4
+    version: 0.2.5
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local

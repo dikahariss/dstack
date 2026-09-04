@@ -1,20 +1,18 @@
 ---
 name: literature-trends
 description: >
-  Use when turning a corpus of exported bibliographic records (RIS from any
-  academic database or reference manager; convert BibTeX to RIS first) into
-  research-TOPIC TRENDS and
-  categories — parsing and deduping citations, categorizing by topic, computing
-  per-year and per-topic bibliometrics, ranking topics by volume and growth, and
-  producing trend diagrams (ranking, heatmap, trajectories, keyword frequency,
-  volume-vs-growth positioning). Database-agnostic. Triggers: "research trend analysis",
-  "bibliometric", "topic categorization", "which topics are growing", "research
-  trends", "keyword frequency", "publication trend", "corpus analysis", "trend map".
+  Use when a corpus of exported bibliographic records (RIS from any academic
+  database or reference manager; convert BibTeX first) has to become
+  research-topic trends — which topics are growing, which are mature — with
+  trend diagrams. Database-agnostic. Stage 2 after /literature-search.
+  Triggers: "research trend analysis", "bibliometric", "topic categorization",
+  "which topics are growing", "keyword frequency", "publication trend",
+  "corpus analysis", "trend map".
 allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.3.0
+    version: 0.3.1
     context_budget_tokens: 3000
     side_effects: local
     agency: deliberative

@@ -4,18 +4,17 @@ description: >
   Use when a video FILE has to be taken apart and rebuilt as generation
   prompts — a shot-by-shot breakdown plus ready-to-run prompts for video,
   image, speech, sound effects and music, with an edit list that puts the
-  clips back in order. Handles long files, not only short form: shots are
-  detected first, read densely inside each shot, and fanned out across
-  parallel agents. Not for judging whether a video is any good (that is
-  /auditing-video) and not for a platform URL — this reads local files.
-  Triggers: "reverse engineer this video", "recreate this video", "break
-  this video into shots", "video to prompt", "shot list from a video",
-  "how was this video made", "scene breakdown", "storyboard from footage",
-  "make a prompt from this video", "analyse the cinematography".
+  clips back in order. Handles long files, not only short form. Not for
+  judging whether a video is any good (that is /auditing-video) and not for a
+  platform URL — this reads local files. Triggers: "reverse engineer this
+  video", "recreate this video", "break this video into shots", "video to
+  prompt", "shot list from a video", "how was this video made", "scene
+  breakdown", "storyboard from footage", "make a prompt from this video",
+  "analyse the cinematography".
 allowed-tools: Read Write Edit Bash Glob Grep Agent
 metadata:
   dstack:
-    version: 0.3.2
+    version: 0.3.3
     type: hybrid
     side_effects: local
     agency: deliberative

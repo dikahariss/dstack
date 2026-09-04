@@ -1,5 +1,7 @@
 # using-git-worktrees — changelog
 
+- **0.3.5** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 38 words; quoted trigger phrases kept.
+
 - **0.3.4** — 2026-09-04: `eval/cases.jsonl` added — 2 behavioural cases, each a prompt plus the anti-pattern it must not produce.
 
 - **0.3.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.

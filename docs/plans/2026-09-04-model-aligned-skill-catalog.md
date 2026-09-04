@@ -67,7 +67,7 @@ Steps use `- [ ]` checkboxes.
 
 ## Status
 
-**Updated:** 2026-09-04 · **Branch:** `feat/model-aligned-p0` (one per tier; each closed by `/finishing-development-branch`) · **Next:** Task 10 (review checkpoint first)
+**Updated:** 2026-09-04 · **Branch:** `feat/model-aligned-p0` (one per tier; each closed by `/finishing-development-branch`) · **Next:** Task 13 (review checkpoint findings first; Task 12 waits on the owner's budget)
 
 | Task | State | Evidence |
 |---|---|---|
@@ -81,7 +81,7 @@ Steps use `- [ ]` checkboxes.
 | 7 Deliverable length | done | `cf2bfff` — eight file-writing skills carry one scoped length sentence (discovering-requirements 0.5.0, prioritizing-work 0.2.0, writing-specs 0.8.0, writing-plans 0.10.0, literature-trends 0.3.0, auditing-video 2.1.0, reverse-engineering-video 0.3.0, running-uat 0.5.0); none touches progress text; `validate` 36 OK; `build --strict` exit 0 |
 | 8 Contract and stale-reference fixes | done | `1ff77d1` — `generating-images` 0.5.0 six-row gate + JSON fields + parallel row + ceiling label + `--ref` on codex; `literature-search` → `/researching-facts`; `researching-facts` script path; `learning-from-sessions` lines 8 and 90 + placeholders; `verifying-before-done` 0.7.0 stack-neutral gate; `guarding-destructive-commands` 0.5.0 two sample rows, hook paragraphs replaced; `validate` 36 OK; `build --strict` exit 0 |
 | 9 Register and repetition | done | `2b81fdd` — four banners → one plain sentence each (discovering-requirements, prioritizing-work, writing-specs, designing-test-cases); pdf-to-rag body + vision prompts sentence case with bold kept on the two irreversible rules; anecdotes → present-tense measured reasons (diagramming-architecture, wireframing-interfaces); reverse-engineering-video parenthetical removed; brainstorm cap → qualitative; the `finishing-development-branch` Always list, the `using-git-worktrees` copies, the pointer lines and the `modelling-system-behaviour` notation rules left alone by decision; `validate` 36 OK; `build --strict` exit 0 |
-| 10 | todo | — |
+| 10 Descriptions | done | (SHA in the next row) — 21 descriptions rewritten to what + when + triggers, every one under its tier (80 words; 120 where the quoted trigger list is the discovery path: multi-persona-review 115, auditing-video 120, discovering-requirements 120, researching-facts 117, reverse-engineering-video 111, generating-images 94, literature-search 87); quoted phrases and Indonesian triggers kept; four catalog entries updated (`using-dstack` 0.24.1); routing smoke re-run of the ten eval cases by one fresh Opus 5 probe: **9/10 as intended, the same count as Task 3** — the one miss was eval case 2's own stale anti-pattern (still named `/brainstorm` for "Let's build X", which the 0.24.0 router routes to `/discovering-requirements`), fixed in this commit; `validate` 36 OK; `build --strict` exit 0 |
 | 11 Missing evals | done | (SHA in the next row) — `eval/cases.jsonl` for the nine skills without one (36/36 now carry an eval): the plan's case each, plus two from the census wordings for executing-plans, finishing-development-branch and writing-skills, two authored for requesting-code-review (its four recorded invocations carried no arguments), one authored for the rest — 22 cases, every line parses; nine patch bumps; `validate` 36 OK; `build --strict` exit 0 |
 | 12–13 | todo | — |
 

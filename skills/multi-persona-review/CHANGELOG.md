@@ -1,5 +1,7 @@
 # multi-persona-review — changelog
 
+- **0.6.1** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 115 words (120-word tier: the trigger list is the discovery path); quoted trigger phrases kept.
+
 - **0.6.0** — 2026-09-04: delegation floor and ceiling (ADR-0031 rule 6): the cost of a full review is stated (ten to thirteen dispatches), below one screen of artifact the review runs in the main loop, and the roster is the only delegation the skill authorises; an iteration's seats launch in one message; the verification pass runs in the arbiter's own loop with §3 as a template for the rare check that needs a missing context; iteration-2 seats continue through the host's message-to-agent mechanism; the coverage-not-accuracy caveat is stated once in the record. Reviewer rules 7 and 8 now ask for every anchored finding with confidence, filtering left to the arbiter.
 
 - **0.5.4** — 2026-09-04: the mode table is declared open (ADR-0031 sweep).
