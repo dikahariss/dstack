@@ -14,7 +14,7 @@ allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.2.2
+    version: 0.2.3
     context_budget_tokens: 3000
     side_effects: local
     agency: deliberative
@@ -100,17 +100,3 @@ The recurring ones, **not exhaustive** — a new corpus shape brings its own.
 | Inventing chart colors | Read `/dataviz`; use its validated palette |
 | Deduping by title | DOI first; title+year only as fallback |
 | Summing per-topic counts for an "overall" line | Topics overlap → double-counts; use an umbrella query or the deduped corpus |
-
-## Changes
-- **0.2.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
-- **0.2.1** — ADR-0030 list openness: common-mistakes table open.
-- **0.2.0** — Dropped the three Indonesian trigger phrases (the literal
-  translations of "trend analysis", "group the topics", and "trend map") from the
-  description and the trigger list under the English-only rule (`/using-dstack`
-  0.7.0): models translate intent rather than matching lexically, so the phrases
-  cost tokens without adding reach. "research trend analysis" and "topic
-  categorization" already covered the first two; the third is now covered by the
-  English "trend map", which is what this skill produces. Nothing else here was Indonesian.
-- **0.1.0** — Initial. Database-agnostic corpus→trends: parse/dedup + categorize +
-  population-vs-sample discipline + growth metrics + the standard diagram set
-  (delegates palette to `/dataviz`). Stage 2 of the literature pipeline.

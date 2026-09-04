@@ -13,7 +13,7 @@ description: |
 allowed-tools: Read Grep Glob Write AskUserQuestion
 metadata:
   dstack:
-    version: 0.1.2
+    version: 0.1.3
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -300,24 +300,3 @@ rather than one requirement set; `/running-uat` and
 **Out:** `/writing-plans` **carries** this order and does not re-derive
 it. **Sibling:** `/brainstorm` owns doubt about a single idea; this skill
 owns doubt about which of several.
-
-## Changes
-
-- **0.1.2** — ADR-0030 sweep + panel review (2026-08-14): red-flag table open;
-  self-contained refs; economy.
-- **0.1.0** — Initial. The catalog assigned MoSCoW labels in
-  `/discovering-requirements` Stage 6 with no criteria for deciding which
-  label a requirement earns, and ranked nothing across items: no
-  mechanism compared feature A to feature B. Observed costs were a
-  priority table withdrawn for circular reasoning, a roadmap whose item
-  order silently changed scope, and a programme whose load-bearing
-  assumption was falsified only after the dependent work was built —
-  which is why Stage 2 runs before any scoring. Calibration is
-  `deterministic-dominant` (ADR-0025): the rails are the value, and R7
-  makes a skipped reference read detectable. Effort is person-days, not
-  Intercom's person-months, which collapse almost every item to `0.5` at
-  this scale; the departure is stated so a model does not "correct" it
-  back. A `scripts/` scorer was deferred — the arithmetic is four
-  multiplications, and cheap models fail on fabricated inputs, which no
-  script detects. Revisit if a round produces an arithmetic error rather
-  than an evidence error.

@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read AskUserQuestion
 metadata:
   dstack:
-    version: 0.4.2
+    version: 0.4.3
     type: semantic
     context_budget_tokens: 1500
     side_effects: readonly
@@ -86,15 +86,3 @@ Hook support is deliberately deferred in dstack (DEFERRED entry D2):
 hooks are powerful but add runtime complexity, and the threshold to
 revisit is two skills needing them. This skill is the only one that
 does, so the guardrail stays advisory.
-
-## Changes
-
-- **0.4.2** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
-- **0.4.1** — ADR-0030 list openness: the command table is explicitly a floor, now marked not exhaustive.
-- **0.4.0** — Renamed `careful` → `guarding-destructive-commands`. A bare
-  adjective is exactly the "vague name" Anthropic's naming guidance warns
-  against; the new name states the action. The "be careful"/"careful mode"
-  triggers are kept.
-- **0.3.0** — Declared type/side_effects/agency + calibration:
-  deterministic-dominant (ADR-0025; safety guardrail, high failure cost).
-  Named the bounded judgment (the table is a floor, not a whitelist).

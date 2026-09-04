@@ -9,7 +9,7 @@ description: |
 allowed-tools: Agent Bash Read
 metadata:
   dstack:
-    version: 0.2.2
+    version: 0.2.3
     type: semantic
     side_effects: local
     agency: deliberative
@@ -185,13 +185,3 @@ git diff --stat          # confirm only intended files changed, no overlap
   independent, parallel investigations with no plan).
 - `/debugging` — run it inside each agent to root-cause its own domain.
 - `/verifying-before-done` — the integrate-time gate above.
-
-## Changes
-
-- **0.2.2** — ADR-0030 catalog review (list openness, cut restated general knowledge, economy, consistency); panel-verified, see the 2026-08-14 review workflow.
-- **0.2.1** — ADR-0030 list openness: the common-mistakes table is open.
-- **0.2.0** — Named the judgment (deciding failures are truly independent)
-  and added an integrate-time verify command. Hardening (v3 plan):
-  converted the graphviz when-to-use block and the ❌/✅ mistakes to tables;
-  added Cross-references; normalised headings to dstack voice.
-- **0.1.0** — Initial. Dispatch examples use the Claude Code `Agent` tool.

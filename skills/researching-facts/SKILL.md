@@ -16,7 +16,7 @@ allowed-tools: WebSearch WebFetch Bash Read Write
 metadata:
   dstack:
     type: hybrid
-    version: 0.1.1
+    version: 0.1.2
     context_budget_tokens: 4500
     side_effects: external
     agency: deliberative
@@ -177,17 +177,3 @@ no further.
 
 See `references/brave-api.md` for endpoints, parameters, freshness syntax, and
 result-shape details the script does not expose.
-
-## Changes
-
-- **0.1.1** — Wrote every money figure as `USD 5`, never with a currency sign
-  before a digit. Invoking a skill with arguments substitutes `$N` in the body
-  with the Nth word of those arguments, so the metered-cost figures reached the
-  model as words lifted out of the user's question — corrupting the one section
-  that exists to bound unattended spend. Caught by invoking this skill with an
-  argument string.
-- **0.1.0** — Initial. Written when the catalog had no general web-research skill:
-  research meant one built-in `WebSearch` call and whatever it happened to rank.
-  Adds a second independent index (Brave), the same-message parallel rule, RRF
-  merge across query variants, the independence definition, and mandatory
-  disclosure when the fan-out degrades to one engine.

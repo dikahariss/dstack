@@ -5,7 +5,7 @@ allowed-tools: Bash Read
 metadata:
   dstack:
     type: deterministic
-    version: 0.2.0
+    version: 0.2.1
     context_budget_tokens: 1000
     side_effects: local
     agency: reactive
@@ -37,9 +37,3 @@ a different procedure.
 Run the chosen command via the `Bash` tool, then print the resulting
 version to the user. Do not edit `VERSION` directly with `Edit` — the
 script is the single source of truth.
-
-## Changes
-
-- **0.2.0** — Renamed `version` → `managing-version`. A single generic noun
-  collided with the frontmatter `version` field in docs and search. Triggers
-  unchanged.
