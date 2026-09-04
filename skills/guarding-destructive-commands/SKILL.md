@@ -1,7 +1,7 @@
 ---
 name: guarding-destructive-commands
 description: |
-  Safety guardrails for destructive commands. Pauses for confirmation before
+  Safety guardrails for destructive commands. Asks for confirmation before
   rm -rf, DROP TABLE, force-push, git reset --hard, kubectl delete, and similar
   destructive operations. Use when touching prod, debugging live systems, or
   working in a shared environment. Use when asked to "be careful", "safety
@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read AskUserQuestion
 metadata:
   dstack:
-    version: 0.5.0
+    version: 0.5.1
     type: semantic
     context_budget_tokens: 1500
     side_effects: readonly
@@ -27,7 +27,9 @@ This is advisory text, not an interception: nothing stops the command but
 you. Before running any of the patterns below, stop, restate what the
 command will do, and confirm with the user. Where a hard guarantee is
 needed (prod, shared systems), also configure the host's pre-tool hook to
-block these patterns.
+block these patterns. A hook engine that intercepts them is deliberately
+deferred (dstack DEFERRED D2) until a second skill needs one; until then this
+advisory text is the whole guard.
 
 ## Patterns that require explicit confirmation
 
@@ -41,7 +43,7 @@ block these patterns.
 | `git checkout .` / `git restore .` | `git checkout .` | Uncommitted work lost |
 | `kubectl delete` | `kubectl delete pod` | Production impact |
 | `docker rm -f` / `docker system prune` | `docker system prune -a` | Container/image loss |
-| Visible to others — `git push`, a PR or issue comment, a message, a change to shared infrastructure | `gh pr comment 42 --body …` | Others act on it; retraction is public |
+| Visible to others — `git push` to a shared branch or a new remote, a PR or issue comment, a message, a change to shared infrastructure | `gh pr comment 42 --body …` | Others act on it; retraction is public |
 
 ## Safe exceptions (no confirmation needed)
 

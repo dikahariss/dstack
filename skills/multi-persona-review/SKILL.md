@@ -15,7 +15,7 @@ description: >
 allowed-tools: Agent Read Grep Glob Skill
 metadata:
   dstack:
-    version: 0.6.1
+    version: 0.6.2
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -65,11 +65,11 @@ Not exhaustive — route by what the request must produce.
 
 Never fabricate a review to cover a missing artifact. Each seat is a fresh
 agent that re-reads the artifact and reports back; a full review is roughly
-ten to thirteen dispatches over two iterations. Below about one screen of
+ten to thirteen dispatches over the two iterations most reviews take. Below about one screen of
 artifact, or when one expert concern covers it, review it yourself in the main
-loop and say so — a panel on a 50-line config buys nothing. The roster below
-is the only delegation this skill authorises; reading, merging, verifying and
-the decision stay in your own loop.
+loop and say so — a panel on a 50-line config buys nothing. The roster below,
+plus the rare fact-check in step 5, is the only delegation this skill
+authorises; reading, merging, verifying and the decision stay in your own loop.
 
 ## What this does not do
 

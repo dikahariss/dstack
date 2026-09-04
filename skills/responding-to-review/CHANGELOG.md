@@ -1,5 +1,7 @@
 # responding-to-review — changelog
 
+- **0.6.2** — 2026-09-04: branch review 2026-09-04: the per-item test rule is stated once, in the implementation order.
+
 - **0.6.1** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 40 words; quoted trigger phrases kept.
 
 - **0.6.0** — 2026-09-04: verification stated once (ADR-0031 rule 7, licensed by the 2026-09 Opus 5 ablation): the shouted law, its explanation, the forbidden-phrase list and the "instead" list become one paragraph carrying the two rules with their reasons; the diff-comment rule sits under it; the implementation order is one paragraph and "test each" is said once.

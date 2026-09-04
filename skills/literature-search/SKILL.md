@@ -5,7 +5,8 @@ description: >
   for a systematic, scoping, or bibliometric review; produces a RIS corpus
   with PRISMA hit counts. Tested adapters: ScienceDirect, Taylor & Francis
   (tandfonline), Springer Nature Link, ProQuest Dissertations & Theses
-  (guest), Neliti / Perpusnas e-resources; Emerald and others plug in as
+  (guest), Neliti (also reached through Perpusnas
+  e-resources); Emerald and others plug in as
   adapters. Not for a database with a query API, and not for open-web
   research. Triggers: "SLR search", "literature search", "search string",
   "boolean query", "export RIS", "harvest citations", "build a reference
@@ -14,7 +15,7 @@ allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.4.5
+    version: 0.4.6
     context_budget_tokens: 4500
     side_effects: local
     agency: deliberative

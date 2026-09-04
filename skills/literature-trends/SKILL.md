@@ -12,7 +12,7 @@ allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.3.1
+    version: 0.3.2
     context_budget_tokens: 3000
     side_effects: local
     agency: deliberative
@@ -73,7 +73,7 @@ manual SLR work); harvesting the records (use `/literature-search`).
    Mark any partial year on every chart.
 6. **Report.** Rank + interpret (emerging vs mature), name the fastest growers and
    the biggest-but-declining, and recommend keywords / gaps. Length follows the
-   evidence: one paragraph per topic that changed rank, the caveat once, no
+   evidence: one paragraph per topic that changed rank or is among the fastest growers, the caveat once, no
    summary of the tables the reader already has.
 
 **Where judgment takes over:** the categorization scheme, which topics and

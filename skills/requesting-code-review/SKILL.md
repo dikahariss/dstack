@@ -8,7 +8,7 @@ description: >
 allowed-tools: Bash Read Grep Glob Agent
 metadata:
   dstack:
-    version: 0.4.2
+    version: 0.4.3
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -39,10 +39,11 @@ This is the *requesting* side. Handling the feedback you get back is
 
 Before merging to main, and at any checkpoint a plan or the user names. Also
 worth it when stuck, before a refactor, or after a subtle bug fix. Never as a
-second check on work you just verified — that check belongs in your own
-loop; a reviewer earns its cost by independence from the author, not by
-re-running the author's checks. One reviewer per request; if other
-independent agents are being launched, send them in the same message.
+re-run of your own verification — that check belongs in your own loop; a
+reviewer earns its cost by independence from the author. The mandatory
+checkpoints below are where that independent read happens, not a second
+verification. One reviewer per request; if other independent agents are
+being launched, send them in the same message.
 
 Mandatory:
 

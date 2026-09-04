@@ -9,7 +9,7 @@ description: |
 allowed-tools: Agent Bash Read
 metadata:
   dstack:
-    version: 0.3.1
+    version: 0.3.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -28,7 +28,7 @@ You delegate tasks to specialized agents with isolated context. By precisely cra
 
 When you have multiple unrelated failures (different test files, different subsystems, different bugs), investigating them sequentially wastes time. Each investigation is independent and can happen in parallel.
 
-**Core principle:** Dispatch one agent per independent problem domain. Let them work concurrently.
+**Core principle:** At most one agent per independent problem domain, run concurrently.
 
 Dispatch when the problems are independent (no shared files, no shared cause)
 and each is more than a handful of tool calls; a single failure, or two that
@@ -51,7 +51,8 @@ Walk this decision table top to bottom:
 | Single failure, or you don't yet know what's broken | Investigate directly first (no dispatch) |
 
 **Use when:**
-- 3+ test files failing with different root causes
+- Two or more test files failing with different root causes, each more than a
+  handful of tool calls
 - Multiple subsystems broken independently
 - Each problem can be understood without context from others
 - No shared state between investigations

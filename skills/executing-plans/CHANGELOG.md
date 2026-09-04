@@ -1,5 +1,7 @@
 # executing-plans — changelog
 
+- **0.5.2** — 2026-09-04: branch review 2026-09-04: the judgment line names the deviation and stop calls too; the `blocked` instruction is stated once; a small same-session plan runs all four steps.
+
 - **0.5.1** — 2026-09-04: `eval/cases.jsonl` added — 3 behavioural cases, each a prompt plus the anti-pattern it must not produce.
 
 - **0.5.0** — 2026-09-04: verification stated once (ADR-0031 rule 7, licensed by `docs/ablations/2026-09-executing-plans-opus5.md`): the Status row's SHA plus observed evidence is the done-state and `/verifying-before-done` is named once as the method; the STOP list, "ask rather than guess" and "don't force through blockers" become one **When to stop** paragraph. That paragraph says a failing test is fixed in the code and never by editing the test or its fixture — the E2 pointer run in the ablation extended a fixture to get green, which is the rule the shorter form was missing. Small same-session plans run here; `/subagent-driven-development` is for plans too large for one context.

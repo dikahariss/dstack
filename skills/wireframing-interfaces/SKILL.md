@@ -3,15 +3,15 @@ name: wireframing-interfaces
 description: >
   Use when a spec says what a screen must do but nobody can see it yet —
   before implementation invents the layout, or when someone needs to check the
-  flow rather than read a table of states. Draws one rough panel per state the
-  spec names; never decides colour, typeface, or spacing. Triggers:
+  flow rather than read a state table. Draws one rough panel per state the spec names and records every state it
+  did not draw; never decides colour, typeface, or spacing. Triggers:
   "wireframe", "mockup", "screen sketch", "screen layout", "low fidelity",
   "what does the screen look like", "screen design", "draw.io mockup",
   "excalidraw wireframe".
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.3.5
+    version: 0.3.6
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -133,9 +133,9 @@ Run the bundled checker over the `.drawio` **source** — not the render, and no
 conditional on one. Four classes with numbers, listed in `references/shapes.md`.
 Report every finding naming the screen and the control.
 
-The checker catches marker/chrome collisions and overflowing labels the
-author's eye passes over — 3 of 3 panels and two labels on the first real run
-— which is why the check is mechanical.
+On the first real run the checker flagged marker/chrome collisions in 3 of 3
+panels and two overflowing labels the author's eye had passed over — which is
+why the check is mechanical.
 
 **Gate:** `python3 scripts/check_geometry.py <file>.drawio` ran and its findings
 are listed. Exit **2**, or not running it, is **BLOCKED** — the check reads the

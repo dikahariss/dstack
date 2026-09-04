@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Edit Write Bash
 metadata:
   dstack:
-    version: 0.5.1
+    version: 0.5.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -40,10 +40,11 @@ Load plan, review critically, execute all tasks, report when complete.
 
 - Executing in the **current** session with a plan too large to hold in one
   context — `/subagent-driven-development`. A small plan in the current
-  session is not a reason to leave: run Steps 1–3 here.
+  session is not a reason to leave: run the steps here.
 - No written plan yet — use `/writing-plans` first.
 
-Your judgment enters at one place: the plan review in Step 2. After that
+Your judgment enters at the plan review in Step 2, and again wherever the
+plan turns out to be wrong (Step 3's deviations, **When to stop**). Otherwise
 you follow the plan. A task is done when its Status row holds the commit SHA
 and what you observed (`/verifying-before-done` is the method); the branch
 is wrapped up by `/finishing-development-branch`.
@@ -118,8 +119,8 @@ or when a dependency the plan assumed does not exist on this host. A failing
 test or a build error is fixed in the code, never by editing the test or its
 fixture to pass — unless the fix would change what a later task expects, which
 is a deviation. A step that cannot pass its own gate as written is a plan
-defect: set the row to `blocked` and say why. Not exhaustive: anything that
-makes you guess at the plan is a stop. Write the block before you speak: an
+defect and a stop. Not exhaustive: anything that makes you guess at the plan
+is a stop. Write the block before you speak: an
 `in progress` row left behind is retried by the next session. A plan the user
 has changed is reviewed again from Step 2.
 

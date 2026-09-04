@@ -14,7 +14,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob Grep Agent
 metadata:
   dstack:
-    version: 0.3.3
+    version: 0.3.4
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -104,7 +104,7 @@ language:
 ## Stage 3 — Deep-read the shots
 
 Read `references/fanout-protocol.md`. Below 400 planned frames, read them
-yourself; above it, one agent per sequence.
+yourself; above it, one agent per sequence, all launched in one message.
 
 ```bash
 python3 "<skill_dir>/scripts/extract_shots.py" "<video>" "<work_dir>" --shots 0-49
@@ -193,8 +193,8 @@ before output, structure before prompts); append sections rather than reordering
    everything after it inherits what it establishes.
 
 Length follows what was recovered: a section is as long as its rows and
-prompts need, and a short file gets a short package. Do not restate the CSVs
-in prose.
+prompts need, and a short file gets a short package. The edit list and the
+on-screen text are delivered as their CSVs; prose does not restate them.
 
 ## What this cannot recover
 

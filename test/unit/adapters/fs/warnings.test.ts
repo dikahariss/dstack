@@ -1,12 +1,9 @@
 /**
- * Coverage for the four warning kinds the parser + cross-skill validator
- * can emit beyond the include/token cases already covered elsewhere:
- *   - comprehensive-skill   (>=4 module folders)
- *   - type-structure-mismatch (declared type does not match structure)
- *   - long-description      (>200 words in description)
- *   - overlapping-trigger   (two skills share a trigger phrase)
+ * Coverage for the warning kinds the parser, the cross-skill validator and
+ * the renderer emit beyond the include/token cases covered elsewhere — see
+ * WarningKind in src/domain/render/RenderResult.ts.
  *
- * Fixtures live under test/fixtures/skills/warnings/.
+ * Fixtures live under test/fixtures/skills/warnings-*.
  */
 import { describe, test, expect } from 'bun:test';
 import { resolve } from 'node:path';
@@ -100,6 +97,13 @@ describe('warning fixtures', () => {
 
   test('history-in-body: emitted when the body carries a ## Changes heading outside a fence', async () => {
     const results = await new BuildCatalog(bucket('warnings-history-in-body'), new ClaudeCodeRenderer(), new NoopTelemetry())
+      .execute({ host: HOST, now: new Date(0) });
+    expect(results.length).toBe(1);
+    expect(results[0]!.rendered.warnings.map((w) => w.kind)).toContain('history-in-body');
+  });
+
+  test('history-in-body: emitted for an h3 Changelog heading', async () => {
+    const results = await new BuildCatalog(bucket('warnings-history-h3'), new ClaudeCodeRenderer(), new NoopTelemetry())
       .execute({ host: HOST, now: new Date(0) });
     expect(results.length).toBe(1);
     expect(results[0]!.rendered.warnings.map((w) => w.kind)).toContain('history-in-body');

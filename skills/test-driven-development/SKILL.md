@@ -13,7 +13,7 @@ description: |
 allowed-tools: Read Write Edit Bash
 metadata:
   dstack:
-    version: 0.9.0
+    version: 0.9.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -210,6 +210,8 @@ own runner first — `package.json` scripts, `*.csproj`, `pyproject.toml`, a
 Makefile — never assume the stack.
 
 ## Done means
+
+Closed by design — this is the completion contract other skills point at:
 
 - The tier was named before implementation started.
 - The frozen case list predates the first implementation edit; code-derived

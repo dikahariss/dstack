@@ -1,5 +1,7 @@
 # requesting-code-review — changelog
 
+- **0.4.3** — 2026-09-04: branch review 2026-09-04: the **When to request** paragraph names the mandatory checkpoints as the independent read, so the two blocks no longer read as opposites while Task 12 row 4 is pending.
+
 - **0.4.2** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 41 words; quoted trigger phrases kept.
 
 - **0.4.1** — 2026-09-04: `eval/cases.jsonl` added — 3 behavioural cases, each a prompt plus the anti-pattern it must not produce.

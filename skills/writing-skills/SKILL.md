@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Write Edit Bash Grep Glob Agent
 metadata:
   dstack:
-    version: 0.8.1
+    version: 0.8.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -187,7 +187,8 @@ A skill you only read is a skill you have not tested.
 and `/verifying-before-done`:
 
 1. Run a pressure scenario with a subagent **without** the skill, on the
-   model the skill will run on. Record verbatim what it does.
+   model the skill will run on — one subagent per scenario, all scenarios
+   launched in one message. Record verbatim what it does.
 2. Write the rule as the wanted behavior, its reason, and the exit criterion
    that shows it held.
 3. Re-run **with** the skill. It should now comply.
@@ -243,7 +244,7 @@ todo, and rows enter or leave only by editing this skill.
 - [ ] `eval/` behavioral check added
 - [ ] Skill is **project-agnostic** — no rule copied from one repo's
       CLAUDE.md, no example only that repo's stack would recognise
-- [ ] **Registered in `/using-dstack`**: router row, `references/skill-catalog.md`
+- [ ] **Registered in `/using-dstack`**: router row, its `references/skill-catalog.md`
       entry, any chain it belongs to — and its `CHANGELOG.md` entry written
       and frontmatter `version` bumped in the same edit
 - [ ] `bun run validate` and `bun run build --strict` pass

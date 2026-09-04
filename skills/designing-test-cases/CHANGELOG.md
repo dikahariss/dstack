@@ -1,5 +1,7 @@
 # designing-test-cases — changelog
 
+- **0.5.4** — 2026-09-04: branch review 2026-09-04: a dead forward reference left by the 0.5.3 banner rewrite is gone.
+
 - **0.5.3** — 2026-09-04: the shouted opening banner is one plain sentence; the reasons that follow it are unchanged (ADR-0031 register sweep).
 - **0.5.2** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 

@@ -1,5 +1,7 @@
 # brainstorm — changelog
 
+- **0.5.5** — 2026-09-04: branch review 2026-09-04: the summary cap is a number again (ADR-0031 rule 5).
+
 - **0.5.4** — 2026-09-04: the closing summary is bounded qualitatively ("short enough to confirm at a glance — one line per decision") instead of a 15-line cap; the band note no longer cites a dstack ADR number.
 - **0.5.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 

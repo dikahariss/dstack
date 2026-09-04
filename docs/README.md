@@ -86,7 +86,7 @@ this repo. Read one when you are about to perform it, not before.
 
 | Procedure | Scope |
 |---|---|
-| [procedures/skill-ablation.md](procedures/skill-ablation.md) | The evidence run a skill must pass before it changes calibration band, in either direction. Required by [ADR-0030](adr/0030-sonnet5-calibrated-skill-shape.md). |
+| [procedures/skill-ablation.md](procedures/skill-ablation.md) | The evidence run a skill must pass before it changes calibration band, in either direction. Required by [ADR-0030](adr/0030-sonnet5-calibrated-skill-shape.md), amended by [ADR-0031](adr/0031-multi-model-calibration.md). |
 | [procedures/claude-web-skill-sync.md](procedures/claude-web-skill-sync.md) | Getting a changed skill into the claude.ai web account — the one install target that holds a copy this repo cannot reach. |
 
 ## How specs, ADRs, and taxonomy relate

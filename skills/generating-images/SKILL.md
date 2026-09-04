@@ -14,7 +14,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob
 metadata:
   dstack:
-    version: 0.5.1
+    version: 0.5.2
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -93,6 +93,9 @@ the more expensive mistake.
 `scripts/generate_image.py` is the whole spine: it enforces the JSON-schema
 contract, copies the file out of the CLI's cache, and reads the real dimensions
 out of the image header. Standard library only, no image package needed.
+`--engine` defaults to `agy`; every row above that names `codex` needs it
+passed explicitly — the default is the faster engine, not the one measured
+safer on reference calls.
 
 ```bash
 python3 "<skill_dir>/scripts/generate_image.py" \

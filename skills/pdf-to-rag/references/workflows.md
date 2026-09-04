@@ -30,7 +30,8 @@ export const meta = { name:'pdf-charts', description:'transcribe + ground each c
 const cfg = typeof args==='string'?JSON.parse(args):args   // {png_dir, pages:[{page,profile}], matrix_header?}
 const pad = n => String(n).padStart(3,'0')
 const T = {type:'object',required:['page','markdown','kind'],properties:{page:{type:'integer'},markdown:{type:'string'},kind:{type:'string'},blank:{type:'boolean'}}}
-const G = {type:'object',required:['page','grounded'],properties:{page:{type:'integer'},grounded:{type:'boolean'},invented:{type:'array',items:{type:'string'}},missing:{type:'array',items:{type:'string'}},altered:{type:'array',items:{type:'string'}},notes:{type:'string'}}}
+const F = {type:'object',required:['item','confidence'],properties:{item:{type:'string'},confidence:{type:'string',enum:['high','medium','low']}}}
+const G = {type:'object',required:['page','grounded'],properties:{page:{type:'integer'},grounded:{type:'boolean'},invented:{type:'array',items:F},missing:{type:'array',items:F},altered:{type:'array',items:F},notes:{type:'string'}}}
 const items = cfg.pages.map(it => ({page:it.page, profile:it.profile||'govdoc', png:`${cfg.png_dir}/p${pad(it.page)}.png`}))
 const PROMPTS = {govdoc:GOVDOC, matrix:MATRIX, flowchart:FLOWCHART}   // the vision-prompts.md profiles, embedded
 const transcribe = it => (PROMPTS[it.profile]||GOVDOC)(it.png, it.page, cfg.matrix_header)

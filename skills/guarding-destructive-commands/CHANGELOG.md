@@ -1,5 +1,7 @@
 # guarding-destructive-commands — changelog
 
+- **0.5.1** — 2026-09-04: branch review 2026-09-04: the description says "asks", matching the advisory body; the visible-to-others row names a push to a shared branch or a new remote, not every push; the DEFERRED D2 note is back in one sentence.
+
 - **0.5.0** — 2026-09-04: two rows from the Anthropic autonomy-and-safety sample: operations visible to others (push, PR comment, message, shared infrastructure) and "an obstacle is not a licence" (no `--no-verify`, no discarding unfamiliar files); the dstack hook-deferral paragraphs are replaced by one host-neutral sentence; the description says the agent pauses, not the user.
 - **0.4.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 

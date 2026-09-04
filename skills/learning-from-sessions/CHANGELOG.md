@@ -1,5 +1,7 @@
 # learning-from-sessions — changelog
 
+- **0.2.6** — 2026-09-04: branch review 2026-09-04: the three miner invocations use `"<skill_dir>/scripts/…"`, since an installed skill is read from its own folder, not the cwd.
+
 - **0.2.5** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 66 words; quoted trigger phrases kept.
 
 - **0.2.4** — 2026-09-04: the exit condition is a written change, committed when the user asks (CLAUDE.md commit rule); the scratch path and the project example are placeholders, not `/tmp` and a real project; the record location is `CHANGELOG.md`.

@@ -1,5 +1,7 @@
 # reverse-engineering-video — changelog
 
+- **0.3.4** — 2026-09-04: branch review 2026-09-04: the length sentence agrees with Stage 6 items 6 and 8; the single-message launch rule is in the body, not only the protocol file.
+
 - **0.3.3** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 111 words (120-word tier: the trigger list is the discovery path); quoted trigger phrases kept.
 
 - **0.3.2** — 2026-09-04: the fan-out row says to launch every sequence agent in one message, one Agent call each (ADR-0031 rule 6).

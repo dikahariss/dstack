@@ -11,7 +11,7 @@ description: >
 allowed-tools: Bash Read Write Edit Agent Skill Glob Grep
 metadata:
   dstack:
-    version: 0.5.1
+    version: 0.5.2
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -91,7 +91,9 @@ verdict blocks the same way.
 3. **Plant a negative control** — one check you *know* must FAIL. If it reports
    PASS, the observation pipeline is broken: abort the session.
 4. **Per scenario**, drive the real UI, then gather evidence (next section) and
-   record PASS / FAIL / BLOCKED with artifact paths.
+   record PASS / FAIL / BLOCKED with artifact paths. The run log is evidence,
+   not narrative: one row per scenario attempt, in the columns
+   `references/uat-report.md` fixes, and no prose recap of what the rows show.
 5. **On FAIL** — fix, then run **confirmation** (re-run the failed scenario) *and*
    **regression** (re-run passing scenarios the fix could affect). A scenario that
    just went FAIL → PASS must pass **twice from clean state** before it counts:
@@ -164,7 +166,8 @@ than one pass wearing several hats, hand off to `/multi-persona-review`.
 Keep the judge separate from the driver: a fresh subagent that sees the AC text
 and the artifacts — **never the driver's narrative**. Same-context self-grading is
 where that 30% false-positive rate lives, and the split keeps the driver's context
-from filling up.
+from filling up. One judge per run, dispatched once with the packet — the only
+subagent this skill sends.
 
 ## Defects — severity yes, priority no
 
@@ -172,10 +175,6 @@ Log each defect with severity (observable impact), evidence paths, and repro
 steps. **Severity you may assign; priority you may not** — priority is a business
 decision. Propose it, then escalate: to the owner, or to `/prioritizing-work`
 when the question is where this defect sits against other work.
-
-The run log is evidence, not narrative: one row per scenario with the
-verbatim criterion, verdict and artifact paths; no prose recap of what the
-reader can see in the rows.
 
 ## Judgment
 

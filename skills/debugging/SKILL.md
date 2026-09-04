@@ -10,7 +10,7 @@ description: |
 allowed-tools: Read Bash Grep
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.4.1
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -111,18 +111,20 @@ stress-ng --cpu 4 &  # in another shell
 A 50%-flake bug is debuggable. A 1% flake is not. The probe is to
 raise the rate, not to add a retry.
 
-## The order that is not negotiable
+## The phases — cause before fix, the rest by exit criterion
 
-No fix before a named cause. Everything below is an exit criterion, not a
-sequence — reach it by whatever probe yields evidence (a debugger,
-`git bisect`, bisecting the input, boundary logs).
+No fix before a named cause: that ordering is the rule, and Phase 4 waits on
+Phases 1–3. Inside a phase there is no script — reach its exit by whatever
+probe yields evidence (a debugger, `git bisect`, bisecting the input,
+boundary logs). The five rows are closed by design, since other skills point
+at these phases; the specifics column is a floor, not exhaustive.
 
-| Phase | Done when | Our specifics |
+| Phase or case | Done when | Our specifics |
 |---|---|---|
-| 1 — Root cause | You can name what is broken and why | Reproduce on demand; check what changed (`git log`, `git diff`, env diff); instrument the boundaries — the layer whose output ≠ its input is the failing one |
+| 1 — Root cause | You can name what is broken and why | Reproduce on demand; check what changed (`git log`, `git diff`, env diff); instrument the boundaries — the layer whose output ≠ its input is the failing one; trace a bad value back to where it originated |
 | 2 — Pattern | You can point to the difference that matters | Compare against a working example in the same codebase; list the differences before judging which matter |
 | 3 — Hypothesis | The cause is confirmed or replaced | 3–5 ranked and falsifiable ("if X, changing Y makes it disappear"); one variable per test; a wrong hypothesis is replaced, never patched over |
-| 4 — Fix | Symptom gone, no other test broke, instrumentation removed | Failing test first (`/test-driven-development`); one change; no fix-announcing comment; three failed fixes → Phase 4.5 |
+| 4 — Fix | Symptom gone, no other test broke, instrumentation removed | Failing test first (`/test-driven-development`); one change, at the source and never at the symptom; no fix-announcing comment — a genuinely non-obvious cause earns one line recording *why*, with the issue reference; three failed fixes → Phase 4.5 |
 | Memory / perf regression | The regression test is a measurement against a baseline taken before the fix | Baseline first — keep the block below verbatim |
 
 ```bash
@@ -193,7 +195,7 @@ Not exhaustive — counter a new excuse the same way: name the reality it dodges
 
 ## When investigation finds no root cause
 
-If three thorough phases reveal the issue is truly environmental,
+If the phases reveal the issue is truly environmental,
 timing-dependent, or external:
 
 1. The process is complete — you did the work.

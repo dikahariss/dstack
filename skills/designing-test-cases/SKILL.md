@@ -12,7 +12,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Skill
 metadata:
   dstack:
-    version: 0.5.3
+    version: 0.5.4
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -35,8 +35,7 @@ Turn each thing the system promises into the list of situations that would prove
 or disprove it — before the code that would bias the list exists.
 
 Derive every case from the specification, never from the implementation,
-and drop any case that cannot fail — the next paragraph says why both break
-by the same shortcut.
+and drop any case that cannot fail.
 
 Both rules break by the same shortcut. A set written while looking at the code
 tests the branches the author remembered writing, and pads the count with cases

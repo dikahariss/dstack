@@ -1,5 +1,7 @@
 # test-driven-development — changelog
 
+- **0.9.1** — 2026-09-04: branch review 2026-09-04: **Done means** declares itself closed.
+
 - **0.9.0** — 2026-09-04: verification stated once (ADR-0031 rule 7, licensed by the 2026-09 Opus 5 ablation): the shouted law becomes one sentence; the six-step cycle, the comment paragraph and "what a good test looks like" fold into one paragraph carrying only our three rules (red fails for the right reason, green is minimal comments included, output pristine); the fourteen-box checklist becomes **Done means**, five criteria plus one line naming `/verifying-before-done` as the method; the cross-reference stops restating the gate. Red flags stay until the Task 12 ablation reports.
 
 - **0.8.2** — 2026-09-04: the "Outside" list is marked as examples (ADR-0031 sweep).

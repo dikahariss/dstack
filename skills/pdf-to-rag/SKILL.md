@@ -14,7 +14,7 @@ allowed-tools: Bash Read Write Edit Workflow Grep Glob
 metadata:
   dstack:
     type: hybrid
-    version: 0.7.0
+    version: 0.7.1
     triggers:
       - convert pdf to markdown
       - pdf to rag

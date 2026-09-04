@@ -10,7 +10,7 @@ description: >
 allowed-tools: Agent Read Bash
 metadata:
   dstack:
-    version: 0.7.2
+    version: 0.7.3
     type: semantic
     side_effects: local
     agency: deliberative
@@ -73,13 +73,11 @@ the parallelism here is context isolation, not concurrency.
       loop until spec-compliant.
    5. Only once spec is ✅, dispatch the code-quality reviewer
       (`references/code-quality-reviewer-prompt.md`). If it does not
-      approve, the implementer fixes the issues and you re-review — loop
-      until approved.
+      approve, the implementer fixes the issues and you re-review. Two review
+      rounds on one task without approval — spec or quality — means stop and
+      hand the user both reports; do not loop a third time.
    6. Mark the task's todo complete.
 3. **Next task.** Repeat step 2 until no tasks remain.
-
-Two review rounds on one task without approval — spec or quality — means
-stop and hand the user both reports; do not loop a third time.
 4. **Final pass.** Dispatch one code reviewer for the entire
    implementation.
 5. **Wrap up.** Use `/finishing-development-branch`.
@@ -88,7 +86,8 @@ stop and hand the user both reports; do not loop a third time.
 
 Mechanical tasks (one or two files, complete spec): the host's cheaper tier.
 Integration and judgment tasks, and every review: the session's default model.
-Nothing below the cheaper tier for code that ships.
+Nothing below the cheaper tier for code that ships. The tiers are a starting
+point, not exhaustive; the floor is the rule.
 
 ## Handling implementer status
 
@@ -127,10 +126,6 @@ task text.
 - `references/code-quality-reviewer-prompt.md` - Dispatch code quality reviewer subagent
 - `references/example-workflow.md` - A worked run, two tasks end to end
 
-## Example workflow
-
-A worked run: `references/example-workflow.md`.
-
 ## What you trade
 
 | You get | You pay |
@@ -160,8 +155,7 @@ reach the plan belongs here.
 
 **If reviewer finds issues:**
 - Implementer (same subagent) fixes them
-- Reviewer reviews again
-- Two rounds without approval go to the user
+- Reviewer reviews again, within the two-round cap
 - Don't skip the re-review
 
 **If a subagent fails its task:** a fix you can make in a couple of edits,

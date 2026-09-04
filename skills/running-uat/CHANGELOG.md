@@ -1,5 +1,7 @@
 # running-uat — changelog
 
+- **0.5.2** — 2026-09-04: branch review 2026-09-04: the run-log rule moves into the loop step and matches `references/uat-report.md` (one row per scenario attempt, its columns); the judge is named as the only subagent, dispatched once (ADR-0031 rule 6).
+
 - **0.5.1** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 75 words; quoted trigger phrases kept.
 
 - **0.5.0** — 2026-09-04: deliverable length calibrated (ADR-0031 rule 5): Opus 5 writes longer files than the task needs; one sentence scoped to the written document, never to progress text.

@@ -1,5 +1,7 @@
 # using-dstack — changelog
 
+- **0.24.2** — 2026-09-04: branch review 2026-09-04: the catalog's writing-plans row follows 0.11.0 (**A finished plan**); the rule that a remembered skill is still invoked, dropped with the 0.24.0 excuse table, is back as one sentence.
+
 - **0.24.1** — 2026-09-04: catalog entries for subagent-driven-development, dispatching-parallel-agents, requesting-code-review and running-uat follow their rewritten descriptions (plan Task 10); eval case 2's anti-pattern names `/discovering-requirements`, the route the 0.24.0 router body already gives "Let's build X" — the smoke re-run of the ten cases flagged the stale line.
 
 - **0.24.0** — 2026-09-04: invoke on a match, not on doubt. Dropped the "even a real-but-small chance" and "over-invoking is cheap" boosters (the best-practices page names that shape as the cause of over-triggering on current models; a loaded skill costs 1–5k tokens per session) and the six-row rationalization table; the rule is now exit criteria in one paragraph; the catalog-moments list is declared open. Five eval cases added (two negatives) and a census baseline saved before the edit (`docs/ablations/2026-09-invocation-census.md`).

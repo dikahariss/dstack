@@ -9,7 +9,7 @@ allowed-tools: Read Bash Grep Glob Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.6.1
+    version: 0.6.2
     context_budget_tokens: 3500
     side_effects: local
     agency: deliberative
@@ -241,7 +241,6 @@ Thread replies keep the response attached to the line under review.
 |---|---|
 | Performative agreement | State the requirement or just act. |
 | Blind implementation | Verify against the codebase first. |
-| Batch without testing | One item at a time, test each. |
 | Assume reviewer is right | Check whether it breaks things. |
 | Avoid pushing back | Technical correctness over comfort. |
 | Partial implementation | Clarify all items first. |

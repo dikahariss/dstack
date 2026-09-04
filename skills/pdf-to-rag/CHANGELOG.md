@@ -1,5 +1,7 @@
 # pdf-to-rag — changelog
 
+- **0.7.1** — 2026-09-04: branch review 2026-09-04: the ground schema in `references/workflows.md` now carries the per-item `confidence` the 0.7.0 prompt asks for (three files had disagreed and the runtime enforced the stale one); a single-letter claim is reported at `low` instead of dropped; five sentence-initial "Never" restored in the vision prompts.
+
 - **0.7.0** — 2026-09-04: delegation unit and ceiling stated (ADR-0031 rule 6): one vision agent per page, grounded in the same pass, through one Workflow at its own concurrency limit — no reviewer agents, no pilot batch, no per-chunk fix agents unless `dewrap.py` mis-structured a region. The Max-plan premise, the "supersedes pdf2md" line and the proven-on paragraph are gone; the dewrap justification keeps its measured claim in one sentence. The ground profile returns a confidence per item, and verify-before-fix re-reads only `high` and `medium` items, keeping a `low` single-letter claim.
 
 - **0.6.4** — 2026-09-04: register lowered to sentence case throughout the body and the vision prompts; every rule and reason kept; bold stays on the two irreversible rules (never back-fill a blank cell; never `splice.py splice` a flagged page) and on the scope word "all vision pages".

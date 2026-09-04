@@ -21,7 +21,7 @@ to fixes. User manually walks each scenario, records pass/fail in
 - [ ] Agent asks for evidence (full stack trace, reproduction rate,
       recent commits, CI vs local environment differences).
 - [ ] Agent explicitly mentions Phase 1 (root cause) before any fix.
-- [ ] Agent mentions the iron law or equivalent — "no fix without
+- [ ] Agent mentions the rule or equivalent — "no fix without
       root cause".
 
 **Fail criteria**:

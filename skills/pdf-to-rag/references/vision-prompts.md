@@ -40,7 +40,7 @@ unreliable; read the picture, use the spacing shown in the image).
 
 Step 1 — Read the image file with the Read tool: <PNG_PATH>
 Step 2 — Transcribe what is visible. Rules:
-- Transcribe only text on the page. never invent/summarize/paraphrase/translate.
+- Transcribe only text on the page. Never invent/summarize/paraphrase/translate.
   If the page is blank or only an emblem/letterhead, return near-empty markdown
   and set blank=true.
 - Preserve Indonesian spelling, capitalization, numbers, punctuation EXACTLY
@@ -84,7 +84,7 @@ Read faithfully FROM THE IMAGE.
 
 Step 1 — Read the image with the Read tool: <PNG_PATH>
 Step 2 — Transcribe the table. Rules:
-- Transcribe only visible text. never invent or fabricate any cell. A visually
+- Transcribe only visible text. Never invent or fabricate any cell. A visually
   blank or merged-down cell stays EMPTY — do NOT repeat the value above or guess.
 - Preserve spelling/numbers exactly, incl. source typos; keep nested a./b./c.
   lettering inside a cell; use the spacing shown in the image.
@@ -96,8 +96,8 @@ STRUCTURE for RAG:
   order, and repeat the header row once at the top of THIS page's table.
 - If THIS page shows NO column header (a continuation page), use the locked header
   given to you as context (<MATRIX_HEADER>) if provided; otherwise infer the same
-  column set/order from the body cells. never drop or reorder columns across pages.
-- One pipe row per matrix row (per action item). every row has the same number of
+  column set/order from the body cells. Never drop or reorder columns across pages.
+- One pipe row per matrix row (per action item). Every row has the same number of
   pipe-separated cells; use an empty cell where the source cell is blank or merged.
 - Join multi-line wrapped text inside a cell into that one cell.
 - If the first row continues an item split from the previous page (No./Program
@@ -172,11 +172,12 @@ NOT defects — never report these as missing or altered (correct-by-design):
   catchwords);
 - a visually blank or merged matrix cell left empty in the transcription;
 - a source typo faithfully reproduced (it is faithful, not an error).
-For a single-letter/diacritic claim, you may be misreading at this resolution —
-only assert `altered` when the difference is unambiguous; otherwise leave it out.
+For a single-letter/diacritic claim you may be misreading at this resolution —
+report it with confidence `low` rather than leaving it out; the reviewer decides
+whether it earns a re-read.
 
 Return only: page=<n>, grounded=<bool>, invented=[{item, confidence}],
-missing=[{item, confidence}], altered=[{"image: X | md: Y", confidence}],
+missing=[{item, confidence}], altered=[{item: "image: X | md: Y", confidence}],
 notes=<one line>.
 ```
 
@@ -194,7 +195,7 @@ DOCUMENT CONTEXT: <per-doc notes: existing heading scheme to PRESERVE or the
 heading hierarchy to ADD; the page-noise patterns to strip>.
 
 THE ONE INVIOLABLE RULE — PRESERVE TEXT VERBATIM. You may only change Markdown
-structure and remove pure noise. never add/invent/paraphrase/translate/reorder/
+structure and remove pure noise. Never add/invent/paraphrase/translate/reorder/
 summarize words. A drift check compares the input-vs-output letter stream; if you
 added or dropped real words the fix is REJECTED.
 

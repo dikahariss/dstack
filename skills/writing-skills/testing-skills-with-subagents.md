@@ -171,11 +171,13 @@ Agent violated rule despite having the skill? This is like a test regression - y
 - "Keep as reference while writing tests first"
 - "I already manually tested it"
 
-**Document every excuse.** These become your rationalization table.
+**Record every excuse verbatim, with its run.** They are evidence for
+sharpening the rule's reason; they become table rows only under the
+condition in §1 below.
 
 ### Plugging Each Hole
 
-For each new rationalization, add:
+For each new rationalization, in this order:
 
 ### 1. State the rule positively, with its reason and exit criterion
 
@@ -198,7 +200,7 @@ Re-run the pressure scenario. A rule that still fails gets a sharper reason
 before it gets a prohibition; a counter-excuse is added only after the
 positive rule has measurably failed twice, with the run recorded.
 
-### 2. Entry in Rationalization Table
+### 2. Entry in Rationalization Table — only after §1 has failed twice
 
 ```markdown
 | Excuse | Reality |
@@ -206,7 +208,7 @@ positive rule has measurably failed twice, with the run recorded.
 | "Keep as reference, write tests first" | You'll adapt it. That's testing after. Delete means delete. |
 ```
 
-### 3. Red Flag Entry
+### 3. Red Flag Entry — same condition as §2
 
 ```markdown
 ## Red Flags - STOP

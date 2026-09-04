@@ -1,5 +1,7 @@
 # diagramming-architecture — changelog
 
+- **0.4.7** — 2026-09-04: branch review 2026-09-04: the checker's justification states the one measured count, not a rate.
+
 - **0.4.6** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 76 words; quoted trigger phrases kept.
 
 - **0.4.5** — 2026-09-04: the legibility-check reason is stated in the present tense with its measured count (7 findings vs 2) instead of as an anecdote about the first run.

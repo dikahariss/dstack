@@ -10,7 +10,7 @@ description: >
 allowed-tools: Bash Read Write Edit Grep Glob
 metadata:
   dstack:
-    version: 0.2.5
+    version: 0.2.6
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -48,9 +48,9 @@ The corpus is gigabytes across thousands of files. Reading it burns context and
 biases the result toward whatever you happened to open. Run the miner:
 
 ```bash
-python3 scripts/mine_sessions.py --since 7 --out "<scratchpad>/retro.json"   # the session's scratchpad dir, or a path the user names
-python3 scripts/mine_sessions.py --since 7 --project <project>              # one project
-python3 scripts/mine_sessions.py --since 0                        # all time
+python3 "<skill_dir>/scripts/mine_sessions.py" --since 7 --out "<scratchpad>/retro.json"   # the session's scratchpad dir, or a path the user names
+python3 "<skill_dir>/scripts/mine_sessions.py" --since 7 --project <project>              # one project
+python3 "<skill_dir>/scripts/mine_sessions.py" --since 0                        # all time
 ```
 
 It emits a digest: correction pairs (a claim next to the pushback it drew),

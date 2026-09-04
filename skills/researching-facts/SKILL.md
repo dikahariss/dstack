@@ -16,7 +16,7 @@ allowed-tools: WebSearch WebFetch Bash Read Write
 metadata:
   dstack:
     type: hybrid
-    version: 0.1.4
+    version: 0.1.5
     context_budget_tokens: 4500
     side_effects: external
     agency: deliberative
@@ -140,7 +140,7 @@ Question: *does the Brave Search API still have a free tier?*
 python3 "<skill_dir>/scripts/brave_search.py" \
   "Brave Search API pricing per 1000 requests" \
   "brave search api free tier removed" \
-  "brave search api billing overage credit card" -n 5 --freshness py
+  "brave search api billing overage credit card" -n 10 --freshness py
 ```
 
 …in the same message as `WebSearch("Brave Search API free tier 2026")`.

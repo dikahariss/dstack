@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.24.1
+    version: 0.24.2
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -30,6 +30,7 @@ open the skill when the situation resembles a row; skip it when the task is
 plainly outside the catalog. A loaded skill costs one to five thousand tokens
 for the rest of the session, so invoke on a match, not on doubt. If an
 invoked skill turns out wrong for the situation, you do not have to use it.
+A skill you remember is invoked anyway — skills change between sessions.
 
 ## Instruction priority
 

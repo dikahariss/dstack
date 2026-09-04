@@ -186,7 +186,7 @@ function enumerates(body: string): boolean {
   return bullets >= ENUMERATION_MIN_ITEMS || ordered >= ENUMERATION_MIN_ITEMS;
 }
 
-const HISTORY_HEADING = /^## Changes\b/m;
+const HISTORY_HEADING = /^#{2,3} (?:Changes|Changelog|Version history)\b/im;
 
 function stripFences(body: string): string {
   return body.replace(/^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm, '');

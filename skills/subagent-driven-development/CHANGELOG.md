@@ -1,5 +1,7 @@
 # subagent-driven-development — changelog
 
+- **0.7.3** — 2026-09-04: branch review 2026-09-04: the two-round review cap sits inside step 2.5 where the loop is, so the numbered process is one list again; the cap and the worked-run pointer are stated once; the spec reviewer prompt states its rule once; model tiers declared not exhaustive.
+
 - **0.7.2** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 59 words; quoted trigger phrases kept.
 
 - **0.7.1** — 2026-09-04: `eval/cases.jsonl` added — 2 behavioural cases, each a prompt plus the anti-pattern it must not produce.

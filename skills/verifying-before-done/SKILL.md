@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read
 metadata:
   dstack:
-    version: 0.7.0
+    version: 0.7.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -60,14 +60,15 @@ verification yourself, or read the artifact it says it produced (measured
 2026-08-14: a subagent reported the suite green on this machine and red on
 CI; it was right by luck of the machine).
 
-## Default gate when the repo names none
+## The gate — the repo's own, or this default
 
 Use the repo's own gate if it has one — a CLAUDE.md verification section,
 `make verify`, a `check` script. Otherwise, in this order, stopping at the
 first non-zero exit: the compile or typecheck step; the whole test suite,
 pass count visible; the lint or validate step; the one check specific to
-this change. Runner commands per stack are in `/test-driven-development`'s
-runner table — read the repo's own runner first, never assume the stack.
+this change. Runner commands per stack are in `/test-driven-development`'s bundled
+`references/runners-and-example.md` — read the repo's own runner first, never
+assume the stack.
 
 A screen was touched? A green suite is not evidence it renders. Open it,
 or run `/running-uat`.
@@ -84,7 +85,7 @@ exit code, counts.
 |---|---|
 | "Looks good, tests should pass." | "bun test: 92/92 pass, exit 0. Done." |
 | "I ran the tests." | "bun test path/to/file: 14/14 pass, exit 0. Done." |
-| "Everything works." | "dotnet build 0 warnings, dotnet test 118/118, exit 0. Done." |
+| "Everything works." | "dotnet build: exit 0, 0 warnings; dotnet test: 118/118 pass, exit 0. Done." |
 | "The subagent said it's fixed." | "Re-ran its command myself: 14/14, exit 0." |
 
 ## Cross-references

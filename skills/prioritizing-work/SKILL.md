@@ -13,7 +13,7 @@ description: |
 allowed-tools: Read Grep Glob Write AskUserQuestion
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.3.1
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -273,7 +273,8 @@ repo**, not whichever repo the session started in; a user preference
 overrides. Row shapes are in `references/priority-doc.md`.
 
 The document is the tables and the departures list. Explanatory prose is at
-most one paragraph per stage, and nothing from the references is restated.
+most one paragraph per stage; the references' rules are not restated, though
+every printed number still quotes its band row (R7).
 
 Report in chat: the lane and its deciding rung, the #1 assumption and its
 falsifier, the top tier, every `UNSCORABLE`, and every alarm that fired.

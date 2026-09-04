@@ -326,10 +326,9 @@ The deterministic share is a spectrum, not one number:
 
 This is a *calibration* axis, separate from `type` (ADR-0015). A
 `type: semantic` skill is the normal carrier: no runtime code, but its
-prompt still has a spine. Default is `workflow`. Move a skill to
-`judgment-dominant` only with empirical evidence (benchmark/UAT/test) that
-the default over-constrains it, plus owner approval; moving to more rails
-needs one ablation run (ADR-0030 §5). Record both in `CHANGELOG.md`. Exemplar:
+prompt still has a spine. Default is `workflow`. Move a skill off
+`workflow` in either direction only with one ablation run plus owner approval
+(ADR-0030 §5, ADR-0031 §5). Record both in `CHANGELOG.md`. Exemplar:
 `skills/responding-to-review/SKILL.md` (the reference hybrid: deterministic spine + named judgment).
 
 ---

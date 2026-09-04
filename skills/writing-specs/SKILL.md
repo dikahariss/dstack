@@ -12,7 +12,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.8.1
+    version: 0.8.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -37,8 +37,7 @@ it is built. Requirements say what must be true; the spec says what will exist,
 where the boundaries fall, and what each piece promises.
 
 Every decision cites a requirement, every requirement is covered or
-explicitly out, and code is evidence for a decision, never the spec's content
-— the last rule is explained next.
+explicitly out, and code is evidence for a decision, never the spec's content.
 
 The third rule resolves a real tension. You **must** read the code before
 deciding anything, and cite `path:line` — in the evidence log. You must **not**
@@ -248,7 +247,7 @@ table, and the ID scheme are in `references/spec-doc.md`.
 
 Length is set by the depth and the component count: cover every gate's
 evidence, and write no section that restates the requirements, summarizes
-another section, or exists only because the template names it — write
+another section (§1 Summary excepted), or exists only because the template names it — write
 `n/a — <why>` instead.
 
 Report in chat as: the shape in two sentences, the depth, counts per ID class,

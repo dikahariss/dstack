@@ -10,7 +10,7 @@ description: |
 allowed-tools: AskUserQuestion Read Grep Glob
 metadata:
   dstack:
-    version: 0.5.4
+    version: 0.5.5
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -206,7 +206,7 @@ known state. Template:
 - <topic>: <what is blocking>
 ```
 
-Short enough to confirm at a glance — one line per decision. The user reads
+Under 15 lines — one line per decision, short enough to confirm at a glance. The user reads
 this once to confirm and then uses it as the brief for the implementation.
 
 ## Cross-references
