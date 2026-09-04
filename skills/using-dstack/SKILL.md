@@ -8,7 +8,7 @@ description: |
 allowed-tools: Skill Read Grep Glob
 metadata:
   dstack:
-    version: 0.23.1
+    version: 0.24.0
     type: semantic
     side_effects: readonly
     agency: reactive
@@ -24,13 +24,12 @@ metadata:
 ---
 # /using-dstack
 
-Invoke relevant or requested skills **before** any response or action.
-Even a real-but-small chance a skill applies means you invoke it to
-check. If an invoked skill turns out wrong for the situation, you do not
-have to use it — but you do have to look.
-
-Deciding whether a borderline skill applies is your judgment — bias toward
-invoking, but the call is yours.
+Invoke the skill whose row matches the situation before you respond,
+including before a clarifying question. A borderline match is your call:
+open the skill when the situation resembles a row; skip it when the task is
+plainly outside the catalog. A loaded skill costs one to five thousand tokens
+for the rest of the session, so invoke on a match, not on doubt. If an
+invoked skill turns out wrong for the situation, you do not have to use it.
 
 ## Instruction priority
 
@@ -49,19 +48,11 @@ Code, so there is one host and one way in.
 
 ## The rule
 
-```
-Invoke relevant skills BEFORE responding — including before clarifying
-questions.
-```
-
-1. A message arrives (a question is a task too).
-2. Read it as a *situation*, then scan the router below. Match → invoke.
-3. No exact match but the task resembles a row → invoke it anyway. Over-invoking
-   is cheap; skipping a skill is not.
-4. Still nothing → read `references/skill-catalog.md`. If that is also empty,
-   proceed without a skill **and say so in one line**.
-5. Announce: "Using <skill> to <purpose>."
-6. If the skill has a checklist, create a todo per item. Follow the skill.
+Before the first response: the router below has been scanned, the matching
+skill invoked, and the choice stated in one line ("Using <skill> to
+<purpose>"). No row and no catalog match → proceed without a skill and say so
+in one line. A skill with a checklist gets one todo per item. A question is a
+task; the check comes before clarifying.
 
 ## Which skill — quick router
 
@@ -173,22 +164,10 @@ exact triggers, each skill's scope, and which skill to hand off to next:
 - you need a skill's precise triggers or boundaries before committing;
 - you need the next step in a chain (what to invoke after the current skill).
 
+Not exhaustive — open the catalog whenever the table is not an obvious match.
+
 For Claude Code's built-in features (not dstack skills) — `/compact`, `/agents`,
 plan mode, hooks, MCP, effort/model — use `/help` or see code.claude.com/docs.
-
-## Red flags — you are rationalizing
-
-The recurring ones, not exhaustive — any thought that defers the skill check
-counts.
-
-| Thought | Reality |
-|---|---|
-| "This is just a simple question" | Questions are tasks. Check for skills. |
-| "I need more context first" | The skill check comes before clarifying. |
-| "Let me explore the codebase first" | Skills tell you how to explore. Check first. |
-| "I'll just do this one thing first" | Check before doing anything. |
-| "I remember this skill" | Skills evolve. Invoke the current version. |
-| "The skill is overkill" | Simple things become complex. Use it. |
 
 ## Priority when several apply
 
@@ -196,7 +175,8 @@ counts.
    approach the task.
 2. **Implementation skills second** — they guide execution.
 
-"Let's build X" → `/brainstorm`, then implement. "Fix this bug" →
+"Let's build X" → `/discovering-requirements` (with `/brainstorm` alongside it
+if the idea itself is in doubt), then implement. "Fix this bug" →
 `/debugging`, then the domain skill.
 
 ## Skill types

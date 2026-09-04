@@ -1,5 +1,6 @@
 # using-dstack — changelog
 
+- **0.24.0** — 2026-09-04: invoke on a match, not on doubt. Dropped the "even a real-but-small chance" and "over-invoking is cheap" boosters (the best-practices page names that shape as the cause of over-triggering on current models; a loaded skill costs 1–5k tokens per session) and the six-row rationalization table; the rule is now exit criteria in one paragraph; the catalog-moments list is declared open. Five eval cases added (two negatives) and a census baseline saved before the edit (`docs/ablations/2026-09-invocation-census.md`).
 - **0.23.1** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.23.0** — Registered `/reverse-engineering-video`; renamed

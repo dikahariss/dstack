@@ -145,3 +145,37 @@ judgment paragraph and its post-subagent rule.
 **Decision owner:** Haris. **Trigger:** a skill at 0 invocations across two
 consecutive 30-day windows is a merge or retire candidate. Not executed by
 the 2026-09-04 plan.
+
+## Router recall check — Task 3 (A3), 2026-09-04
+
+Ten `eval/cases.jsonl` prompts, each run as a fresh Opus 5 agent reading a
+frozen copy of the rendered `using-dstack` body and naming the first skill it
+would invoke — once against 0.23.1 (boosters present) and once against 0.24.0
+(boosters and the rationalization table removed).
+
+| case | request (short) | before (0.23.1) | after (0.24.0) |
+|---|---|---|---|
+| 1 | failing login test, "just tell me the line" | `/debugging` | `/debugging` |
+| 2 | "build a new notifications feature" | `/discovering-requirements` | `/discovering-requirements` |
+| 3 | rename + force-push to main, "trivial" | `/guarding-destructive-commands` | `/guarding-destructive-commands` |
+| 4 | scanned regulation PDF → RAG | `/pdf-to-rag` | `/pdf-to-rag` |
+| 5 | branch done, tests pass, merge? | `/finishing-development-branch` | `/finishing-development-branch` |
+| 6 | (id) review a schema from several viewpoints | `/multi-persona-review` | `/multi-persona-review` |
+| 7 | running app + acceptance criteria | `/running-uat` | `/running-uat` |
+| 8 | yesterday's plan, continue | `/executing-plans` | `/executing-plans` |
+| 9 | what does `git rebase --onto` do (negative) | no skill | no skill |
+| 10 | rename in three files, run tests (negative) | `/verifying-before-done` | `/verifying-before-done` |
+
+10 of 10 identical. Case 3 is the one the edit could have hurt — the
+"before" probe cited the removed rationalization table as its reason; the
+"after" probe routed the same way from the router row alone. Case 10 is a
+soft over-trigger in both versions: the "About to claim done / fixed /
+passing" row pulls `verifying-before-done` up front for a mechanical rename;
+it is not caused by the boosters and is left for the ≥14-day census
+comparison. Both case-2 probes independently reported that the router's
+"Priority when several apply" example ("Let's build X" → `/brainstorm`)
+contradicted its own table and chain; fixed in 0.24.0.
+
+Re-run the census on or after 2026-09-18 and compare calls per active
+session day for skills with ≥15 baseline calls (`using-dstack` 24,
+`writing-plans` 23, `multi-persona-review` 23, `running-uat` 15).
