@@ -67,12 +67,13 @@ Steps use `- [ ]` checkboxes.
 
 ## Status
 
-**Updated:** 2026-09-04 · **Branch:** `feat/model-aligned-p0` (one per tier; each closed by `/finishing-development-branch`) · **Next:** Task 1
+**Updated:** 2026-09-04 · **Branch:** `feat/model-aligned-p0` (one per tier; each closed by `/finishing-development-branch`) · **Next:** Task 2
 
 | Task | State | Evidence |
 |---|---|---|
-| 0 Census + Sonnet set | done | `docs/ablations/2026-09-invocation-census.md` — 2,752 files, window 2026-08-04→09-04; Opus 5 in 2,347 files / Sonnet 5 111 / Fable 5.1 27; 7 skills at 0; 11 method-only; `cleanupPeriodDays` 90 set; 230 invocation lines archived |
-| 1–13 | todo | — |
+| 0 Census + Sonnet set | done | `8af062c` — `docs/ablations/2026-09-invocation-census.md`: 2,752 files, window 2026-08-04→09-04; Opus 5 in 2,347 files / Sonnet 5 111 / Fable 5.1 27; 7 skills at 0; 11 method-only; `cleanupPeriodDays` 90 set; 230 invocation lines archived |
+| 1 History out of the body | done | three commits (SHAs in Task 2's row) — 36 `CHANGELOG.md` created, 0 `## Changes` headings remain, all 36 patch-bumped; `bun test` 104/104 (2 new); typecheck clean; `build --strict` exit 0, **zero warnings** (A6: none surfaced); `bun run list`: `verifying-before-done` 1603→1001, `using-dstack` 3858→2896, `auditing-video` 4047→2897; five lists declared beside the list |
+| 2–13 | todo | — |
 
 **Deviations from plan:**
 - Branch in place, not a worktree: the native `EnterWorktree` tool restricts itself to an explicit "worktree" request and the skill requires consent for a manual one; CLAUDE.md's "branch first" is satisfied by `feat/model-aligned-p0` in the main checkout. Codex and Gemini symlinks see in-progress edits during the tier.
