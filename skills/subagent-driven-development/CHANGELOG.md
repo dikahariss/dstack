@@ -1,5 +1,7 @@
 # subagent-driven-development — changelog
 
+- **0.6.2** — 2026-09-04: the implementer prompt names the proof (run the command, read the output) without invoking `/verifying-before-done` (pointer shape, licensed by the 2026-09 Opus 5 ablation); a review loop is capped at two rounds per task before the reports go to the user (ADR-0031 rule 6). The implementer self-review and the final whole-implementation pass stay until the Task 12 ablation reports.
+
 - **0.6.1** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.6.0** — Generated code arrived padded with comments that narrate it, which

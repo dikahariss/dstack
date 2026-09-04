@@ -9,7 +9,7 @@ description: |
 allowed-tools: Agent Read Bash
 metadata:
   dstack:
-    version: 0.6.1
+    version: 0.6.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -76,6 +76,9 @@ the parallelism here is context isolation, not concurrency.
       until approved.
    6. Mark the task's todo complete.
 3. **Next task.** Repeat step 2 until no tasks remain.
+
+Two review rounds on one task without approval — spec or quality — means
+stop and hand the user both reports; do not loop a third time.
 4. **Final pass.** Dispatch one code reviewer for the entire
    implementation.
 5. **Wrap up.** Use `/finishing-development-branch`.
@@ -245,7 +248,7 @@ reach the plan belongs here.
 **If reviewer finds issues:**
 - Implementer (same subagent) fixes them
 - Reviewer reviews again
-- Repeat until approved
+- Two rounds without approval go to the user
 - Don't skip the re-review
 
 **If subagent fails task:**

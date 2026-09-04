@@ -8,7 +8,7 @@ description: |
 allowed-tools: Read Grep Glob Write
 metadata:
   dstack:
-    version: 0.10.0
+    version: 0.11.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -127,8 +127,8 @@ depend on the risk tier `/test-driven-development` assigns the task:
   the implementation even though the tests are not; cases read back off
   finished code are markedly weaker.
 
-Name the tier in each task — there is no default; self-review item 3 rejects
-a plan that leaves one unnamed.
+Name the tier in each task — there is no default; a plan that leaves one
+unnamed is not finished (see **A finished plan**).
 
 ## Plan header
 
@@ -142,11 +142,12 @@ Every plan starts with:
 **Stack:** <key technologies>
 **Visible slice:** <what Task 1 puts on screen> — or `backend-only: <why>`
 
-Implement task by task. Per task: `/test-driven-development` decides the risk
-tier and the test path, then `/verifying-before-done` before marking it done.
-Before the plan is declared complete, user-visible work also needs
-`/running-uat` — a green suite is not evidence a screen works. Request review
-at checkpoints with `/requesting-code-review`.
+Implement task by task. `/test-driven-development` decides each task's risk
+tier and test path. A task is done when its Status row carries a commit SHA
+and the observed evidence (`/verifying-before-done` is the method). User-visible
+work also needs `/running-uat` before the plan is declared complete — a green
+suite is not evidence a screen works. Request review at checkpoints with
+`/requesting-code-review`.
 Steps use `- [ ]` checkboxes.
 ```
 
@@ -273,37 +274,25 @@ them. **Not exhaustive**: anything deferring content out of a step belongs here.
 - "Similar to Task N" — repeat the code; tasks get read out of order
 - References to types or functions not defined in any task
 
-## Self-review — three positions, in order
+## A finished plan
 
-"Fresh eyes" is not a position, it is a mood, and it reliably finds nothing.
-Take three positions in sequence, finishing each before starting the next.
-
-This is Disney's original sequential form, right here for the same reason it is
-wrong in `/multi-persona-review`: one author, one plan, no reviewer independence
-to protect. The sequence exists to get you out of the position you drafted in.
-
-| Position | What it checks |
-|---|---|
-| **Dreamer** | Read Task 1: does finishing it give the user something to open and click, or does the plan declare backend-only and say why? Then — what did the plan quietly drop from the spec's ambition to make itself easier to write? |
-| **Realist** | Spec coverage with every `MUST`/`P0_GATE` landed and departures named; a tier on every task; every stub retired by a named later task in the spec's contract shape; consistent types and names across tasks; a Status block with every task `todo` and a branch; a fallback on every unchecked assumption. |
-| **Critic** | Placeholders — "TBD", "add appropriate error handling", "similar to Task N", a type no task defines. Which task stalls first, and on what. Which assumption is load-bearing and unchecked. What this plan commits to that cannot be undone. |
-
-**The Critic must return something.** A pass that finds nothing has not been run:
-name the weakest task and say why it is still acceptable. "Looks good" is not an
-output, it is the failure mode this position exists to catch.
-
-Only the Dreamer's first check rejects a plan outright — a mis-ordered Task 1 is
-reordered, not patched. Everything else is fixed inline, and no re-review is
-needed.
-
-Full question sets: `references/plan-review-pass.md`.
+Before saving, the plan satisfies all of these: Task 1 puts something on
+screen, or the header says backend-only and why (a mis-ordered Task 1 is
+reordered, not patched); every spec requirement and every carried
+MUST/P0_GATE maps to a task or a named departure; every task names a tier;
+every stub is retired by a named later task in the contract's shape; names
+and types agree across tasks; the Status block exists with every task `todo`
+and a branch; every unchecked assumption has a fallback; no placeholders.
+Then name the task most likely to stall first and what it stalls on, and put
+that line in Assumptions and risks. The Dreamer / Realist / Critic walk in
+`references/plan-review-pass.md` is one way to check these; use it when the
+plan is expensive to get wrong.
 
 ## Handoff
 
-Save the plan, then hand it to implementation. Execute one task at a
-time: `/test-driven-development` per task, `/verifying-before-done` before "done", and
-`/requesting-code-review` at natural checkpoints. For a large plan,
-dispatch a fresh subagent per task and review between tasks.
+Save the plan, then hand it to implementation: a plan too large to hold in
+one context goes to `/subagent-driven-development`; a small one is executed
+directly.
 
 Handing the work to a **fresh session** needs no written summary and no
 generated prompt. The Status block is the handoff. One line carries it:

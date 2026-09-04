@@ -1,5 +1,7 @@
 # debugging — changelog
 
+- **0.4.0** — 2026-09-04: verification stated once (ADR-0031 rule 7, licensed by the 2026-09 Opus 5 ablation): the shouted law and its two restatements become one sentence; the four numbered phases become a phase table of exit criteria plus our specifics, with the perf baseline block kept verbatim; the Quick reference, which duplicated that table, is gone; the "do not skip when" list, a third restatement of the rule, is gone. Red flags and the excuse table stay until the Task 12 ablation reports.
+
 - **0.3.1** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.3.0** — Phase 4 step 2 now retracts the boundary instrumentation

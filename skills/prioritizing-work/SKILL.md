@@ -13,7 +13,7 @@ description: |
 allowed-tools: Read Grep Glob Write AskUserQuestion
 metadata:
   dstack:
-    version: 0.2.1
+    version: 0.3.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -219,7 +219,10 @@ departure with its reason, or states `none`. A round that presents the
 sorted table as the decision has misused the framework even when every
 number is right.
 
-## Self-check — run before showing output; not exhaustive — flag any alarm beyond S1–S13
+## Signs of a bad round — not exhaustive
+
+S7–S9 are gates: a round that trips one is not shown until it is fixed. Any
+other alarm that applies goes in the chat report with its remedy.
 
 | # | Alarm | Remedy |
 |---|---|---|
@@ -286,7 +289,7 @@ true score — only one two runs agree on.
 ## Bundled files
 
 - `references/evidence-rules.md` — admissible and inadmissible sources
-  per input; the `UNSCORABLE` protocol. **Read every run, both lanes.**
+  per input; the `UNSCORABLE` protocol.
 - `references/scoring-project.md` — the MoSCoW gate, Should/Could
   thresholds, the value and effort ladders, one worked round.
 - `references/scoring-product.md` — RICE inputs and anchors, the Kano

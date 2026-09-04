@@ -1,5 +1,7 @@
 # writing-plans — changelog
 
+- **0.11.0** — 2026-09-04: verification stated once (ADR-0031 rule 7, licensed by the 2026-09 Opus 5 ablation): the header block names the Status row as the done-state and `/verifying-before-done` as the method; the three-position self-review becomes **A finished plan**, one paragraph of exit criteria with the Disney walk left in `references/plan-review-pass.md`; the hand-off routes by plan size instead of restating the per-task skill chain.
+
 - **0.10.0** — 2026-09-04: deliverable length calibrated (ADR-0031 rule 5): Opus 5 writes longer files than the task needs; one sentence scoped to the written document, never to progress text.
 - **0.9.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 

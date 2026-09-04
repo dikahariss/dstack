@@ -5,7 +5,7 @@ allowed-tools: Read
 metadata:
   dstack:
     type: schema-semantic
-    version: 0.2.3
+    version: 0.2.4
     context_budget_tokens: 1500
     side_effects: readonly
     agency: deliberative
@@ -103,6 +103,6 @@ Example shape:
 }
 ```
 
-If the JSON is invalid against the schema, the downstream tooling
-will reject it. Triple-check enum values and `area` length before
-returning.
+Downstream tooling parses the object against the schema above; an
+out-of-enum `kind` or an `area` over 32 characters is rejected, not
+repaired.

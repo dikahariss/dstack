@@ -1,5 +1,7 @@
 # responding-to-review — changelog
 
+- **0.6.0** — 2026-09-04: verification stated once (ADR-0031 rule 7, licensed by the 2026-09 Opus 5 ablation): the shouted law, its explanation, the forbidden-phrase list and the "instead" list become one paragraph carrying the two rules with their reasons; the diff-comment rule sits under it; the implementation order is one paragraph and "test each" is said once.
+
 - **0.5.1** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.5.0** — Comment discipline on both sides of a review, because the owner

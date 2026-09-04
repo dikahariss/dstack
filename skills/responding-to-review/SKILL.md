@@ -10,7 +10,7 @@ allowed-tools: Read Bash Grep Glob Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.5.1
+    version: 0.6.0
     context_budget_tokens: 3500
     side_effects: local
     agency: deliberative
@@ -41,15 +41,19 @@ you can focus on judgement.
 Do not paraphrase what the scripts do — invoke them, read the
 output, then continue.
 
-## The iron law
+## Two rules
 
-```
-NO IMPLEMENTATION BEFORE VERIFYING THE CLAIM
-NO GRATITUDE EXPRESSIONS, EVER
-```
+Two rules carry this skill. Check the reviewer's claim against the code
+before you change anything, because unverified agreement is theater and
+unverified disagreement is defensive. Reply with the requirement restated, a
+specific question, a reasoned push-back, or the fix itself — never with
+thanks, praise, or apology, because those perform agreement in place of a
+fix and the reviewer cannot act on them.
 
-Verification is what makes a code review productive. Without
-verification, agreement is theater and disagreement is defensive.
+The same rule applies inside the diff. `// Fixed as requested`, `// NEW`,
+and `// Addressed review comment` are those gratitude expressions in code
+form — addressed to the reviewer, not about the code. The commit message
+and the reply carry that; the fix itself carries none of it.
 
 ## When to use this skill
 
@@ -78,34 +82,7 @@ For every review item:
    codebase** — same patterns, same stack, same constraints.
 5. **Respond** — either a technical acknowledgement (verified,
    agree) or a reasoned push-back (verified, disagree).
-6. **Implement** one item at a time. Test each before moving on.
-
-## Forbidden responses
-
-Never write any of these, no matter how true they feel. The list names the
-common shapes and is **not exhaustive** — any phrase that performs agreement
-in place of a fix belongs here:
-
-- "You're absolutely right!"
-- "Great point!" / "Excellent feedback!"
-- "Thanks for catching that!"
-- Any gratitude expression to the reviewer.
-- "Let me implement that now" — before verification.
-
-Instead:
-
-- Restate the technical requirement.
-- Ask a specific clarifying question.
-- Push back with technical reasoning if the suggestion is wrong.
-- Just fix it and show the change. Actions over words.
-
-If you catch yourself about to type "Thanks" or "You're right",
-**delete the phrase**. State the fix instead.
-
-The same rule applies inside the diff. `// Fixed as requested`, `// NEW`,
-and `// Addressed review comment` are those gratitude expressions in code
-form — addressed to the reviewer, not about the code. The commit message
-and the reply carry that; the fix itself carries none of it.
+6. **Implement** one item at a time.
 
 ## Unclear feedback
 
@@ -172,13 +149,9 @@ If a feature is not needed, do not add it.
 
 ## Implementation order for multi-item feedback
 
-1. Clarify anything unclear **first**.
-2. Implement in this order:
-   - **Blocking** — regressions, security, correctness.
-   - **Simple** — typos, imports, formatting.
-   - **Complex** — refactors, logic changes.
-3. Test each fix individually before the next.
-4. Verify no regressions before moving on.
+Clarify anything unclear first. Then blocking (regressions, security,
+correctness), simple (typos, imports, formatting), complex (refactors,
+logic). Each item lands with its own test run before the next starts.
 
 ## When to push back
 

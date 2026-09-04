@@ -37,8 +37,8 @@ Agent tool (general-purpose):
        expected outcomes) before implementing, then derive the tests from
        that list. Skip only when the task changes no behavior (pure docs,
        config, or rename).
-    3. Verify implementation works — invoke `/verifying-before-done`; run the
-       command and read the output before reporting success
+    3. Verify the implementation works — run the command and read the output
+       before reporting success
     4. Commit your work
     5. Self-review (see below)
     6. Report back

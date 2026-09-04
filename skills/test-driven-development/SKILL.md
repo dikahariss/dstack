@@ -13,7 +13,7 @@ description: |
 allowed-tools: Read Write Edit Bash
 metadata:
   dstack:
-    version: 0.8.2
+    version: 0.9.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -32,12 +32,10 @@ metadata:
 How much test discipline this change has earned — then that discipline,
 applied.
 
-## The iron law — and where it applies
+## The law, and where it applies
 
-```
-INSIDE A RISK TIER:  NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST
-OUTSIDE ONE:         TESTS STILL COME FROM THE SPEC — JUST NOT FIRST
-```
+No production code before a failing test inside a tier; outside a tier the
+case list is frozen first — the tier decides how much of what follows applies.
 
 The cycle is the most expensive discipline in this catalog and its cost is not
 repaid evenly. Spend it where a defect is expensive to find late; buy the
@@ -122,8 +120,8 @@ Before reporting done, produce evidence at the level the change lives at: a
 user-visible **feature or flow** needs `/running-uat`; a cosmetic change needs
 the changed screen opened and looked at — screenshot, not the full protocol;
 an API change needs the request and its real response; a job needs the run
-and its output. `/verifying-before-done` is the gate. A green suite is a
-precondition for that evidence, never a substitute.
+and its output. A green suite is a precondition for that evidence, never a
+substitute.
 
 The research backs the negative half. The controlled result is same-model
 suppression: discouraging test writing cut input tokens **33–49%** for a
@@ -141,47 +139,15 @@ delete the source and redo the cycle from a degenerate red test (`return 0`).
 Outside a tier the diagnostic is one question: did the case list precede the
 code?
 
-## The cycle: red → green → refactor
+## Inside a tier: the cycle, with our three rules
 
-1. **RED — write one failing test.** One behavior. Clear name.
-   Exercises the real code path (no mocks unless unavoidable).
-2. **Verify red.** Run the test. It must fail for the right reason
-   — the feature is missing, not because of a typo. If the test
-   passes, you are testing existing behavior; fix the test. If it
-   errors, fix the error first.
-3. **GREEN — minimal code.** Write the simplest code that makes the
-   test pass. Do not add features, do not refactor adjacent code,
-   do not "improve" anything beyond the test's reach.
-4. **Verify green.** Run the test. It passes, every other test
-   still passes, output is pristine — no warnings, no stray errors.
-   This is the same evidence gate `/verifying-before-done` enforces.
-5. **REFACTOR — clean up.** Remove duplication, rename for clarity,
-   extract helpers. Keep tests green. Do not add behavior.
-6. **Next.** Pick the next failing test. Repeat.
-
-**Minimal includes the comments.** Code that passes the test carries nothing
-added to it, narration included. Comment density is inherited from the file you
-edit, never introduced: surrounding code with none means a diff with none. A
-comment earns its place only where it records a *why* the code cannot show — a
-constraint, a workaround with a reference, an invariant held elsewhere, among
-others. Never one that narrates the next line, banners the steps, restates the
-signature, or addresses the reviewer (`// NEW`), nor any other line whose
-removal loses no information. Rename before commenting; a block needing a
-comment to be followed wants to be a named function. REFACTOR leaves no
-commented-out code and no unowned TODO.
-
-## What a good test looks like
-
-- **Minimal** — one behavior per test. If the test name needs the
-  word "and", split it.
-- **Clear** — the name describes the behavior, not a number
-  (`rejects_empty_email`, not `test1`).
-- **Real code** — exercises the actual production code path. Use
-  mocks only when the alternative is impossible (external network,
-  time, randomness).
-
-
-Worked Good/Bad examples live in `references/runners-and-example.md`.
+Run red → green → refactor one behavior at a time. Red must fail for the
+right reason — a first run that passes means you are testing existing
+behavior; one that errors means fix the error first. Green is the minimal
+code, comments included: density inherited from the file, never introduced;
+a *why* the code cannot show is the only comment that earns its place.
+Green's runner output is pristine — no warnings, no stray errors. Mocks only
+when the alternative is impossible (network, time, randomness).
 
 ## Cover more than the happy path
 
@@ -191,8 +157,8 @@ contract** (what the behavior promises), not from the code. That is what makes
 the set unbiased.
 
 Walk all four rows before calling a behavior covered. The four classes are
-closed by design — the final checklist walks them — while every *Typical
-cases* cell is a sample, not exhaustive:
+closed by design — **Done means** walks them — while every *Typical cases*
+cell is a sample, not exhaustive:
 
 | Class | Ask | Typical cases |
 |---|---|---|
@@ -243,38 +209,18 @@ when-stuck table live in `references/runners-and-example.md`. Read the repo's
 own runner first — `package.json` scripts, `*.csproj`, `pyproject.toml`, a
 Makefile — never assume the stack.
 
-## Verification checklist before declaring done
+## Done means
 
-Every change, whichever path it took:
+- The tier was named before implementation started.
+- The frozen case list predates the first implementation edit; code-derived
+  additions are marked; a wrong implementation would fail this set.
+- All four classes walked, or a stated reason a class does not apply.
+- The diff carries no narration comment, commented-out code, or unowned TODO.
+- Inside a tier: each test was watched failing for the expected reason
+  before its production code existed.
 
-- [ ] The tier was named before implementation started — there is no default.
-- [ ] The frozen list can be pointed to and predates the first implementation
-      edit; code-derived additions are marked. A wrong implementation would
-      fail this set.
-- [ ] All four classes walked: happy path, edge/boundary, invalid/error,
-      and at least one **chaos** case (dependency failure, timeout,
-      duplicate or concurrent call) — or a stated reason none applies.
-- [ ] The diff introduces no comment that narrates code, banners steps, or
-      addresses the reviewer; no commented-out code; no unowned TODO.
-- [ ] All tests pass, and the runner output is pristine — no warnings,
-      no unrelated errors.
-- [ ] **Evidence of the product working** — feature/flow → `/running-uat`;
-      cosmetic → the changed screen looked at; never merely a green suite.
-
-Inside a tier, additionally:
-
-- [ ] Every new function or method has at least one test.
-- [ ] Each test was watched as it failed before any production code was
-      written — for a purely visual bug, its `/running-uat` scenario watched
-      failing.
-- [ ] Each test failed for the expected reason (feature missing,
-      not a typo).
-- [ ] Production code is the minimal code that makes the test pass.
-
-Cannot tick every box? Inside a tier, you skipped a cycle — identify which
-test was added after, delete the matching production code, and redo that
-cycle properly. Outside one, the failure is in the case list: rebuild it from
-the spec and re-check coverage.
+The completion claim itself carries the command, exit code and output from
+this turn; `/verifying-before-done` is the method.
 
 ## Cross-references
 
@@ -284,8 +230,7 @@ the spec and re-check coverage.
   this cycle); outside one it is the list the tests-after must be derived from.
 - `/running-uat` — the product-level evidence a green suite does not provide.
   Mandatory before reporting a user-visible feature done.
-- `/verifying-before-done` — the gate for every completion claim. Re-run in this
-  turn, not from memory.
+- `/verifying-before-done` — the method behind the completion claim.
 - `/debugging` — when fixing a bug, the failing-test step is the
   same red phase. A bug fix is always inside a tier.
 

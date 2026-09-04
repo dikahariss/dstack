@@ -1,5 +1,7 @@
 # prioritizing-work — changelog
 
+- **0.3.0** — 2026-09-04: the self-check is no longer a pre-output ritual (ADR-0031 rule 7): S7–S9 are the gates that withhold a round, every other alarm is reported with its remedy; the "read every run" instruction for the evidence rules is stated once, in Stage 3.
+
 - **0.2.1** — 2026-09-04: the shouted opening banner is one plain sentence; the reasons that follow it are unchanged (ADR-0031 register sweep).
 - **0.2.0** — 2026-09-04: deliverable length calibrated (ADR-0031 rule 5): Opus 5 writes longer files than the task needs; one sentence scoped to the written document, never to progress text.
 - **0.1.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
