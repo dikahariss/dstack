@@ -329,7 +329,7 @@ This is a *calibration* axis, separate from `type` (ADR-0015). A
 prompt still has a spine. Default is `workflow`. Move a skill to
 `judgment-dominant` only with empirical evidence (benchmark/UAT/test) that
 the default over-constrains it, plus owner approval; moving to more rails
-needs only a rationale. Record both in `## Changes`. Exemplar:
+needs one ablation run (ADR-0030 §5). Record both in `CHANGELOG.md`. Exemplar:
 `skills/responding-to-review/SKILL.md` (the reference hybrid: deterministic spine + named judgment).
 
 ---
@@ -462,7 +462,7 @@ Phase D — Iterate (Claude B feedback informs Claude A)
    │
    ├─ 10. Targeted rewrite — ONE pattern per losing dimension
    │
-   ├─ 11. Bump version, add `## Changes` body section
+   ├─ 11. Bump version, add the `CHANGELOG.md` entry
    │
    └─ 12. Re-bench. If still losing more than 1 iteration in a row,
             the loss is structural (§7).
@@ -671,7 +671,7 @@ Composite checklist drawn from Anthropic's official checklist (the
       validation is the substitute
 - [ ] UAT scenarios authored at `skills/<id>/uat/scenarios.md`
 - [ ] Automated UAT proxy captured OR human UAT signed off
-- [ ] `## Changes` section logs the iteration delta
+- [ ] `CHANGELOG.md` logs the iteration delta
 
 ---
 
@@ -698,7 +698,7 @@ Benchmark shows dstack loses on dimension D.
        │
        └─ YES — diminishing returns. The loss is structural
                 (different scopes, not a fixable gap). Document
-                the mismatch in `## Changes`; ship with the
+                the mismatch in `CHANGELOG.md`; ship with the
                 loss noted, or split the skill.
 ```
 

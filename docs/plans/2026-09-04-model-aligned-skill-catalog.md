@@ -67,13 +67,14 @@ Steps use `- [ ]` checkboxes.
 
 ## Status
 
-**Updated:** 2026-09-04 · **Branch:** `feat/model-aligned-p0` (one per tier; each closed by `/finishing-development-branch`) · **Next:** Task 2
+**Updated:** 2026-09-04 · **Branch:** `feat/model-aligned-p0` (one per tier; each closed by `/finishing-development-branch`) · **Next:** Task 3
 
 | Task | State | Evidence |
 |---|---|---|
 | 0 Census + Sonnet set | done | `8af062c` — `docs/ablations/2026-09-invocation-census.md`: 2,752 files, window 2026-08-04→09-04; Opus 5 in 2,347 files / Sonnet 5 111 / Fable 5.1 27; 7 skills at 0; 11 method-only; `cleanupPeriodDays` 90 set; 230 invocation lines archived |
-| 1 History out of the body | done | three commits (SHAs in Task 2's row) — 36 `CHANGELOG.md` created, 0 `## Changes` headings remain, all 36 patch-bumped; `bun test` 104/104 (2 new); typecheck clean; `build --strict` exit 0, **zero warnings** (A6: none surfaced); `bun run list`: `verifying-before-done` 1603→1001, `using-dstack` 3858→2896, `auditing-video` 4047→2897; five lists declared beside the list |
-| 2–13 | todo | — |
+| 1 History out of the body | done | `93495f1` warning + tests + spec rows · `b1e87a3` relocation, 36 patch bumps · `343ef56` five lists declared — 0 `## Changes` headings remain; `bun test` 104/104 (2 new); typecheck clean; `build --strict` exit 0, **zero warnings** (A6: none surfaced); `bun run list`: `verifying-before-done` 1603→1001, `using-dstack` 3858→2896, `auditing-video` 4047→2897 |
+| 2 ADR-0031 + governance | done | (SHA in Task 3's row) — `docs/adr/0031-multi-model-calibration.md`; ADR-0030 status + note; three indexes + v3 M45 annotated; `skill-ablation.md` model = Opus 5, `CHANGELOG.md`, owner-approval line; CLAUDE.md four rows + two citations; playbook ×4; `writing-skills` 0.8.0 (rules 5–7, positive discipline method, description rule, checklist) + testing file de-shouted; `validate` 36 OK; `build --strict` exit 0; no live "Sonnet 5 is the daily driver" remains |
+| 3–13 | todo | — |
 
 **Deviations from plan:**
 - Branch in place, not a worktree: the native `EnterWorktree` tool restricts itself to an explicit "worktree" request and the skill requires consent for a manual one; CLAUDE.md's "branch first" is satisfied by `feat/model-aligned-p0` in the main checkout. Codex and Gemini symlinks see in-progress edits during the tier.

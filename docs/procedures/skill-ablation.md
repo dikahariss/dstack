@@ -18,13 +18,17 @@ State the model and effort in the record. **An ablation run on one model does
 not license a change to a skill used on another**, and that holds in both
 directions.
 
-The daily driver is **Sonnet 5**. Run at the effort actually used day to day,
+The daily driver is **Opus 5**; run at the effort actually used day to day,
 not at `max` — a rail that only earns its place at `max` is not earning it in
-practice. Anthropic's guidance for the two models diverges on exactly the point
-this procedure measures: Opus 5 verifies and self-corrects without being told
-and over-verifies when instructed, while Sonnet 5 follows instructions literally
-and does not generalize past them. A rail that is dead weight on one can be
-load-bearing on the other.
+practice. A skill on the Sonnet 5 spot-check list
+(`docs/ablations/2026-09-invocation-census.md`) re-runs one of its three tasks
+on **Sonnet 5**. Anthropic's guidance for the two models diverges on exactly
+the point this procedure measures: Opus 5 verifies and self-corrects without
+being told and over-verifies when instructed, while Sonnet 5 follows
+instructions literally and does not generalize past them. A rail that is dead
+weight on one can be load-bearing on the other — record both columns per
+model. At each Claude Code major release, re-read the harness system prompt
+and refresh the snapshot in ADR-0031.
 
 ## The procedure
 
@@ -88,8 +92,10 @@ the output shape, not a procedure.
 ### 5. Record it
 
 Write the run to `docs/ablations/YYYY-MM-<skill>.md` and add one line to the
-skill's `## Changes` naming the band, the model, and the file. A band change
-with no record did not happen.
+skill's `CHANGELOG.md` naming the band, the model, and the file. A band change
+with no record did not happen. Owner approval is recorded in the file —
+"Band move approved by owner: <date>" — before the calibration flag changes
+(ADR-0030 §5).
 
 ## What this procedure does not do
 

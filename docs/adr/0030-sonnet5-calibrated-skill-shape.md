@@ -1,10 +1,18 @@
 # ADR-0030 — Sonnet-5 calibrated skill shape
 
-- **Status:** Accepted
+- **Status:** Superseded by [ADR-0031](0031-multi-model-calibration.md)
 - **Date:** 2026-08-14
 - **Supersedes:** ADR-0025 (the four bands are carried forward unchanged; the
   governance clause is replaced)
 - **Reversibility:** Cheap.
+
+> **Superseded in part (2026-09-04).** The four shape rules and the four
+> bands carry forward. [ADR-0031](0031-multi-model-calibration.md) replaces
+> the Context's single-daily-driver premise (the owner's measured usage is
+> Opus 5 daily, Sonnet 5 light, Fable 5.1 occasional), adds a clause to §5
+> (removing a rail inside a band needs a run first), and changes §6 step 2
+> (model under test: Opus 5) and step 5 (history lives in `CHANGELOG.md`, not
+> `## Changes`) and the YAGNI guard's last sentence.
 
 ## Context
 
