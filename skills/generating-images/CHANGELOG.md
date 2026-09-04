@@ -1,5 +1,6 @@
 # generating-images — changelog
 
+- **0.5.0** — 2026-09-04: the gate says six rows and has six: the rendered-image check (`low_detail` / `bytes_per_pixel`, emitted by the script since 0.4.0) is now in the body and the JSON example; the parallel-generation row states what is measured (chains are serial by construction; independent images unmeasured); the ceiling table is labelled observed-per-run; the `--ref` example runs on codex, the engine the measurements favour; the two laws are sentence case.
 - **0.4.1** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.4.0** — Budget 4000 → 4500: three measured failure modes joined the gate

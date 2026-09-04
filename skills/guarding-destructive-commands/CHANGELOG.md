@@ -1,5 +1,6 @@
 # guarding-destructive-commands — changelog
 
+- **0.5.0** — 2026-09-04: two rows from the Anthropic autonomy-and-safety sample: operations visible to others (push, PR comment, message, shared infrastructure) and "an obstacle is not a licence" (no `--no-verify`, no discarding unfamiliar files); the dstack hook-deferral paragraphs are replaced by one host-neutral sentence; the description says the agent pauses, not the user.
 - **0.4.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.4.2** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.

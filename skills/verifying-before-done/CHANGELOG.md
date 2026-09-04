@@ -1,5 +1,6 @@
 # verifying-before-done — changelog
 
+- **0.7.0** — 2026-09-04: the default gate is stack-neutral (compile → whole suite → lint → the change-specific check; runner commands live in `/test-driven-development`), replacing the Bun-only list and the no-op `validate --strict`; the 2026-08-14 CI-vs-local reason stays as one clause; one claim-table row shows a .NET stack. Band unchanged pending the Opus 5 gate (Task 4 of the 2026-09-04 plan).
 - **0.6.2** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.6.1** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.

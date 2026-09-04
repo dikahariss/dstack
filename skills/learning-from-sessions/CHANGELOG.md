@@ -1,5 +1,6 @@
 # learning-from-sessions — changelog
 
+- **0.2.4** — 2026-09-04: the exit condition is a written change, committed when the user asks (CLAUDE.md commit rule); the scratch path and the project example are placeholders, not `/tmp` and a real project; the record location is `CHANGELOG.md`.
 - **0.2.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.2.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.

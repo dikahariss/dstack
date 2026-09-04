@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob
 metadata:
   dstack:
-    version: 0.4.1
+    version: 0.5.0
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -37,12 +37,10 @@ metadata:
 An agent CLI you already pay for can draw. It cannot draw at the size you ask
 for, and it will tell you dimensions it did not measure.
 
-```
-MEASURE THE FILE ON DISK. NEVER REPORT A SIZE THE AGENT REPORTED.
-COPY THE ASSET OUT OF THE CLI'S OWN STATE DIRECTORY.
-```
+**Measure the file on disk; never report a size the agent reported. Copy the
+asset out of the CLI's own state directory.**
 
-Both laws come from the same place: the generator writes into its own cache
+Both rules come from the same place: the generator writes into its own cache
 under a name it chose, and every one of these agents self-reports dimensions by
 guessing or by shelling out to a tool that may not be there.
 
@@ -101,9 +99,9 @@ out of the image header. Standard library only, no image package needed.
 python3 "<skill_dir>/scripts/generate_image.py" \
   --engine codex --prompt-file prompt.txt --out assets/harbour.png
 
-python3 "<skill_dir>/scripts/generate_image.py" \
+python3 "<skill_dir>/scripts/generate_image.py" --engine codex \
   --prompt-file prompt.txt --out assets/shot-02.png \
-  --ref assets/shot-01.png     # both engines; repeatable. agy is the default
+  --ref assets/shot-01.png     # codex: 9/9 unique on reference calls; agy returned the reference itself 3/9
 ```
 
 One JSON object on stdout, and it is the only thing you may quote:
@@ -111,7 +109,7 @@ One JSON object on stdout, and it is the only thing you may quote:
 ```json
 {"engine":"codex","out":"assets/harbour.png",
  "reported":{"width":941,"height":1672},"actual":{"width":941,"height":1672},
- "matched":true,"format":"png","seconds":76.6}
+ "matched":true,"bytes_per_pixel":1.42,"low_detail":false,"format":"png","seconds":76.6}
 ```
 
 `actual` comes from the file's own header. `matched: false` is information, not
@@ -123,7 +121,7 @@ The raw commands each engine needs, and why every flag is load-bearing, are in
 
 ## Stage 3 — The gate
 
-No asset is delivered until all four hold. Closed by design: each row is a
+No asset is delivered until all six hold. Closed by design: each row is a
 failure that has actually shipped.
 
 | # | Check | How |
@@ -132,7 +130,8 @@ failure that has actually shipped.
 | 2 | The size you quote is `actual`, never `reported` | straight from the JSON |
 | 3 | The asset lives in the project, not the CLI's cache | the script's `--out` did this; confirm the path |
 | 4 | The asset was **generated**, not found | the script hashes it against every reference, the reference directory and the output directory, and fails on a match |
-| 5 | The caller is told the real size **and** the ceiling | in the reply |
+| 5 | The asset is a rendered image, not code-drawn | `low_detail: true` (`bytes_per_pixel` < 0.5) is the signal — nine photographs measured 1.18–1.99, four code-drawn files 0.005–0.063 — but **look at the image**: one detailed vector drawing scored 1.90 and passed the signal |
+| 6 | The caller is told the real size **and** the ceiling | in the reply |
 
 Row 2 holds even when `matched` is true. The next run is when it will not be.
 
@@ -162,6 +161,10 @@ attached, held one product across a nursery, a garden bed and a workshop.
 Neither engine accepts a size. Asking for one changes nothing: a request for
 `2160x3840`, quoting the tool's own validity rules, came back at the same size
 as a request that named none.
+
+Observed ceilings, 2026-08-29/30 — the size you may quote is this run's
+`actual`, never this table (`references/engines.md` records that the size is
+not invariant between runs):
 
 | | Pixels | Share of a 1080×1920 frame |
 |---|---|---|
@@ -215,7 +218,7 @@ Not exhaustive — the shape to watch for is *trusting a number nobody measured*
 | Running the generator with earlier outputs in its workspace | It may return one of them instead of generating. Measured: a byte-identical file came back as a fresh result and passed every other check. |
 | Trusting a batch because it exited 0 | The shell reports the last command. One six-image run had two failures with a healthy-looking tail. |
 | Parsing the path out of stdout | Agent logs are interleaved with the answer, and the format changes between versions. |
-| Generating in parallel to save time | Serial, 30–120 s each. |
+| Running a chain in parallel | Each call attaches the previous image, so a chain is serial by construction. For independent images, parallel behaviour is unmeasured on both engines — run serially until someone measures it. |
 | Planning a long batch as if it will finish | codex's quota is real: ~19 calls into one session it began exiting 1 with `You've hit your usage limit`, three in a row, and the last third of a nine-image run never ran. Order the batch so the images you need most come first. |
 
 ## Where judgment takes over

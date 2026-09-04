@@ -16,7 +16,7 @@ allowed-tools: WebSearch WebFetch Bash Read Write
 metadata:
   dstack:
     type: hybrid
-    version: 0.1.2
+    version: 0.1.3
     context_budget_tokens: 4500
     side_effects: external
     agency: deliberative
@@ -70,7 +70,7 @@ repository in front of you.
    calls sit in the same assistant turn:
 
    ```bash
-   scripts/brave_search.py "<variant 1>" "<variant 2>" "<variant 3>" -n 10
+   python3 "<skill_dir>/scripts/brave_search.py" "<variant 1>" "<variant 2>" "<variant 3>" -n 10
    # optional: --freshness pw|pm|py   --site vendor.com   --news   --json   --raw
    ```
 
@@ -137,7 +137,7 @@ the failure this skill exists to prevent.
 Question: *does the Brave Search API still have a free tier?*
 
 ```bash
-scripts/brave_search.py \
+python3 "<skill_dir>/scripts/brave_search.py" \
   "Brave Search API pricing per 1000 requests" \
   "brave search api free tier removed" \
   "brave search api billing overage credit card" -n 5 --freshness py

@@ -1,5 +1,6 @@
 # researching-facts — changelog
 
+- **0.1.3** — 2026-09-04: the Bash examples call the bundled script as `python3 "<skill_dir>/scripts/brave_search.py"` instead of a cwd-relative path that fails outside this repo.
 - **0.1.2** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.1.1** — Wrote every money figure as `USD 5`, never with a currency sign

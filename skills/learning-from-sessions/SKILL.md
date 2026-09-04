@@ -5,15 +5,15 @@ description: >
   transcript store under `~/.claude/projects` for recurring corrections, repeated
   tool errors, refused actions, and rework, then converting each recurring pattern
   into a written rule, a skill edit, or a memory entry. Run it on a cadence
-  (weekly) or after a session that went badly. The exit condition is a committed
-  change, never a report. Triggers: "retrospective", "weekly retro", "evaluate
+  (weekly) or after a session that went badly. The exit condition is a written
+  change — committed when the user asks — never a report. Triggers: "retrospective", "weekly retro", "evaluate
   Claude usage", "what can we improve", "lessons from yesterday's session",
   "review conversation history", "lessons learned", "analyze recurring mistakes",
   "learn from past sessions", "improve week over week".
 allowed-tools: Bash Read Write Edit Grep Glob
 metadata:
   dstack:
-    version: 0.2.3
+    version: 0.2.4
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -51,8 +51,8 @@ The corpus is gigabytes across thousands of files. Reading it burns context and
 biases the result toward whatever you happened to open. Run the miner:
 
 ```bash
-python3 scripts/mine_sessions.py --since 7 --out /tmp/retro.json
-python3 scripts/mine_sessions.py --since 7 --project maritimhub   # one project
+python3 scripts/mine_sessions.py --since 7 --out "<scratchpad>/retro.json"   # the session's scratchpad dir, or a path the user names
+python3 scripts/mine_sessions.py --since 7 --project <project>              # one project
 python3 scripts/mine_sessions.py --since 0                        # all time
 ```
 
@@ -87,7 +87,7 @@ number and has you grading your own homework.
 | The lesson is about | Home | Shape |
 |---|---|---|
 | A rule for one repo — its conventions, its forbidden actions | that repo's `CLAUDE.md` | a row in the rules or forbidden-patterns table |
-| How a task should be done, reusable across repos | the owning skill's body + `## Changes` | edit the spine, not the prose around it |
+| How a task should be done, reusable across repos | the owning skill's body (`SKILL.md`) and its `CHANGELOG.md` entry | edit the spine, not the prose around it |
 | No skill owns it and it recurs | a new skill (`/writing-skills`) | only after the recurrence bar |
 | The user — preference, context, a correction they gave | a memory file | `type: feedback` with **Why** and **How to apply** |
 | A fact that will be stale next month | nowhere | say so; do not enshrine it |

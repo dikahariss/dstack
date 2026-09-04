@@ -18,7 +18,7 @@ allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.4.3
+    version: 0.4.4
     context_budget_tokens: 4500
     side_effects: local
     agency: deliberative
@@ -63,7 +63,7 @@ search, dedup later.
 **This is stage 1 of a pipeline.** Analyze the exported RIS with
 `/literature-trends`; fetch open-access PDFs with `/literature-fulltext`.
 
-**Not for:** open-ended web research (use `/deep-research`); a database with an
+**Not for:** open-ended web research (use `/researching-facts`); a database with an
 official query **API** (call the API instead of scraping the UI); looking up one
 already-known paper.
 

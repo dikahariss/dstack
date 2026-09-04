@@ -1,5 +1,6 @@
 # literature-search — changelog
 
+- **0.4.4** — 2026-09-04: the "Not for" line pointed at `/deep-research`, a skill that does not exist; it now points at `/researching-facts`.
 - **0.4.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.4.2** — ADR-0030 catalog review (list openness, economy); panel-verified, see the 2026-08-14 review workflow.

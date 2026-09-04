@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read
 metadata:
   dstack:
-    version: 0.6.2
+    version: 0.7.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -56,32 +56,24 @@ reason this skill still exists. A harness rule tells you to report *your
 own* outcomes faithfully. It says nothing about a subagent's report.
 
 A subagent's success message is a claim, not evidence. Re-run its
-verification yourself, or read the artifact it says it produced. Measured
-2026-08-14: a subagent correctly reported the test suite was green on this
-machine and red on CI — believing either half without checking would have
-been wrong practice, and the half that was right was right by luck of
-which machine it ran on.
+verification yourself, or read the artifact it says it produced (measured
+2026-08-14: a subagent reported the suite green on this machine and red on
+CI; it was right by luck of the machine).
 
 ## Default gate when the repo names none
 
 Use the repo's own gate if it has one — a CLAUDE.md verification section,
-`make verify`, `bun run check`. Otherwise, in order, stopping at the first
-non-zero exit:
-
-```bash
-bun run typecheck                 # exit 0
-bun test                          # exit 0, pass count visible
-bun run validate --strict         # exit 0
-bun test path/to/changed.test.ts  # the check specific to THIS change
-```
+`make verify`, a `check` script. Otherwise, in this order, stopping at the
+first non-zero exit: the compile or typecheck step; the whole test suite,
+pass count visible; the lint or validate step; the one check specific to
+this change. Runner commands per stack are in `/test-driven-development`'s
+runner table — read the repo's own runner first, never assume the stack.
 
 A screen was touched? A green suite is not evidence it renders. Open it,
 or run `/running-uat`.
 
-These four steps are **not exhaustive** — they are the floor for a
-TypeScript/Bun repo. A change to infrastructure, data, or a published
-contract needs its own proving command, and naming it is the judgment
-above.
+Not exhaustive: infrastructure, data, or a published contract needs its own
+proving command, and naming it is the judgment above.
 
 ## Honest-claim shape
 
@@ -92,7 +84,7 @@ exit code, counts.
 |---|---|
 | "Looks good, tests should pass." | "bun test: 92/92 pass, exit 0. Done." |
 | "I ran the tests." | "bun test path/to/file: 14/14 pass, exit 0. Done." |
-| "Everything works." | "typecheck 0, test 92/92, validate --strict 0. Done." |
+| "Everything works." | "dotnet build 0 warnings, dotnet test 118/118, exit 0. Done." |
 | "The subagent said it's fixed." | "Re-ran its command myself: 14/14, exit 0." |
 
 ## Cross-references
