@@ -1,5 +1,7 @@
 # writing-skills — changelog
 
+- **0.8.1** — 2026-09-04: `eval/cases.jsonl` added — 3 behavioural cases, each a prompt plus the anti-pattern it must not produce.
+
 - **0.8.0** — 2026-09-04: ADR-0031 — two-target premise (Opus 5 daily, Sonnet 5 light, Fable 5.1 guard; Codex/Gemini read the same files); shape rules 5–7 (deliverable length, dispatch floor/ceiling/one message, verification stated once); discipline skills written positively, a counter-excuse only after a measured failure; descriptions say what + when under 80/120 words and keep Indonesian triggers; history recorded in `CHANGELOG.md`; the bundled testing file de-shouted and its 2025 narrative dropped.
 - **0.7.1** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 

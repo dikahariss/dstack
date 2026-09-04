@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read Grep Glob Agent
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.4.1
     type: semantic
     side_effects: readonly
     agency: deliberative

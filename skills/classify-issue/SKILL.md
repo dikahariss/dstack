@@ -5,7 +5,7 @@ allowed-tools: Read
 metadata:
   dstack:
     type: schema-semantic
-    version: 0.2.4
+    version: 0.2.5
     context_budget_tokens: 1500
     side_effects: readonly
     agency: deliberative

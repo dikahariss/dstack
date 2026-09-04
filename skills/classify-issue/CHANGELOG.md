@@ -1,5 +1,7 @@
 # classify-issue — changelog
 
+- **0.2.5** — 2026-09-04: `eval/cases.jsonl` added — 2 behavioural cases, each a prompt plus the anti-pattern it must not produce.
+
 - **0.2.4** — 2026-09-04: the closing "triple-check" line states the consequence instead (ADR-0031 rule 7): an out-of-enum kind or an over-long area is rejected downstream, not repaired.
 
 - **0.2.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.

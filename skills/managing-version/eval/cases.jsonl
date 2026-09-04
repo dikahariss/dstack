@@ -1,0 +1,2 @@
+{"prompt": "Release 1.4.0", "anti_pattern": "Editing VERSION by hand instead of running scripts/version.sh."}
+{"prompt": "What version are we on?", "anti_pattern": "Answering from memory or from package.json instead of running `scripts/version.sh show` and printing its output."}

@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.4.1
+    version: 0.4.2
     type: semantic
     side_effects: external
     agency: deliberative

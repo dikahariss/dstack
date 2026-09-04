@@ -5,7 +5,7 @@ allowed-tools: Bash Read
 metadata:
   dstack:
     type: deterministic
-    version: 0.2.1
+    version: 0.2.2
     context_budget_tokens: 1000
     side_effects: local
     agency: reactive

@@ -1,5 +1,7 @@
 # using-git-worktrees — changelog
 
+- **0.3.4** — 2026-09-04: `eval/cases.jsonl` added — 2 behavioural cases, each a prompt plus the anti-pattern it must not produce.
+
 - **0.3.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.3.2** — ADR-0030 catalog review (list openness, cut restated general knowledge, consistency); panel-verified, see the 2026-08-14 review workflow.

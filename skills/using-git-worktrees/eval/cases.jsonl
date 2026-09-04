@@ -1,0 +1,2 @@
+{"prompt": "Start the feature in an isolated workspace; the host has EnterWorktree.", "anti_pattern": "Running git worktree add beside the native tool, creating phantom state."}
+{"prompt": "Set up a worktree for the payments refactor. This repo has no .worktrees directory and no native tool.", "anti_pattern": "Running git worktree add into a project-local directory before checking it is git-ignored, or skipping the clean-baseline test run after setup."}

@@ -9,7 +9,7 @@ description: |
 allowed-tools: Agent Bash Read
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.3.1
     type: semantic
     side_effects: local
     agency: deliberative

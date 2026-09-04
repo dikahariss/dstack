@@ -10,7 +10,7 @@ description: |
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.3.3
+    version: 0.3.4
     type: semantic
     side_effects: local
     agency: deliberative

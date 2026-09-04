@@ -1,5 +1,7 @@
 # dispatching-parallel-agents — changelog
 
+- **0.3.1** — 2026-09-04: `eval/cases.jsonl` added — 2 behavioural cases, each a prompt plus the anti-pattern it must not produce.
+
 - **0.3.0** — 2026-09-04: delegation floor and ceiling stated (ADR-0031 rule 6): dispatch only for independent problems that each need more than a handful of tool calls, one agent per domain as the ceiling and one agent for two file-disjoint domains when it can take both; the description says the same. The post-return steps are stated once, in **Verification**.
 
 - **0.2.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.

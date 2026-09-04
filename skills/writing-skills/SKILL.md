@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Write Edit Bash Grep Glob Agent
 metadata:
   dstack:
-    version: 0.8.0
+    version: 0.8.1
     type: semantic
     side_effects: local
     agency: deliberative
