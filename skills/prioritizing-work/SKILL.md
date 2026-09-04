@@ -13,7 +13,7 @@ description: |
 allowed-tools: Read Grep Glob Write AskUserQuestion
 metadata:
   dstack:
-    version: 0.1.3
+    version: 0.2.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -270,6 +270,9 @@ Recurring ones; **not exhaustive**.
 One file, `docs/priority/YYYY-MM-DD-<slug>.md` **in the target system's
 repo**, not whichever repo the session started in; a user preference
 overrides. Row shapes are in `references/priority-doc.md`.
+
+The document is the tables and the departures list. Explanatory prose is at
+most one paragraph per stage, and nothing from the references is restated.
 
 Report in chat: the lane and its deciding rung, the #1 assumption and its
 falsifier, the top tier, every `UNSCORABLE`, and every alarm that fired.

@@ -1,5 +1,6 @@
 # auditing-video — changelog
 
+- **2.1.0** — 2026-09-04: deliverable length calibrated (ADR-0031 rule 5): Opus 5 writes longer files than the task needs; one sentence scoped to the written document, never to progress text.
 - **2.0.1** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **2.0.0** — Renamed from `auditing-short-video`; ADR-0027 keeps the old id a

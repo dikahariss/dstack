@@ -1,5 +1,6 @@
 # reverse-engineering-video — changelog
 
+- **0.3.0** — 2026-09-04: deliverable length calibrated (ADR-0031 rule 5): Opus 5 writes longer files than the task needs; one sentence scoped to the written document, never to progress text.
 - **0.2.2** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.2.1** — Every image prompt now opens with an identical context block built

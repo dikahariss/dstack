@@ -12,7 +12,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.7.2
+    version: 0.8.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -246,6 +246,11 @@ One file: `docs/specs/YYYY-MM-DD-<slug>.md` in the target system's repo — a us
 or repo preference overrides it, and when the caller asks for the content
 inline, produce it inline and say no file was written. Section order, every
 table, and the ID scheme are in `references/spec-doc.md`.
+
+Length is set by the depth and the component count: cover every gate's
+evidence, and write no section that restates the requirements, summarizes
+another section, or exists only because the template names it — write
+`n/a — <why>` instead.
 
 Report in chat as: the shape in two sentences, the depth, counts per ID class,
 requirement coverage (`n of m`, the rest listed), open decisions, and any

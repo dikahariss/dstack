@@ -16,7 +16,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob Grep
 metadata:
   dstack:
-    version: 2.0.1
+    version: 2.1.0
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -194,6 +194,10 @@ Flowing prose, in the user's language, in this order — closed by design (limit
 7. **Health index** — quote the formula, the per-persona table, and the weight
    distribution. It is craft-weighted; a video can sell nothing and still score
    above 90%. Never let the single number travel alone.
+
+Length follows the evidence: each section as long as its findings need and no
+longer — no restatement of the tables, no filler between sections. A short
+video with few defects gets a short report.
 
 Offer to join `timeline_per_second.csv` to the user's retention export on
 (`video_id`, `sec`). That join is what would turn any of this from inference into

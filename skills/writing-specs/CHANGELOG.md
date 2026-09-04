@@ -1,5 +1,6 @@
 # writing-specs — changelog
 
+- **0.8.0** — 2026-09-04: deliverable length calibrated (ADR-0031 rule 5): Opus 5 writes longer files than the task needs; one sentence scoped to the written document, never to progress text.
 - **0.7.2** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.7.1** — ADR-0030 panel review 2026-08-14.

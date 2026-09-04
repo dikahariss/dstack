@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Grep Glob Write WebSearch WebFetch AskUserQuestion Bash Skill
 metadata:
   dstack:
-    version: 0.4.3
+    version: 0.5.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -259,6 +259,10 @@ One file: `docs/discovery/YYYY-MM-DD-<slug>.md` **in the target system's repo**,
 not whichever repo the session started in; a user preference overrides it. It
 opens with a summary a non-technical reader can act on, then the detail;
 sections, columns, and ID rules are in `references/discovery-doc.md`.
+
+Length follows the depth and the requirement count, not the template: a
+Light document is one page, and no section carries filler prose, restated
+requirements, or a closing summary.
 
 Report in chat as: the problem in one sentence, the goal with its metric, the
 depth chosen, requirement counts per level, the riskiest assumption, and any

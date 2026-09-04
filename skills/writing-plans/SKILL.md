@@ -8,7 +8,7 @@ description: |
 allowed-tools: Read Grep Glob Write
 metadata:
   dstack:
-    version: 0.9.3
+    version: 0.10.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -70,6 +70,10 @@ an invitation to re-litigate:
 
 Save to `docs/plans/YYYY-MM-DD-<feature>.md`. A user preference for plan
 location overrides this.
+
+A plan's length is its task count times the code each task needs. It carries
+no introduction beyond the header block, no restated spec, and no closing
+summary; the Status block is the only summary.
 
 ## Scope check
 

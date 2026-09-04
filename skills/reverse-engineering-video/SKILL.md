@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob Grep Agent
 metadata:
   dstack:
-    version: 0.2.2
+    version: 0.3.0
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -194,6 +194,10 @@ before output, structure before prompts); append sections rather than reordering
 8. **The assembly** — the edit list and the on-screen text.
 9. **What to generate first** — the shot whose entities are all new, since
    everything after it inherits what it establishes.
+
+Length follows what was recovered: a section is as long as its rows and
+prompts need, and a short file gets a short package. Do not restate the CSVs
+in prose.
 
 ## What this cannot recover
 

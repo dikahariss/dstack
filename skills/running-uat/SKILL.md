@@ -13,7 +13,7 @@ description: >
 allowed-tools: Bash Read Write Edit Agent Skill Glob Grep
 metadata:
   dstack:
-    version: 0.4.5
+    version: 0.5.0
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -174,6 +174,10 @@ Log each defect with severity (observable impact), evidence paths, and repro
 steps. **Severity you may assign; priority you may not** — priority is a business
 decision. Propose it, then escalate: to the owner, or to `/prioritizing-work`
 when the question is where this defect sits against other work.
+
+The run log is evidence, not narrative: one row per scenario with the
+verbatim criterion, verdict and artifact paths; no prose recap of what the
+reader can see in the rows.
 
 ## Judgment
 
