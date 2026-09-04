@@ -98,6 +98,13 @@ export class ClaudeCodeRenderer implements HostRenderer {
       });
     }
 
+    if (HISTORY_HEADING.test(stripFences(skill.prompt))) {
+      warnings.push({
+        kind: 'history-in-body',
+        message: `${skill.spec.id.value}: version history in the body — move it to CHANGELOG.md (ADR-0031 §3).`,
+      });
+    }
+
     return {
       path: `${skill.spec.id.value}/SKILL.md`,
       content,
@@ -177,6 +184,12 @@ function enumerates(body: string): boolean {
   const bullets = (body.match(/^\s*[-*]\s+\S/gm) ?? []).length;
   const ordered = (body.match(/^\s*\d+\.\s+\S/gm) ?? []).length;
   return bullets >= ENUMERATION_MIN_ITEMS || ordered >= ENUMERATION_MIN_ITEMS;
+}
+
+const HISTORY_HEADING = /^## Changes\b/m;
+
+function stripFences(body: string): string {
+  return body.replace(/^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm, '');
 }
 
 /**

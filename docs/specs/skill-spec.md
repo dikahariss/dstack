@@ -36,6 +36,7 @@ skills/<skill-id>/
 ├── references/         # Optional. Read-only context the body can point to.
 ├── assets/             # Optional. Binary or large reference material.
 ├── LICENSE.txt         # Optional. Copied verbatim to the install root.
+├── CHANGELOG.md        # Optional. Version history; bundled, never rendered (ADR-0031).
 └── <free-form>/        # Optional. Any other subfolder ships verbatim.
 ```
 
@@ -142,9 +143,10 @@ relative path the body mentions matches the path Claude sees at runtime.
 ## Bundled resources
 
 Files inside `scripts/`, `references/`, `assets/`, and any other
-free-form subfolder ship alongside `SKILL.md` and load on demand. They
-are not part of the prompt body and not counted against
-`context_budget_tokens`. Per [ADR-0017](../adr/0017-bundled-resources.md):
+free-form subfolder ship alongside `SKILL.md` and load on demand, as do
+root-level files other than `SKILL.md` itself (`CHANGELOG.md`,
+`LICENSE.txt`). They are not part of the prompt body and not counted
+against `context_budget_tokens`. Per [ADR-0017](../adr/0017-bundled-resources.md):
 
 - Symlinks are rejected. Bundled files must be real files.
 - Paths that contain `..` or that resolve outside the skill folder are

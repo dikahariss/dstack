@@ -259,6 +259,9 @@ the end of the run, grouped by skill, via
 | `long-description` | Skill description is over 200 words. |
 | `type-structure-mismatch` | Declared `type` does not match the actual structure (e.g. `type: semantic` with a `scripts/` folder). |
 | `comprehensive-skill` | Skill ships four or more module folders. SkillsBench reports a ~2.9pp pass-rate hit at this size; consider splitting. |
+| `missing-spine` | A `workflow` or `deterministic-dominant` skill whose body has no ordered list, table, or checklist (ADR-0025). |
+| `closed-enumeration` | The body enumerates three or more items without saying whether the list is open or closed (ADR-0030). |
+| `history-in-body` | The body carries a `## Changes` heading outside a fenced block; version history lives in the bundled `CHANGELOG.md` (ADR-0031). |
 
 ## Determinism testing
 

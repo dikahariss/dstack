@@ -97,4 +97,18 @@ describe('warning fixtures', () => {
     const kinds = results[0]!.rendered.warnings.map((w) => w.kind);
     expect(kinds).not.toContain('closed-enumeration');
   });
+
+  test('history-in-body: emitted when the body carries a ## Changes heading outside a fence', async () => {
+    const results = await new BuildCatalog(bucket('warnings-history-in-body'), new ClaudeCodeRenderer(), new NoopTelemetry())
+      .execute({ host: HOST, now: new Date(0) });
+    expect(results.length).toBe(1);
+    expect(results[0]!.rendered.warnings.map((w) => w.kind)).toContain('history-in-body');
+  });
+
+  test('history-in-body: suppressed when the heading sits inside a fenced block', async () => {
+    const results = await new BuildCatalog(bucket('warnings-history-in-fence'), new ClaudeCodeRenderer(), new NoopTelemetry())
+      .execute({ host: HOST, now: new Date(0) });
+    expect(results.length).toBe(1);
+    expect(results[0]!.rendered.warnings.map((w) => w.kind)).not.toContain('history-in-body');
+  });
 });
