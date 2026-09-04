@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Grep Glob Write WebSearch WebFetch AskUserQuestion Bash Skill
 metadata:
   dstack:
-    version: 0.5.0
+    version: 0.5.1
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -43,10 +43,8 @@ will know it is solved** — before anyone designs. The deliverable is a written
 document with numbered requirements, not a shared feeling at the end of a
 conversation.
 
-```
-NO GOAL WITHOUT A METRIC. NO CONSTRAINT WITHOUT A PRIMARY SOURCE.
-EVERY GATE LEAVES A WRITTEN VERDICT.
-```
+Every goal carries a metric, every constraint a primary source, and every
+gate a written verdict; the stages below say why each is required.
 
 ## When to use — and when not
 

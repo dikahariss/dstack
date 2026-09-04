@@ -1,5 +1,6 @@
 # brainstorm — changelog
 
+- **0.5.4** — 2026-09-04: the closing summary is bounded qualitatively ("short enough to confirm at a glance — one line per decision") instead of a 15-line cap; the band note no longer cites a dstack ADR number.
 - **0.5.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.5.2** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.

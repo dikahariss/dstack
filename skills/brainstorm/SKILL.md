@@ -10,7 +10,7 @@ description: |
 allowed-tools: AskUserQuestion Read Grep Glob
 metadata:
   dstack:
-    version: 0.5.3
+    version: 0.5.4
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -42,7 +42,7 @@ without recommending is failing the skill. If you cannot recommend,
 you do not yet understand the question well enough to ask it — read
 more of the codebase, the ADRs, the recent commits first.
 
-This skill is intentionally judgment-dominant (ADR-0025): the spine is
+This skill is deliberately judgment-dominant: the spine is
 only recommendation-first + the keep/stop gates; which branch to walk and
 what to recommend is your judgment — research the code and latest context
 freely. Every list in this skill is a starting point, not a limit —
@@ -206,8 +206,8 @@ known state. Template:
 - <topic>: <what is blocking>
 ```
 
-Keep it under 15 lines. The user reads this once to confirm and then
-uses it as the brief for the implementation.
+Short enough to confirm at a glance — one line per decision. The user reads
+this once to confirm and then uses it as the brief for the implementation.
 
 ## Cross-references
 

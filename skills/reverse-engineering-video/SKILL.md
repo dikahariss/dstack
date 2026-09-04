@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Write Edit Bash Glob Grep Agent
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.3.1
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -181,8 +181,6 @@ before output, structure before prompts); append sections rather than reordering
 
 1. **What this could and could not recover** — `limitations.txt`, the threshold
    chosen and why, and every `unknown` field group.
-   (The order below is closed at nine; the count changed with the five-stage
-   production order and would change again only for another such reason.)
 2. **What the video is** — and its structure.
 3. **The rights list** — recognizable people, brands, works.
 4. **The bible** — characters, locations, look, audio identity.

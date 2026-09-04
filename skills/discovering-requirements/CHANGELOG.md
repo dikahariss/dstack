@@ -1,5 +1,6 @@
 # discovering-requirements — changelog
 
+- **0.5.1** — 2026-09-04: the shouted opening banner is one plain sentence; the reasons that follow it are unchanged (ADR-0031 register sweep).
 - **0.5.0** — 2026-09-04: deliverable length calibrated (ADR-0031 rule 5): Opus 5 writes longer files than the task needs; one sentence scoped to the written document, never to progress text.
 - **0.4.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 

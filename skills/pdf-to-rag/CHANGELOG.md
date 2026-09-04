@@ -1,5 +1,6 @@
 # pdf-to-rag — changelog
 
+- **0.6.4** — 2026-09-04: register lowered to sentence case throughout the body and the vision prompts; every rule and reason kept; bold stays on the two irreversible rules (never back-fill a blank cell; never `splice.py splice` a flagged page) and on the scope word "all vision pages".
 - **0.6.3** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.6.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.

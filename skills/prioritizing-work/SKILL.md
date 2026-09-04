@@ -13,7 +13,7 @@ description: |
 allowed-tools: Read Grep Glob Write AskUserQuestion
 metadata:
   dstack:
-    version: 0.2.0
+    version: 0.2.1
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -34,10 +34,8 @@ metadata:
 ---
 # /prioritizing-work
 
-```
-CLASSIFY BEFORE YOU RANK. FALSIFY BEFORE YOU BUILD.
-NO SCORE WITHOUT A NAMED SOURCE. UNSCORABLE IS A LEGAL ANSWER.
-```
+Classify before ranking, falsify before building, and never print a score
+without a named source; an unscorable item is a legitimate answer.
 
 Two frameworks **classify** (Kano, MoSCoW), two **order within a class**
 (RICE, value-vs-effort). A high score never promotes an item past an

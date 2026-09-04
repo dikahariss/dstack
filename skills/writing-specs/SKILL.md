@@ -12,7 +12,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.8.0
+    version: 0.8.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -36,12 +36,11 @@ A spec is the decision record for **how** a system will be built, written before
 it is built. Requirements say what must be true; the spec says what will exist,
 where the boundaries fall, and what each piece promises.
 
-```
-EVERY DECISION CITES A REQUIREMENT. EVERY REQUIREMENT IS COVERED OR OUT.
-CODE IS EVIDENCE, NEVER CONTENT.
-```
+Every decision cites a requirement, every requirement is covered or
+explicitly out, and code is evidence for a decision, never the spec's content
+— the last rule is explained next.
 
-The second rule resolves a real tension. You **must** read the code before
+The third rule resolves a real tension. You **must** read the code before
 deciding anything, and cite `path:line` — in the evidence log. You must **not**
 scatter file paths and code through the spec body: they are stale within a month
 and the spec stops being trusted.

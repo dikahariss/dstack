@@ -13,7 +13,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.4.4
+    version: 0.4.5
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -127,8 +127,9 @@ bundled checker over the `.drawio` **source** — not the render, and not
 conditional on one. Four classes with numbers, listed in `references/formats.md`.
 Report every finding with the element named.
 
-The first real run of this skill produced seven findings where the author's eye
-had found two. That gap is why the check is mechanical.
+A mechanical run finds roughly three times what a visual pass does — 7
+findings against 2 on the first real diagram — which is why the check is
+mechanical, never a visual once-over.
 
 **Gate:** `python3 scripts/check_geometry.py <file>.drawio` ran and its findings
 are listed. Exit **2**, or not running it, is **BLOCKED** — the check reads the

@@ -11,7 +11,7 @@ description: >
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.3.3
+    version: 0.3.4
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -133,8 +133,9 @@ Run the bundled checker over the `.drawio` **source** — not the render, and no
 conditional on one. Four classes with numbers, listed in `references/shapes.md`.
 Report every finding naming the screen and the control.
 
-On the first real run it caught the marker/chrome collision in 3 of 3 panels and
-two overflowing labels the author had not seen.
+The checker catches marker/chrome collisions and overflowing labels the
+author's eye passes over — 3 of 3 panels and two labels on the first real run
+— which is why the check is mechanical.
 
 **Gate:** `python3 scripts/check_geometry.py <file>.drawio` ran and its findings
 are listed. Exit **2**, or not running it, is **BLOCKED** — the check reads the

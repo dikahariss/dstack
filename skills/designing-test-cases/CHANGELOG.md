@@ -1,5 +1,6 @@
 # designing-test-cases — changelog
 
+- **0.5.3** — 2026-09-04: the shouted opening banner is one plain sentence; the reasons that follow it are unchanged (ADR-0031 register sweep).
 - **0.5.2** — 2026-09-04: version history moved from the body to this file (ADR-0031 §3); no body semantics changed.
 
 - **0.5.1** — ADR-0030 catalog review (list openness, economy); panel-verified, see the 2026-08-14 review workflow.

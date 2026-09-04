@@ -13,7 +13,7 @@ allowed-tools: Bash Read Write Edit Workflow Grep Glob
 metadata:
   dstack:
     type: hybrid
-    version: 0.6.3
+    version: 0.6.4
     triggers:
       - convert pdf to markdown
       - pdf to rag
@@ -44,9 +44,9 @@ fanning out. The user is on Max and wants speed + fidelity, not approval gates.
 **Fork on doc type first (from triage):**
 - **Digital / mixed** (reliable `pdftotext -layout` text layer): build a draft, run
   `scripts/dewrap.py` on the clean-prose pages, send only chart/diagram/scrambled
-  pages to vision, then `splice.py splice` those vision pages INTO the dewrapped draft.
+  pages to vision, then `splice.py splice` those vision pages into the dewrapped draft.
 - **Fully scanned** (Tagged:no, a full-page image per page, empty or garbled OCR):
-  SKIP the draft + dewrap; vision EVERY page (per-page profile), then `splice.py
+  SKIP the draft + dewrap; vision every page (per-page profile), then `splice.py
   assemble` the doc from the vision results. No dewrap, no gate — faithfulness is
   guarded by grounding.
 
@@ -54,16 +54,16 @@ Then:
 1. **Prep (Bash, seconds):** triage → render the vision pages → (digital only) draft +
    `dewrap.py`.
 2. **One Workflow, overlapped:** `pipeline(pages, transcribe, ground)` — each page is
-   grounded the instant it is read; ground ALL vision pages in this single pass (never
+   grounded the instant it is read; ground **all** vision pages in this single pass (never
    sample → ask → rest).
 3. **Finish (Bash):** merge the vision pages — `splice.py assemble` (scanned) or
    `splice.py splice` into the draft (digital) → `polish_tables.py` → `measure_rag.py`.
-   Run `anti_drift_gate.py` ONLY if the AI fix-pass fallback ran (dewrap is
+   Run `anti_drift_gate.py` only if the AI fix-pass fallback ran (dewrap is
    letter-neutral and needs no gate).
-4. **Verify-before-fix:** `grounded=false` is a SUSPICION, not a verdict. For each
+4. **Verify-before-fix:** `grounded=false` is a suspicion, not a verdict. For each
    flagged page re-read the PNG and classify every flag as (a) genuine drift, (b)
-   intentionally-omitted chrome, or (c) a reviewer misread; fix ONLY (a) with the Edit
-   tool (a targeted span replace — never `splice.py splice`, which would discard the
+   intentionally-omitted chrome, or (c) a reviewer misread; fix only (a) with the Edit
+   tool (a targeted span replace — **never** `splice.py splice`, which would discard the
    correct rest of the page); default KEEP on a single-letter disagreement; a re-fix
    must agree with a second read before overwriting. Copy `doc.md` → `doc.pre-ground.md`
    first. Ask only on a real blocker (missing file, ambiguous target).
@@ -90,11 +90,11 @@ enough); non-PDF sources.
 2. **Faithful, never editorial.** Transcribe exactly what is on the page. For
    legal/regulatory corpora, **source typos stay** (correcting the law is wrong). Only
    fix *conversion artifacts*: dropped spaces (`yangmenjadi`→`yang menjadi`), ligature
-   loss, `<br>` clutter. A merged/blank table cell stays blank — never back-fill.
-3. **Grounding is low-precision BY DESIGN.** A second agent compares each page's md to
+   loss, `<br>` clutter. A merged/blank table cell stays blank — **never back-fill**.
+3. **Grounding is low-precision by design.** A second agent compares each page's md to
    its PNG and defaults to flagging, so it OVER-flags — most flags are intentionally-
    omitted chrome (page numbers, emblem caption, catchwords) or the reviewer's own
-   single-letter misread. It only adds pages to a review queue; it NEVER licenses a
+   single-letter misread. It only adds pages to a review queue; it never licenses a
    blind edit. Apply verify-before-fix (above). The ground prompt must carry the same
    omitted-chrome allow-list as the transcribe prompt.
 4. **Structure for chunking.** Promote real headings (BAB / Bagian / Pasal / Paragraf;
@@ -102,7 +102,7 @@ enough); non-PDF sources.
    per page, emit valid rectangular tables.
 5. **Structure-only, words verbatim.** `dewrap.py` / AI fix-agents change only
    structure; the anti-drift gate reverts drift — but the gate guards the **digital
-   fix-pass ONLY**, not vision output (vision faithfulness is guarded by grounding).
+   fix-pass only**, not vision output (vision faithfulness is guarded by grounding).
 
 ## Pipeline (parallel via Workflow)
 | # | Phase | What | Agents |
@@ -113,7 +113,7 @@ enough); non-PDF sources.
 | 3 | Assemble | `scripts/splice.py`: build/splice by `<!-- page N -->` marker + YAML frontmatter | py |
 | 4 | Prose *(digital only)* | `scripts/dewrap.py`: de-wrap + promote BAB/Bagian/Paragraf/Pasal (letter-neutral). AI fix-agents only as fallback | py |
 | 5 | Gate *(digital only)* | `scripts/anti_drift_gate.py`: revert any fix-chunk that added/lost letters | py |
-| 6 | Ground | `ground` profile vs PNG — **pipelined with phase 2**, one pass over ALL vision pages → review queue → verify-before-fix | verify |
+| 6 | Ground | `ground` profile vs PNG — **pipelined with phase 2**, one pass over **all** vision pages → review queue → verify-before-fix | verify |
 
 ## Deciding the path & per-page profile
 The doc fork is closed by design — exactly two paths. The page signals are **not
@@ -126,7 +126,7 @@ exhaustive**: route any page you distrust to vision.
 | Page: ≥45% non-pipe **short** lines in the OUTPUT draft | vision (scrambled vector flowchart/table) |
 | Page: clean prose paragraphs (digital doc) | `dewrap.py`, not vision |
 
-**Pick the profile by CONTENT, not scanned-vs-vector:** govdoc = prose/cover/signature/
+**Pick the profile by content, not scanned-vs-vector:** govdoc = prose/cover/signature/
 dictum/addressee; matrix = wide multi-column tables / Rencana Aksi; flowchart = any
 bagan alur / swimlane / org chart / scrambled diagram.
 
