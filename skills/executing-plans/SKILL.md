@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Edit Write Bash
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.5.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -38,14 +38,16 @@ Load plan, review critically, execute all tasks, report when complete.
 
 ## When NOT to use
 
-- Executing in the **current** session — use `/subagent-driven-development`
-  (one subagent per task).
+- Executing in the **current** session with a plan too large to hold in one
+  context — `/subagent-driven-development`. A small plan in the current
+  session is not a reason to leave: run the steps here.
 - No written plan yet — use `/writing-plans` first.
 
-Your judgment enters at one place: the critical plan review in Step 2,
-where you push back on or override the plan before executing. After that
-you follow the steps exactly; completion is gated by `/verifying-before-done`
-(mandatory) and wrapped up by `/finishing-development-branch`.
+Your judgment enters at the plan review in Step 2, and again wherever the
+plan turns out to be wrong (Step 3's deviations, **When to stop**). Otherwise
+you follow the plan. A task is done when its Status row holds the commit SHA
+and what you observed (`/verifying-before-done` is the method); the branch
+is wrapped up by `/finishing-development-branch`.
 
 ## The process
 
@@ -106,35 +108,21 @@ big enough to invalidate later tasks, stop and raise it.
 
 ### Step 4: Complete development
 
-After all tasks complete and verified:
-- Announce: "Using finishing-development-branch to complete this work."
-- **REQUIRED SUB-SKILL:** Use `/finishing-development-branch`
-- Follow that skill to verify tests, present options, execute choice
+After the last task is written back, `/finishing-development-branch` verifies
+the branch and presents the merge options.
 
-## When to stop and ask for help
+## When to stop
 
-**STOP executing immediately when:**
-- Hit a blocker (missing dependency, test fails, instruction unclear)
-- Plan has critical gaps preventing starting
-- You don't understand an instruction
-- Verification fails repeatedly
-
-That list is **not exhaustive** — anything that would make you guess at the
-plan's intent is a stop.
-
-**Ask for clarification rather than guessing.**
-
-A blocker is written down, not just spoken: set the task's row to `blocked`
-with the reason before you stop. Otherwise the next session reads `in progress`
-and retries the thing that already failed.
-
-## When to revisit earlier steps
-
-**Return to Review (Step 2) when:**
-- The user updates the plan based on your feedback
-- Fundamental approach needs rethinking
-
-**Don't force through blockers** - stop and ask.
+Stop, and set the task's row to `blocked` with the reason, when the plan's
+intent would have to be guessed, when a deviation invalidates later tasks,
+or when a dependency the plan assumed does not exist on this host. A failing
+test or a build error is fixed in the code, never by editing the test or its
+fixture to pass — unless the fix would change what a later task expects, which
+is a deviation. A step that cannot pass its own gate as written is a plan
+defect and a stop. Not exhaustive: anything that makes you guess at the plan
+is a stop. Write the block before you speak: an
+`in progress` row left behind is retried by the next session. A plan the user
+has changed is reviewed again from Step 2.
 
 ## Remember
 - Reference skills when the plan says to
@@ -145,28 +133,5 @@ and retries the thing that already failed.
 **Required workflow skills:**
 - `/using-git-worktrees` - Ensures isolated workspace (creates one or verifies existing)
 - `/writing-plans` - Creates the plan this skill executes
-- `/verifying-before-done` - Mandatory completion gate after each task and at the end
+- `/verifying-before-done` - The method behind the Status row's Evidence cell
 - `/finishing-development-branch` - Complete development after all tasks
-
-## Changes
-
-- **0.4.0** — Put the comment-discipline rule in Step 3, the step where this
-  skill writes production code itself rather than delegating it. The owner
-  reported generated code arriving padded with comments that narrate it, which
-  reads as machine-written and costs credibility at senior level.
-- **0.3.1–0.3.2** — ADR-0030 catalog review (economy, consistency), and the
-  stop-and-ask list declared open — anything that would make you guess at the
-  plan belongs there.
-- **0.3.0** — Made this the **resume** skill it always claimed to be. It had no
-  way to find where the work stopped: Step 1 built a session-local todo per
-  task, which dies at `/clear`. It now resumes from the `## Status` block
-  (`/writing-plans` 0.7.0), verifies its commit evidence against `git log`, and
-  forbids re-deriving from the codebase what the block already states; task
-  completion writes the status back **in the same commit as the code**. Driven
-  by mining 180 sessions: the median spent 25 tool calls before its first edit
-  (p90 47), 62% of session-start shell work was `cat`/`ls`/`grep`
-  re-orientation, and the user was manually asking for hand-off prompts because
-  nothing durable carried the state.
-- **0.1.0–0.2.0** — Initial, pointing at `/subagent-driven-development` for
-  same-session execution; then named the judgment (the Step 2 plan review) and
-  made `/verifying-before-done` an explicit, mandatory completion gate.

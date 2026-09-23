@@ -13,7 +13,7 @@ description: |
 allowed-tools: Read Grep Glob Write AskUserQuestion
 metadata:
   dstack:
-    version: 0.1.2
+    version: 0.3.1
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -34,10 +34,8 @@ metadata:
 ---
 # /prioritizing-work
 
-```
-CLASSIFY BEFORE YOU RANK. FALSIFY BEFORE YOU BUILD.
-NO SCORE WITHOUT A NAMED SOURCE. UNSCORABLE IS A LEGAL ANSWER.
-```
+Classify before ranking, falsify before building, and never print a score
+without a named source; an unscorable item is a legitimate answer.
 
 Two frameworks **classify** (Kano, MoSCoW), two **order within a class**
 (RICE, value-vs-effort). A high score never promotes an item past an
@@ -221,7 +219,10 @@ departure with its reason, or states `none`. A round that presents the
 sorted table as the decision has misused the framework even when every
 number is right.
 
-## Self-check — run before showing output; not exhaustive — flag any alarm beyond S1–S13
+## Signs of a bad round — not exhaustive
+
+S7–S9 are gates: a round that trips one is not shown until it is fixed. Any
+other alarm that applies goes in the chat report with its remedy.
 
 | # | Alarm | Remedy |
 |---|---|---|
@@ -271,6 +272,10 @@ One file, `docs/priority/YYYY-MM-DD-<slug>.md` **in the target system's
 repo**, not whichever repo the session started in; a user preference
 overrides. Row shapes are in `references/priority-doc.md`.
 
+The document is the tables and the departures list. Explanatory prose is at
+most one paragraph per stage; the references' rules are not restated, though
+every printed number still quotes its band row (R7).
+
 Report in chat: the lane and its deciding rung, the #1 assumption and its
 falsifier, the top tier, every `UNSCORABLE`, and every alarm that fired.
 Not the whole table.
@@ -285,7 +290,7 @@ true score — only one two runs agree on.
 ## Bundled files
 
 - `references/evidence-rules.md` — admissible and inadmissible sources
-  per input; the `UNSCORABLE` protocol. **Read every run, both lanes.**
+  per input; the `UNSCORABLE` protocol.
 - `references/scoring-project.md` — the MoSCoW gate, Should/Could
   thresholds, the value and effort ladders, one worked round.
 - `references/scoring-product.md` — RICE inputs and anchors, the Kano
@@ -300,24 +305,3 @@ rather than one requirement set; `/running-uat` and
 **Out:** `/writing-plans` **carries** this order and does not re-derive
 it. **Sibling:** `/brainstorm` owns doubt about a single idea; this skill
 owns doubt about which of several.
-
-## Changes
-
-- **0.1.2** — ADR-0030 sweep + panel review (2026-08-14): red-flag table open;
-  self-contained refs; economy.
-- **0.1.0** — Initial. The catalog assigned MoSCoW labels in
-  `/discovering-requirements` Stage 6 with no criteria for deciding which
-  label a requirement earns, and ranked nothing across items: no
-  mechanism compared feature A to feature B. Observed costs were a
-  priority table withdrawn for circular reasoning, a roadmap whose item
-  order silently changed scope, and a programme whose load-bearing
-  assumption was falsified only after the dependent work was built —
-  which is why Stage 2 runs before any scoring. Calibration is
-  `deterministic-dominant` (ADR-0025): the rails are the value, and R7
-  makes a skipped reference read detectable. Effort is person-days, not
-  Intercom's person-months, which collapse almost every item to `0.5` at
-  this scale; the departure is stated so a model does not "correct" it
-  back. A `scripts/` scorer was deferred — the arithmetic is four
-  multiplications, and cheap models fail on fabricated inputs, which no
-  script detects. Revisit if a round produces an arithmetic error rather
-  than an evidence error.

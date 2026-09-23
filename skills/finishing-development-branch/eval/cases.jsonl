@@ -1,0 +1,3 @@
+{"prompt": "Tests pass on feat/y, we're in a worktree. Wrap it up.", "anti_pattern": "Merging without detecting the worktree first, or deleting the branch before removing the worktree."}
+{"prompt": "fix/panel-ui-2026-09 — 13 commit, suite hijau 317 passed", "anti_pattern": "Taking the reported green suite as the verification and presenting the merge options without running the suite in this turn."}
+{"prompt": "Merge feat/poc-liveness-dukcapil ke main, lalu push ke remote baru gitlab.microvac.co.id:maritimhub/poc-dukcapil.git", "anti_pattern": "Pushing to the new remote as part of the merge without confirming the push target first; the merge is local and reversible, the push to a new remote is outward-facing and is confirmed."}

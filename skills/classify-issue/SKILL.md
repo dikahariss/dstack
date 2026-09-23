@@ -1,11 +1,14 @@
 ---
 name: classify-issue
-description: Classifies a bug report, feature request, or chore into a structured triage record. Use when the user pastes an issue body and asks to "triage this", "classify this issue", or "what kind of issue is this".
+description: >
+  Use when the user pastes an issue body and asks to "triage this", "classify
+  this issue", or "what kind of issue is this"; produces a structured triage
+  record (bug / feature / chore / question / regression).
 allowed-tools: Read
 metadata:
   dstack:
     type: schema-semantic
-    version: 0.2.2
+    version: 0.2.6
     context_budget_tokens: 1500
     side_effects: readonly
     agency: deliberative
@@ -103,16 +106,6 @@ Example shape:
 }
 ```
 
-If the JSON is invalid against the schema, the downstream tooling
-will reject it. Triple-check enum values and `area` length before
-returning.
-
-## Changes
-
-- **0.2.2** — ADR-0030 catalog review (list openness, economy); panel-verified, see the 2026-08-14 review workflow.
-- **0.2.1** — ADR-0030 list openness: the kind enum is closed by design (consumers parse it, so a seventh value breaks them); the misclassification traps are open.
-- **0.2.0** — calibration: schema-meta (ADR-0025; determinism is the
-  output schema, not a procedure). Named the judgment (kind/severity/area
-  are your call; the schema fixes the shape). Added a misclassification
-  traps table.
-- **0.1.0** — Initial schema-semantic triage skill.
+Downstream tooling parses the object against the schema above; an
+out-of-enum `kind` or an `area` over 32 characters is rejected, not
+repaired.

@@ -1,22 +1,21 @@
 ---
 name: auditing-video
 description: >
-  Use when a video FILE of any length needs a structured audit and a dataset the
-  user can keep — a per-video fact row plus per-second, per-shot and OCR tables
-  that concatenate across many videos. Covers short form (Reel, TikTok, Shorts)
-  and long form alike; the platform-specific items gate themselves off by format
-  class. Also use when several such audits must be merged into a corpus, or when
-  video measurements must be prepared for a database, warehouse, or ML feature
-  store. Not for a platform URL (this reads local files only), not for judging a
-  running app, and not for rebuilding a video as generation prompts (that is
+  Use when a video FILE of any length needs a structured audit and a dataset
+  the user can keep — a per-video fact row plus per-second, per-shot and OCR
+  tables that concatenate across many videos. Short form (Reel, TikTok,
+  Shorts) and long form alike; platform-specific items gate off by format
+  class. Also for merging several audits into a corpus, or preparing video
+  measurements for a warehouse or ML feature store. Not for a platform URL
+  (local files only), a running app, or rebuilding a video as prompts (that is
   /reverse-engineering-video). Triggers: "analyze this video", "audit video",
-  "review this video", "extract data from a video", "hook analysis", "retention
-  critique", "why isn't this reel performing", "video dataset", "merge video
-  audits", "auditing-short-video", "video-analyzer".
+  "review this video", "extract data from a video", "hook analysis",
+  "retention critique", "why isn't this reel performing", "video dataset",
+  "merge video audits", "auditing-short-video", "video-analyzer".
 allowed-tools: Read Write Edit Bash Glob Grep
 metadata:
   dstack:
-    version: 2.0.0
+    version: 2.1.2
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -195,6 +194,10 @@ Flowing prose, in the user's language, in this order — closed by design (limit
    distribution. It is craft-weighted; a video can sell nothing and still score
    above 90%. Never let the single number travel alone.
 
+Length follows the evidence: each section as long as its findings need and no
+longer — nothing from the tables restated beyond what item 7 quotes, no filler
+between sections.
+
 Offer to join `timeline_per_second.csv` to the user's retention export on
 (`video_id`, `sec`). That join is what would turn any of this from inference into
 measurement — and it is an association even then.
@@ -221,68 +224,3 @@ joined to real outcome data.
 One video per run; for A/B, run twice and diff. This measures the file, not the
 account. If the user wants only a sub-deliverable, still run Steps 1–2 — they are
 what stop a wrong answer — but deliver only what was asked.
-
-## Changes
-
-- **2.0.0** — Renamed from `auditing-short-video`; ADR-0027 keeps the old id a
-  trigger. The rename is the smaller half. Ten of the thirty-six items are feed
-  mechanics, so widening the name without gating them would score documentaries
-  against a one-second attention test and hide the error inside one number.
-  `format_class` now sits on `semantic.csv`, gates those ten to
-  `applicable=false`, and must stratify any cross-video pooling — the classes
-  have different denominators by construction. 8 new regressions.
-
-  Building it exposed a bug nothing had caught: **pandas 3.0 stopped rendering
-  NaN as `"nan"` under `astype(str)`**, disarming the `evidence_source` guard's
-  own exclusion, so every honestly gated row failed the enum. The
-  `applicable=false` path had no test, so a correct audit would have been
-  rejected on any pandas 3 install. Fixed with `fillna("")`.
-
-  Rebuilding a video as prompts is now `/reverse-engineering-video`; this skill
-  stays the one that answers "is this any good".
-
-- **1.3.2** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
-- **1.3.1** — ADR-0030 list openness: the benchmark rules are open; the 36 checklist items are closed by design, because scores concatenate into one corpus and 35 or 37 is not comparable.
-- **1.3.0** — Indonesian trigger phrases removed under the English-only rule
-  (using-dstack 0.7.0: models translate intent, so the phrases cost tokens
-  without adding reach). The four Indonesian phrases in the description became
-  English triggers of the same intent, and `metadata.dstack.triggers` now reads
-  "analyze video". Preserved as data: the BCP 47 language codes in `taxonomy.md`
-  (which include Indonesian), and the Indonesian prompts in `eval/cases.jsonl`,
-  which are the proof that an English skill still matches an Indonesian request.
-
-- **1.2.0** — Everything the second review round found, implemented. A machine
-  validator (`validate_audit.py`) now parses the authoritative enum block in
-  `taxonomy.md` and fails an audit on illegal values, a mis-opened Monetization
-  gate, missing actions, placeholder item text, or `stated` evidence nobody was
-  asked for. `semantic.csv` moved onto the `(video_id, run_id)` key and out of
-  `corpus_videos` — it was the one table the run_id fix had missed, on the table
-  whose disagreement motivated it. Sidecar harvest hardened: yt-dlp only,
-  `creator_id` takes the durable key per platform, capture time from yt-dlp's
-  own `epoch`, and caption/hashtags harvested. Workbook widths keyed by column
-  name after a positional list silently shrank three free-text columns to 11-20
-  chars. `subject_domain` gained factual/documentary terms; `drop_risk` no
-  longer constant by construction; `is_branded` became
-  `commercial_relationship`; MON-01 now times the CTA copy, not the card.
-  22 executable regressions in `scripts/test_pipeline.py`.
-
-- **1.1.0** — Added the vision text layer. The host has eyes; v1.0 read every
-  caption in Step 2 and then left `ocr_text.csv` empty and two weight-3 items
-  unscored, so the text existed only in prose. `onscreen_text.csv` now records
-  it as data (role, position band, language, `evidence_source`), kept separate
-  from the deterministic Tesseract table so provenance survives. Scoring rule 2
-  changed from column-based to evidence-based. Restored the `Frame_features`
-  sheet; added `OnScreen_Text`.
-
-- **1.0.0** — Rebuilt after an 8-persona review. Contract now enforced rather
-  than described: NULL never imputed to 0, provenance flags (`ocr_available`,
-  `face_detection_available`, `motion_comparable`) on the master row and
-  `video_id`/versions on every table, fixed column sets so tables UNION, output
-  dirs cleaned before each run, and a refusal to fabricate duration-derived
-  columns. Beat-sync baseline is now the union of beat windows plus an exact
-  binomial p-value. Edge-energy regions are disjoint and area-normalised, and
-  renamed from "saliency". Safe zones, duration and loudness are per platform.
-  `genre` split into four orthogonal facets; `objective` and `applicable` added
-  so a deliberate absence is not a defect; the self-scoring audit items left the
-  index. `benchmarks.md` cut to figures that can name a year, population and n.
-  Renamed from `video-analyzer` per ADR-0027 (old id kept as a trigger).

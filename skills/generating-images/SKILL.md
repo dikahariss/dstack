@@ -2,20 +2,19 @@
 name: generating-images
 description: >
   Use when an image has to be created rather than found — a scene no stock
-  library holds, a placeholder asset, a cover, a mockup photo — and the machine
-  has an agent CLI that can draw one. Covers which engine to send the request
-  to, the structured-output contract that returns a real path, the pixel
-  verification that stops a false claim, and the resolution ceiling a caller
-  must be told about. Not for charts (`/dataviz`), diagrams
-  (`/diagramming-architecture`), or screen layouts (`/wireframing-interfaces`).
-  Triggers: "generate an image", "buatkan gambar", "bikin ilustrasi", "make me
-  a picture", "AI image", "text to image", "imagegen", "image_gen", "nano
-  banana", "gpt-image", "generate a cover", "generate a thumbnail",
-  "placeholder photo", "generate stills for a video".
+  library holds, a placeholder asset, a cover, a mockup photo — and the
+  machine has an agent CLI that can draw one; generates the image through that
+  CLI with the real size measured. Not for charts (`/dataviz`), diagrams
+  (`/diagramming-architecture`), or screen layouts
+  (`/wireframing-interfaces`). Triggers: "generate an image", "buatkan
+  gambar", "bikin ilustrasi", "make me a picture", "AI image", "text to
+  image", "imagegen", "image_gen", "nano banana", "gpt-image", "generate a
+  cover", "generate a thumbnail", "placeholder photo", "generate stills for a
+  video".
 allowed-tools: Read Write Edit Bash Glob
 metadata:
   dstack:
-    version: 0.4.0
+    version: 0.5.2
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -37,12 +36,10 @@ metadata:
 An agent CLI you already pay for can draw. It cannot draw at the size you ask
 for, and it will tell you dimensions it did not measure.
 
-```
-MEASURE THE FILE ON DISK. NEVER REPORT A SIZE THE AGENT REPORTED.
-COPY THE ASSET OUT OF THE CLI'S OWN STATE DIRECTORY.
-```
+**Measure the file on disk; never report a size the agent reported. Copy the
+asset out of the CLI's own state directory.**
 
-Both laws come from the same place: the generator writes into its own cache
+Both rules come from the same place: the generator writes into its own cache
 under a name it chose, and every one of these agents self-reports dimensions by
 guessing or by shelling out to a tool that may not be there.
 
@@ -96,14 +93,17 @@ the more expensive mistake.
 `scripts/generate_image.py` is the whole spine: it enforces the JSON-schema
 contract, copies the file out of the CLI's cache, and reads the real dimensions
 out of the image header. Standard library only, no image package needed.
+`--engine` defaults to `agy`; every row above that names `codex` needs it
+passed explicitly — the default is the faster engine, not the one measured
+safer on reference calls.
 
 ```bash
 python3 "<skill_dir>/scripts/generate_image.py" \
   --engine codex --prompt-file prompt.txt --out assets/harbour.png
 
-python3 "<skill_dir>/scripts/generate_image.py" \
+python3 "<skill_dir>/scripts/generate_image.py" --engine codex \
   --prompt-file prompt.txt --out assets/shot-02.png \
-  --ref assets/shot-01.png     # both engines; repeatable. agy is the default
+  --ref assets/shot-01.png     # codex: 9/9 unique on reference calls; agy returned the reference itself 3/9
 ```
 
 One JSON object on stdout, and it is the only thing you may quote:
@@ -111,7 +111,7 @@ One JSON object on stdout, and it is the only thing you may quote:
 ```json
 {"engine":"codex","out":"assets/harbour.png",
  "reported":{"width":941,"height":1672},"actual":{"width":941,"height":1672},
- "matched":true,"format":"png","seconds":76.6}
+ "matched":true,"bytes_per_pixel":1.42,"low_detail":false,"format":"png","seconds":76.6}
 ```
 
 `actual` comes from the file's own header. `matched: false` is information, not
@@ -123,7 +123,7 @@ The raw commands each engine needs, and why every flag is load-bearing, are in
 
 ## Stage 3 — The gate
 
-No asset is delivered until all four hold. Closed by design: each row is a
+No asset is delivered until all six hold. Closed by design: each row is a
 failure that has actually shipped.
 
 | # | Check | How |
@@ -132,7 +132,8 @@ failure that has actually shipped.
 | 2 | The size you quote is `actual`, never `reported` | straight from the JSON |
 | 3 | The asset lives in the project, not the CLI's cache | the script's `--out` did this; confirm the path |
 | 4 | The asset was **generated**, not found | the script hashes it against every reference, the reference directory and the output directory, and fails on a match |
-| 5 | The caller is told the real size **and** the ceiling | in the reply |
+| 5 | The asset is a rendered image, not code-drawn | `low_detail: true` (`bytes_per_pixel` < 0.5) is the signal — nine photographs measured 1.18–1.99, four code-drawn files 0.005–0.063 — but **look at the image**: one detailed vector drawing scored 1.90 and passed the signal |
+| 6 | The caller is told the real size **and** the ceiling | in the reply |
 
 Row 2 holds even when `matched` is true. The next run is when it will not be.
 
@@ -162,6 +163,10 @@ attached, held one product across a nursery, a garden bed and a workshop.
 Neither engine accepts a size. Asking for one changes nothing: a request for
 `2160x3840`, quoting the tool's own validity rules, came back at the same size
 as a request that named none.
+
+Observed ceilings, 2026-08-29/30 — the size you may quote is this run's
+`actual`, never this table (`references/engines.md` records that the size is
+not invariant between runs):
 
 | | Pixels | Share of a 1080×1920 frame |
 |---|---|---|
@@ -215,7 +220,7 @@ Not exhaustive — the shape to watch for is *trusting a number nobody measured*
 | Running the generator with earlier outputs in its workspace | It may return one of them instead of generating. Measured: a byte-identical file came back as a fresh result and passed every other check. |
 | Trusting a batch because it exited 0 | The shell reports the last command. One six-image run had two failures with a healthy-looking tail. |
 | Parsing the path out of stdout | Agent logs are interleaved with the answer, and the format changes between versions. |
-| Generating in parallel to save time | Serial, 30–120 s each. |
+| Running a chain in parallel | Each call attaches the previous image, so a chain is serial by construction. For independent images, parallel behaviour is unmeasured on both engines — run serially until someone measures it. |
 | Planning a long batch as if it will finish | codex's quota is real: ~19 calls into one session it began exiting 1 with `You've hit your usage limit`, three in a row, and the last third of a nine-image run never ran. Order the batch so the images you need most come first. |
 
 ## Where judgment takes over
@@ -227,46 +232,3 @@ to specify before the prompt stops describing and starts over-constraining.
 
 See `references/engines.md` for per-engine measurements, authentication, output
 locations, failure modes, and the paid escalation routes.
-
-## Changes
-
-- **0.4.0** — Budget 4000 → 4500: three measured failure modes joined the gate
-  in one session and each has to state its evidence to survive being argued away.
-  **An agent asked for an image may write code to draw one.** Asked
-  for photorealistic frames with no reference attached, `agy` returned flat
-  two-colour swatches and a flat-polygon vector illustration — real PNGs, correct
-  headers, unique files, produced without its image model ever running, and every
-  check in the gate passed. Nine such calls yielded zero usable photographs. The
-  prompt now names the built-in tool and forbids drawing with code; the script
-  reports `bytes_per_pixel` and flags `low_detail` under 0.5 (nine photographs
-  measured 1.18–1.99, four code-drawn files 0.005–0.063). A new gate row says
-  what no automation can: **look at the image** — one detailed vector drawing
-  scored 1.90 and would have passed the signal. Also stops leaving a failed copy
-  on disk: agy returned the path of its own `output.txt`, and the text file was
-  written to the output path before the header read rejected it.
-
-- **0.3.0** — A generator can return a file instead of making one: `agy` handed
-  back a byte-identical copy of an earlier `codex` output sitting in its
-  workspace, reported `SUCCESS`, and passed the whole gate. The script now hashes
-  the result against every reference, the reference directory and the output
-  directory. Measured across nine reference-carrying agy calls: 3 new images, 3
-  that returned the reference, 3 `SUCCESS` with an empty path. Clearing the
-  workspace does not fix it — a control run holding only the reference returned
-  it. codex returned nine unique images on the same prompts, so the
-  hold-a-subject-across-calls row points at codex.
-
-- **0.2.x** — Reference images work on **both** engines: `codex exec` takes
-  `-i <FILE>`, which 0.1.0 had missed because its "not measured" line was about
-  *editing* a file, a different question. `--ref` passes one on either engine.
-  Verified with a three-image chain — one product held across a nursery, a
-  garden bed and a workshop. Adds the chaining section: the reference carries
-  the subject, not the scene. Also fixed the copy-out guard, which checked
-  `exists()` where it meant `is_file()` and so died inside `copy2` on a reported
-  path of `"."`.
-
-- **0.1.0** — Initial. Written after measuring both CLI routes on one machine:
-  neither honours a requested size, both self-report dimensions they did not
-  measure, and shipped code was found hardcoding `1080×1920` onto files that
-  were 768×1376. `scripts/generate_image.py` exists so that the copy-out and
-  the header read cannot be skipped, and it reads dimensions from the file's
-  own bytes rather than depending on ImageMagick or Pillow being installed.

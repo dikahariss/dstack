@@ -180,6 +180,8 @@ if it ever becomes necessary, will arrive as an on-demand subcommand
 | `test/fixtures/skills/bad-yaml/missing-tools/` | `tools` field is absent. Verifies file path is reported when line is unknown — M15 |
 | `test/fixtures/skills/with-includes/uses-shared/` + `_shared/intro.md` | Skill that pulls in shared content via `includes:`. Verifies include text is concatenated above `prompt.md` — M3 |
 | `test/fixtures/skills/missing-include/uses-missing/` | Skill whose include path does not exist. Verifies `IncludeNotFoundError` — M3 |
+| `test/fixtures/skills/warnings-history-in-body/history-in-body/` | Body still carries `## Changes`. Verifies the `history-in-body` warning fires — ADR-0031 |
+| `test/fixtures/skills/warnings-history-in-fence/history-in-fence/` | `## Changes` appears only inside a fenced example. Verifies the warning stays quiet — ADR-0031 |
 | `test/fixtures/skills/duplicate-includes/uses-dupe/` + `_shared/preamble.md` | Skill whose `includes:` lists the same file twice. Verifies the second reference triggers an `include-cycle-broken` warning and is not re-included — M3 |
 
 ## Tooling files

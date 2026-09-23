@@ -4,10 +4,10 @@ description: >
   Use when the problem behind a request has not been written down — a feature
   ask, a redesign, a "build me system X" brief, a BRD / SRS / KAK / TOR to be
   drafted, or a schema about to be modelled with no stated goal, no named
-  actors, and no verified constraints. Also use when a request names a solution
-  but never the problem it solves, when actors or permissions are unclear, or
-  when the work touches regulated, contractual, or personal-data territory. Run
-  it before any spec, design, model, or plan. Triggers: "requirements
+  actors, and no verified constraints. Also when a request names a solution
+  but not the problem it solves, when actors or permissions are unclear, or
+  when the work touches regulated, contractual, or personal-data territory.
+  Run before any spec, design, model, or plan. Triggers: "requirements
   gathering", "requirements analysis", "functional requirements", "business
   requirements", "schema design", "build a new module", "problem statement",
   "BRD", "SRS", "KAK", "TOR", "user story", "acceptance criteria", "user
@@ -15,7 +15,7 @@ description: >
 allowed-tools: Read Grep Glob Write WebSearch WebFetch AskUserQuestion Bash Skill
 metadata:
   dstack:
-    version: 0.4.2
+    version: 0.5.2
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -43,10 +43,8 @@ will know it is solved** — before anyone designs. The deliverable is a written
 document with numbered requirements, not a shared feeling at the end of a
 conversation.
 
-```
-NO GOAL WITHOUT A METRIC. NO CONSTRAINT WITHOUT A PRIMARY SOURCE.
-EVERY GATE LEAVES A WRITTEN VERDICT.
-```
+Every goal carries a metric, every constraint a primary source, and every
+gate a written verdict; the stages below say why each is required.
 
 ## When to use — and when not
 
@@ -260,6 +258,10 @@ not whichever repo the session started in; a user preference overrides it. It
 opens with a summary a non-technical reader can act on, then the detail;
 sections, columns, and ID rules are in `references/discovery-doc.md`.
 
+Length follows the depth and the requirement count, not the template: a
+Light document is one page, and no section carries filler prose, restated
+requirements, or a closing summary.
+
 Report in chat as: the problem in one sentence, the goal with its metric, the
 depth chosen, requirement counts per level, the riskiest assumption, and any
 BLOCKED gate. Not the whole document.
@@ -316,25 +318,3 @@ a panel of simulated experts does not substitute for Stage 3's real actors.
 - `references/constraint-sourcing.md` — regime scoping, the evidentiary floor
   for a constraint, required source columns, and constraint precedence.
 - `references/worked-example.md` — one request carried end to end.
-
-## Changes
-
-- **0.4.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
-- **0.4.1** — ADR-0030 list openness: red-flag table open.
-- **0.4.0** — Stage 6 re-scoped to first-cut selection *inside this document*.
-  It assigned `MUST`/`SHOULD`/`COULD` with no criteria for which label a row
-  earns, so they delegate to `/prioritizing-work`.
-- **0.3.0** — English-only pass (`using-dstack` 0.7.0); reach kept via the
-  English triggers. `KAK`/`TOR` stay — document types, not prose.
-- **0.2.0** — Rebuilt after a five-point-of-view review and a subagent trial.
-  Gates gained written verdicts, downstream semantics, and legal/BLOCKED
-  carve-outs on never-block. Added Stage 2.5 viability, a human-granted
-  `AGREED`, Light/Full depth, actor classes, regime scoping, downward
-  traceability, and ranked assumptions. The trial fixed an unsatisfiable
-  MUST-ratio gate and an evidence gate that passed on all-`INFERRED` rows.
-  Calibration `workflow` → `deterministic-dominant`
-  (ADR-0025), owner-approved: the default told cheap models they had ~70%
-  freedom over a spine with eight gates.
-- **0.1.0** — Initial. Spine from impact mapping; requirement levels and quality
-  bar from ISO/IEC/IEEE 29148; Stage 4 and the research-first posture from mined
-  sessions where design started before domain rules were verified.

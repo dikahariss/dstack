@@ -18,21 +18,11 @@ Agent tool (general-purpose):
 
     [From implementer's report]
 
-    ## CRITICAL: Do Not Trust the Report
+    ## Verify against the code
 
-    The implementer finished suspiciously quickly. Their report may be incomplete,
-    inaccurate, or optimistic. You MUST verify everything independently.
-
-    **DO NOT:**
-    - Take their word for what they implemented
-    - Trust their claims about completeness
-    - Accept their interpretation of requirements
-
-    **DO:**
-    - Read the actual code they wrote
-    - Compare actual implementation to requirements line by line
-    - Check for missing pieces they claimed to implement
-    - Look for extra features they didn't mention
+    The implementer's report is a claim, not evidence. Read the diff and compare
+    it to the task text line by line. Report what is missing and what was added
+    that the task did not ask for, each with `file:line`.
 
     ## Your Job
 
@@ -52,8 +42,6 @@ Agent tool (general-purpose):
     - Did they interpret requirements differently than intended?
     - Did they solve the wrong problem?
     - Did they implement the right feature but wrong way?
-
-    **Verify by reading code, not by trusting report.**
 
     Report:
     - ✅ Spec compliant (if everything matches after code inspection)

@@ -4,21 +4,18 @@ description: >
   Use when one artifact — a design, schema, plan, document, or diff — or one
   digital-product review packet needs reviewing from several expert points of
   view at once, and the goal is to SURFACE MORE DISTINCT ISSUES than a single
-  reviewer finds and then close on a decision someone owns. Also use when
-  reviewers are agreeing too readily and the proposal needs someone assigned to
-  attack it, when a product needs review coverage selected by product class and
-  lifecycle gate, or when a review has to end in an execution hand-off rather
-  than a findings list. Not for improving factual accuracy through personas, and
-  never a substitute for user research — see "What this does not do". Triggers:
-  "review from several points of view", "PoV senior data architect", "panel
-  review", "multi perspective review", "reviewer panel", "devil's advocate",
-  "red team this", "digital product review", "review dashboard", "review public
-  service", "Disney Creativity Strategy", "dreamer realist critic", "six
-  thinking hats", "decide as a panel".
+  reviewer finds and then close on a decision someone owns. Not for improving
+  factual accuracy through personas, and never a substitute for user research
+  — see "What this does not do". Triggers: "review from several points of
+  view", "PoV senior data architect", "panel review", "multi perspective
+  review", "reviewer panel", "devil's advocate", "red team this", "digital
+  product review", "review dashboard", "review public service", "Disney
+  Creativity Strategy", "dreamer realist critic", "six thinking hats", "decide
+  as a panel".
 allowed-tools: Agent Read Grep Glob Skill
 metadata:
   dstack:
-    version: 0.5.2
+    version: 0.6.2
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -64,12 +61,21 @@ Majority-voting findings deletes exactly that.
 | Judge a **running** app against acceptance criteria | `/running-uat`, then bring its packet here |
 | Accepted findings need business ordering | `/prioritizing-work` |
 
-Never fabricate a review to cover a missing artifact. Skip the skill entirely for
-a small single-concern artifact: four subagents on a 50-line config is waste.
+Not exhaustive — route by what the request must produce.
+
+Never fabricate a review to cover a missing artifact. Each seat is a fresh
+agent that re-reads the artifact and reports back; a full review is roughly
+ten to thirteen dispatches over the two iterations most reviews take. Below about one screen of
+artifact, or when one expert concern covers it, review it yourself in the main
+loop and say so — a panel on a 50-line config buys nothing. The roster below,
+plus the rare fact-check in step 5, is the only delegation this skill
+authorises; reading, merging, verifying and the decision stay in your own loop.
 
 ## What this does not do
 
-Say this in output, because the evidence is one-sided.
+State in the record, once: "This panel buys coverage, not accuracy — accuracy
+comes from the verification pass; unanimity is not confirmation; no user
+evidence was synthesised."
 
 **Role personas do not improve factual accuracy** — 162 personas over 2,410
 questions, replicated on six models with nine significant *negative* differences.
@@ -194,9 +200,10 @@ Who wears what is in the table above. Exact field wording:
 
 1. **Seat the panel.** The trio plus at most two specialists whose concerns
    *barely overlap* it, mapped from the coverage table.
-2. **Dispatch one subagent per seat, blind and in parallel.** No sibling output,
-   no shared context, no session narrative. Go wide — this iteration is allowed
-   to be noisy.
+2. **Dispatch one subagent per seat, blind and in parallel** — all seats of an
+   iteration in one message, one tool use per seat, so no seat can see
+   another's output. No shared context, no session narrative. Go wide — this
+   iteration is allowed to be noisy.
 3. **Require grounded findings.** Every finding carries a location (file:line, or
    a quoted section) + severity + the evidence, tagged `[CLAIM]` when it rests on
    a fact someone must check and `[INFERRED]` when it goes beyond the supplied
@@ -215,10 +222,19 @@ Who wears what is in the table above. Exact field wording:
    and may not be the sole basis for the decision — it becomes a named
    assumption with an owner. This is the only step that touches whether a claim
    is true: the panel bought coverage, this buys accuracy.
+
+   Do this in your own loop with the source open; `reviewer-prompt.md §3` is a
+   template for the rare check that needs a context you lack, not a required
+   dispatch.
 6. **Freeze the risk register** — the Critic's ranked kill-case plus every
    blocking and major finding. It is iteration 2's input *and* its exit test.
 
 ### Iteration 2 — converge
+
+Continue each seat through the host's message-to-agent mechanism (Claude Code:
+`SendMessage` to the seat's agent); if that is unavailable, paste the seat's
+iteration-1 report into its prompt and drop the "you reviewed this earlier"
+line.
 
 7. **Dreamer and Realist patch the register** — one dispatch, both blind, wearing
    Green then Yellow: a mitigation per item and the value that survives it. The
@@ -292,25 +308,3 @@ All under `references/`.
   licenses. Read before repeating a number.
 - `reviewer-prompt.md` — every dispatch prompt, arbiter hygiene rules, and the
   decision record.
-
-## Changes
-
-- **0.5.2** — ADR-0030 panel review 2026-08-14: perspective library open; trio is the floor, not the roster.
-- **0.5.0** — Added a **digital-product mode** and split the vocabulary the old
-  name conflated: a **perspective** is coverage, an **AI seat** is execution, a
-  **test context** is a condition, not a person. Product mode selects coverage by
-  **class and lifecycle gate**; an **evidence gate** withholds a user-outcome
-  verdict when no user evidence exists, without halting the review. 6-10
-  perspectives map onto the unchanged five-seat cap under a **two-per-seat
-  limit**. Severities became **S0-S3**, S3 blocking regardless of score.
-  `Write`/`Edit` dropped to match `side_effects: readonly`. Measured claims
-  moved to **`evidence-base.md`**.
-- **0.4.0** — Made the trio mandatory, capped iterations at three, required an
-  owned decision, and dispatched Disney **blind and parallel** rather than in
-  sequence. **The Critic became the assigned devil's advocate**; 0.3.0 had named
-  that mechanism but shipped only the weaker dissent instruction. A
-  **verification step** buys the accuracy personas do not. Budget 4000 → 5000.
-- **0.3.0** — `reviewer-prompt.md` named where an escalated finding goes.
-- **0.2.0** — Dropped Indonesian triggers under the English-only rule.
-- **0.1.0** — Initial. Coverage not accuracy, differentiation not multiplicity,
-  union not vote, blind parallel dispatch.

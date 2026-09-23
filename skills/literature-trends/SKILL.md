@@ -1,20 +1,18 @@
 ---
 name: literature-trends
 description: >
-  Use when turning a corpus of exported bibliographic records (RIS from any
-  academic database or reference manager; convert BibTeX to RIS first) into
-  research-TOPIC TRENDS and
-  categories — parsing and deduping citations, categorizing by topic, computing
-  per-year and per-topic bibliometrics, ranking topics by volume and growth, and
-  producing trend diagrams (ranking, heatmap, trajectories, keyword frequency,
-  volume-vs-growth positioning). Database-agnostic. Triggers: "research trend analysis",
-  "bibliometric", "topic categorization", "which topics are growing", "research
-  trends", "keyword frequency", "publication trend", "corpus analysis", "trend map".
+  Use when a corpus of exported bibliographic records (RIS from any academic
+  database or reference manager; convert BibTeX first) has to become
+  research-topic trends — which topics are growing, which are mature — with
+  trend diagrams. Database-agnostic. Stage 2 after /literature-search.
+  Triggers: "research trend analysis", "bibliometric", "topic categorization",
+  "which topics are growing", "keyword frequency", "publication trend",
+  "corpus analysis", "trend map".
 allowed-tools: Read Bash Write Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.2.2
+    version: 0.3.2
     context_budget_tokens: 3000
     side_effects: local
     agency: deliberative
@@ -74,7 +72,9 @@ manual SLR work); harvesting the records (use `/literature-search`).
    That set is a floor, **not exhaustive** — add charts this corpus warrants.
    Mark any partial year on every chart.
 6. **Report.** Rank + interpret (emerging vs mature), name the fastest growers and
-   the biggest-but-declining, and recommend keywords / gaps.
+   the biggest-but-declining, and recommend keywords / gaps. Length follows the
+   evidence: one paragraph per topic that changed rank or is among the fastest growers, the caveat once, no
+   summary of the tables the reader already has.
 
 **Where judgment takes over:** the categorization scheme, which topics and
 keywords matter, reading a trajectory as rising/mature/declining, and how to treat
@@ -100,17 +100,3 @@ The recurring ones, **not exhaustive** — a new corpus shape brings its own.
 | Inventing chart colors | Read `/dataviz`; use its validated palette |
 | Deduping by title | DOI first; title+year only as fallback |
 | Summing per-topic counts for an "overall" line | Topics overlap → double-counts; use an umbrella query or the deduped corpus |
-
-## Changes
-- **0.2.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
-- **0.2.1** — ADR-0030 list openness: common-mistakes table open.
-- **0.2.0** — Dropped the three Indonesian trigger phrases (the literal
-  translations of "trend analysis", "group the topics", and "trend map") from the
-  description and the trigger list under the English-only rule (`/using-dstack`
-  0.7.0): models translate intent rather than matching lexically, so the phrases
-  cost tokens without adding reach. "research trend analysis" and "topic
-  categorization" already covered the first two; the third is now covered by the
-  English "trend map", which is what this skill produces. Nothing else here was Indonesian.
-- **0.1.0** — Initial. Database-agnostic corpus→trends: parse/dedup + categorize +
-  population-vs-sample discipline + growth metrics + the standard diagram set
-  (delegates palette to `/dataviz`). Stage 2 of the literature pipeline.

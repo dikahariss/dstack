@@ -73,7 +73,8 @@ the context, the decision, the trade-offs, and the reversibility.
 | [0027](adr/0027-skill-naming-convention.md) | Activity-based skill naming |
 | [0028](adr/0028-renderer-only-scope.md) | Renderer-only scope |
 | [0029](adr/0029-portable-source-consumption.md) | One renderer, portable source consumption |
-| [0030](adr/0030-sonnet5-calibrated-skill-shape.md) | Sonnet-5 calibrated skill shape; ablation replaces the 0025 ratchet |
+| [0030](adr/0030-sonnet5-calibrated-skill-shape.md) | Sonnet-5 calibrated skill shape; ablation replaces the 0025 ratchet — model premise superseded by 0031 |
+| [0031](adr/0031-multi-model-calibration.md) | Multi-model calibration: Opus 5 daily, Sonnet 5 light, Fable 5.1 guard; history in `CHANGELOG.md` |
 
 See [adr/README.md](adr/README.md) for ADR format, status definitions,
 and how to add a new ADR.
@@ -85,7 +86,7 @@ this repo. Read one when you are about to perform it, not before.
 
 | Procedure | Scope |
 |---|---|
-| [procedures/skill-ablation.md](procedures/skill-ablation.md) | The evidence run a skill must pass before it changes calibration band, in either direction. Required by [ADR-0030](adr/0030-sonnet5-calibrated-skill-shape.md). |
+| [procedures/skill-ablation.md](procedures/skill-ablation.md) | The evidence run a skill must pass before it changes calibration band, in either direction. Required by [ADR-0030](adr/0030-sonnet5-calibrated-skill-shape.md), amended by [ADR-0031](adr/0031-multi-model-calibration.md). |
 | [procedures/claude-web-skill-sync.md](procedures/claude-web-skill-sync.md) | Getting a changed skill into the claude.ai web account — the one install target that holds a copy this repo cannot reach. |
 
 ## How specs, ADRs, and taxonomy relate

@@ -1,7 +1,7 @@
 ---
 name: guarding-destructive-commands
 description: |
-  Safety guardrails for destructive commands. Reminds the user to pause before
+  Safety guardrails for destructive commands. Asks for confirmation before
   rm -rf, DROP TABLE, force-push, git reset --hard, kubectl delete, and similar
   destructive operations. Use when touching prod, debugging live systems, or
   working in a shared environment. Use when asked to "be careful", "safety
@@ -9,7 +9,7 @@ description: |
 allowed-tools: Bash Read AskUserQuestion
 metadata:
   dstack:
-    version: 0.4.2
+    version: 0.5.1
     type: semantic
     context_budget_tokens: 1500
     side_effects: readonly
@@ -23,10 +23,13 @@ metadata:
 ---
 # /guarding-destructive-commands
 
-Safety mode is **advisory** in dstack. dstack does not intercept bash
-via hooks — the discipline is yours plus this checklist. Before
-running any of the patterns below, stop, restate what the command will
-do, and confirm with the user.
+This is advisory text, not an interception: nothing stops the command but
+you. Before running any of the patterns below, stop, restate what the
+command will do, and confirm with the user. Where a hard guarantee is
+needed (prod, shared systems), also configure the host's pre-tool hook to
+block these patterns. A hook engine that intercepts them is deliberately
+deferred (dstack DEFERRED D2) until a second skill needs one; until then this
+advisory text is the whole guard.
 
 ## Patterns that require explicit confirmation
 
@@ -40,6 +43,7 @@ do, and confirm with the user.
 | `git checkout .` / `git restore .` | `git checkout .` | Uncommitted work lost |
 | `kubectl delete` | `kubectl delete pod` | Production impact |
 | `docker rm -f` / `docker system prune` | `docker system prune -a` | Container/image loss |
+| Visible to others — `git push` to a shared branch or a new remote, a PR or issue comment, a message, a change to shared infrastructure | `gh pr comment 42 --body …` | Others act on it; retraction is public |
 
 ## Safe exceptions (no confirmation needed)
 
@@ -74,27 +78,6 @@ When you see a pattern from the table, before sending the command:
 
 This is slower than running the command. That is the point.
 
-## When this skill is NOT enough
-
-Hook-based interception (a `PreToolUse` hook that blocks a Bash call
-before it runs) is strictly stronger than advisory text — it catches
-operations that bypass conscious thought. If you are working on prod
-or a shared system and need that guarantee, use a tool that supports
-hook-level enforcement until dstack adds hook support.
-
-Hook support is deliberately deferred in dstack (DEFERRED entry D2):
-hooks are powerful but add runtime complexity, and the threshold to
-revisit is two skills needing them. This skill is the only one that
-does, so the guardrail stays advisory.
-
-## Changes
-
-- **0.4.2** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
-- **0.4.1** — ADR-0030 list openness: the command table is explicitly a floor, now marked not exhaustive.
-- **0.4.0** — Renamed `careful` → `guarding-destructive-commands`. A bare
-  adjective is exactly the "vague name" Anthropic's naming guidance warns
-  against; the new name states the action. The "be careful"/"careful mode"
-  triggers are kept.
-- **0.3.0** — Declared type/side_effects/agency + calibration:
-  deterministic-dominant (ADR-0025; safety guardrail, high failure cost).
-  Named the bounded judgment (the table is a floor, not a whitelist).
+An obstacle is not a licence: never bypass a check (`--no-verify`, a forced
+push after a refused one) or discard unfamiliar files to get past it — they
+may be someone's in-progress work.

@@ -4,18 +4,17 @@ description: >
   Use when a video FILE has to be taken apart and rebuilt as generation
   prompts — a shot-by-shot breakdown plus ready-to-run prompts for video,
   image, speech, sound effects and music, with an edit list that puts the
-  clips back in order. Handles long files, not only short form: shots are
-  detected first, read densely inside each shot, and fanned out across
-  parallel agents. Not for judging whether a video is any good (that is
-  /auditing-video) and not for a platform URL — this reads local files.
-  Triggers: "reverse engineer this video", "recreate this video", "break
-  this video into shots", "video to prompt", "shot list from a video",
-  "how was this video made", "scene breakdown", "storyboard from footage",
-  "make a prompt from this video", "analyse the cinematography".
+  clips back in order. Handles long files, not only short form. Not for
+  judging whether a video is any good (that is /auditing-video) and not for a
+  platform URL — this reads local files. Triggers: "reverse engineer this
+  video", "recreate this video", "break this video into shots", "video to
+  prompt", "shot list from a video", "how was this video made", "scene
+  breakdown", "storyboard from footage", "make a prompt from this video",
+  "analyse the cinematography".
 allowed-tools: Read Write Edit Bash Glob Grep Agent
 metadata:
   dstack:
-    version: 0.2.1
+    version: 0.3.4
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -105,7 +104,7 @@ language:
 ## Stage 3 — Deep-read the shots
 
 Read `references/fanout-protocol.md`. Below 400 planned frames, read them
-yourself; above it, one agent per sequence.
+yourself; above it, one agent per sequence, all launched in one message.
 
 ```bash
 python3 "<skill_dir>/scripts/extract_shots.py" "<video>" "<work_dir>" --shots 0-49
@@ -181,8 +180,6 @@ before output, structure before prompts); append sections rather than reordering
 
 1. **What this could and could not recover** — `limitations.txt`, the threshold
    chosen and why, and every `unknown` field group.
-   (The order below is closed at nine; the count changed with the five-stage
-   production order and would change again only for another such reason.)
 2. **What the video is** — and its structure.
 3. **The rights list** — recognizable people, brands, works.
 4. **The bible** — characters, locations, look, audio identity.
@@ -194,6 +191,10 @@ before output, structure before prompts); append sections rather than reordering
 8. **The assembly** — the edit list and the on-screen text.
 9. **What to generate first** — the shot whose entities are all new, since
    everything after it inherits what it establishes.
+
+Length follows what was recovered: a section is as long as its rows and
+prompts need, and a short file gets a short package. The edit list and the
+on-screen text are delivered as their CSVs; prose does not restate them.
 
 ## What this cannot recover
 
@@ -208,41 +209,3 @@ The spine fixes detection, sampling, budgets, schema and validation. **Yours** i
 where the scene and sequence boundaries fall, which shots deserve a deep pass at
 all, and — at merge — whether two differing descriptions are one entity read
 twice or two entities read once.
-
-## Changes
-
-- **0.2.1** — Every image prompt now opens with an identical context block built
-  from `bible.json`. Found by reviewing a real nine-image run: the product kept
-  its coarse coir fibre in the four frames where it sat in a hand and became
-  smooth moulded card in the two where the composition changed to a tray of many.
-  "Match the attached image" was the only anchor, and against a different
-  composition the model read it as a style hint rather than an identity. The
-  bible existed and was being spent only on per-entity substitution. Budget
-  3500 → 4000 to hold it alongside the 0.2.0 doctrine.
-
-- **0.2.0** — Reworked for how the generators actually take input, after a run
-  on a real file. Two stills per shot (start frame and end frame) rather than
-  one; a `no change` end state means one image serves both. Every motion prompt
-  ends in an explicit silence clause, because audio-backed engines bake audio in
-  and it cannot be removed afterwards — it fights the voice-over and bed
-  generated later. Each still after the first carries a computed continuity
-  anchor naming the earlier shot that established each entity it shares.
-  Package order is now the production order: stills, video, audio, backsound,
-  assemble. The clip-length fit is reported per shot: short-form cuts far faster
-  than any generator's 4-second minimum — on the test file no shot reached it —
-  so a rebuild is 68 s of material for a 31 s video and every clip needs
-  retiming or trimming — which is why shots are now **grouped into clips** at the
-  generator's minimum rather than mapped one to one, with each join on a real cut
-  and adjacent clips sharing a boundary frame. Measured on the test file: 9
-  images and 8 prompts, against 32 and 17 for the mapping that seemed natural
-  first. `audio_map.csv` became opt-in; a rebuild never reads it and it cost a
-  whole decode pass. Budget 3000 → 3500: the rules above are permanent doctrine,
-  and 3000 was a guess made when the skill was smaller.
-
-- **0.1.0** — Initial. The catalog's only video skill audited short form against
-  a hook-and-retention instrument, which answers "is this any good", not "how was
-  this made". Detection is ffmpeg alone: 96 shots from a 232 s file in 8.4 s, and
-  a detection-only pass over 60.7 minutes in 1 min 30 s. The per-shot ladder
-  replaced a global rate after the frame-budget evidence showed accuracy peaking
-  near 256 frames and falling past it. Threshold calibration was added when a
-  fixed 0.3 found 4 cuts on a window where 0.08 found 30.

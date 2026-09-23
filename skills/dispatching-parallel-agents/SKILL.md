@@ -1,15 +1,15 @@
 ---
 name: dispatching-parallel-agents
 description: |
-  Use when facing 2+ independent tasks that can be worked on without
-  shared state or sequential dependencies — e.g. several test files
-  failing with different root causes, or multiple subsystems broken
+  Use when facing independent problems that share no files and each need
+  more than a handful of tool calls — e.g. several test files failing
+  with different root causes, or multiple subsystems broken
   independently. Triggers: "parallel agents", "fan out", "independent
   failures".
 allowed-tools: Agent Bash Read
 metadata:
   dstack:
-    version: 0.2.2
+    version: 0.3.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -28,7 +28,12 @@ You delegate tasks to specialized agents with isolated context. By precisely cra
 
 When you have multiple unrelated failures (different test files, different subsystems, different bugs), investigating them sequentially wastes time. Each investigation is independent and can happen in parallel.
 
-**Core principle:** Dispatch one agent per independent problem domain. Let them work concurrently.
+**Core principle:** At most one agent per independent problem domain, run concurrently.
+
+Dispatch when the problems are independent (no shared files, no shared cause)
+and each is more than a handful of tool calls; a single failure, or two that
+share a cause, is investigated directly. One agent per domain is the ceiling,
+not the goal: if one agent can take two domains that share no files, send one.
 
 Deciding the failures are truly independent — no shared state, no
 "fixing one may fix another" coupling — is your judgment call. The rails
@@ -46,7 +51,8 @@ Walk this decision table top to bottom:
 | Single failure, or you don't yet know what's broken | Investigate directly first (no dispatch) |
 
 **Use when:**
-- 3+ test files failing with different root causes
+- Two or more test files failing with different root causes, each more than a
+  handful of tool calls
 - Multiple subsystems broken independently
 - Each problem can be understood without context from others
 - No shared state between investigations
@@ -87,14 +93,6 @@ Agent("Fix batch-completion-behavior.test.ts failures")
 Agent("Fix tool-approval-race-conditions.test.ts failures")
 // All three run concurrently
 ```
-
-### 4. Review and integrate
-
-When agents return:
-- Read each summary
-- Verify fixes don't conflict
-- Run full test suite
-- Integrate all changes
 
 ## Agent prompt structure
 
@@ -185,13 +183,3 @@ git diff --stat          # confirm only intended files changed, no overlap
   independent, parallel investigations with no plan).
 - `/debugging` — run it inside each agent to root-cause its own domain.
 - `/verifying-before-done` — the integrate-time gate above.
-
-## Changes
-
-- **0.2.2** — ADR-0030 catalog review (list openness, cut restated general knowledge, economy, consistency); panel-verified, see the 2026-08-14 review workflow.
-- **0.2.1** — ADR-0030 list openness: the common-mistakes table is open.
-- **0.2.0** — Named the judgment (deciding failures are truly independent)
-  and added an integrate-time verify command. Hardening (v3 plan):
-  converted the graphviz when-to-use block and the ❌/✅ mistakes to tables;
-  added Cross-references; normalised headings to dstack voice.
-- **0.1.0** — Initial. Dispatch examples use the Claude Code `Agent` tool.

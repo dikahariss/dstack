@@ -10,7 +10,7 @@ description: |
 allowed-tools: Read Bash Grep
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.4.1
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -28,14 +28,10 @@ Root-cause investigation discipline. Find why the system is broken
 before proposing how to fix it. Symptom fixes hide causes and ship
 regressions.
 
-## The iron law
+## The rule
 
-```
-NO FIX WITHOUT ROOT-CAUSE INVESTIGATION FIRST
-```
-
-If Phase 1 is not complete, fixes are not on the table. Stating a
-fix before naming a cause is guessing, not engineering.
+No fix before a named cause; the phase table below says when each phase is
+done.
 
 ## When to use this skill
 
@@ -52,14 +48,7 @@ Use the discipline **especially** when:
 - The user has not fully described the issue and you are filling
   gaps from imagination.
 
-Do not skip when:
-
-- The bug "seems simple". Simple bugs have root causes too.
-- You are in a hurry. Rushing guarantees rework.
-- The user wants it fixed now. The systematic loop is faster than
-  thrashing.
-
-Both lists are samples, not exhaustive — any situation that tempts a fix
+That list is a sample, not exhaustive — any situation that tempts a fix
 before a cause qualifies.
 
 ## Triage by failure shape
@@ -122,79 +111,21 @@ stress-ng --cpu 4 &  # in another shell
 A 50%-flake bug is debuggable. A 1% flake is not. The probe is to
 raise the rate, not to add a retry.
 
-## The four phases
+## The phases — cause before fix, the rest by exit criterion
 
-Complete each phase before moving to the next. The phase order is closed by
-design — a fix before a named cause is the failure this skill exists to
-prevent. The activities inside each phase are a floor, not exhaustive: any
-probe that yields evidence (a debugger, `git bisect`, bisecting the input)
-counts.
+No fix before a named cause: that ordering is the rule, and Phase 4 waits on
+Phases 1–3. Inside a phase there is no script — reach its exit by whatever
+probe yields evidence (a debugger, `git bisect`, bisecting the input,
+boundary logs). The five rows are closed by design, since other skills point
+at these phases; the specifics column is a floor, not exhaustive.
 
-### Phase 1 — Root-cause investigation
-
-1. **Read every error message carefully.** Do not skip past
-   warnings. The error is often the answer. Read the full stack
-   trace; note line numbers, file paths, error codes.
-2. **Reproduce consistently.** Can you trigger it on demand? What
-   are the exact steps? Does it happen every time? If not
-   reproducible, gather more data before forming a hypothesis.
-3. **Check what changed.** `git log --oneline -20` and `git diff`.
-   Recent commits, recent dependency bumps, environment
-   differences (CI vs local, prod vs staging).
-4. **Instrument the boundaries.** For each layer the request
-   crosses, log what enters and what leaves. The layer whose output
-   does not match its input is the failing layer.
-
-   Generic shape:
-
-   ```
-   For each boundary in the failing path:
-     log("entered <layer>: input=", <inputs>)
-     ... actual work ...
-     log("exited <layer>: output=", <outputs>)
-   ```
-
-   Run once. Read the evidence. Locate the layer that broke.
-5. **Trace the data flow.** When the error is deep in the call
-   stack, trace backward. Where did the bad value originate? What
-   called this with that value? Keep tracing until you reach the
-   source. Fix at the source, not at the symptom.
-
-### Phase 2 — Pattern analysis
-
-1. **Find a working example.** Search the same codebase for code
-   that does the analogous thing successfully.
-2. **Read the reference end-to-end** if you are implementing a
-   known pattern. No skimming.
-3. **List every difference** between the working example and the
-   broken code. Every difference, no matter how small. Do not pre-
-   filter on "that cannot matter".
-4. **Understand the dependencies.** What components, settings,
-   environment variables, or assumptions does the working pattern
-   rely on that the broken code might be missing?
-
-### Phase 3 — Hypothesis and minimal test
-
-1. **Generate 3 to 5 ranked hypotheses, then state the top one in
-   writing.** Format: "If X is the cause, then changing Y will make
-   the bug disappear (or changing Z will make it worse)." Each
-   hypothesis must be **falsifiable** — if you cannot name the
-   prediction, the hypothesis is a vibe; sharpen it or discard it.
-   Single-hypothesis generation anchors on the first plausible idea
-   and is a common debugging anti-pattern.
-2. **Test minimally.** The smallest change that would falsify or
-   confirm the hypothesis. One variable at a time. Do not stack
-   "while I'm here" changes onto the test.
-3. **Verify the result before continuing.** If the hypothesis was
-   right, move to Phase 4. If it was wrong, form a **new**
-   hypothesis. Do not pile another fix on top of the failed one.
-4. **Admit uncertainty.** If a step does not make sense, say "I do
-   not understand X." Ask the user. Research more. Do not pretend.
-
-### Phase 4 — Implementation
-
-For **memory / perf regressions**, the regression test is
-*measurement*, not assertion. Baseline first:
+| Phase or case | Done when | Our specifics |
+|---|---|---|
+| 1 — Root cause | You can name what is broken and why | Reproduce on demand; check what changed (`git log`, `git diff`, env diff); instrument the boundaries — the layer whose output ≠ its input is the failing one; trace a bad value back to where it originated |
+| 2 — Pattern | You can point to the difference that matters | Compare against a working example in the same codebase; list the differences before judging which matter |
+| 3 — Hypothesis | The cause is confirmed or replaced | 3–5 ranked and falsifiable ("if X, changing Y makes it disappear"); one variable per test; a wrong hypothesis is replaced, never patched over |
+| 4 — Fix | Symptom gone, no other test broke, instrumentation removed | Failing test first (`/test-driven-development`); one change, at the source and never at the symptom; no fix-announcing comment — a genuinely non-obvious cause earns one line recording *why*, with the issue reference; three failed fixes → Phase 4.5 |
+| Memory / perf regression | The regression test is a measurement against a baseline taken before the fix | Baseline first — keep the block below verbatim |
 
 ```bash
 # Memory leak — Node.js
@@ -209,26 +140,7 @@ hyperfine --warmup 3 'after-fix-cmd' --export-json after.json
 # Compare medians; flag regressions > 5%
 ```
 
-For correctness bugs:
-
-1. **Write a failing test that reproduces the issue.** Simplest
-   possible test that fails today and will pass once the fix lands.
-   Use `/test-driven-development` for the writing discipline.
-2. **Apply one fix.** Address the root cause. One change. No
-   "while I'm here" refactors. No bundled improvements. The boundary
-   instrumentation from Phase 1 step 4 comes out in the same change;
-   log lines left behind are narration. No comment announcing the fix
-   (`// fix for the null case`, `// bug #123`) — only a genuinely
-   non-obvious root cause earns one line recording *why* the code is
-   shaped this way, with the issue reference.
-3. **Verify.** Use `/verifying-before-done` — run the test, read the
-   output, confirm: the new test passes, every existing test still
-   passes, the originally reported symptom is gone.
-4. **If the fix does not work, stop.** Count attempts. Fewer than
-   three: return to Phase 1 with the new information. **Three or
-   more: stop and question the architecture** (Phase 4.5).
-
-### Phase 4.5 — When three fixes have failed
+## Phase 4.5 — When three fixes have failed
 
 This is no longer a failed hypothesis. The architecture itself is
 wrong. Signs:
@@ -281,18 +193,9 @@ Not exhaustive — counter a new excuse the same way: name the reality it dodges
 | "I see the problem, let me fix it." | Seeing the symptom is not understanding the cause. |
 | "One more fix" after two failures. | Three failures means the architecture is wrong — question it, do not patch it again. |
 
-## Quick reference
-
-| Phase | Activities | Done when |
-|---|---|---|
-| 1 — Root cause | Read errors, reproduce, check what changed, instrument boundaries, trace data flow | You can name **what** is broken and **why**. |
-| 2 — Pattern | Find a working example, compare against reference, list every difference | You can point to the difference that matters. |
-| 3 — Hypothesis | State one cause, test minimally, verify | The cause is confirmed, or you have a better hypothesis. |
-| 4 — Implementation | Write the failing test, apply one fix, verify | The reported symptom is gone and no other test broke. |
-
 ## When investigation finds no root cause
 
-If three thorough phases reveal the issue is truly environmental,
+If the phases reveal the issue is truly environmental,
 timing-dependent, or external:
 
 1. The process is complete — you did the work.
@@ -307,10 +210,8 @@ before declaring it.
 
 ## Cross-references
 
-- `/test-driven-development` — Phase 4 step 1 (failing test for the bug) uses the same
-  red phase.
-- `/verifying-before-done` — Phase 4 step 3 (verify the fix) is the evidence
-  gate. Re-run the test, read the output, then claim "fixed".
+- `/test-driven-development` — the failing test in Phase 4 is its red phase.
+- `/verifying-before-done` — the method behind Phase 4's done-when.
 
 ## Final rule
 
@@ -318,21 +219,3 @@ before declaring it.
 Root cause named → fix is on the table
 Otherwise → stay in Phase 1 or raise it with the user
 ```
-
-## Changes
-
-- **0.3.0** — Phase 4 step 2 now retracts the boundary instrumentation
-  and bars comments announcing the fix, keeping only the *why* line a
-  non-obvious cause earns. The owner reported generated code arriving
-  padded with narration, which reads as machine-written and costs
-  credibility at senior level.
-- **0.2.1** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
-- **0.2.0** — Added the "Triage by failure shape" table mapping
-  symptom → first probe → tooling, plus worked examples for
-  multi-layer boundary instrumentation and flake reproduction. Phase
-  3 step 1 now requires 3 to 5 ranked falsifiable hypotheses. Phase
-  4 prefaces memory/perf regressions with measurement-based
-  baselining (heap snapshots, hyperfine). Added v2 schema fields:
-  `type: semantic`, `side_effects: readonly`, `agency: deliberative`.
-  Driven by a v3 Track C benchmark loss on specificity (3/3 cases).
-- **0.1.0** — Initial port from v1 skill catalog.

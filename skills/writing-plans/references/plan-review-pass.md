@@ -1,6 +1,6 @@
 # The three-position review pass
 
-The full question sets behind the self-review table in `SKILL.md`. Take the
+The full question sets behind **A finished plan** in `SKILL.md`. Take the
 positions in order — Dreamer, Realist, Critic — and finish one before starting
 the next. Answer in writing; a position you only thought about is a position you
 skipped.

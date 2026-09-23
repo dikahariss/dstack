@@ -1,16 +1,14 @@
 ---
 name: using-git-worktrees
-description: |
+description: >
   Use when starting feature work that needs isolation from the current
-  workspace, or before executing an implementation plan. Ensures an
-  isolated workspace exists — detect existing isolation first, prefer the
-  platform's native worktree tools (e.g. EnterWorktree), fall back to
-  `git worktree` only when no native tool exists. Triggers: "git
-  worktree", "isolated workspace", "set up a worktree".
+  workspace, or before executing an implementation plan; ensures an isolated
+  workspace exists, preferring the platform's native worktree tool. Triggers:
+  "git worktree", "isolated workspace", "set up a worktree".
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.3.2
+    version: 0.3.5
     type: semantic
     side_effects: local
     agency: deliberative
@@ -241,22 +239,3 @@ ignore check belongs here.
   down the worktree this skill creates.
 - `/executing-plans` — set up isolation here before executing a plan.
 - `/verifying-before-done` — run the clean-baseline gate (Step 3) through it.
-
-## Changes
-
-- **0.3.2** — ADR-0030 catalog review (list openness, cut restated general knowledge, consistency); panel-verified, see the 2026-08-14 review workflow.
-- **0.3.1** — ADR-0030 list openness: the common-mistakes list is open.
-- **0.3.0** — Replaced an inherited hard-coded global worktree path with generic
-  external-directory detection (`../*worktrees*`). That path does not exist on
-  this machine and never did; it was import residue presented as live
-  back-compat, and a detection step that can never fire is still a tool call a
-  model spends.
-
-- **0.2.0** — calibration: deterministic-dominant (ADR-0025; deterministic
-  by design — detection + exact bash). Named the bounded judgment (the
-  native-vs-`git worktree` fallback choice). Hardening (v3 plan): added
-  "When NOT to use" + Cross-references; normalised headings to dstack
-  voice; consolidated the external-directory detection note.
-- **0.1.0** — Initial. The native-tool guidance matches Claude Code's
-  `EnterWorktree`/`ExitWorktree`; detection prefers an isolation the
-  workspace already has over creating a new one.

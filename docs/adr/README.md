@@ -81,7 +81,8 @@ Each ADR has six sections. Aim for under 80 lines per ADR.
 | [0027](0027-skill-naming-convention.md) | Skill names state the activity; no bare abbreviations or adjectives | Accepted | Cheap |
 | [0028](0028-renderer-only-scope.md) | Narrow scope back to renderer-only; remove non-skill content | Accepted | Moderate |
 | [0029](0029-portable-source-consumption.md) | One renderer, portable source consumption | Accepted | Cheap |
-| [0030](0030-sonnet5-calibrated-skill-shape.md) | Sonnet-5 calibrated skill shape; ablation replaces the ADR-0025 ratchet | Accepted | Cheap |
+| [0030](0030-sonnet5-calibrated-skill-shape.md) | Sonnet-5 calibrated skill shape; ablation replaces the ADR-0025 ratchet | Superseded by [0031](0031-multi-model-calibration.md) (model premise; shape rules and bands stand) | Cheap |
+| [0031](0031-multi-model-calibration.md) | Multi-model calibration: Opus 5 daily, Sonnet 5 light, Fable 5.1 guard; rules 5–7; history in `CHANGELOG.md` | Accepted | Cheap |
 
 *Numbers 0018–0023 are reserved for v3 milestones (see
 [v3 ROADMAP](../plans/v3/ROADMAP.md), M41–M48/M59) and are not yet

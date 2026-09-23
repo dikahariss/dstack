@@ -1,0 +1,2 @@
+{"prompt": "Users report the export button does nothing since Tuesday; I think we need a new export feature.", "anti_pattern": "Classifying as feature because the reporter said so; the body describes a regression."}
+{"prompt": "Triage this: \"How do I configure the retry interval for the webhook sender? The docs don't say.\"", "anti_pattern": "Filing as `bug` because the docs are incomplete; no defect is described, so the kind is `question` and the area is the webhook sender."}

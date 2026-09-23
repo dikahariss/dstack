@@ -479,6 +479,11 @@ Same MoSCoW prioritization as [v1's ROADMAP](../v1/ROADMAP.md) and
 
 ## M45 — Per-skill `## Changes` body + aggregated release notes
 
+> **Status 2026-09-04: reversed by [ADR-0031](../../adr/0031-multi-model-calibration.md).**
+> History lives in a bundled `skills/<id>/CHANGELOG.md`, never in the body,
+> and the renderer warns (`history-in-body`) on a body `## Changes`. The
+> aggregated release-notes output was never built.
+
 - **Why.** Skills evolve. The `version` field bumps but there is no
   per-skill changelog visible to the user. Superpowers, mattpocock,
   and anthropics-skills all ship a release-notes artifact. dstack v3

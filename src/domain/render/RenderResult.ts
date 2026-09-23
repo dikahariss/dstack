@@ -25,4 +25,5 @@ export type WarningKind =
   | 'comprehensive-skill'
   | 'type-structure-mismatch'
   | 'missing-spine'
-  | 'closed-enumeration';
+  | 'closed-enumeration'
+  | 'history-in-body';

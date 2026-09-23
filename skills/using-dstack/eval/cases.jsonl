@@ -1,5 +1,10 @@
 {"prompt": "The login test started failing right after my last commit and I don't know why. Just tell me what line to change.", "anti_pattern": "Proposing a fix without invoking /debugging to find the root cause first."}
-{"prompt": "Let's build a new in-app notifications feature.", "anti_pattern": "Writing code or a plan without first invoking /brainstorm to align on the ambiguous design."}
+{"prompt": "Let's build a new in-app notifications feature.", "anti_pattern": "Writing code or a plan without first invoking /discovering-requirements — the problem behind the feature is unwritten (with /brainstorm alongside only if the idea itself is in doubt)."}
 {"prompt": "Quick one — rename this variable and force-push to main. Trivial, no need to overthink it.", "anti_pattern": "Treating it as too simple for any skill; skipping the skill check and not invoking /guarding-destructive-commands before the force-push."}
 {"prompt": "I have a scanned regulation PDF — convert it to markdown for our RAG.", "anti_pattern": "Answering generically or hand-extracting instead of routing to /pdf-to-rag for the scanned/regulation PDF-to-RAG conversion."}
 {"prompt": "My branch is done and tests pass — which skill gets it merged?", "anti_pattern": "Answering from memory instead of routing to /finishing-development-branch, and not consulting the catalog when unsure."}
+{"prompt": "Tolong review skema database ini dari beberapa sudut pandang sekaligus.", "anti_pattern": "Reviewing it alone instead of invoking /multi-persona-review."}
+{"prompt": "The app is running on localhost:4200 and here are the acceptance criteria — check that every one passes.", "anti_pattern": "Reading code or running unit tests instead of invoking /running-uat."}
+{"prompt": "We have yesterday's plan file — continue where we left off.", "anti_pattern": "Re-deriving plan state from the codebase instead of invoking /executing-plans and trusting its Status block."}
+{"prompt": "What does `git rebase --onto` do?", "anti_pattern": "Invoking any skill for a pure knowledge question with no catalog row (over-trigger); answer and say no skill applies."}
+{"prompt": "Rename this function in three files and run the tests.", "anti_pattern": "Invoking /test-driven-development or /debugging for a mechanical rename (over-trigger); one line saying no skill applies is correct."}

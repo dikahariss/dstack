@@ -1,19 +1,17 @@
 ---
 name: running-uat
 description: >
-  Use when acceptance-testing a RUNNING application against acceptance criteria
-  from a stakeholder's point of view — driving the real app through a browser,
-  judging PASS/FAIL on observed evidence, and looping fixes until the exit
-  criteria are met. Covers the entry gate (unit/e2e green first), the evidence
-  rules that stop a false PASS, per-persona points of view, and a hard iteration
-  cap. Not for unit or e2e tests, and not for testing a dstack skill. Triggers:
-  "run UAT", "UAT from a point of view", "acceptance test", "test via browser",
-  "make sure every acceptance criterion passes", "user acceptance testing", "UAT end-to-end",
-  "smoke test the running app".
+  Use when a RUNNING application must be accepted or rejected against
+  enumerated acceptance criteria from a stakeholder's point of view, through a
+  real browser, with a PASS/FAIL verdict per criterion. Not for unit or e2e
+  tests, not for testing a dstack skill, and not to find out whether a build
+  works at all. Triggers: "run UAT", "acceptance test", "test via browser",
+  "user acceptance testing", "smoke test the running app", "make sure every
+  acceptance criterion passes".
 allowed-tools: Bash Read Write Edit Agent Skill Glob Grep
 metadata:
   dstack:
-    version: 0.4.3
+    version: 0.5.2
     type: semantic
     calibration: deterministic-dominant
     side_effects: local
@@ -61,6 +59,9 @@ to honesty. Follow them literally.
 | Root-cause a defect this session found | `/debugging` |
 | Review a document or design from several expert views | `/multi-persona-review` |
 
+Not exhaustive — route an unlisted request by whether it needs an accept/reject
+verdict on a running system.
+
 Do not start UAT to *find out* whether the build works. That is the entry gate's
 job.
 
@@ -90,7 +91,9 @@ verdict blocks the same way.
 3. **Plant a negative control** — one check you *know* must FAIL. If it reports
    PASS, the observation pipeline is broken: abort the session.
 4. **Per scenario**, drive the real UI, then gather evidence (next section) and
-   record PASS / FAIL / BLOCKED with artifact paths.
+   record PASS / FAIL / BLOCKED with artifact paths. The run log is evidence,
+   not narrative: one row per scenario attempt, in the columns
+   `references/uat-report.md` fixes, and no prose recap of what the rows show.
 5. **On FAIL** — fix, then run **confirmation** (re-run the failed scenario) *and*
    **regression** (re-run passing scenarios the fix could affect). A scenario that
    just went FAIL → PASS must pass **twice from clean state** before it counts:
@@ -163,7 +166,8 @@ than one pass wearing several hats, hand off to `/multi-persona-review`.
 Keep the judge separate from the driver: a fresh subagent that sees the AC text
 and the artifacts — **never the driver's narrative**. Same-context self-grading is
 where that 30% false-positive rate lives, and the split keeps the driver's context
-from filling up.
+from filling up. One judge per run, dispatched once with the packet — the only
+subagent this skill sends.
 
 ## Defects — severity yes, priority no
 
@@ -186,35 +190,3 @@ escalate — do not resolve it in the build's favour.
   what never), Playwright traces as an audit bundle.
 - `references/uat-report.md` — run-log and defect-record shapes, plus the
   configurable exit thresholds and why they are conventions, not standards.
-
-## Changes
-
-- **0.4.3** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
-- **0.4.2** — ADR-0030 per-list audit: the entry gate declared an open floor;
-  the evidence section split into open kinds plus a closed-by-design PASS
-  floor. The 0.4.1 marker covered only the false-PASS table.
-- **0.4.1** — ADR-0030 list openness: the false-PASS guard table is open — a UAT run invents new ways to pass without evidence.
-- **0.4.0** — The priority refusal now names a destination. "Propose it, then
-  escalate" left an escalation with nowhere to go; it routes to the owner, or to
-  `/prioritizing-work` when the question is where the defect sits against other
-  work. The refusal itself is unchanged — a UAT run still does not set business
-  priority. Same edit in `references/uat-report.md`.
-- **0.3.0** — Removed the Indonesian trigger phrases and prose under the
-  English-only rule (using-dstack 0.7.0: models translate intent, so the phrases
-  cost tokens without adding reach). "Run UAT" and "acceptance test" already
-  covered two of them; the third gained the English trigger "make sure every
-  acceptance criterion passes". The 0.1.0 entry's mixed-language quote of the entry gate now reads as
-  English. Nothing was preserved as data — this skill matches no Indonesian
-  literal.
-- **0.2.0** — Named `/designing-test-cases` as the producer of the enumerated
-  criteria the entry gate demands; the gate had no upstream and refused often.
-- **0.1.0** — Initial. Derived from 70 real UAT requests in this user's history
-  (the "unit testing before UAT" entry gate, the 3-iteration cap, browser-driven
-  execution, per-persona points of view) and cross-checked against ISTQB's
-  definitions of acceptance testing, test oracle, entry/exit criteria and
-  confirmation testing; Playwright's auto-waiting and web-first assertion
-  guidance; and the 2025–2026 agent-honesty literature (AgentRewardBench's ~30%
-  judge false-positive rate and 6–14% side-effect precision; "Upward Deceivers" on
-  fabricated results and the limited reach of prompt-based mitigation). The
-  stale-screenshot rule encodes a measured false regression from an earlier
-  session in this workspace.

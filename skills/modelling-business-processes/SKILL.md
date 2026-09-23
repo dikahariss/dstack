@@ -2,19 +2,16 @@
 name: modelling-business-processes
 description: >
   Use when a business process, procedure, or workflow must exist as a real
-  BPMN 2.0 file — one that opens in a modeller and can be handed to a process
-  engine — rather than as a picture trapped inside a document. Covers the
-  pool and lane discipline, the element vocabulary, the approval, revision-loop
-  and wait patterns, and the lint gate. `.bpmn` is the mandatory artifact;
-  rendered and inline views are optional. Requests for an "activity diagram"
-  or a "flowchart of the process" land here too. Not for architecture pictures
-  and not for UML use case or sequence models. Triggers: "bpmn", "business
-  process", "process diagram", "activity diagram", "approval flow",
-  "swimlane", "workflow diagram", "process model", "camunda", "zeebe".
+  BPMN 2.0 file — one a modeller opens and an engine can run — not as a
+  picture inside a document. Produces a lint-clean `.bpmn`; renders are
+  optional. Not for architecture pictures and not for UML use case or sequence
+  models. Triggers: "bpmn", "business process", "process diagram", "activity
+  diagram", "flowchart of the process", "approval flow", "swimlane", "workflow
+  diagram", "process model", "camunda", "zeebe".
 allowed-tools: Read Grep Glob Write Edit Bash Skill
 metadata:
   dstack:
-    version: 0.2.2
+    version: 0.2.5
     type: hybrid
     calibration: deterministic-dominant
     side_effects: local
@@ -66,6 +63,8 @@ asked for and which notation was produced, so the caller is not surprised.
 | The trigger that starts it | the spec | stop — a process with no start event is not a process |
 | **Every** way it can end | the spec | do not invent one; an unstated end state is a finding, not a guess |
 | Output root | `docs/process/<slug>/` | a user or repo preference overrides |
+
+Closed by design — this table is the declared input contract.
 
 ## The probe — run it before producing anything
 
@@ -238,27 +237,3 @@ operations reviewer and an engineer object to different things.
   degradation table, and the Camunda 8 / Zeebe extension profile.
 - `scripts/layout_bpmn.py` — lane-aware DI generator. Exit 0 laid out,
   1 refused with a reason, 2 unparseable.
-
-## Changes
-
-- **0.2.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
-- **0.2.1** — ADR-0030 list openness: the BPMN vocabulary is closed by design (a process engine rejects anything else); the five patterns are open.
-- **0.2.0** — Dropped the Indonesian trigger phrases from the description and
-  the trigger list, and put the example ask into English, under the English-only
-  rule (`using-dstack` 0.7.0): models translate intent rather than matching
-  lexically, so the phrases cost tokens without adding reach. `approval flow`
-  and `process diagram` were added to carry the reach the removed phrases had.
-  The Indonesian eval prompts are deliberately untouched — they are the proof
-  that an English skill still matches an Indonesian request.
-- **0.1.0** — Initial. Four things were measured before the body was written,
-  and each changed the design. `drawio -x` **cannot read `.bpmn`** (`Error:
-  Export failed`), so the Mermaid→draw.io spine of `/diagramming-architecture`
-  does not reach this notation and a separate skill was the only honest option.
-  `bpmn-to-image` **refuses a file with no DI**, making layout a mandatory stage
-  rather than a nicety. `bpmn-auto-layout` **drops the pool and every lane** —
-  confirmed mechanically by `bpmnlint` reporting `no-bpmndi` on the participant
-  and both lanes of a two-lane model — which is why a bundled lane-aware
-  layouter exists at all; it lays out a real 22-node, 6-lane approval process
-  with zero `no-bpmndi` and zero `no-overlapping-elements` findings. And
-  `bpmnlint:recommended` **already covers DI completeness and element overlap**,
-  so a planned second checker was deleted rather than written.

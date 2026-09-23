@@ -1,19 +1,16 @@
 ---
 name: learning-from-sessions
 description: >
-  Use when turning your own past sessions into durable improvements — mining the
-  transcript store under `~/.claude/projects` for recurring corrections, repeated
-  tool errors, refused actions, and rework, then converting each recurring pattern
-  into a written rule, a skill edit, or a memory entry. Run it on a cadence
-  (weekly) or after a session that went badly. The exit condition is a committed
-  change, never a report. Triggers: "retrospective", "weekly retro", "evaluate
-  Claude usage", "what can we improve", "lessons from yesterday's session",
-  "review conversation history", "lessons learned", "analyze recurring mistakes",
-  "learn from past sessions", "improve week over week".
+  Use when turning your own past sessions into durable improvements — a
+  written rule, a skill edit, or a memory entry per recurring pattern — by
+  mining the transcript store under `~/.claude/projects`. Run it weekly or
+  after a session that went badly. Triggers: "retrospective", "weekly retro",
+  "evaluate Claude usage", "what can we improve", "lessons learned", "analyze
+  recurring mistakes", "learn from past sessions", "improve week over week".
 allowed-tools: Bash Read Write Edit Grep Glob
 metadata:
   dstack:
-    version: 0.2.2
+    version: 0.2.6
     type: hybrid
     side_effects: local
     agency: deliberative
@@ -51,9 +48,9 @@ The corpus is gigabytes across thousands of files. Reading it burns context and
 biases the result toward whatever you happened to open. Run the miner:
 
 ```bash
-python3 scripts/mine_sessions.py --since 7 --out /tmp/retro.json
-python3 scripts/mine_sessions.py --since 7 --project maritimhub   # one project
-python3 scripts/mine_sessions.py --since 0                        # all time
+python3 "<skill_dir>/scripts/mine_sessions.py" --since 7 --out "<scratchpad>/retro.json"   # the session's scratchpad dir, or a path the user names
+python3 "<skill_dir>/scripts/mine_sessions.py" --since 7 --project <project>              # one project
+python3 "<skill_dir>/scripts/mine_sessions.py" --since 0                        # all time
 ```
 
 It emits a digest: correction pairs (a claim next to the pushback it drew),
@@ -87,7 +84,7 @@ number and has you grading your own homework.
 | The lesson is about | Home | Shape |
 |---|---|---|
 | A rule for one repo — its conventions, its forbidden actions | that repo's `CLAUDE.md` | a row in the rules or forbidden-patterns table |
-| How a task should be done, reusable across repos | the owning skill's body + `## Changes` | edit the spine, not the prose around it |
+| How a task should be done, reusable across repos | the owning skill's body (`SKILL.md`) and its `CHANGELOG.md` entry | edit the spine, not the prose around it |
 | No skill owns it and it recurs | a new skill (`/writing-skills`) | only after the recurrence bar |
 | The user — preference, context, a correction they gave | a memory file | `type: feedback` with **Why** and **How to apply** |
 | A fact that will be stale next month | nowhere | say so; do not enshrine it |
@@ -151,25 +148,3 @@ The miner reports, over 14 days:
   what each signal means.
 - `references/lesson-routing.md` — worked routing decisions, the memory-entry
   shape, and how to retire a rule that stopped earning its place.
-
-## Changes
-
-- **0.2.2** — ADR-0030 catalog review (list openness); panel-verified, see the 2026-08-14 review workflow.
-- **0.2.1** — ADR-0030 list openness: the guard table is open — a retro invents new ways to flatter itself.
-- **0.2.0** — Indonesian trigger phrases and prose removed under the English-only
-  rule (using-dstack 0.7.0: models translate intent, so the phrases cost tokens
-  without adding reach). The description and `metadata.dstack.triggers` now carry
-  English triggers of the same intent, and the worked routing examples in
-  `references/lesson-routing.md` state the user's pushback in English rather than
-  quoting it in Indonesian. Preserved as data: the Indonesian correction and
-  verify-demand regexes in `scripts/mine_sessions.py`, which exist to match real
-  Indonesian transcripts, and the Indonesian prompts in `eval/cases.jsonl`, which
-  are the proof that an English skill still matches an Indonesian request.
-
-- **0.1.0** — Initial. Built after mining this user's own corpus: 121 main-session
-  transcripts (2,390 of 2,511 files were subagent transcripts and had to be
-  excluded), 12% of human turns were corrections, and the top recurring tool
-  error was one the agent had committed twice in the same session that proposed
-  this skill. The self-flattery guard follows the measured self-preference bias
-  in LLM self-evaluation; the "output is a diff" rule follows the standard
-  retrospective failure of producing findings nobody acts on.

@@ -1,16 +1,15 @@
 ---
 name: responding-to-review
-description: |
-  Handles code-review feedback with technical rigor. Verifies before
-  implementing, asks before assuming, and pushes back with reasoning
-  when the reviewer is wrong. Use when handling PR comments, inline
-  review threads, or asked to "respond to this review", "address
-  these comments", or "the reviewer said X".
+description: >
+  Use when handling PR comments, inline review threads, or when asked to
+  "respond to this review", "address these comments", or "the reviewer said
+  X"; verifies each claim against the code before acting. Not for a direct
+  instruction from the user.
 allowed-tools: Read Bash Grep Glob Edit
 metadata:
   dstack:
     type: hybrid
-    version: 0.5.0
+    version: 0.6.2
     context_budget_tokens: 3500
     side_effects: local
     agency: deliberative
@@ -41,15 +40,19 @@ you can focus on judgement.
 Do not paraphrase what the scripts do — invoke them, read the
 output, then continue.
 
-## The iron law
+## Two rules
 
-```
-NO IMPLEMENTATION BEFORE VERIFYING THE CLAIM
-NO GRATITUDE EXPRESSIONS, EVER
-```
+Two rules carry this skill. Check the reviewer's claim against the code
+before you change anything, because unverified agreement is theater and
+unverified disagreement is defensive. Reply with the requirement restated, a
+specific question, a reasoned push-back, or the fix itself — never with
+thanks, praise, or apology, because those perform agreement in place of a
+fix and the reviewer cannot act on them.
 
-Verification is what makes a code review productive. Without
-verification, agreement is theater and disagreement is defensive.
+The same rule applies inside the diff. `// Fixed as requested`, `// NEW`,
+and `// Addressed review comment` are those gratitude expressions in code
+form — addressed to the reviewer, not about the code. The commit message
+and the reply carry that; the fix itself carries none of it.
 
 ## When to use this skill
 
@@ -78,34 +81,7 @@ For every review item:
    codebase** — same patterns, same stack, same constraints.
 5. **Respond** — either a technical acknowledgement (verified,
    agree) or a reasoned push-back (verified, disagree).
-6. **Implement** one item at a time. Test each before moving on.
-
-## Forbidden responses
-
-Never write any of these, no matter how true they feel. The list names the
-common shapes and is **not exhaustive** — any phrase that performs agreement
-in place of a fix belongs here:
-
-- "You're absolutely right!"
-- "Great point!" / "Excellent feedback!"
-- "Thanks for catching that!"
-- Any gratitude expression to the reviewer.
-- "Let me implement that now" — before verification.
-
-Instead:
-
-- Restate the technical requirement.
-- Ask a specific clarifying question.
-- Push back with technical reasoning if the suggestion is wrong.
-- Just fix it and show the change. Actions over words.
-
-If you catch yourself about to type "Thanks" or "You're right",
-**delete the phrase**. State the fix instead.
-
-The same rule applies inside the diff. `// Fixed as requested`, `// NEW`,
-and `// Addressed review comment` are those gratitude expressions in code
-form — addressed to the reviewer, not about the code. The commit message
-and the reply carry that; the fix itself carries none of it.
+6. **Implement** one item at a time.
 
 ## Unclear feedback
 
@@ -172,13 +148,9 @@ If a feature is not needed, do not add it.
 
 ## Implementation order for multi-item feedback
 
-1. Clarify anything unclear **first**.
-2. Implement in this order:
-   - **Blocking** — regressions, security, correctness.
-   - **Simple** — typos, imports, formatting.
-   - **Complex** — refactors, logic changes.
-3. Test each fix individually before the next.
-4. Verify no regressions before moving on.
+Clarify anything unclear first. Then blocking (regressions, security,
+correctness), simple (typos, imports, formatting), complex (refactors,
+logic). Each item lands with its own test run before the next starts.
 
 ## When to push back
 
@@ -269,7 +241,6 @@ Thread replies keep the response attached to the line under review.
 |---|---|
 | Performative agreement | State the requirement or just act. |
 | Blind implementation | Verify against the codebase first. |
-| Batch without testing | One item at a time, test each. |
 | Assume reviewer is right | Check whether it breaks things. |
 | Avoid pushing back | Technical correctness over comfort. |
 | Partial implementation | Clarify all items first. |
@@ -291,26 +262,3 @@ External feedback is a suggestion to evaluate, not an order to
 follow. Verify. Question. Then implement.
 
 No performative agreement. Technical rigor always.
-
-## Changes
-
-- **0.5.0** — Comment discipline on both sides of a review, because the owner
-  reported generated code arriving padded with comments that narrate it, which
-  reads as machine-written and costs credibility at senior level. A request for
-  explanatory comments is now a push-back case — right diagnosis, wrong fix —
-  and reviewer-addressed comments are named as the code form of the gratitude
-  expressions this skill already forbids.
-- **0.4.3** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
-- **0.4.2** — ADR-0030 per-list audit: push-back reasons, the external-reviewer
-  verification checklist, and the common-mistakes table declared open; the
-  0.4.1 marker covered only the forbidden-responses list.
-- **0.4.1** — ADR-0030 list openness: the forbidden-responses list is open — any phrase performing agreement in place of a fix belongs there.
-- **0.4.0** — Renamed `code-review` → `responding-to-review`. The old
-  name read as "perform a review" while the skill actually handles review
-  feedback you *received*, and it collided with `requesting-code-review`.
-  The pair now reads request ↔ respond. Trigger keywords unchanged.
-- **0.3.0** — Added inline GitHub thread-reply guidance (reply in-thread via
-  `gh api .../comments/{id}/replies`, not a top-level comment).
-  Evaluated `receiving-code-review` head-to-head and kept this skill as
-  the superset; the separate skill was not imported, to avoid duplicate
-  discovery triggers.

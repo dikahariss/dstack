@@ -10,7 +10,7 @@ You run scenarios without the skill (RED - watch agent fail), write skill addres
 
 **Core principle:** If you didn't watch an agent fail without the skill, you don't know if the skill prevents the right failures.
 
-**REQUIRED BACKGROUND:** You MUST understand the `/test-driven-development` skill before using this one. That skill defines the fundamental RED-GREEN-REFACTOR cycle. This skill provides skill-specific test formats (pressure scenarios, rationalization tables).
+**Background:** understand the `/test-driven-development` skill before using this one. That skill defines the fundamental RED-GREEN-REFACTOR cycle. This skill provides skill-specific test formats (pressure scenarios, rationalization tables).
 
 ## When to Use
 
@@ -145,7 +145,7 @@ Forces explicit choice.
 2. **Real constraints** - Specific times, actual consequences
 3. **Real file paths** - `/tmp/payment-system` not "a project"
 4. **Make agent act** - "What do you do?" not "What should you do?"
-5. **No easy outs** - Can't defer to "I'd ask your human partner" without choosing
+5. **No easy outs** - Can't defer to "I'd ask the user" without choosing
 
 ### Testing Setup
 
@@ -171,13 +171,15 @@ Agent violated rule despite having the skill? This is like a test regression - y
 - "Keep as reference while writing tests first"
 - "I already manually tested it"
 
-**Document every excuse.** These become your rationalization table.
+**Record every excuse verbatim, with its run.** They are evidence for
+sharpening the rule's reason; they become table rows only under the
+condition in §1 below.
 
 ### Plugging Each Hole
 
-For each new rationalization, add:
+For each new rationalization, in this order:
 
-### 1. Explicit Negation in Rules
+### 1. State the rule positively, with its reason and exit criterion
 
 <Before>
 ```markdown
@@ -187,17 +189,18 @@ Write code before test? Delete it.
 
 <After>
 ```markdown
-Write code before test? Delete it. Start over.
-
-**No exceptions:**
-- Don't keep it as "reference"
-- Don't "adapt" it while writing tests
-- Don't look at it
-- Delete means delete
+Inside a risk tier the failing test is written first, because a test written
+after the code passes immediately and proves nothing. Done means: the test
+was watched failing for the expected reason before its production code
+existed.
 ```
 </After>
 
-### 2. Entry in Rationalization Table
+Re-run the pressure scenario. A rule that still fails gets a sharper reason
+before it gets a prohibition; a counter-excuse is added only after the
+positive rule has measurably failed twice, with the run recorded.
+
+### 2. Entry in Rationalization Table — only after §1 has failed twice
 
 ```markdown
 | Excuse | Reality |
@@ -205,7 +208,7 @@ Write code before test? Delete it. Start over.
 | "Keep as reference, write tests first" | You'll adapt it. That's testing after. Delete means delete. |
 ```
 
-### 3. Red Flag Entry
+### 3. Red Flag Entry — same condition as §2
 
 ```markdown
 ## Red Flags - STOP
@@ -240,7 +243,7 @@ Agent should now:
 **After agent chooses wrong option, ask:**
 
 ```markdown
-your human partner: You read the skill and chose Option C anyway.
+the user: You read the skill and chose Option C anyway.
 
 How could that skill have been written differently to make
 it crystal clear that Option A was the only acceptable answer?
@@ -250,8 +253,8 @@ it crystal clear that Option A was the only acceptable answer?
 
 1. **"The skill WAS clear, I chose to ignore it"**
    - Not documentation problem
-   - Need stronger foundational principle
-   - Add "Violating letter is violating spirit"
+   - Need stronger foundational principle: state it positively and give
+     its reason
 
 2. **"The skill should have said X"**
    - Documentation problem
@@ -293,9 +296,10 @@ Re-tested: Agent STILL chose C
 New rationalization: "Spirit not letter"
 ```
 
-### Iteration 2 - Add Foundational Principle
+### Iteration 2 - State the principle positively, with its reason
 ```markdown
-Added: "Violating letter is violating spirit"
+Added: "The failing test comes first because a test written after the code
+        passes immediately and proves nothing."
 Re-tested: Agent chose A (delete it)
 Cited: New principle directly
 Meta-test: "Skill was clear, I should follow it"
@@ -371,12 +375,3 @@ Tests pass once ≠ bulletproof.
 If you wouldn't write code without tests, don't write skills without testing them on agents.
 
 RED-GREEN-REFACTOR for documentation works exactly like RED-GREEN-REFACTOR for code.
-
-## Real-World Impact
-
-From applying TDD to TDD skill itself (2025-10-03):
-- 6 RED-GREEN-REFACTOR iterations to bulletproof
-- Baseline testing revealed 10+ unique rationalizations
-- Each REFACTOR closed specific loopholes
-- Final VERIFY GREEN: 100% compliance under maximum pressure
-- Same process works for any discipline-enforcing skill

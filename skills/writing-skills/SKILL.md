@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Write Edit Bash Grep Glob Agent
 metadata:
   dstack:
-    version: 0.7.0
+    version: 0.8.2
     type: semantic
     side_effects: local
     agency: deliberative
@@ -98,16 +98,23 @@ sections as the skill needs:
   `judgment-dominant` (10–20%), `deterministic-dominant` (60–80%+), or
   `schema-meta`. Set `metadata.dstack.calibration` only when NOT
   `workflow`. Moving off it in **either** direction costs one ablation run
-  + owner approval, recorded in `## Changes` (ADR-0030 §5). Exemplar:
+  + owner approval, recorded in `CHANGELOG.md` (ADR-0030 §5). Exemplar:
   `/responding-to-review` (the reference hybrid: deterministic spine + named judgment).
-- **One excellent example** — complete, runnable, commented with WHY.
-  Not five mediocre ones in five languages.
+- **One example per output shape** — complete, runnable, commented with WHY.
+  Two or three deliberately varied ones, labelled illustrative, when the
+  output is format-sensitive. Never the same example in five languages.
 - **Common mistakes** — what goes wrong and the fix.
 
-## Shape rules (ADR-0030)
+## Shape rules (ADR-0030, ADR-0031)
 
-Sonnet 5 is the daily driver; it reads lists literally and will not
-generalize past them. So:
+The catalog runs on two models that fail differently, with a third as a
+guard. Opus 5 (daily) verifies, delegates and self-corrects without being
+told and over-applies any instruction to do more of it; it also writes
+longer files than the task needs. Sonnet 5 (light work) reads literally and
+will not generalize past a list. Fable 5.1 (occasional) under-narrates and
+under-formats, so nothing here may suppress progress text or formatting.
+Codex and Gemini CLI read the same files with no harness rules, so every
+rule keeps one plain statement. So:
 
 1. **Every list of 3+ declares itself** — "not exhaustive, extend it" or
    "closed by design because <reason>". Neither trips the
@@ -119,8 +126,19 @@ generalize past them. So:
    shorter version replaces the model's fuller one.
 4. **Enumeration-as-product** is exempt from rule 1's *open* marker, not
    from declaring. Say it is the deliverable, and why.
+5. **A skill that writes a file says how long it should be** — the
+   substance, no filler sections or restated inputs; scoped to the
+   deliverable, never to progress text.
+6. **A skill that dispatches agents names its floor, its ceiling, and
+   launches independent agents in one message.**
+7. **Verification is stated once**: one inline sentence in the data form
+   (Status row: SHA + observed), a pointer to `/verifying-before-done` for
+   the method; never a re-check step or a subagent to re-check your own
+   work. A judge, an independent reviewer at a named checkpoint, or a panel
+   seat is outside the rule because independence from the author is the
+   deliverable.
 
-These four are closed by design; a fifth needs an ADR.
+These seven are closed by design (ADR-0030, ADR-0031); an eighth needs an ADR.
 
 ## The description decides discovery
 
@@ -140,9 +158,13 @@ description: dispatches a subagent per task with review between tasks
 description: Use when executing an implementation plan with independent tasks
 ```
 
-Write in third person, start with "Use when…", and pack in the words
-Claude would search for: error strings, symptoms ("flaky", "race
-condition"), tool and library names.
+Write in third person, start with "Use when…", say what the skill does in
+one clause and when to use it, with the specific terms the user will type —
+a few distinctive error strings, symptoms ("flaky", "race condition"), tool
+and library names — grouped as intents, never as workflow steps. Under 80
+words; under 120 only when a trigger list is the sole discovery path (old
+ids, database names), and say which. Indonesian trigger phrases stay where
+the owner's own request wording is Indonesian.
 
 ## Stay within budget
 
@@ -164,33 +186,26 @@ A skill you only read is a skill you have not tested.
 **Discipline skills** — rules that must hold under pressure, like `/test-driven-development`
 and `/verifying-before-done`:
 
-1. Run a pressure scenario with a subagent **without** the skill. Record
-   the exact rationalizations it uses (verbatim).
-2. Write the skill to counter those specific rationalizations.
+1. Run a pressure scenario with a subagent **without** the skill, on the
+   model the skill will run on — one subagent per scenario, all scenarios
+   launched in one message. Record verbatim what it does.
+2. Write the rule as the wanted behavior, its reason, and the exit criterion
+   that shows it held.
 3. Re-run **with** the skill. It should now comply.
-4. New rationalization appears? Add an explicit counter; re-test.
-
-Capture every excuse in a table and a red-flags list so the next agent
-self-checks:
-
-```markdown
-| Excuse | Reality |
-|---|---|
-| "Too simple to test" | Simple code breaks. The test takes 30 seconds. |
-| "I'll test after" | Tests passing immediately prove nothing. |
-
-## Red flags — STOP
-- "I already manually verified it"
-- "This case is different because…"
-```
+4. Still fails? Sharpen the rule or its reason first. Add a named
+   counter-excuse only when a positive rule has measurably failed twice, and
+   record which run showed it. Evidence for the positive form: the
+   `verifying-before-done` ablation found no rail load-bearing; the
+   hypothesis that an unmeasured excuse table anchors the model toward the
+   excuses is the `claude-api` prompt-audit reference's (Group 1c).
 
 **Technique, pattern, and reference skills:** test that a subagent can
 *apply* it to a fresh scenario, handles a variation, and that common
 cases are covered with no gaps.
 
 See `testing-skills-with-subagents.md` for the full method (pressure
-types, plugging holes), `persuasion-principles.md` for why explicit
-counters work, and `anthropic-best-practices.md` for Anthropic's
+types, plugging holes), `persuasion-principles.md` for why pressure
+scenarios are valid tests, and `anthropic-best-practices.md` for Anthropic's
 official authoring guidance. Add a behavioral check under the skill's
 `eval/` folder — see `/brainstorm`'s bundled `eval/` for the pattern.
 
@@ -224,52 +239,13 @@ todo, and rows enter or leave only by editing this skill.
 - [ ] One excellent example; heavy reference moved to a sibling file
 - [ ] Spine present (steps + gate + table/checklist) AND judgment named in
       one sentence; `calibration` band chosen (flag set if not `workflow`)
-- [ ] Discipline skill: baseline-tested with a subagent; rationalization
-      table + red flags
+- [ ] Discipline skill: baseline-tested with a subagent on the target model;
+      rule stated positively with reason and exit criterion
 - [ ] `eval/` behavioral check added
 - [ ] Skill is **project-agnostic** — no rule copied from one repo's
       CLAUDE.md, no example only that repo's stack would recognise
-- [ ] **Registered in `/using-dstack`**: router row, `references/skill-catalog.md`
-      entry, any chain it belongs to, `## Changes` — and its frontmatter
-      `version` bumped in the same edit
+- [ ] **Registered in `/using-dstack`**: router row, its `references/skill-catalog.md`
+      entry, any chain it belongs to — and its `CHANGELOG.md` entry written
+      and frontmatter `version` bumped in the same edit
 - [ ] `bun run validate` and `bun run build --strict` pass
 - [ ] Commit (see CLAUDE.md commit style)
-
-## Changes
-
-- **0.7.0** — Added the currency-sign-before-a-digit anti-pattern.
-  `/researching-facts` 0.1.0 wrote its metered-API costs with a currency sign;
-  invoked with an argument string they reached the model as words from that
-  argument, so the section written to bound spend was the one that got corrupted.
-- **0.6.1** — ADR-0030 catalog review (list openness, enumeration-as-product declared, self-contained refs); panel-verified, see the 2026-08-14 review workflow.
-- **0.6.0** — `context_budget_tokens` 3000 → 4500. Not headroom for bloat: this
-  skill now carries permanent ADR-0030 doctrine every skill author must read,
-  and 3000 was mis-tiered against its peers — `/writing-plans`, `/writing-specs`,
-  `/discovering-requirements` and `/prioritizing-work` all sit at 5000. The
-  0.5.0 section could not fit under 90% of 3000 at any reasonable terseness.
-  Owner-approved 2026-08-14 after the alternative (cutting ~297 tokens of
-  existing content) was judged to damage the skill to satisfy a threshold.
-- **0.5.0** — Carried the ADR-0030 shape rules. Anthropic's Sonnet 5 guide
-  says the model "does not silently generalize an instruction from one item
-  to another", so with Sonnet 5 as daily driver a closed list caps the
-  model's own knowledge; only 2 of 33 skills declared any list open on
-  2026-08-14. Band governance corrected too: ADR-0030 charges an ablation
-  run in **either** direction, ADR-0025 charged evidence only for freedom.
-- **0.4.0** — Two rules from mined session history, both recurring
-  corrections: a skill must be project-agnostic (no rule lifted from the
-  repo it was written in), and a new skill ships registered in the
-  `/using-dstack` router, catalog, and chains, with that skill's version
-  bumped in the same edit. Added as checklist rows and anti-patterns.
-- **0.3.0** — Encoded the skill-naming convention (ADR-0027): name the
-  activity, gerund preferred, no bare abbreviation/adjective/generic noun,
-  encode direction for paired skills, and keep the old id as a trigger when
-  renaming. Added a checklist row.
-- **0.2.1** — Repointed the calibration exemplar to `responding-to-review` (the reference
-  hybrid: deterministic spine + named judgment).
-- **0.2.0** — Encoded the hybrid-by-default doctrine (ADR-0025): spine +
-  named judgment + the four calibration bands and when to set the flag.
-  Fixed the `TodoWrite` heading to host-accurate phrasing.
-- **0.1.0** — Initial. Authoring path is `bun run new`,
-  `docs/specs/skill-spec.md`, `metadata.dstack`, token budgets, `eval/`;
-  tables and prose rather than diagram tooling. Keeps the TDD-for-skills
-  method and the rationalization-table technique.

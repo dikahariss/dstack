@@ -16,15 +16,13 @@ Agent tool (general-purpose):
 
     [Scene-setting: where this fits, dependencies, architectural context]
 
-    ## Before You Begin
+    ## Before you begin
 
-    If you have questions about:
-    - The requirements or acceptance criteria
-    - The approach or implementation strategy
-    - Dependencies or assumptions
-    - Anything unclear in the task description
-
-    **Ask them now.** Raise any concerns before starting work.
+    If two readings of the task would produce materially different work, report
+    NEEDS_CONTEXT naming both readings. Otherwise state your assumption in the
+    report and proceed. Report BLOCKED when the task needs an architectural
+    decision the plan did not make, or code you cannot locate after a real
+    search.
 
     ## Your Job
 
@@ -37,16 +35,13 @@ Agent tool (general-purpose):
        expected outcomes) before implementing, then derive the tests from
        that list. Skip only when the task changes no behavior (pure docs,
        config, or rename).
-    3. Verify implementation works — invoke `/verifying-before-done`; run the
-       command and read the output before reporting success
+    3. Verify the implementation works — run the command and read the output
+       before reporting success
     4. Commit your work
     5. Self-review (see below)
     6. Report back
 
     Work from: [directory]
-
-    **While you work:** If you encounter something unexpected or unclear, **ask questions**.
-    It's always OK to pause and clarify. Don't guess or make assumptions.
 
     ## Code Organization
 
@@ -94,23 +89,6 @@ Agent tool (general-purpose):
     Narration is the clearest tell of machine-written code and it costs the author
     credibility with every reader of the diff.
 
-    ## When You're in Over Your Head
-
-    It is always OK to stop and say "this is too hard for me." Bad work is worse than
-    no work. You will not be penalized for escalating.
-
-    **STOP and escalate when:**
-    - The task requires architectural decisions with multiple valid approaches
-    - You need to understand code beyond what was provided and can't find clarity
-    - You feel uncertain about whether your approach is correct
-    - The task involves restructuring existing code in ways the plan didn't anticipate
-    - You've been reading file after file trying to understand the system without progress
-
-    **How to escalate:** Report back with status BLOCKED or NEEDS_CONTEXT. Describe
-    specifically what you're stuck on, what you've tried, and what kind of help you need.
-    The controller can provide more context, re-dispatch with a more capable model,
-    or break the task into smaller pieces.
-
     ## Before Reporting Back: Self-Review
 
     Review your work with fresh eyes. Ask yourself:
@@ -149,6 +127,7 @@ Agent tool (general-purpose):
     - Any issues or concerns
 
     Use DONE_WITH_CONCERNS if you completed the work but have doubts about correctness.
-    Use BLOCKED if you cannot complete the task. Use NEEDS_CONTEXT if you need
-    information that wasn't provided. Never silently produce work you're unsure about.
+    Use BLOCKED if you cannot complete the task, and NEEDS_CONTEXT if you need
+    information that wasn't provided — in both cases say what you are stuck on, what
+    you tried, and what help you need. Never silently produce work you're unsure about.
 ```

@@ -22,7 +22,7 @@ Makefile) — never assume the stack.
 | PHP | `vendor/bin/phpunit --filter name` | `vendor/bin/phpunit` |
 
 Examples are TypeScript because they must be *some* language. The cycle, the
-four test classes, and the iron law are identical in each.
+four test classes, and the law are identical in each.
 
 ## Worked example — a bug fix
 

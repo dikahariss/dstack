@@ -137,6 +137,14 @@ cannot see or dismiss it, and it freezes the browser session.
   the input for every upload.
 - Read state from the DOM, not from screenshots — a throttled tab returns stale
   frames, and one screenshot call timed out outright during this run.
+- **Check `document.visibilityState` first, and keep the Chrome window in the
+  foreground for the whole run.** On 2026-09-04 the tab reported `hidden`
+  (window occluded): Chrome throttled its timers and paused its frames, the
+  Radix `Add` menu and the *Replace* dialog stopped rendering, ghost dialogs
+  lingered after each replace, and every upload after the seventh stalled. A
+  fresh tab and a window resize did not change it — only bringing the window
+  forward does. Until then, uploads that already went through are fine; the
+  rest simply do not start.
 
 ## What this does not cover
 

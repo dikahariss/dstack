@@ -1,15 +1,14 @@
 ---
 name: requesting-code-review
-description: |
-  Dispatch a code-review subagent with crafted context to catch issues
-  before they cascade. The reviewer sees the diff and what the work was
-  meant to do, never your session history. Use after finishing a task or
-  feature, before merging to main, or when stuck and a fresh read would
-  help — e.g. "request review", "get this reviewed", "review before merge".
+description: >
+  Use before merging to main, at a checkpoint a plan names, when stuck, or
+  after a subtle bug fix — a fresh reviewer with a crafted brief catches what
+  the author cannot. Triggers: "request review", "get this reviewed", "review
+  before merge".
 allowed-tools: Bash Read Grep Glob Agent
 metadata:
   dstack:
-    version: 0.3.0
+    version: 0.4.3
     type: semantic
     side_effects: readonly
     agency: deliberative
@@ -38,16 +37,21 @@ This is the *requesting* side. Handling the feedback you get back is
 
 ## When to request
 
+Before merging to main, and at any checkpoint a plan or the user names. Also
+worth it when stuck, before a refactor, or after a subtle bug fix. Never as a
+re-run of your own verification — that check belongs in your own loop; a
+reviewer earns its cost by independence from the author. The mandatory
+checkpoints below are where that independent read happens, not a second
+verification. One reviewer per request; if other independent agents are
+being launched, send them in the same message.
+
 Mandatory:
 
 - After each task in a multi-task plan
 - After a major feature
 - Before merge to main
 
-Optional but valuable: when stuck (fresh perspective), before a refactor
-(baseline read), after fixing a subtle bug. Neither list is exhaustive —
-a plan or the user can mandate more, and any moment a fresh read would
-help qualifies.
+Not exhaustive — a plan or the user can mandate more.
 
 ## How to request
 
@@ -102,20 +106,3 @@ If the reviewer is wrong: push back with technical reasoning, show the
 code or tests that prove it works, or ask for clarification.
 
 See the dispatch template in `code-reviewer.md`.
-
-## Changes
-
-- **0.3.0** — The reviewer now flags narration the diff introduced and may
-  never ask for explanatory comments — asking for them is what manufactures
-  them. The owner reported generated code padded with narrating comments,
-  which reads as machine-written and costs credibility at senior level.
-- **0.2.3** — ADR-0030 catalog review (list openness, consistency); panel-verified, see the 2026-08-14 review workflow.
-- **0.2.2** — ADR-0030 per-list audit: the when-to-request lists (mandatory
-  and optional) declared open; the 0.2.1 marker covered only the red-flag
-  list.
-- **0.2.1** — ADR-0030 list openness: the red-flag list is open — any reason to avoid a review belongs there.
-- **0.2.0** — Named the judgment surface (crafting the reviewer's context
-  sets the review's ceiling); workflow band (ADR-0025; flag omitted as the
-  default).
-- **0.1.0** — Initial. Dispatch via the Agent tool, example plan path under
-  `docs/plans/`, cross-references `/responding-to-review` for the reply.

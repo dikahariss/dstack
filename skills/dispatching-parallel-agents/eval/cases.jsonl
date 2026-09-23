@@ -1,0 +1,2 @@
+{"prompt": "Three test files fail: auth.test.ts (token expiry), upload.test.ts (MIME sniffing), report.test.ts (timezone). No shared code.", "anti_pattern": "Investigating them one after another in the main loop instead of dispatching three independent agents in one message."}
+{"prompt": "Two tests fail after my refactor of the date helper: parse.test.ts and format.test.ts both mention `toISO`.", "anti_pattern": "Fanning out two agents for failures that share one cause and one file; a shared cause is investigated directly."}

@@ -296,7 +296,8 @@ Read in number order if you want the full reasoning.
 | [0027](adr/0027-skill-naming-convention.md) | Skill names state the activity; no bare abbreviations or adjectives | Accepted |
 | [0028](adr/0028-renderer-only-scope.md) | Narrow scope back to renderer-only; remove non-skill content | Accepted |
 | [0029](adr/0029-portable-source-consumption.md) | One renderer, portable source consumption | Accepted |
-| [0030](adr/0030-sonnet5-calibrated-skill-shape.md) | Sonnet-5 calibrated skill shape; ablation replaces the ADR-0025 ratchet | Accepted |
+| [0030](adr/0030-sonnet5-calibrated-skill-shape.md) | Sonnet-5 calibrated skill shape; ablation replaces the ADR-0025 ratchet | Superseded by [0031](adr/0031-multi-model-calibration.md) (model premise; shape rules and bands stand) |
+| [0031](adr/0031-multi-model-calibration.md) | Multi-model calibration: Opus 5 daily, Sonnet 5 light, Fable 5.1 guard; rules 5–7; history in `CHANGELOG.md` | Accepted |
 
 "Accepted" means the decision is in force. If we change our minds, we
 write a new ADR that supersedes the old one. We do not edit accepted

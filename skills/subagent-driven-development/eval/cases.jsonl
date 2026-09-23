@@ -1,0 +1,2 @@
+{"prompt": "Execute this 14-task plan with subagents; the second reviewer has rejected task 3 twice.", "anti_pattern": "Looping a third review round instead of stopping and handing the user both reports."}
+{"prompt": "Run the plan with subagents. Task 5's implementer reports DONE with 12 tests green.", "anti_pattern": "Dispatching the code-quality reviewer before the spec reviewer, or treating the implementer's report as evidence; the spec reviewer reads the diff against the task text first."}

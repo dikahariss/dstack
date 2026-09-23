@@ -1,22 +1,22 @@
 ---
 name: researching-facts
 description: >
-  Use when a question needs an answer from the open web rather than from memory —
-  facts, numbers, prices, dates, versions, the current state of a tool, market, or
-  regulation — and being wrong would matter. Also use when an earlier answer rested
-  on a single search engine, a single snippet, or an aggregator quoting someone
-  else, or when a claim has to ship with a citation and a retrieval date. Not for
-  harvesting an academic corpus (that is `/literature-search`) and not for a
-  library's own API docs (use Context7). Triggers: "research this", "riset",
-  "cari data", "cari fakta", "find sources", "search the web", "web research",
-  "is this still true", "what's the current", "check the facts", "verify this
-  claim", "cite sources", "latest version of", "brave search", "second opinion
-  from another search engine".
+  Use when a question needs an answer from the open web rather than from
+  memory — facts, numbers, prices, dates, versions, the current state of a
+  tool, market, or regulation — and being wrong would matter. Also when an
+  earlier answer rested on one engine, one snippet, or an aggregator, or when
+  a claim must ship with a citation and a retrieval date. Not for an academic
+  corpus (`/literature-search`) or a library's own API docs (Context7).
+  Triggers: "research this", "riset", "cari data", "cari fakta", "find
+  sources", "search the web", "web research", "is this still true", "what's
+  the current", "check the facts", "verify this claim", "cite sources",
+  "latest version of", "brave search", "second opinion from another search
+  engine".
 allowed-tools: WebSearch WebFetch Bash Read Write
 metadata:
   dstack:
     type: hybrid
-    version: 0.1.1
+    version: 0.1.5
     context_budget_tokens: 4500
     side_effects: external
     agency: deliberative
@@ -70,7 +70,7 @@ repository in front of you.
    calls sit in the same assistant turn:
 
    ```bash
-   scripts/brave_search.py "<variant 1>" "<variant 2>" "<variant 3>" -n 10
+   python3 "<skill_dir>/scripts/brave_search.py" "<variant 1>" "<variant 2>" "<variant 3>" -n 10
    # optional: --freshness pw|pm|py   --site vendor.com   --news   --json   --raw
    ```
 
@@ -137,10 +137,10 @@ the failure this skill exists to prevent.
 Question: *does the Brave Search API still have a free tier?*
 
 ```bash
-scripts/brave_search.py \
+python3 "<skill_dir>/scripts/brave_search.py" \
   "Brave Search API pricing per 1000 requests" \
   "brave search api free tier removed" \
-  "brave search api billing overage credit card" -n 5 --freshness py
+  "brave search api billing overage credit card" -n 10 --freshness py
 ```
 
 …in the same message as `WebSearch("Brave Search API free tier 2026")`.
@@ -177,17 +177,3 @@ no further.
 
 See `references/brave-api.md` for endpoints, parameters, freshness syntax, and
 result-shape details the script does not expose.
-
-## Changes
-
-- **0.1.1** — Wrote every money figure as `USD 5`, never with a currency sign
-  before a digit. Invoking a skill with arguments substitutes `$N` in the body
-  with the Nth word of those arguments, so the metered-cost figures reached the
-  model as words lifted out of the user's question — corrupting the one section
-  that exists to bound unattended spend. Caught by invoking this skill with an
-  argument string.
-- **0.1.0** — Initial. Written when the catalog had no general web-research skill:
-  research meant one built-in `WebSearch` call and whatever it happened to rank.
-  Adds a second independent index (Brave), the same-message parallel rule, RRF
-  merge across query variants, the independence definition, and mandatory
-  disclosure when the fan-out degrades to one engine.
