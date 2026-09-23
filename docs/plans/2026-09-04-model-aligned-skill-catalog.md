@@ -67,7 +67,7 @@ Steps use `- [ ]` checkboxes.
 
 ## Status
 
-**Updated:** 2026-09-04 · **Branch:** `feat/model-aligned-p0` (one per tier; each closed by `/finishing-development-branch`) · **Next:** Task 13 — resume the claude.ai sync (32 skills) once the browser tab is visible; then `/finishing-development-branch`; Task 12 waits on the owner's budget
+**Updated:** 2026-09-23 · **Branch:** `main` (merged from `feat/model-aligned-p0` via `f1b6a7f`) · **Next:** Task 12 (waits on owner budget for Opus 5 ablations); claude.ai web sync pending 32 skills
 
 | Task | State | Evidence |
 |---|---|---|
@@ -84,7 +84,7 @@ Steps use `- [ ]` checkboxes.
 | 10 Descriptions | done | `640af49` — 21 descriptions rewritten to what + when + triggers, every one under its tier (80 words; 120 where the quoted trigger list is the discovery path: multi-persona-review 115, auditing-video 120, discovering-requirements 120, researching-facts 117, reverse-engineering-video 111, generating-images 94, literature-search 87); quoted phrases and Indonesian triggers kept; four catalog entries updated (`using-dstack` 0.24.1); routing smoke re-run of the ten eval cases by one fresh Opus 5 probe: **9/10 as intended, the same count as Task 3** — the one miss was eval case 2's own stale anti-pattern (still named `/brainstorm` for "Let's build X", which the 0.24.0 router routes to `/discovering-requirements`), fixed in this commit; `validate` 36 OK; `build --strict` exit 0 |
 | 11 Missing evals | done | `4f37256` — `eval/cases.jsonl` for the nine skills without one (36/36 now carry an eval): the plan's case each, plus two from the census wordings for executing-plans, finishing-development-branch and writing-skills, two authored for requesting-code-review (its four recorded invocations carried no arguments), one authored for the rest — 22 cases, every line parses; nine patch bumps; `validate` 36 OK; `build --strict` exit 0 |
 | 12 Opus 5 ablations | todo | waits on the owner setting the 6.5M-token / 54-session budget; Step 0 census re-run due 2026-09-18 |
-| 13 Gate and sync | in progress | `c8e9cbf` — gate: typecheck clean, `bun test` 105/105, `validate` 36 OK, `build --strict` exit 0 with zero warnings, 0 `## Changes` headings, `doctor` 36/36. Local targets synced from `c8e9cbf`: `~/.claude`, `~/.claude-zai`, `~/.claude-helium`, `~/.claude-kimi` (copy loop; the only `## Changes` left there belong to non-dstack skills `maritimhub-frontend-local`, `auditing-cloned-audio`); Codex and Gemini read `skills/` by symlink. **claude.ai partial: 4 of 36 current** — `using-dstack`, `auditing-video`, `brainstorm` uploaded from `c8e9cbf`, `classify-issue` from `640af49` (unchanged since). **32 pending**, including `debugging` (uploaded from `640af49`, changed in `c8e9cbf`): the Chrome tab reports `visibilityState: hidden`, so Chrome throttles its timers and pauses its frames; the Radix menus and Replace dialogs stop rendering and every upload after the seventh stalled. Resume when the Chrome window holding the claude.ai tab is in the foreground: one upload per skill per `docs/procedures/claude-web-skill-sync.md` §3, zips in the session scratchpad or rebuilt with §1. Branch not yet merged — `/finishing-development-branch` presents the options |
+| 13 Gate and sync | done (web sync partial: 4 of 36) | `c8e9cbf` gate + local sync; `0aa791c` checkboxes; `f1b6a7f` merge to `main`. Gate: typecheck clean, `bun test` 105/105, `validate` 36 OK, `build --strict` exit 0 with zero warnings, 0 `## Changes` headings, `doctor` 36/36. Local targets synced from `c8e9cbf`: `~/.claude`, `~/.claude-zai`, `~/.claude-helium`, `~/.claude-kimi`; Codex and Gemini read `skills/` by symlink. **claude.ai partial: 4 of 36 current** (32 pending due to background tab throttling, see `docs/procedures/claude-web-skill-sync.md`). Branch merged into `main` via `f1b6a7f`. |
 
 **Deviations from plan:**
 - Task 8 ran while Task 4's twelve sessions were in flight: it removes no verification or delegation rail (contract fixes, stale references, two safety additions), so the gate does not cover it and nothing in it depends on the gate's result.
@@ -1369,7 +1369,7 @@ synced SHA — 36 uploads, one at a time per the procedure) and after P3 (the
 skills Task 12 changed, ≤9). Record the synced SHA in the sync commit
 (`chore(sync): claude.ai ← <sha>`); the next sync diffs from it. Report
 which skills reached which target; name any still pending.
-- [ ] Merge each tier's branch via `/finishing-development-branch`; write
+- [x] Merge each tier's branch via `/finishing-development-branch`; write
 the Status block back on `main` with SHAs and observed counts.
 
 ---
