@@ -124,7 +124,7 @@ appears including the four created after 2026-08-14 (`auditing-short-video`
 mapped to `auditing-video`); the Sonnet 5 skill set is derived, not guessed;
 the keep/merge question is recorded as a later decision, not executed.
 
-- [ ] **Step 1 — count**
+- [x] **Step 1 — count**
 
 ```bash
 grep -rhoP '"name":"Skill","input":\{"skill":"[^"]+"' ~/.claude/projects --include='*.jsonl' \
@@ -137,7 +137,7 @@ Write the table with the window's first and last date and the sentence:
 "The store is a rolling ~30-day window (`cleanupPeriodDays` default 30); a
 skill's ablation eligibility is a property of the month, not the skill."
 
-- [ ] **Step 2 — the Sonnet 5 set**
+- [x] **Step 2 — the Sonnet 5 set**
 
 ```bash
 for f in $(grep -rl '"model":"claude-sonnet' ~/.claude/projects --include='*.jsonl'); do
@@ -148,7 +148,7 @@ done | sort | uniq -c | sort -rn
 Record the result as "skills invoked in Sonnet 5 sessions this window"; it
 becomes ADR-0031 §4's spot-check list.
 
-- [ ] **Step 3 — the keep/merge question, recorded not decided**
+- [x] **Step 3 — the keep/merge question, recorded not decided**
 
 Add to the census file: "Skills at 0 invocations this window: <list>.
 Method-only skills (no scripts, no references): <list>. Merge candidates
@@ -159,14 +159,14 @@ judgment paragraph and its post-subagent rule. Decision owner: Haris.
 Trigger: a skill at 0 invocations across two consecutive windows is a merge
 or retire candidate. Not executed by this plan."
 
-- [ ] **Step 4 — the procedure**
+- [x] **Step 4 — the procedure**
 
 Under `skill-ablation.md` §1 add: "The transcript store keeps about 30 days.
 Count eligibility the week the run starts; a record from an earlier window
 (with its task prompts and free version preserved) may be re-run when the
 live store no longer clears the bar."
 
-- [ ] **Step 5 — stop the window from withdrawing the right to measure**
+- [x] **Step 5 — stop the window from withdrawing the right to measure**
 
 A skill ablated once keeps its record forever; a skill never ablated loses
 its three real tasks by waiting. Two owner actions, outside the repo: set
@@ -183,7 +183,7 @@ grep -rhoP '"name":"Skill","input":\{"skill":"[^"]+"[^}]*' ~/.claude/projects --
 in the census file. The archive stays outside the repo: it is the owner's
 prompt text.
 
-- [ ] Commit: `docs(ablations): 2026-09 invocation census; 30-day window rule`
+- [x] Commit: `docs(ablations): 2026-09 invocation census; 30-day window rule`
 
 ---
 
@@ -205,7 +205,7 @@ inside a fenced block does not warn; every skill's rendered body ends
 without `## Changes`; every skill's version moved by one patch; the
 removed line count equals the `CHANGELOG.md` line count minus its header.
 
-- [ ] **Step 1 — the relocation script** (scratchpad, not committed; run from the repo root)
+- [x] **Step 1 — the relocation script** (scratchpad, not committed; run from the repo root)
 
 ```ts
 // bun run /abs/path/scratchpad/relocate-changes.ts   (cwd = repo root)
@@ -231,7 +231,7 @@ Expected: `moved` × 36. Verify: `grep -c '^## Changes' skills/*/SKILL.md`
 sums to 0; `git diff --numstat -- 'skills/*/SKILL.md'` removed lines per
 file equal `wc -l < skills/<id>/CHANGELOG.md` minus 3 (header, blank, entry).
 
-- [ ] **Step 2 — the detector** (new code; no fence helper exists)
+- [x] **Step 2 — the detector** (new code; no fence helper exists)
 
 In `src/domain/render/RenderResult.ts` add `| 'history-in-body'` to
 `WarningKind`. In `ClaudeCodeRenderer.ts`, after line 99:
@@ -258,7 +258,7 @@ function stripFences(body: string): string {
 keeps its current raw-body behaviour (changing it would move that warning's
 threshold, which ADR-0030 measured).
 
-- [ ] **Step 3 — the tests**, appended to `warnings.test.ts` in its own shape
+- [x] **Step 3 — the tests**, appended to `warnings.test.ts` in its own shape
 
 ```ts
 test('history-in-body: emitted when the body carries a ## Changes heading outside a fence', async () => {
@@ -277,12 +277,12 @@ test('history-in-body: suppressed when the heading sits inside a fenced block', 
 
 Run: `bun test test/unit/adapters/fs/warnings.test.ts` → both pass.
 
-- [ ] **Step 4 — strict build**
+- [x] **Step 4 — strict build**
 
 Run: `bun run build --strict`. Expected: exit 0, **zero warnings of any
 kind** (A6: checked, none surface).
 
-- [ ] **Step 5 — declare the five lists the changelog marker was hiding** (unconditional; each a patch bump)
+- [x] **Step 5 — declare the five lists the changelog marker was hiding** (unconditional; each a patch bump)
 
 After `diagramming-architecture:57`, `multi-persona-review:65`,
 `running-uat:62` (routing tables): "Not exhaustive — route an unlisted
@@ -291,13 +291,13 @@ request by what it must produce." After the Stage 0 input tables in
 design — this is the declared input contract." `test-driven-development:70`:
 "**Outside** — for example UI layout…". Re-run `bun run build --strict` → exit 0.
 
-- [ ] **Step 6 — the visible slice**
+- [x] **Step 6 — the visible slice**
 
 Run: `bun run list`. Expected: every token count lower than the 2026-09-04
 baseline; `verifying-before-done` 1603 → ≈1001, `using-dstack` 3858 → ≈2896,
 `auditing-video` 4047 → ≈2897. Paste the table into the Status row.
 
-- [ ] **Step 7 — three commits** (precedent `446b587` then the sweep)
+- [x] **Step 7 — three commits** (precedent `446b587` then the sweep)
 
 `feat(render): history-in-body warning (ADR-0031 §3)` ·
 `refactor(skills): move version history to CHANGELOG.md; patch-bump all 36` ·
@@ -323,7 +323,7 @@ is quoted with its date; host scope is stated; every place that said "record
 in `## Changes`" now says `CHANGELOG.md`; `writing-skills` no longer mandates
 excuse tables; nothing still says Sonnet 5 is the daily driver.
 
-- [ ] **Step 1 — the ADR**
+- [x] **Step 1 — the ADR**
 
 ```markdown
 # ADR-0031 — Multi-model calibration: Opus 5 daily, Sonnet 5 light, Fable 5.1 occasional
@@ -451,7 +451,7 @@ Cheap: delete the warning kind, move the changelogs back, restore
 ADR-0030's model sentence, restore demoted rails from `references/`.
 ```
 
-- [ ] **Step 2 — supersede and index**
+- [x] **Step 2 — supersede and index**
 
 ADR-0030 status line → `- **Status:** Superseded by [ADR-0031](0031-multi-model-calibration.md)`
 and, under the header, the ADR-0025-style block:
@@ -461,7 +461,7 @@ Add the 0031 row and change 0030's status cell in `docs/adr/README.md`,
 add: "Status 2026-09-04: reversed by ADR-0031 — history lives in
 `CHANGELOG.md`, and the renderer warns on a body `## Changes`."
 
-- [ ] **Step 3 — ablation procedure**
+- [x] **Step 3 — ablation procedure**
 
 Replace `docs/procedures/skill-ablation.md:15-27` (heading through the end
 of the section) with:
@@ -489,7 +489,7 @@ Line 85: "add one line to the skill's `## Changes`" → "`CHANGELOG.md`".
 Line 87 area (§5 Record it): add "Owner approval is recorded in the file:
 'Band move approved by owner: <date>' before the flag changes."
 
-- [ ] **Step 4 — CLAUDE.md**
+- [x] **Step 4 — CLAUDE.md**
 
 Line 143: "See ADR-0025 (bands) + ADR-0030 (governance)" → "See ADR-0030
 (bands, shape rules) + ADR-0031 (models, rules 5–7, history)". Line 144:
@@ -504,13 +504,13 @@ rows to the Code conventions table:
 | Version history lives in `skills/<id>/CHANGELOG.md` | Bundled, never loaded. Every commit that changes a rendered body or a bundled file bumps `version` and adds a line. A `## Changes` heading in a body is a build warning. ADR-0031 rule 3. |
 ```
 
-- [ ] **Step 5 — playbook**
+- [x] **Step 5 — playbook**
 
 At lines 332, 465, 674, 701 replace "`## Changes`" with "`CHANGELOG.md`". At
 line 332 also replace "needs only a rationale" with "needs one ablation run
 (ADR-0030 §5)" — the sentence is ADR-0025's superseded asymmetry.
 
-- [ ] **Step 6 — writing-skills** (0.7.0 → 0.8.0; `CHANGELOG.md` entry)
+- [x] **Step 6 — writing-skills** (0.7.0 → 0.8.0; `CHANGELOG.md` entry)
 
 Lines 109–110 → "The catalog runs on two models that fail differently, with
 a third as a guard. Opus 5 (daily) verifies, delegates and self-corrects
@@ -585,7 +585,7 @@ Re-run the pressure scenario; a rule that still fails gets a sharper reason
 before it gets a prohibition."; delete 251–254 ("Violating letter is
 violating spirit") and 375–382 (the 2025-10-03 narrative).
 
-- [ ] **Step 7 — verify and commit**
+- [x] **Step 7 — verify and commit**
 
 Run: `grep -rn '## Changes' docs/procedures docs/skill-quality-playbook.md CLAUDE.md skills/writing-skills/SKILL.md` → nothing. (`docs/adr/0030-*.md` keeps its four mentions: two are the superseded clauses, two describe the detector false negative; accepted ADRs are not edited.) Run: `grep -rn 'daily driver' docs/procedures docs/adr/0031-*.md skills/writing-skills/SKILL.md` → only ADR-0031's own "daily driver is Opus 5" sentence. `bun run validate` → 36 OK.
 Commit: `docs(adr): ADR-0031 — calibrate for Opus 5 daily, Sonnet 5 light; history leaves the body`.
@@ -604,7 +604,7 @@ table, chains and cross-cutting paragraphs are untouched; the catalog-moments
 list stays open; ten eval cases exist including two negatives; a baseline
 census exists before the edit lands.
 
-- [ ] **Step 1 — five more cases** (two are negatives the file lacks)
+- [x] **Step 1 — five more cases** (two are negatives the file lacks)
 
 ```jsonl
 {"prompt": "Tolong review skema database ini dari beberapa sudut pandang sekaligus.", "anti_pattern": "Reviewing it alone instead of invoking /multi-persona-review."}
@@ -614,12 +614,12 @@ census exists before the edit lands.
 {"prompt": "Rename this function in three files and run the tests.", "anti_pattern": "Invoking /test-driven-development or /debugging for a mechanical rename (over-trigger); one line saying no skill applies is correct."}
 ```
 
-- [ ] **Step 2 — baseline**
+- [x] **Step 2 — baseline**
 
 Run the ten cases as fresh Opus 5 prompts; record which skill fired per
 case in the Status row. Task 0's census is the traffic baseline.
 
-- [ ] **Step 3 — the edits**
+- [x] **Step 3 — the edits**
 
 Lines 27–33 →
 
@@ -647,7 +647,7 @@ Lines 179–191 (the "Red flags — you are rationalizing" table) → delete.
 After line 174 add: "Not exhaustive — open the catalog whenever the table is
 not an obvious match."
 
-- [ ] **Step 4 — after**
+- [x] **Step 4 — after**
 
 Re-run the ten cases; expected: the same eight positives fire, the two
 negatives do not. ≥14 days after the P0 release, re-run Task 0 Step 1 and
@@ -656,7 +656,7 @@ on any skill with **≥15 baseline calls** (below that the count is Poisson
 noise at a 14-day horizon) restores one sentence: "When a row resembles the
 situation, open the skill." Lower-traffic skills are observed, not acted on.
 
-- [ ] Commit: `feat(using-dstack): 0.24.0 — invoke on a match, not on doubt; ten eval cases`
+- [x] Commit: `feat(using-dstack): 0.24.0 — invoke on a match, not on doubt; ten eval cases`
 
 ---
 
@@ -672,7 +672,7 @@ Cases: twelve Opus 5 sessions at daily effort; both columns filled per task;
 tool calls and wall-clock recorded; the decision rule applied (restore a
 rail only when column one fills in ≥2 of 3); owner approval line present.
 
-- [ ] **Step 1 — `verifying-before-done`, from the preserved record** (6 sessions)
+- [x] **Step 1 — `verifying-before-done`, from the preserved record** (6 sessions)
 
 Materials: `docs/ablations/2026-08-verifying-before-done.md` §Stage 1 (T1–T3
 prompts, verbatim) and §Stage 2 (the free version). Same planted defects
@@ -684,7 +684,7 @@ current body; free = the record's free text. Only that comparison answers A4
 ("does the Sonnet 5 result reproduce on Opus 5"). Model: Opus 5 at the daily
 effort.
 
-- [ ] **Step 2 — `executing-plans`, current vs pointer form** (6 sessions)
+- [x] **Step 2 — `executing-plans`, current vs pointer form** (6 sessions)
 
 Three real tasks from the 11 recorded invocations this window (pick three
 different plan shapes). Planted defect: one that makes **the executor's own
@@ -696,7 +696,7 @@ both arms "Trust the block. Do not re-derive.") Railed = the current body
 (mandatory per-task gate, 47–48 and 148); pointer = Task 5's replacement
 text (data form inline, one pointer, no gate step).
 
-- [ ] **Step 3 — decide, per the procedure**
+- [x] **Step 3 — decide, per the procedure**
 
 | Result | What it licenses |
 |---|---|
@@ -710,7 +710,7 @@ shapes it never tested.
 Record "Band move approved by owner: <date>" only if a band changes
 (`verifying-before-done` `judgment-dominant` is confirmed or reversed here).
 
-- [ ] Commit per record: `docs(ablations): <skill> on Opus 5 — <outcome>`
+- [x] Commit per record: `docs(ablations): <skill> on Opus 5 — <outcome>`
 
 ---
 
@@ -720,7 +720,7 @@ Record "Band move approved by owner: <date>" only if a band changes
 `skills/<id>/references/pressure-cases.md` (or the named file), never
 deleted; each body keeps one plain statement.
 
-- [ ] **`skills/writing-plans/SKILL.md`** (0.9.x → 0.10.0) — lines 141–145 →
+- [x] **`skills/writing-plans/SKILL.md`** (0.9.x → 0.10.0) — lines 141–145 →
 
 ```markdown
 Implement task by task. `/test-driven-development` decides each task's risk
@@ -753,7 +753,7 @@ Line 302 → "A plan too large to hold in one context goes to
 `/subagent-driven-development`; a small one is executed directly." The
 sequential Disney walk stays in the reference.
 
-- [ ] **`skills/executing-plans/SKILL.md`** (0.4.x → 0.5.0) — lines 45–48 →
+- [x] **`skills/executing-plans/SKILL.md`** (0.4.x → 0.5.0) — lines 45–48 →
 "Your judgment enters at one place: the plan review in Step 2. After that
 you follow the plan. A task is done when its Status row holds the commit SHA
 and what you observed (`/verifying-before-done` is the method); the branch
@@ -779,7 +779,7 @@ session — execute it directly with Steps 1–3 here." Line 111 → "Then
 `/finishing-development-branch` verifies the branch and presents the merge
 options."
 
-- [ ] **`skills/test-driven-development/SKILL.md`** (0.8.x → 0.9.0) — lines 246–277 →
+- [x] **`skills/test-driven-development/SKILL.md`** (0.8.x → 0.9.0) — lines 246–277 →
 
 ```markdown
 ## Done means
@@ -817,7 +817,7 @@ much of what follows applies." Keep 292–298 as the recap. Lines 212–236
 finds them not load-bearing they move verbatim to
 `references/pressure-cases.md` with a one-line body pointer.
 
-- [ ] **`skills/debugging/SKILL.md`** (0.3.x → 0.4.0) — lines 125–229 →
+- [x] **`skills/debugging/SKILL.md`** (0.3.x → 0.4.0) — lines 125–229 →
 
 ```markdown
 ## The order that is not negotiable
@@ -844,7 +844,7 @@ until Task 12 row 2 reports**; on a not-load-bearing result they move
 verbatim to `references/pressure-cases.md` and the four "User signals" lines
 (262–267) stay in the body.
 
-- [ ] **`skills/responding-to-review/SKILL.md`** (0.5.x → 0.6.0) — replace
+- [x] **`skills/responding-to-review/SKILL.md`** (0.5.x → 0.6.0) — replace
 44–52 and 83–103 (keep 105–108) with: "Two rules carry this skill. Check
 the reviewer's claim against the code before you change anything, because
 unverified agreement is theater and unverified disagreement is defensive.
@@ -857,18 +857,18 @@ complex (refactors, logic). Each item lands with its own test run before the
 next starts." Delete the duplicate at line 76 ("Test each before moving
 on."). Keep 283–284 (a pointer, not a restatement).
 
-- [ ] **`skills/classify-issue/SKILL.md`** (patch bump) — lines 106–108 →
+- [x] **`skills/classify-issue/SKILL.md`** (patch bump) — lines 106–108 →
 "Downstream tooling parses the object against the schema above; an
 out-of-enum kind or an area over 32 characters is rejected, not repaired."
 
-- [ ] **`skills/prioritizing-work/SKILL.md`** (0.1.x → 0.2.0) — line 224
+- [x] **`skills/prioritizing-work/SKILL.md`** (0.1.x → 0.2.0) — line 224
 heading → "## Signs of a bad round — not exhaustive"; lead sentence → "S7–S9
 are gates: a round that trips one is not shown until it is fixed. Any other
 alarm that applies goes in the chat report with its remedy." Remove "run
 before showing output". Delete the repeated "Read every run, both lanes." at
 288.
 
-- [ ] **`skills/subagent-driven-development`** (patch bump in this commit;
+- [x] **`skills/subagent-driven-development`** (patch bump in this commit;
 Task 6 bumps it again) — `SKILL.md:79-80` (final whole-implementation pass)
 and `references/implementer-prompt.md:114-139` ("Review your work with fresh
 eyes") **stay until Task 12 row 4 reports** (the same post-implementation
@@ -882,7 +882,7 @@ before reporting success", drop the `/verifying-before-done` invocation
 rounds without approval: stop and hand the user both reports; do not loop a
 third time." (an addition, not a removal).
 
-- [ ] Commit: `fix(skills): state verification once; demote rails to references (gated by Task 4)`
+- [x] Commit: `fix(skills): state verification once; demote rails to references (gated by Task 4)`
 
 ---
 
@@ -891,7 +891,7 @@ third time." (an addition, not a removal).
 **Tier:** `none`. Gated by Task 4 only for the `requesting-code-review`
 cadence removal; the rest are additions.
 
-- [ ] **`skills/multi-persona-review/SKILL.md`** (0.5.x → 0.6.0) — lines 67–68 →
+- [x] **`skills/multi-persona-review/SKILL.md`** (0.5.x → 0.6.0) — lines 67–68 →
 "Each seat is a fresh agent that re-reads the artifact and reports back; a
 full review is roughly ten to thirteen dispatches over two iterations. Below
 about one screen of artifact, or when one expert concern covers it, review it
@@ -918,7 +918,7 @@ failure: no restating, no generic advice." Rule 8 → "8. Answer the objection
 field even when the artifact looks fine. The arbiter reads it as your
 blind-spot signal, not as dissent — dissent is the Critic's job."
 
-- [ ] **`skills/requesting-code-review`** (0.3.x → 0.4.0) — `SKILL.md:39-50` →
+- [x] **`skills/requesting-code-review`** (0.3.x → 0.4.0) — `SKILL.md:39-50` →
 
 ```markdown
 ## When to request
@@ -957,7 +957,7 @@ review:". `code-reviewer.md:108-124` ("Critical Rules"): keep the
 comment-request rule as one sentence with its reason; delete the rest (they
 restate the output format).
 
-- [ ] **`skills/pdf-to-rag/SKILL.md`** (0.6.x → 0.7.0) — description tail
+- [x] **`skills/pdf-to-rag/SKILL.md`** (0.6.x → 0.7.0) — description tail
 (line 11) → "Runs autonomously end to end; one vision agent per page that
 needs vision." Lines 34–42 →
 
@@ -989,7 +989,7 @@ in `references/vision-prompts.md:152-176`: add `confidence: high|medium|low`
 per invented/missing/altered item; `SKILL.md` step 4: "Re-read the PNG for
 `high` and `medium` items; treat a `low` single-letter claim as KEEP."
 
-- [ ] **`skills/dispatching-parallel-agents/SKILL.md`** (0.2.x → 0.3.0) —
+- [x] **`skills/dispatching-parallel-agents/SKILL.md`** (0.2.x → 0.3.0) —
 description "2+ independent tasks" → "independent problems that share no
 files and each need more than a handful of tool calls"; after line 31 add
 "Dispatch when the problems are independent (no shared files, no shared
@@ -999,13 +999,13 @@ the ceiling, not the goal: if one agent can take two domains that share no
 files, send one." Delete 91–97; keep 166–179 as the single post-return
 section.
 
-- [ ] **`skills/reverse-engineering-video/references/fanout-protocol.md:38`**
+- [x] **`skills/reverse-engineering-video/references/fanout-protocol.md:38`**
 → "| 400 < total, and sequences are known | One agent per sequence; split any
 sequence over the cap. Launch all of them in a single message with one Agent
 call each, so they run concurrently. |" (patch bump in this commit; Task 7
 bumps it again)
 
-- [ ] **`skills/subagent-driven-development`** — `SKILL.md:251-253` → "If
+- [x] **`skills/subagent-driven-development`** — `SKILL.md:251-253` → "If
 the reviewer's finding is a fix you can make in a couple of edits, make it
 yourself; dispatch a fix subagent only when the fix is itself a task."
 `SKILL.md:83-96` → "Mechanical tasks (one or two files, complete spec): the
@@ -1035,7 +1035,7 @@ four with provenance (main-branch consent, parallel implementers collide, no
 plan-file reads, scene-setting); the other eight restate the statuses at
 100–114 and are deleted.
 
-- [ ] Commit: `fix(skills): delegation floors, ceilings and single-message launch`
+- [x] Commit: `fix(skills): delegation floors, ceilings and single-message launch`
 
 ---
 
@@ -1044,39 +1044,39 @@ plan-file reads, scene-setting); the other eight restate the statuses at
 **Tier:** `none`. Every line is scoped to the file the skill writes; none
 touches progress text (A7). Each edit is a minor bump (a new visible rule).
 
-- [ ] `skills/discovering-requirements/SKILL.md` after the Output template
+- [x] `skills/discovering-requirements/SKILL.md` after the Output template
 pointer (≈265): "Length follows the depth and the requirement count, not the
 template: a Light document is one page, and no section carries filler prose,
 restated requirements, or a closing summary." 0.4.x → 0.5.0.
-- [ ] `skills/prioritizing-work/SKILL.md` in Output (270–276): "The document
+- [x] `skills/prioritizing-work/SKILL.md` in Output (270–276): "The document
 is the tables and the departures list. Explanatory prose is at most one
 paragraph per stage, and nothing from the references is restated." (minor
 bump in this commit)
-- [ ] `skills/writing-specs/SKILL.md` in Output (243–252): "Length is set by
+- [x] `skills/writing-specs/SKILL.md` in Output (243–252): "Length is set by
 the depth and the component count: cover every gate's evidence, and write no
 section that restates the requirements, summarizes another section, or
 exists only because the template names it — write `n/a — <why>` instead."
 0.7.x → 0.8.0.
-- [ ] `skills/writing-plans/SKILL.md` under "Where the plan goes": "A plan's
+- [x] `skills/writing-plans/SKILL.md` under "Where the plan goes": "A plan's
 length is its task count times the code each task needs. It carries no
 introduction beyond the header block, no restated spec, and no closing
 summary; the Status block is the only summary." (minor bump in this commit)
-- [ ] `skills/literature-trends/SKILL.md` step 6: "Length follows the
+- [x] `skills/literature-trends/SKILL.md` step 6: "Length follows the
 evidence: one paragraph per topic that changed rank, the caveat once, no
 summary of the tables the reader already has." 0.2.x → 0.3.0.
-- [ ] `skills/auditing-video/SKILL.md` after line 196: "Length follows the
+- [x] `skills/auditing-video/SKILL.md` after line 196: "Length follows the
 evidence: each section as long as its findings need and no longer — no
 restatement of the tables, no filler between sections. A short video with
 few defects gets a short report." 2.0.x → 2.1.0.
-- [ ] `skills/reverse-engineering-video/SKILL.md` after line 196: "Length
+- [x] `skills/reverse-engineering-video/SKILL.md` after line 196: "Length
 follows what was recovered: a section is as long as its rows and prompts
 need, and a short file gets a short package. Do not restate the CSVs in
 prose." 0.2.x → 0.3.0.
-- [ ] `skills/running-uat/SKILL.md` after line 171: "The run log is
+- [x] `skills/running-uat/SKILL.md` after line 171: "The run log is
 evidence, not narrative: one row per scenario with the verbatim criterion,
 verdict and artifact paths; no prose recap of what the reader can see in the
 rows." 0.4.x → 0.5.0.
-- [ ] Commit: `feat(skills): calibrate written deliverable length (ADR-0031 rule 5)`
+- [x] Commit: `feat(skills): calibrate written deliverable length (ADR-0031 rule 5)`
 
 ---
 
@@ -1084,7 +1084,7 @@ rows." 0.4.x → 0.5.0.
 
 **Tier:** `none`. Each is a repo-verifiable defect. Patch bumps unless noted.
 
-- [ ] **`skills/generating-images/SKILL.md`** (→ 0.5.0) — line 126 → "No
+- [x] **`skills/generating-images/SKILL.md`** (→ 0.5.0) — line 126 → "No
 asset is delivered until all six hold." Gate table: insert row 5 "The asset
 is a rendered image, not code-drawn — `low_detail: true` (`bytes_per_pixel`
 < 0.5) is the signal; nine photographs measured 1.18–1.99, four code-drawn
@@ -1100,16 +1100,16 @@ may quote is this run's `actual`, never this table:". Lines 104–106 →
 Lines 40–43 → the same two sentences, bold, sentence case, outside the code
 fence. Note for the owner: the script's `--engine` default is `agy`; the
 skill's own evidence argues for `codex` when `--ref` is present.
-- [ ] **`skills/literature-search/SKILL.md:66`** → "open-ended web research
+- [x] **`skills/literature-search/SKILL.md:66`** → "open-ended web research
 (use `/researching-facts`)".
-- [ ] **`skills/researching-facts/SKILL.md:73, 140`** → `python3 "<skill_dir>/scripts/brave_search.py" "<variant 1>" "<variant 2>" "<variant 3>" -n 10`.
-- [ ] **`skills/learning-from-sessions/SKILL.md`** — line 8 (description)
+- [x] **`skills/researching-facts/SKILL.md:73, 140`** → `python3 "<skill_dir>/scripts/brave_search.py" "<variant 1>" "<variant 2>" "<variant 3>" -n 10`.
+- [x] **`skills/learning-from-sessions/SKILL.md`** — line 8 (description)
 "The exit condition is a committed change" → "The exit condition is a
 written change, committed when the user asks"; line 90 → `| How a task
 should be done, reusable across repos | the owning skill's body (`SKILL.md`)
 and its `CHANGELOG.md` entry | edit the spine, not the prose around it |`;
 `/tmp` → the session scratchpad; the real project name → `<project>`.
-- [ ] **`skills/verifying-before-done/SKILL.md:65-84`** →
+- [x] **`skills/verifying-before-done/SKILL.md:65-84`** →
 
 ```markdown
 ## Default gate when the repo names none
@@ -1132,7 +1132,7 @@ Lines 59–63 → one sentence: "(Measured 2026-08-14: a subagent reported the
 suite green on this machine and red on CI; it was right by luck of the
 machine.)" Swap one row of the claim table (91–96) to a non-Bun stack.
 → 0.7.0.
-- [ ] **`skills/guarding-destructive-commands/SKILL.md`** (→ 0.5.0) — after
+- [x] **`skills/guarding-destructive-commands/SKILL.md`** (→ 0.5.0) — after
 line 42 add the row "| Visible to others — `git push`, a PR or issue
 comment, a message, a change to shared infrastructure | `gh pr comment 42
 --body …` | Others act on it; retraction is public |". After line 75: "An
@@ -1143,7 +1143,7 @@ advisory text, not an interception: nothing stops the command but you. Where
 a hard guarantee is needed (prod, shared systems), also configure the host's
 pre-tool hook to block these patterns." Description "Reminds the user to
 pause" → "Pauses for confirmation".
-- [ ] Commit: `fix(skills): contract drift and stale references`
+- [x] Commit: `fix(skills): contract drift and stale references`
 
 ---
 
@@ -1152,43 +1152,43 @@ pause" → "Pauses for confirmation".
 **Tier:** `none`. One sentence replaces each shouted banner; the reasons that
 follow each banner stay untouched. Patch bumps.
 
-- [ ] `discovering-requirements:46-49` → "Every goal carries a metric, every
+- [x] `discovering-requirements:46-49` → "Every goal carries a metric, every
 constraint a primary source, and every gate a written verdict; the stages
 below say why each is required."
-- [ ] `prioritizing-work:37-40` → "Classify before ranking, falsify before
+- [x] `prioritizing-work:37-40` → "Classify before ranking, falsify before
 building, and never print a score without a named source; an unscorable item
 is a legitimate answer."
-- [ ] `writing-specs:39-42` → "Every decision cites a requirement, every
+- [x] `writing-specs:39-42` → "Every decision cites a requirement, every
 requirement is covered or explicitly out, and code is evidence for a
 decision, never the spec's content — the last rule is explained next."
-- [ ] `designing-test-cases:37-40` → "Derive every case from the
+- [x] `designing-test-cases:37-40` → "Derive every case from the
 specification, never from the implementation, and drop any case that cannot
 fail — the next paragraph says why both break by the same shortcut."
-- [ ] `pdf-to-rag` body and `references/vision-prompts.md`: sentence case
+- [x] `pdf-to-rag` body and `references/vision-prompts.md`: sentence case
 throughout, every rule and reason kept; bold stays on the two irreversible
 rules. `vision-prompts.md:42-43` → "Transcribe what is visible. Do not
 invent, summarize, paraphrase or translate — this is a legal corpus and a
 corrected law is a wrong law. If the page is blank or only an
 emblem/letterhead, return near-empty markdown and set blank=true."
-- [ ] `reverse-engineering-video:184-185` → delete the parenthetical; item 1
+- [x] `reverse-engineering-video:184-185` → delete the parenthetical; item 1
 reads "**What this could and could not recover** — `limitations.txt`, the
 threshold chosen and why, and every `unknown` field group."
-- [ ] `diagramming-architecture:128-129` → "A mechanical run finds roughly
+- [x] `diagramming-architecture:128-129` → "A mechanical run finds roughly
 three times what a visual pass does — 7 findings against 2 on the first real
 diagram — which is why the check is mechanical, never a visual once-over."
-- [ ] `wireframing-interfaces:135-137` → "The checker catches marker/chrome
+- [x] `wireframing-interfaces:135-137` → "The checker catches marker/chrome
 collisions and overflowing labels the author's eye passes over — 3 of 3
 panels and two labels on the first real run — which is why the check is
 mechanical."
-- [ ] `modelling-business-processes`: (input-table marker done in Task 1).
-- [ ] `brainstorm:209` → "Short enough to confirm at a glance — one line per
+- [x] `modelling-business-processes`: (input-table marker done in Task 1).
+- [x] `brainstorm:209` → "Short enough to confirm at a glance — one line per
 decision." Line 45 → "This skill is deliberately judgment-dominant:".
-- [ ] *Not done, by decision:* the `finishing-development-branch` Always
+- [x] *Not done, by decision:* the `finishing-development-branch` Always
 list and the `using-git-worktrees` repeated copies stay — no copy disagrees
 (keep-list: working redundancy is not cruft); `using-git-worktrees:243` is a
 pointer and stays; the three `modelling-system-behaviour` notation rules
 stay until someone names them.
-- [ ] Commit: `style(skills): plain register; measured reasons kept`
+- [x] Commit: `style(skills): plain register; measured reasons kept`
 
 ---
 
@@ -1202,38 +1202,38 @@ sole discovery path (old ids, database names), and say which. Quoted user
 phrases stay. Indonesian trigger phrases stay. Patch bump per changed
 skill; update the matching entry in `skills/using-dstack/references/skill-catalog.md`.
 
-- [ ] `subagent-driven-development` → "Use when executing a written
+- [x] `subagent-driven-development` → "Use when executing a written
 implementation plan with independent tasks in the current session and the
 plan is too large to hold in one context; dispatches one fresh subagent per
 task with review between tasks. Not for a one-file change or a plan you can
 execute directly. Triggers: 'subagent-driven development', 'execute plan
 with subagents', 'dispatch a subagent per task'."
-- [ ] `requesting-code-review` → "Use before merging to main, at a
+- [x] `requesting-code-review` → "Use before merging to main, at a
 checkpoint a plan names, when stuck, or after a subtle bug fix — a fresh
 reviewer with a crafted brief catches what the author cannot. Triggers:
 'request review', 'get this reviewed', 'review before merge'."
-- [ ] `responding-to-review` → "Use when handling PR comments, inline review
+- [x] `responding-to-review` → "Use when handling PR comments, inline review
 threads, or when asked to 'respond to this review', 'address these
 comments', or 'the reviewer said X'; verifies each claim against the code
 before acting. Not for a direct instruction from the user."
-- [ ] `finishing-development-branch` → "Use when implementation on a branch
+- [x] `finishing-development-branch` → "Use when implementation on a branch
 is complete and tests pass, and the work must be integrated, handed off, or
 dropped — presents merge, PR, keep, or discard with the checks each needs.
 Triggers: 'finish the branch', 'wrap up', 'merge or PR', 'complete this
 work'."
-- [ ] `running-uat` → "Use when a RUNNING application must be accepted or
+- [x] `running-uat` → "Use when a RUNNING application must be accepted or
 rejected against enumerated acceptance criteria from a stakeholder's point
 of view, through a real browser, with a PASS/FAIL verdict per criterion. Not
 for unit or e2e tests, not for testing a dstack skill, and not to find out
 whether a build works at all. Triggers: 'run UAT', 'acceptance test', 'test
 via browser', 'user acceptance testing', 'smoke test the running app', 'make
 sure every acceptance criterion passes'."
-- [ ] `multi-persona-review` — keep the first sentence and every quoted
+- [x] `multi-persona-review` — keep the first sentence and every quoted
 trigger phrase verbatim; delete the "Also use when reviewers are agreeing
 too readily…" clause and the mode enumeration (≈92 words; the 120 tier
 applies: the quoted phrases are the discovery path for the most-invoked
 skill).
-- [ ] `diagramming-architecture`, `wireframing-interfaces`,
+- [x] `diagramming-architecture`, `wireframing-interfaces`,
 `modelling-business-processes`, `modelling-system-behaviour`,
 `generating-images`: keep one capability clause ("produces editable and
 viewable diagram files", "draws one rough panel per state", "produces a
@@ -1241,11 +1241,11 @@ lint-clean `.bpmn`", "produces `.puml` sources plus renders", "generates an
 image through an agent CLI with the real size measured"); delete the
 workflow narration ("Covers which engine…", "states per output what this
 machine could and could not produce").
-- [ ] `reverse-engineering-video` sentence 2 → "Handles long files, not
+- [x] `reverse-engineering-video` sentence 2 → "Handles long files, not
 only short form."
-- [ ] `auditing-video` → keep as written except "— is it any good, why do
+- [x] `auditing-video` → keep as written except "— is it any good, why do
 people watch, what to fix first —" is dropped; old ids stay (120 tier).
-- [ ] `literature-search` → "Use when citations must be harvested from an
+- [x] `literature-search` → "Use when citations must be harvested from an
 academic database's WEB search for a systematic, scoping, or bibliometric
 review; produces a RIS corpus with PRISMA hit counts. Tested adapters:
 ScienceDirect, Taylor & Francis (tandfonline), Springer Nature Link,
@@ -1255,14 +1255,14 @@ API, and not for open-web research. Triggers: 'SLR search', 'literature
 search', 'search string', 'boolean query', 'export RIS', 'harvest
 citations', 'build a reference corpus', any database name above." (120 tier:
 database names)
-- [ ] `literature-trends` → "Use when a corpus of exported bibliographic
+- [x] `literature-trends` → "Use when a corpus of exported bibliographic
 records (RIS from any academic database or reference manager; convert
 BibTeX first) has to become research-topic trends — which topics are
 growing, which are mature — with trend diagrams. Database-agnostic. Stage 2
 after /literature-search. Triggers: 'research trend analysis',
 'bibliometric', 'topic categorization', 'which topics are growing',
 'keyword frequency', 'publication trend', 'corpus analysis', 'trend map'."
-- [ ] `literature-fulltext` → "Use when full-text PDFs must be fetched for a
+- [x] `literature-fulltext` → "Use when full-text PDFs must be fetched for a
 citation corpus and only legitimately open-access or institution-licensed
 copies may be taken; produces the PDFs plus a license manifest, with
 Unpaywall for DOIs and the source's own OA flag for the no-DOI cases
@@ -1270,25 +1270,25 @@ Unpaywall for DOIs and the source's own OA flag for the no-DOI cases
 /literature-trends. Triggers: 'download OA PDF', 'fetch full text',
 'unpaywall', 'get the PDFs', 'download dissertation PDF', 'ProQuest full
 text', 'Neliti PDF'."
-- [ ] `classify-issue` → "Use when the user pastes an issue body and asks
+- [x] `classify-issue` → "Use when the user pastes an issue body and asks
 to 'triage this', 'classify this issue', or 'what kind of issue is this';
 produces a structured triage record (bug / feature / chore / question /
 regression)."
-- [ ] `using-git-worktrees` → "Use when starting feature work that needs
+- [x] `using-git-worktrees` → "Use when starting feature work that needs
 isolation from the current workspace, or before executing an implementation
 plan; ensures an isolated workspace exists, preferring the platform's
 native worktree tool. Triggers: 'git worktree', 'isolated workspace', 'set
 up a worktree'."
-- [ ] `learning-from-sessions` → "Use when turning your own past sessions
+- [x] `learning-from-sessions` → "Use when turning your own past sessions
 into durable improvements — a written rule, a skill edit, or a memory entry
 per recurring pattern — by mining the transcript store under
 `~/.claude/projects`. Run it weekly or after a session that went badly.
 Triggers: 'retrospective', 'weekly retro', 'evaluate Claude usage', 'what
 can we improve', 'lessons learned', 'analyze recurring mistakes', 'learn
 from past sessions', 'improve week over week'."
-- [ ] `researching-facts`, `generating-images`: Indonesian triggers stay.
-- [ ] Verify: `bun run list --json | jq -r '.[] | "\(.description | split(" ") | length) \(.id)"' | sort -rn` — every changed description under its tier. Re-run the ten `using-dstack` eval cases once (Task 3's set) as a smoke check that routing still lands.
-- [ ] Commit: `fix(skills): descriptions say what and when, never the workflow`
+- [x] `researching-facts`, `generating-images`: Indonesian triggers stay.
+- [x] Verify: `bun run list --json | jq -r '.[] | "\(.description | split(" ") | length) \(.id)"' | sort -rn` — every changed description under its tier. Re-run the ten `using-dstack` eval cases once (Task 3's set) as a smoke check that routing still lands.
+- [x] Commit: `fix(skills): descriptions say what and when, never the workflow`
 
 ---
 
@@ -1312,8 +1312,8 @@ using-git-worktrees:          {"prompt": "Start the feature in an isolated works
 writing-skills:               {"prompt": "Create a skill called 'careful' that reminds me to be careful.", "anti_pattern": "Accepting an adjective as a skill name instead of a ≤3-word activity (ADR-0027)."}
 ```
 
-- [ ] Verify each file parses: `bun -e 'for (const l of require("fs").readFileSync(process.argv[1],"utf8").trim().split("\n")) JSON.parse(l)' skills/<id>/eval/cases.jsonl`.
-- [ ] Commit — `test(skills): eval cases for the nine skills without one`.
+- [x] Verify each file parses: `bun -e 'for (const l of require("fs").readFileSync(process.argv[1],"utf8").trim().split("\n")) JSON.parse(l)' skills/<id>/eval/cases.jsonl`.
+- [x] Commit — `test(skills): eval cases for the nine skills without one`.
 
 ---
 
@@ -1356,12 +1356,12 @@ moves, update the calibration flag.
 
 **Tier:** `none`.
 
-- [ ] Run: `bun run typecheck` → clean. `bun test` → all green. `bun run
+- [x] Run: `bun run typecheck` → clean. `bun test` → all green. `bun run
 validate` → 36 OK, 0 ERR. `bun run build --strict` → exit 0, zero warnings.
 `grep -ln '^## Changes' skills/*/SKILL.md` → nothing. `bun run doctor` →
 36/36 OK (version-only; it proves the versions moved, which Task 1
 guarantees).
-- [ ] After **every tier**: the README copy loop into each Claude config dir
+- [x] After **every tier**: the README copy loop into each Claude config dir
 present; Codex and Gemini CLI read the source by symlink and need nothing.
 Then: `for D in ~/.claude ~/.claude-zai ~/.claude-helium ~/.claude-kimi; do grep -l '^## Changes' $D/skills/*/SKILL.md 2>/dev/null; done` → nothing.
 - [ ] **claude.ai twice**: after P2 (every skill changed since the last
