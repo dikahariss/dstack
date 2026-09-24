@@ -9,15 +9,15 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
 
 ## Status
 
-**Updated:** 2026-09-24 · **Branch:** `feat/cross-model-recalibration` (created in Task 0) · **Next:** Task 3
+**Updated:** 2026-09-24 · **Branch:** `feat/cross-model-recalibration` (created in Task 0) · **Next:** Task 4
 
 | Task | State | Evidence |
 |---|---|---|
 | 0 Branch and tooling commit | done | `2239919`; `bun run typecheck` and `bun test`: 105 pass, 0 fail; frozen cases: 20. |
 | 1 Census, retention, predecessor → gate G1 | done | `2217f8c`; 590 sessions; host counts `.claude` 452, `.claude-zai` 25, `.claude-helium` 111, `.claude-kimi` 2; 378 skill calls; G1 defaults recorded. |
-| 2 Development baseline and bottleneck rule | done | B-chain: user 39.44 < agent 155.89; tool share 0.13 (<0.40); `3+` n=30, median 205.88 ≥ 2 × `0–1` n=16, median 68.22; Task 4 runs. |
-| 3 Decision-point map | in progress | — |
-| 4 Router size-gate pilot → gate G2 | todo | — |
+| 2 Development baseline and bottleneck rule | done | `c322544`; B-chain: user 39.44 < agent 155.89; tool share 0.13 (<0.40); `3+` n=30, median 205.88 ≥ 2 × `0–1` n=16, median 68.22; Task 4 runs. |
+| 3 Decision-point map | done | 91 decision rows across 15 dev-path skills; 34 model-claim hits classified; four class-(b) hits in `writing-skills`; P6 conflict recorded. |
+| 4 Router size-gate pilot → gate G2 | in progress | — |
 | 5 Gate, sync, and handoff → gate G3 | todo | — |
 
 **Deviations from plan:**
