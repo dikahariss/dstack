@@ -9,18 +9,22 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
 
 ## Status
 
-**Updated:** 2026-09-24 · **Branch:** `feat/cross-model-recalibration` (created in Task 0) · **Next:** Task 0
+**Updated:** 2026-09-24 · **Branch:** `feat/cross-model-recalibration` (created in Task 0) · **Next:** Task 2
 
 | Task | State | Evidence |
 |---|---|---|
-| 0 Branch and tooling commit | in progress | — |
-| 1 Census, retention, predecessor → gate G1 | todo | — |
-| 2 Development baseline and bottleneck rule | todo | — |
+| 0 Branch and tooling commit | done | `2239919`; `bun run typecheck` and `bun test`: 105 pass, 0 fail; frozen cases: 20. |
+| 1 Census, retention, predecessor → gate G1 | done | 590 sessions; host counts `.claude` 452, `.claude-zai` 25, `.claude-helium` 111, `.claude-kimi` 2; 378 skill calls; G1 defaults recorded. |
+| 2 Development baseline and bottleneck rule | in progress | — |
 | 3 Decision-point map | todo | — |
 | 4 Router size-gate pilot → gate G2 | todo | — |
 | 5 Gate, sync, and handoff → gate G3 | todo | — |
 
 **Deviations from plan:**
+- 2026-09-24 — Task 1 Step 4 returned Codex model `gpt-6-luna` instead of expected `gpt-6-sol`; Claude settings returned `.claude=opus[1m]`, `.claude-zai=cc/claude-sonnet-5`, `.claude-helium=opus[1m]`, `.claude-kimi=unset`. The owner directed recording observed values and continuing without further confirmation prompts.
+- 2026-09-24 — G1 defaults accepted by the owner: pilot models `claude-opus-5-5`, `claude-sonnet-5`, and `claude-haiku-4-5-20251001`; no gateway or cheap-execution model added; budget ≤160 calls and ≤US$40 including one rerun allowance; predecessor Task 12 is superseded with rows reopening only through G3; the 32 pending claude.ai uploads remain a separate request.
+- 2026-09-24 — The owner instructed the executor to apply the router edit automatically only if the plan's K1–K3 keep criteria all pass, with no further confirmation prompt.
+- 2026-09-24 — Task 1 Step 2 initially appeared to produce no count list because the command outlasted the tool's 10-second wait and its session handle was not polled. Recovered the output file: 378 invocations; `using-dstack` (35), `writing-plans` (30), and `multi-persona-review` (25) are all in the top five. No command deviation was needed.
 - 2026-09-24 — Owner approved recording each task commit SHA in the following task commit, with one final status-only commit for Task 5. This resolves the self-referential Status-row SHA requirement.
 - 2026-09-24 — Created `feat/cross-model-recalibration` in the existing sibling worktree directory with `git worktree add -b`, rather than switching the main checkout, to follow the isolated-workspace workflow.
 - 2026-09-24 — Revised from the 2026-09-23 draft after review. The owner clarified that TypeSafe Jev contributes **concepts only**, not its library, API, or model. That removes the Jev router arm and API metrics; the concepts are now **Design principles** P1–P6. "Minimal hallucination" joins the goal, defined as H1–H4. The 36-skill re-audit is replaced by a decision-point map of the 15 dev-path skills plus a model-claim grep, because the whole catalog was already audited on 2026-09-04. Draft Tasks 5–6 (other skill families, ADR review) move to a follow-up plan written at G3: they need judgment and inputs that do not exist yet. Measurement scripts and the frozen pilot cases were written and tested on 2026-09-24 so that the executor runs them rather than designs them.
