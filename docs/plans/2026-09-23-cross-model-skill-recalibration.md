@@ -16,14 +16,16 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
 | 0 Branch and tooling commit | done | `2239919`; `bun run typecheck` and `bun test`: 105 pass, 0 fail; frozen cases: 20. |
 | 1 Census, retention, predecessor → gate G1 | done | `2217f8c`; 590 sessions; host counts `.claude` 452, `.claude-zai` 25, `.claude-helium` 111, `.claude-kimi` 2; 378 skill calls; G1 defaults recorded. |
 | 2 Development baseline and bottleneck rule | done | `c322544`; B-chain: user 39.44 < agent 155.89; tool share 0.13 (<0.40); `3+` n=30, median 205.88 ≥ 2 × `0–1` n=16, median 68.22; Task 4 runs. |
-| 3 Decision-point map | done | 91 decision rows across 15 dev-path skills; 34 model-claim hits classified; four class-(b) hits in `writing-skills`; P6 conflict recorded. |
-| 4 Router size-gate pilot → gate G2 | in progress | — |
+| 3 Decision-point map | done | `1e0ca1f`; 91 decision rows across 15 dev-path skills; 34 model-claim hits classified; four class-(b) hits in `writing-skills`; P6 conflict recorded. |
+| 4 Router size-gate pilot → gate G2 | in progress | K1 passed and K3 passed for all three models; K2 failed for all three; dropped. 120 calls, 7,249,430 tokens, US$11.87 raw sum; full scores and failures in the pilot record. |
 | 5 Gate, sync, and handoff → gate G3 | todo | — |
 
 **Deviations from plan:**
 - 2026-09-24 — Task 1 Step 4 returned Codex model `gpt-6-luna` instead of expected `gpt-6-sol`; Claude settings returned `.claude=opus[1m]`, `.claude-zai=cc/claude-sonnet-5`, `.claude-helium=opus[1m]`, `.claude-kimi=unset`. The owner directed recording observed values and continuing without further confirmation prompts.
 - 2026-09-24 — G1 defaults accepted by the owner: pilot models `claude-opus-5-5`, `claude-sonnet-5`, and `claude-haiku-4-5-20251001`; no gateway or cheap-execution model added; budget ≤160 calls and ≤US$40 including one rerun allowance; predecessor Task 12 is superseded with rows reopening only through G3; the 32 pending claude.ai uploads remain a separate request.
 - 2026-09-24 — The owner instructed the executor to apply the router edit automatically only if the plan's K1–K3 keep criteria all pass, with no further confirmation prompt.
+- 2026-09-24 — G2 evaluated under the owner's conditional authorization: K2 failed on all three tested models, so the size-gate edit was dropped; Step 7 was not applicable and no skill version or changelog changed.
+- 2026-09-24 — Independent Task 4 review found raw model reply prose in `results.jsonl`. Removed the raw field from the probe writer and all 120 saved result rows; the scored table is unchanged.
 - 2026-09-24 — Task 1 Step 2 initially appeared to produce no count list because the command outlasted the tool's 10-second wait and its session handle was not polled. Recovered the output file: 378 invocations; `using-dstack` (35), `writing-plans` (30), and `multi-persona-review` (25) are all in the top five. No command deviation was needed.
 - 2026-09-24 — Owner approved recording each task commit SHA in the following task commit, with one final status-only commit for Task 5. This resolves the self-referential Status-row SHA requirement.
 - 2026-09-24 — Created `feat/cross-model-recalibration` in the existing sibling worktree directory with `git worktree add -b`, rather than switching the main checkout, to follow the isolated-workspace workflow.

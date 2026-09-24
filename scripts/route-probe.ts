@@ -20,7 +20,7 @@ type Case = {
 type Result = {
   arm: string; model: string; config: string; id: string; class: Case['class']
   chain: string[]; pass: boolean; reasons: string[]
-  tokens: number; cost_usd: number | null; ms: number; raw: string
+  tokens: number; cost_usd: number | null; ms: number
 }
 
 const PROBE_SUFFIX =
@@ -89,7 +89,6 @@ function run(args: string[]): void {
     const r: Result = {
       arm, model, config: configDir ?? '~/.claude', id: c.id, class: c.class,
       chain: chain ?? [], pass: reasons.length === 0, reasons, tokens: t, cost_usd: usd, ms: Date.now() - started,
-      raw: raw.slice(0, 200),
     }
     appendFileSync(out, JSON.stringify(r) + '\n')
     tokens += t; cost += usd ?? 0
