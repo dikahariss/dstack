@@ -18,7 +18,7 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
 | 2 Development baseline and bottleneck rule | done | `c322544`; B-chain: user 39.44 < agent 155.89; tool share 0.13 (<0.40); `3+` n=30, median 205.88 ≥ 2 × `0–1` n=16, median 68.22; Task 4 runs. |
 | 3 Decision-point map | done | `1e0ca1f`; 91 decision rows across 15 dev-path skills; 34 model-claim hits classified; four class-(b) hits in `writing-skills`; P6 conflict recorded. |
 | 4 Router size-gate pilot → gate G2 | done | `6fbb707`; K1 and K3 passed, K2 failed for all three models; dropped. 120 calls, 7,249,430 tokens, US$11.87 raw sum; zero raw fields remain; independent review passed. |
-| 5 Gate, sync, and handoff → gate G3 | done | Typecheck clean; 105 tests pass; validate 36/36; strict build exit 0, 36 skills, zero warnings; doctor 36/36. No `using-dstack` change, so no sync required. G3 handoff prepared. |
+| 5 Gate, sync, and handoff → gate G3 | done | `e9ba6b5`; typecheck clean; 105 tests pass; validate 36/36; strict build exit 0, 36 skills, zero warnings; doctor 36/36. No `using-dstack` change, so no sync required. G3 handoff prepared. |
 
 **Deviations from plan:**
 - 2026-09-24 — Task 1 Step 4 returned Codex model `gpt-6-luna` instead of expected `gpt-6-sol`; Claude settings returned `.claude=opus[1m]`, `.claude-zai=cc/claude-sonnet-5`, `.claude-helium=opus[1m]`, `.claude-kimi=unset`. The owner directed recording observed values and continuing without further confirmation prompts.
