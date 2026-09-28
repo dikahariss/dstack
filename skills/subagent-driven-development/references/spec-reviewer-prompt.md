@@ -14,6 +14,10 @@ Agent tool (general-purpose):
 
     [FULL TEXT of task requirements]
 
+    ## Acceptance criteria this task covers
+
+    [Full text of every `AC-n` in the task's `Covers:` line, from the spec — or "none"]
+
     ## What Implementer Claims They Built
 
     [From implementer's report]
@@ -21,7 +25,7 @@ Agent tool (general-purpose):
     ## Verify against the code
 
     The implementer's report is a claim, not evidence. Read the diff and compare
-    it to the task text line by line. Report what is missing and what was added
+    it to the task text and those acceptance criteria line by line. Report what is missing and what was added
     that the task did not ask for, each with `file:line`.
 
     ## Your Job

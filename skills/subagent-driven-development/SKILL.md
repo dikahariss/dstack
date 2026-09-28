@@ -10,7 +10,7 @@ description: >
 allowed-tools: Agent Read Bash
 metadata:
   dstack:
-    version: 0.7.3
+    version: 0.8.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -117,7 +117,10 @@ After each task passes both reviews, update its row: state `done`, the commit
 SHA and observed evidence, `Updated:` bumped, `Next:` moved on. A `BLOCKED` you
 escalate goes in as `blocked` with the reason before you stop. Deviations from
 the plan are appended to `Deviations from plan`, never folded silently into the
-task text.
+task text. A deviation that changes what the plan's `Implements:` spec fixed — a
+decision, a contract shape, a schema row, or an acceptance criterion — also lands
+in that spec's change log in the same commit, or the implementer fixes the code
+instead.
 
 ## Prompt templates
 

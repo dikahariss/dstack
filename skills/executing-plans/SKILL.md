@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Edit Write Bash
 metadata:
   dstack:
-    version: 0.5.2
+    version: 0.6.0
     type: semantic
     side_effects: local
     agency: deliberative
@@ -105,6 +105,11 @@ unowned TODO.
 saying what changed and why, and carry on. Do not silently rewrite the task text
 to match what you built — that hides the change from review. If the deviation is
 big enough to invalidate later tasks, stop and raise it.
+
+A deviation that changes what the `Implements:` spec fixed — a decision, a
+contract shape, a schema row, or an acceptance criterion — also lands in that
+spec's change log in the same commit. If the spec is right, the code is what
+gets fixed. Leaving both as they are is how a spec becomes fiction.
 
 ### Step 4: Complete development
 
