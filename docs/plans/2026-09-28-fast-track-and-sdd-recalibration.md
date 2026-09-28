@@ -10,13 +10,14 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
 
 ## Status
 
-**Updated:** 2026-09-28 · **Branch:** `feat/fast-track-sdd` (worktree `../dstack-fast-track`) · **Next:** Task 2
+**Updated:** 2026-09-28 · **Branch:** `feat/fast-track-sdd` (worktree `../dstack-fast-track`) · **Next:** Task 3
 
 | Task | State | Evidence |
 |---|---|---|
 | 0 Workspace and baseline | done | `48e7867`; typecheck clean; 105 pass, 0 fail; validate 36/36; build --strict exit 0, 36 skills, no warnings; doctor 36/36 |
-| 1 Output-volume metrics | done | SHA in Task 2's commit; fixture `1 [('s1', 150, 4, 6, 2)]`; 720 sessions vs old script, 0 mismatched; 3+ median output_tokens 367449, doc_share 0.52; writing-plans sessions n=28 |
-| 2–8 | todo | — |
+| 1 Output-volume metrics | done | `fb9f147`; fixture `1 [('s1', 150, 4, 6, 2)]`; 720 sessions vs old script, 0 mismatched; 3+ median output_tokens 367449, doc_share 0.52; writing-plans sessions n=28 |
+| 2 Plan ↔ spec link | done | SHA in Task 3's commit; writing-plans 0.12.0, 3429/5000 tokens; validate 36/36; build --strict exit 0 |
+| 3–8 | todo | — |
 
 **Deviations from plan:**
 - 2026-09-28 — First draft (same path, never committed) rewritten after review. Dropped: draft Task 1, because the same "small task → no chain" router paragraph already failed K2 on all three models (`docs/ablations/2026-09-using-dstack-size-gate.md`); its host-portability half is not a speed cause and belongs in its own plan if wanted. Also dropped: draft Task 2, because subagent waits are 6% of agent time in long sessions and `subagent-driven-development` ran in 3 of 31. Draft Task 3 is dropped because its premise is false: the persona prompts already live in `multi-persona-review/references/`, and the five seats are evidence-based. Draft Task 4's triad is dropped because it duplicates `writing-plans` and `discovering-requirements`. Draft Task 6 is dropped because it is not a speed cause. Kept and reshaped: anti-drift (Tasks 2–4) and the replanning hand-off (Task 4).
