@@ -10,7 +10,7 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
 
 ## Status
 
-**Updated:** 2026-09-28 · **Branch:** `feat/fast-track-sdd` (worktree `../dstack-fast-track`) · **Next:** Task 7a (merge Tasks 0–4) while Task 5 runs
+**Updated:** 2026-09-28 · **Branch:** `feat/fast-track-sdd` (worktree `../dstack-fast-track`) · **Next:** Task 5 (execution phase running), then Task 6 and 7b
 
 | Task | State | Evidence |
 |---|---|---|
@@ -20,7 +20,9 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
 | 3 Drift rule in executors | done | `08e8b13`; executing-plans 0.6.0 (1574/2200), subagent-driven-development 0.8.0 (2418/4500); validate 36/36; build --strict exit 0 |
 | 4 Drift gate and replanning check | done | `0b7b172`; finishing-development-branch 0.5.0 (2630/3500); validate 36/36; build --strict exit 0 |
 | 5 writing-plans ablation | in progress | plan phase done (T1-railed-opus and T2-free-opus hit the 45-min cap); execution phase running |
-| 6–8 | todo | — |
+| 6 Apply licensed change | todo | — |
+| 7a Merge and deploy Tasks 0–4 | done | review `ead6acd` (0 Critical, 3 Important fixed); merge `e3a07f9` on main, local only, no pull or push; on merged main: 105 pass, 0 fail, validate 36/36, build --strict, doctor 36/36; deploy: `~/.claude`, `-zai`, `-helium`, `-kimi` and `~/.gemini/antigravity-cli` each 0/36 stale, the 4 changed skills sha256-matched on all 7 targets; Codex and Gemini have 36 symlinks each into main's `skills/`; claude.ai and remote hosts not touched (owner) |
+| 7b–8 | todo | — |
 
 **Deviations from plan:**
 - 2026-09-28 — First draft (same path, never committed) rewritten after review. Dropped: draft Task 1, because the same "small task → no chain" router paragraph already failed K2 on all three models (`docs/ablations/2026-09-using-dstack-size-gate.md`); its host-portability half is not a speed cause and belongs in its own plan if wanted. Also dropped: draft Task 2, because subagent waits are 6% of agent time in long sessions and `subagent-driven-development` ran in 3 of 31. Draft Task 3 is dropped because its premise is false: the persona prompts already live in `multi-persona-review/references/`, and the five seats are evidence-based. Draft Task 4's triad is dropped because it duplicates `writing-plans` and `discovering-requirements`. Draft Task 6 is dropped because it is not a speed cause. Kept and reshaped: anti-drift (Tasks 2–4) and the replanning hand-off (Task 4).
@@ -41,6 +43,7 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
   - The cut is `--until=2026-09-27`, so the baseline reproduces.
   - Result: 3+ bucket `doc_share` is 0.55; the writing-plans sessions are n=27. Flags are now strict: an unknown flag, a malformed date, or no readable config dir exits with 2.
 - 2026-09-28 — Task 7 split in two. 7a merges and deploys Tasks 0–4 now, because the owner asked how much longer ("masih lama ya?") while the ablation still had about an hour to run. 7b merges and deploys Task 6 if G1 passes.
+- 2026-09-28 — Antigravity CLI (`~/.gemini/antigravity-cli/skills`) was a stale 4 August copy: 29 of 36 skills and `writing-plans` 0.4.0. It is now an additive rsync of the source `skills/` folders, the same format it held before. The orphan `auditing-short-video` (renamed to `auditing-video`) held only shipped files; it was moved to `~/.gemini/antigravity-cli/skills-retired-2026-09-28/`, not deleted. The worktree and branch stay after 7a because Tasks 5–6 continue on them.
 - 2026-09-28 — For Task 8, `--since` is the UTC day after the 7b local sync. Two reasons: the filter keys on the UTC start day, and this plan's own ablation sessions ran on 2026-09-28.
 - 2026-09-28 — Task 6 Step 5 said "below its previous 3299 tokens". Read that as below the 0.12.1 count (3473), since Task 2 and the review both raised it.
 
