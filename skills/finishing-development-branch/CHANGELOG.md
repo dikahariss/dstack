@@ -1,5 +1,7 @@
 # finishing-development-branch — changelog
 
+- **0.5.0** — 2026-09-28: merge-time spec drift gate for an `AGREED` `Implements:` spec, and a three-line replanning check after merge or PR (SDD review 2026-09-28).
+
 - **0.4.3** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 45 words; quoted trigger phrases kept.
 
 - **0.4.2** — 2026-09-04: `eval/cases.jsonl` added — 3 behavioural cases, each a prompt plus the anti-pattern it must not produce.

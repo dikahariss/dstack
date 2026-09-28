@@ -8,7 +8,7 @@ description: >
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.4.3
+    version: 0.5.0
     type: semantic
     side_effects: external
     agency: deliberative
@@ -27,7 +27,7 @@ metadata:
 
 Guide completion of development work by presenting clear options and handling chosen workflow.
 
-**Core principle:** Verify tests → Detect environment → Present options → Execute choice → Clean up.
+**Core principle:** Verify tests → Detect environment → Present options → Execute choice → Clean up → Replanning check.
 
 **Announce at start:** "Using finishing-development-branch to complete this work."
 
@@ -67,6 +67,12 @@ The branch is not offered for merge while that diff carries commented-out code,
 leftover debug logging, or a comment it introduced that narrates the code or
 addresses the reviewer instead of recording a *why* the code cannot show — the
 recurring shapes, **not exhaustive**. Clean them first, then offer options.
+
+If the plan names an `Implements:` spec whose status is `AGREED`, read its change
+log too. The branch is not offered while the diff changes a decision, a contract
+shape, a schema row, or an acceptance criterion that spec fixed and its change log
+does not record — amend the spec (the amend rule is `/writing-specs`') or fix the
+code first.
 
 ### Step 2: Detect environment
 
@@ -224,6 +230,22 @@ git worktree prune  # Self-healing: clean up any stale registrations
 ```
 
 **Otherwise:** The host environment (harness) owns this workspace. Do NOT remove it. If your platform provides a workspace-exit tool, use it. Otherwise, leave the workspace in place.
+
+### Step 7: Replanning check — Options 1 and 2 only
+
+A merge can leave three things stale — closed by design, because these are the
+three records a finished branch can make wrong: the spec, the order of what
+comes next, and the standing rules. Answer each in one line in the final report,
+and act only on a yes:
+
+1. Did the build expose a gap or a wrong decision in the spec? → amend it
+   through its change log (`/writing-specs`).
+2. Is the next item on the plan or roadmap still the right one? → if not,
+   `/prioritizing-work`.
+3. Did this branch teach a rule every later session needs? → one line in the
+   project's CLAUDE.md, or leave it for `/learning-from-sessions`.
+
+Three "no" answers are the common case and cost three lines.
 
 ## Quick reference
 
