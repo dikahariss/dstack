@@ -10,7 +10,7 @@ description: >
 allowed-tools: Agent Read Bash
 metadata:
   dstack:
-    version: 0.8.0
+    version: 0.8.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -62,7 +62,10 @@ the parallelism here is context isolation, not concurrency.
 ## The process
 
 1. **Set up.** Read the plan once. Extract all tasks with full text and
-   context. Create one todo per task.
+   context. Create one todo per task. When the plan names an `Implements:`
+   spec, also extract per task the text of every ID in its `Covers:` line and of
+   any decision, contract, or schema row it touches; the implementer and the
+   spec reviewer both receive it.
 2. **Per task, in order:**
    1. Dispatch the implementer subagent (`references/implementer-prompt.md`).
    2. If it asks questions, answer them and provide context, then let it
@@ -117,10 +120,13 @@ After each task passes both reviews, update its row: state `done`, the commit
 SHA and observed evidence, `Updated:` bumped, `Next:` moved on. A `BLOCKED` you
 escalate goes in as `blocked` with the reason before you stop. Deviations from
 the plan are appended to `Deviations from plan`, never folded silently into the
-task text. A deviation that changes what the plan's `Implements:` spec fixed — a
-decision, a contract shape, a schema row, or an acceptance criterion — also lands
-in that spec's change log in the same commit, or the implementer fixes the code
-instead.
+task text. When an implementer or reviewer reports that a task
+changes anything the plan's `Implements:` spec fixed — a decision, a
+contract or event shape, a schema row, a process step, an acceptance criterion;
+not exhaustive — you, not the implementer, apply the amend rule in
+`/writing-specs`: on an `AGREED` spec the task goes `blocked` with the proposed
+amendment until the owner signs off; on a `DRAFT` spec the change-log row goes
+into your Status write-back commit. Otherwise the implementer fixes the code.
 
 ## Prompt templates
 

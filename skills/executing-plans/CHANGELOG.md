@@ -1,5 +1,7 @@
 # executing-plans — changelog
 
+- **0.6.1** — 2026-09-28: branch review: the drift rule defers to `/writing-specs`' amend rule — an `AGREED` spec waits for owner sign-off with the task `blocked`, a `DRAFT` spec takes the change-log row in the same commit; the drift list is marked open; the small-plan rule names the fresh-session exception from `/writing-plans`.
+
 - **0.6.0** — 2026-09-28: a deviation that changes what the `Implements:` spec fixed amends the spec's change log in the same commit, or the code is fixed (SDD review 2026-09-28).
 
 - **0.5.2** — 2026-09-04: branch review 2026-09-04: the judgment line names the deviation and stop calls too; the `blocked` instruction is stated once; a small same-session plan runs all four steps.

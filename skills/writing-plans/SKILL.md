@@ -8,7 +8,7 @@ description: |
 allowed-tools: Read Grep Glob Write
 metadata:
   dstack:
-    version: 0.12.0
+    version: 0.12.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -228,7 +228,9 @@ pointer. Six hats in a plan document would be ceremony.
 
 **Tier:** `money | authz | data-loss | core | bug-fix | contract` — or `none`
 (`authz` covers authentication, sessions, and tenancy too)
-**Covers:** the `AC-n` and `TC-n` this task satisfies — or `none: <why>`
+**Covers:** the requirement IDs this task satisfies — `AC-n` from a spec,
+`FR-n`/`NFR-n` from a requirements set, `TC-n`, a carried MUST/P0_GATE — or
+`none: <why>`
 **Files:**
 - Create: `exact/path/to/file.ts`
 - Modify: `exact/path/to/existing.ts:123-145`
@@ -280,9 +282,10 @@ them. **Not exhaustive**: anything deferring content out of a step belongs here.
 
 Before saving, the plan satisfies all of these: Task 1 puts something on
 screen, or the header says backend-only and why (a mis-ordered Task 1 is
-reordered, not patched); every `AC-n` of the `Implements:` document and every carried MUST/P0_GATE
-appears in a task's `Covers:` line or a named departure, and a case set from
-`/designing-test-cases`, when one exists, is cited by `TC-n` instead of rewritten; every task names a tier;
+reordered, not patched); every task has a `Covers:` line; every requirement ID of the `Implements:`
+document (`AC-n` from a spec, `FR-n`/`NFR-n` from a requirements set) and every
+carried MUST/P0_GATE appears in one or in a named departure; a case set from
+`/designing-test-cases`, when one exists, is cited by `TC-n`, not rewritten; every task names a tier;
 every stub is retired by a named later task in the contract's shape; names
 and types agree across tasks; the Status block exists with every task `todo`
 and a branch; every unchecked assumption has a fallback; no placeholders.

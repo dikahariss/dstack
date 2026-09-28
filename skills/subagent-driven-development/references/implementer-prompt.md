@@ -16,6 +16,16 @@ Agent tool (general-purpose):
 
     [Scene-setting: where this fits, dependencies, architectural context]
 
+    ## Spec this task implements
+
+    [The plan's `Implements:` path, then the full text of every ID in the task's
+    `Covers:` line and of any decision, contract, or schema row it touches — or
+    "none"]
+
+    If your implementation has to differ from anything quoted here, do not decide
+    it yourself: report DONE_WITH_CONCERNS, or BLOCKED if you cannot proceed, and
+    name the difference.
+
     ## Before you begin
 
     If two readings of the task would produce materially different work, report

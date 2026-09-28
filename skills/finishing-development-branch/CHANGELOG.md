@@ -1,5 +1,7 @@
 # finishing-development-branch — changelog
 
+- **0.5.1** — 2026-09-28: branch review: the drift gate requires the sign-off `/writing-specs`' amend rule names and its list is marked open; Step 7 runs after a merge or a PR (named by action, not option number), reports follow-ups instead of doing them inside the wrap-up, and routes standing rules through `/learning-from-sessions`' recurrence bar; the judgment-call sentence names all three calls.
+
 - **0.5.0** — 2026-09-28: merge-time spec drift gate for an `AGREED` `Implements:` spec, and a three-line replanning check after merge or PR (SDD review 2026-09-28).
 
 - **0.4.3** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 45 words; quoted trigger phrases kept.

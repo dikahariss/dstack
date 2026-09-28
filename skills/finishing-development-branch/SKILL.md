@@ -8,7 +8,7 @@ description: >
 allowed-tools: Read Bash
 metadata:
   dstack:
-    version: 0.5.0
+    version: 0.5.1
     type: semantic
     side_effects: external
     agency: deliberative
@@ -69,10 +69,11 @@ addresses the reviewer instead of recording a *why* the code cannot show — the
 recurring shapes, **not exhaustive**. Clean them first, then offer options.
 
 If the plan names an `Implements:` spec whose status is `AGREED`, read its change
-log too. The branch is not offered while the diff changes a decision, a contract
-shape, a schema row, or an acceptance criterion that spec fixed and its change log
-does not record — amend the spec (the amend rule is `/writing-specs`') or fix the
-code first.
+log too. The branch is not offered while the diff changes anything that spec
+fixed — a decision, a contract or event shape, a schema row, a process step, an
+acceptance criterion; not exhaustive — without a change-log row carrying the
+sign-off the amend rule in `/writing-specs` requires. Get the amendment signed
+off or fix the code first.
 
 ### Step 2: Detect environment
 
@@ -100,8 +101,9 @@ git merge-base HEAD main 2>/dev/null || git merge-base HEAD master 2>/dev/null
 
 Or ask: "This branch split from main - is that correct?"
 
-Confirming the base branch when `merge-base` is ambiguous is the one
-judgment call in this skill; everything else follows the protocol exactly.
+Confirming the base branch when `merge-base` is ambiguous, reading the diff
+against an `AGREED` spec in Step 1, and the Step 7 answers are the judgment
+calls in this skill; everything else follows the protocol exactly.
 
 ### Step 4: Present options
 
@@ -231,19 +233,20 @@ git worktree prune  # Self-healing: clean up any stale registrations
 
 **Otherwise:** The host environment (harness) owns this workspace. Do NOT remove it. If your platform provides a workspace-exit tool, use it. Otherwise, leave the workspace in place.
 
-### Step 7: Replanning check — Options 1 and 2 only
+### Step 7: Replanning check — after a merge or a PR
 
-A merge can leave three things stale — closed by design, because these are the
-three records a finished branch can make wrong: the spec, the order of what
-comes next, and the standing rules. Answer each in one line in the final report,
-and act only on a yes:
+A merge or a PR can leave three things stale — closed by design, because these
+are the three records a finished branch can make wrong: the spec, the order of
+what comes next, and the standing rules. Answer each in one line in the final
+report. A yes names its follow-up, done as its own change after this wrap-up,
+not inside it:
 
 1. Did the build expose a gap or a wrong decision in the spec? → amend it
-   through its change log (`/writing-specs`).
+   under `/writing-specs`.
 2. Is the next item on the plan or roadmap still the right one? → if not,
    `/prioritizing-work`.
-3. Did this branch teach a rule every later session needs? → one line in the
-   project's CLAUDE.md, or leave it for `/learning-from-sessions`.
+3. Did this branch hit a problem that has now happened twice, or once at high
+   cost? → `/learning-from-sessions`, which decides where the rule lives.
 
 Three "no" answers are the common case and cost three lines.
 

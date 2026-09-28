@@ -9,7 +9,7 @@ description: |
 allowed-tools: Read Edit Write Bash
 metadata:
   dstack:
-    version: 0.6.0
+    version: 0.6.1
     type: semantic
     side_effects: local
     agency: deliberative
@@ -40,7 +40,8 @@ Load plan, review critically, execute all tasks, report when complete.
 
 - Executing in the **current** session with a plan too large to hold in one
   context — `/subagent-driven-development`. A small plan in the current
-  session is not a reason to leave: run the steps here.
+  session is not a reason to leave: run the steps here — unless it follows a
+  long planning conversation, where `/writing-plans` hands off to a fresh session.
 - No written plan yet — use `/writing-plans` first.
 
 Your judgment enters at the plan review in Step 2, and again wherever the
@@ -106,10 +107,14 @@ saying what changed and why, and carry on. Do not silently rewrite the task text
 to match what you built — that hides the change from review. If the deviation is
 big enough to invalidate later tasks, stop and raise it.
 
-A deviation that changes what the `Implements:` spec fixed — a decision, a
-contract shape, a schema row, or an acceptance criterion — also lands in that
-spec's change log in the same commit. If the spec is right, the code is what
-gets fixed. Leaving both as they are is how a spec becomes fiction.
+A deviation that changes anything the `Implements:` spec fixed — a decision, a
+contract or event shape, a schema row, a process step, an acceptance criterion;
+not exhaustive — follows the amend rule in `/writing-specs`. On an `AGREED`
+spec the change waits for the owner sign-off that rule names: set the task
+`blocked` with the proposed amendment and carry on elsewhere. On a `DRAFT` spec
+the change-log row lands in the same commit as the code. If the spec is right,
+the code is what gets fixed. Leaving both as they are is how a spec becomes
+fiction.
 
 ### Step 4: Complete development
 

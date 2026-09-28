@@ -10,7 +10,7 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
 
 ## Status
 
-**Updated:** 2026-09-28 · **Branch:** `feat/fast-track-sdd` (worktree `../dstack-fast-track`) · **Next:** Task 5
+**Updated:** 2026-09-28 · **Branch:** `feat/fast-track-sdd` (worktree `../dstack-fast-track`) · **Next:** Task 7a (merge Tasks 0–4) while Task 5 runs
 
 | Task | State | Evidence |
 |---|---|---|
@@ -18,14 +18,31 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
 | 1 Output-volume metrics | done | `fb9f147`; fixture `1 [('s1', 150, 4, 6, 2)]`; 720 sessions vs old script, 0 mismatched; 3+ median output_tokens 367449, doc_share 0.52; writing-plans sessions n=28 |
 | 2 Plan ↔ spec link | done | `5d7cfca`; writing-plans 0.12.0, 3429/5000 tokens; validate 36/36; build --strict exit 0 |
 | 3 Drift rule in executors | done | `08e8b13`; executing-plans 0.6.0 (1574/2200), subagent-driven-development 0.8.0 (2418/4500); validate 36/36; build --strict exit 0 |
-| 4 Drift gate and replanning check | done | SHA in Task 5's commit; finishing-development-branch 0.5.0 (2630/3500); validate 36/36; build --strict exit 0 |
-| 5–8 | todo | — |
+| 4 Drift gate and replanning check | done | `0b7b172`; finishing-development-branch 0.5.0 (2630/3500); validate 36/36; build --strict exit 0 |
+| 5 writing-plans ablation | in progress | plan phase done (T1-railed-opus and T2-free-opus hit the 45-min cap); execution phase running |
+| 6–8 | todo | — |
 
 **Deviations from plan:**
 - 2026-09-28 — First draft (same path, never committed) rewritten after review. Dropped: draft Task 1, because the same "small task → no chain" router paragraph already failed K2 on all three models (`docs/ablations/2026-09-using-dstack-size-gate.md`); its host-portability half is not a speed cause and belongs in its own plan if wanted. Also dropped: draft Task 2, because subagent waits are 6% of agent time in long sessions and `subagent-driven-development` ran in 3 of 31. Draft Task 3 is dropped because its premise is false: the persona prompts already live in `multi-persona-review/references/`, and the five seats are evidence-based. Draft Task 4's triad is dropped because it duplicates `writing-plans` and `discovering-requirements`. Draft Task 6 is dropped because it is not a speed cause. Kept and reshaped: anti-drift (Tasks 2–4) and the replanning hand-off (Task 4).
 - 2026-09-28 — Departure: no project-constitution skill (mission / tech-stack / roadmap). CLAUDE.md, CONTEXT.md, ADRs, and `/init` already carry most of it. It is built only if `/learning-from-sessions` shows project context being re-explained at feature starts.
 - 2026-09-28 — Owner: "langsung lakukan perbaikan dan merge ke main dan deploy". G1 is pre-authorized (apply Task 6 without asking if K1–K3 hold). Task 7 Step 4 deploys to local targets on this laptop only; claude.ai and anything off this machine are excluded for now.
 - 2026-09-28 — A task's own commit cannot contain its SHA; each `done` row's SHA is written in the next task's commit, with one status-only commit at the end.
+- 2026-09-28 — The branch review ran early, as Task 7 Step 2 brought forward. An independent reviewer found 0 Critical, 3 Important, and 14 Minor issues, and every one of them traced to this plan's own text. What was applied:
+  - **I1:** the drift rule now defers to `/writing-specs`' amend rule. On an `AGREED` spec the change waits for owner sign-off and the task goes `blocked`; on a `DRAFT` spec it lands in the same commit.
+  - **I2:** `Covers:` now takes `AC`/`FR`/`NFR`/`TC` IDs and carried MUST items, and every task carries a `Covers:` line.
+  - **I3:** the subagent set-up passes the spec rows to the implementer and to the spec reviewer, and the controller applies the amend rule.
+  - Minors 1–6 and 8–12, plus the line wraps from 14.
+
+  Not applied: an eval case for the drift gate and for Step 7, left for a later catalog eval pass. Patch bumps: writing-plans 0.12.1, executing-plans 0.6.1, subagent-driven-development 0.8.1, finishing-development-branch 0.5.1.
+- 2026-09-28 — The Task 5 arms were extracted from writing-plans 0.12.0, before the I2 fix. That fix changes "A finished plan", which both arms quote verbatim, so it changes both arms identically. The comparison of the per-step code rail stands.
+- 2026-09-28 — Baseline regenerated after the review:
+  - `DOC_PATH` now also covers `docs/priority`, `docs/design`, `docs/process`, and `docs/models`.
+  - It no longer counts `/plans/` code paths, or file names where "plan" is not a word on its own.
+  - The cut is `--until=2026-09-27`, so the baseline reproduces.
+  - Result: 3+ bucket `doc_share` is 0.55; the writing-plans sessions are n=27. Flags are now strict: an unknown flag, a malformed date, or no readable config dir exits with 2.
+- 2026-09-28 — Task 7 split in two. 7a merges and deploys Tasks 0–4 now, because the owner asked how much longer ("masih lama ya?") while the ablation still had about an hour to run. 7b merges and deploys Task 6 if G1 passes.
+- 2026-09-28 — For Task 8, `--since` is the UTC day after the 7b local sync. Two reasons: the filter keys on the UTC start day, and this plan's own ablation sessions ran on 2026-09-28.
+- 2026-09-28 — Task 6 Step 5 said "below its previous 3299 tokens". Read that as below the 0.12.1 count (3473), since Task 2 and the review both raised it.
 
 ## Assumptions and risks
 

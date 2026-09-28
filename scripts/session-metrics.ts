@@ -15,7 +15,7 @@ const INVENTED_REF: ReadonlyArray<readonly [string, RegExp]> = [
   ['unknown-command', /command not found|Unknown (command|option)|unrecognized (option|arguments)/i],
   ['unknown-module', /Cannot find module|ModuleNotFoundError|could not be resolved|is not defined/i],
 ]
-const DOC_PATH = /\/docs\/(plans|specs|discovery|tests|reviews|uat|ablations)\/|\/plans?\/|(^|\/)[^/]*plan[^/]*\.md$/i
+const DOC_PATH = /\/docs\/(plans|specs|discovery|priority|design|process|models|tests|reviews|uat|ablations)\/|(^|\/)([^/]*[-_.])?plans?([-_.][^/]*)?\.md$/i
 
 type Row = Record<string, unknown>
 
@@ -149,17 +149,32 @@ function analyse(file: string, configDir: string): Row | null {
 }
 
 const argv = process.argv.slice(2)
-const since = argv.find((a) => a.startsWith('--since='))?.slice(8)
-const until = argv.find((a) => a.startsWith('--until='))?.slice(8)
+const unknown = argv.filter((a) => a.startsWith('--') && !/^--(since|until)=/.test(a))
+if (unknown.length > 0) {
+  console.error(`unknown flag: ${unknown.join(' ')} (dates go as --since=YYYY-MM-DD)`)
+  process.exit(2)
+}
+const dateFlag = (name: string): string | undefined => {
+  const v = argv.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3)
+  if (v !== undefined && !/^\d{4}-\d{2}-\d{2}$/.test(v)) {
+    console.error(`--${name} needs YYYY-MM-DD, got "${v}"`)
+    process.exit(2)
+  }
+  return v
+}
+const since = dateFlag('since')
+const until = dateFlag('until')
 const [out, ...dirs] = argv.filter((a) => !a.startsWith('--'))
 if (!out || dirs.length === 0) {
   console.error('usage: bun scripts/session-metrics.ts <out.jsonl> <config-dir>... [--since=YYYY-MM-DD] [--until=YYYY-MM-DD]')
   process.exit(2)
 }
 const rows: Row[] = []
+let readDirs = 0
 for (const dir of dirs) {
   const projects = join(dir, 'projects')
   if (!existsSync(projects)) { console.error(`skip ${dir}: no projects/`); continue }
+  readDirs++
   for (const p of readdirSync(projects)) {
     const pdir = join(projects, p)
     if (!statSync(pdir).isDirectory()) continue
@@ -170,6 +185,10 @@ for (const dir of dirs) {
       if (row && (!since || day >= since) && (!until || day <= until)) rows.push(row)
     }
   }
+}
+if (readDirs === 0) {
+  console.error('no config dir had a projects/ folder')
+  process.exit(2)
 }
 writeFileSync(out, rows.map((r) => JSON.stringify(r)).join('\n') + '\n')
 
