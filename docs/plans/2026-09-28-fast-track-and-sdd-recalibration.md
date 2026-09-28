@@ -10,7 +10,7 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
 
 ## Status
 
-**Updated:** 2026-09-28 · **Branch:** `feat/fast-track-sdd` (worktree `../dstack-fast-track`) · **Next:** Task 7b (merge the ablation record), then Task 8 on or after 2026-10-13 with `--since=2026-09-29`
+**Updated:** 2026-09-28 · **Branch:** `feat/fast-track-sdd` (worktree `../dstack-fast-track`) · **Next:** Task 8 on or after 2026-10-13, with `--since=2026-09-29`
 
 | Task | State | Evidence |
 |---|---|---|
@@ -19,10 +19,11 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
 | 2 Plan ↔ spec link | done | `5d7cfca`; writing-plans 0.12.0, 3429/5000 tokens; validate 36/36; build --strict exit 0 |
 | 3 Drift rule in executors | done | `08e8b13`; executing-plans 0.6.0 (1574/2200), subagent-driven-development 0.8.0 (2418/4500); validate 36/36; build --strict exit 0 |
 | 4 Drift gate and replanning check | done | `0b7b172`; finishing-development-branch 0.5.0 (2630/3500); validate 36/36; build --strict exit 0 |
-| 5 writing-plans ablation | done | SHA in Task 7b's commit; `docs/ablations/2026-09-writing-plans-opus5.md`: 8 plan runs, 7 execution runs, every executed Tasks 1–2 re-verified by rerun; K1 FAIL (median 0.71, T2 free produced no plan), K2 FAIL (free 2 of 3 vs railed 3 of 3), K3 FAIL (free faster only on T1); column one filled in 3 of 3 tasks → drop |
+| 5 writing-plans ablation | done | `28f46e4`; `docs/ablations/2026-09-writing-plans-opus5.md`: 8 plan runs, 7 execution runs, every executed Tasks 1–2 re-verified by rerun; K1 FAIL (median 0.71, T2 free produced no plan), K2 FAIL (free 2 of 3 vs railed 3 of 3), K3 FAIL (free faster only on T1); column one filled in 3 of 3 tasks → drop |
 | 6 Apply licensed change | dropped | G1: K1–K3 all fail, so there is nothing to apply; `writing-plans` stays 0.12.1 with its rails |
 | 7a Merge and deploy Tasks 0–4 | done | review `ead6acd` (0 Critical, 3 Important fixed); merge `e3a07f9` on main, local only, no pull or push; on merged main: 105 pass, 0 fail, validate 36/36, build --strict, doctor 36/36; deploy: `~/.claude`, `-zai`, `-helium`, `-kimi` and `~/.gemini/antigravity-cli` each 0/36 stale, the 4 changed skills sha256-matched on all 7 targets; Codex and Gemini have 36 symlinks each into main's `skills/`; claude.ai and remote hosts not touched (owner) |
-| 7b–8 | todo | — |
+| 7b Merge the ablation record | done | merge `b84d8f4` on main (docs only, 0 files under `skills/`, so no install sync); on merged main: 105 pass, 0 fail, validate 36/36, build --strict, doctor 36/36; worktree `../dstack-fast-track` and branch `feat/fast-track-sdd` removed; replay copies deleted |
+| 8 Re-measure | todo | — |
 
 **Deviations from plan:**
 - 2026-09-28 — First draft (same path, never committed) rewritten after review. Dropped: draft Task 1, because the same "small task → no chain" router paragraph already failed K2 on all three models (`docs/ablations/2026-09-using-dstack-size-gate.md`); its host-portability half is not a speed cause and belongs in its own plan if wanted. Also dropped: draft Task 2, because subagent waits are 6% of agent time in long sessions and `subagent-driven-development` ran in 3 of 31. Draft Task 3 is dropped because its premise is false: the persona prompts already live in `multi-persona-review/references/`, and the five seats are evidence-based. Draft Task 4's triad is dropped because it duplicates `writing-plans` and `discovering-requirements`. Draft Task 6 is dropped because it is not a speed cause. Kept and reshaped: anti-drift (Tasks 2–4) and the replanning hand-off (Task 4).
