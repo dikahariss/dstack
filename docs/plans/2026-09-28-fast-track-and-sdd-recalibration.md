@@ -10,7 +10,7 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
 
 ## Status
 
-**Updated:** 2026-09-28 · **Branch:** `feat/fast-track-sdd` (worktree `../dstack-fast-track`) · **Next:** Task 5 (execution phase running), then Task 6 and 7b
+**Updated:** 2026-09-28 · **Branch:** `feat/fast-track-sdd` (worktree `../dstack-fast-track`) · **Next:** Task 7b (merge the ablation record), then Task 8 on or after 2026-10-13 with `--since=2026-09-29`
 
 | Task | State | Evidence |
 |---|---|---|
@@ -19,8 +19,8 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
 | 2 Plan ↔ spec link | done | `5d7cfca`; writing-plans 0.12.0, 3429/5000 tokens; validate 36/36; build --strict exit 0 |
 | 3 Drift rule in executors | done | `08e8b13`; executing-plans 0.6.0 (1574/2200), subagent-driven-development 0.8.0 (2418/4500); validate 36/36; build --strict exit 0 |
 | 4 Drift gate and replanning check | done | `0b7b172`; finishing-development-branch 0.5.0 (2630/3500); validate 36/36; build --strict exit 0 |
-| 5 writing-plans ablation | in progress | plan phase done (T1-railed-opus and T2-free-opus hit the 45-min cap); execution phase running |
-| 6 Apply licensed change | todo | — |
+| 5 writing-plans ablation | done | SHA in Task 7b's commit; `docs/ablations/2026-09-writing-plans-opus5.md`: 8 plan runs, 7 execution runs, every executed Tasks 1–2 re-verified by rerun; K1 FAIL (median 0.71, T2 free produced no plan), K2 FAIL (free 2 of 3 vs railed 3 of 3), K3 FAIL (free faster only on T1); column one filled in 3 of 3 tasks → drop |
+| 6 Apply licensed change | dropped | G1: K1–K3 all fail, so there is nothing to apply; `writing-plans` stays 0.12.1 with its rails |
 | 7a Merge and deploy Tasks 0–4 | done | review `ead6acd` (0 Critical, 3 Important fixed); merge `e3a07f9` on main, local only, no pull or push; on merged main: 105 pass, 0 fail, validate 36/36, build --strict, doctor 36/36; deploy: `~/.claude`, `-zai`, `-helium`, `-kimi` and `~/.gemini/antigravity-cli` each 0/36 stale, the 4 changed skills sha256-matched on all 7 targets; Codex and Gemini have 36 symlinks each into main's `skills/`; claude.ai and remote hosts not touched (owner) |
 | 7b–8 | todo | — |
 
@@ -44,6 +44,9 @@ Implement task by task. `/test-driven-development` decides each task's risk tier
   - Result: 3+ bucket `doc_share` is 0.55; the writing-plans sessions are n=27. Flags are now strict: an unknown flag, a malformed date, or no readable config dir exits with 2.
 - 2026-09-28 — Task 7 split in two. 7a merges and deploys Tasks 0–4 now, because the owner asked how much longer ("masih lama ya?") while the ablation still had about an hour to run. 7b merges and deploys Task 6 if G1 passes.
 - 2026-09-28 — Antigravity CLI (`~/.gemini/antigravity-cli/skills`) was a stale 4 August copy: 29 of 36 skills and `writing-plans` 0.4.0. It is now an additive rsync of the source `skills/` folders, the same format it held before. The orphan `auditing-short-video` (renamed to `auditing-video`) held only shipped files; it was moved to `~/.gemini/antigravity-cli/skills-retired-2026-09-28/`, not deleted. The worktree and branch stay after 7a because Tasks 5–6 continue on them.
+- 2026-09-28 — Task 5 budget: reported cost US$64.45 over 13 runs, plus the two runs killed at the cap, which report no cost. That exceeds the US$60 cap. Cost was not summed between phases, so the overrun surfaced only afterwards. The last run was kept to completion on the owner's "lanjutkan sampai selesai".
+- 2026-09-28 — Task 5 method: replay copies were `git archive` snapshots turned into fresh repos, not worktrees of the owner's repos, so the original plans could not leak in and the owner's repos were never touched. Verification was a rerun of each plan's Tasks 1–2 checks by the orchestrator. The browser/UAT steps were blocked for both arms by the no-dev-server rule.
+- 2026-09-28 — Task 7b carries only documents (Task 6 dropped), so it needs no install sync. Task 8's window therefore starts the day after 7a's sync: `--since=2026-09-29`, earliest run 2026-10-13, with no verdict on Task 6 and a report on Tasks 2–4 only.
 - 2026-09-28 — For Task 8, `--since` is the UTC day after the 7b local sync. Two reasons: the filter keys on the UTC start day, and this plan's own ablation sessions ran on 2026-09-28.
 - 2026-09-28 — Task 6 Step 5 said "below its previous 3299 tokens". Read that as below the 0.12.1 count (3473), since Task 2 and the review both raised it.
 
