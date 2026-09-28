@@ -1,5 +1,9 @@
 # subagent-driven-development — changelog
 
+- **0.8.1** — 2026-09-28: branch review: set-up extracts the spec rows each task covers or touches and passes them to the implementer (new "Spec this task implements" section) and the spec reviewer; the controller, not the implementer, applies `/writing-specs`' amend rule — `AGREED` waits for sign-off, `DRAFT` lands in the Status write-back commit; the drift list is marked open.
+
+- **0.8.0** — 2026-09-28: spec drift rule for deviations; the spec reviewer receives the full text of the task's covered `AC-n` rows (SDD review 2026-09-28).
+
 - **0.7.3** — 2026-09-04: branch review 2026-09-04: the two-round review cap sits inside step 2.5 where the loop is, so the numbered process is one list again; the cap and the worked-run pointer are stated once; the spec reviewer prompt states its rule once; model tiers declared not exhaustive.
 
 - **0.7.2** — 2026-09-04: description says what the skill produces and when to open it, never the workflow (ADR-0031, plan Task 10): 59 words; quoted trigger phrases kept.

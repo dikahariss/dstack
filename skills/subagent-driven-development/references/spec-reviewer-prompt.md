@@ -14,6 +14,12 @@ Agent tool (general-purpose):
 
     [FULL TEXT of task requirements]
 
+    ## Spec rows this task covers
+
+    [The same spec text the implementer received: every ID in the task's
+    `Covers:` line and any decision, contract, or schema row it touches — or
+    "none"]
+
     ## What Implementer Claims They Built
 
     [From implementer's report]
@@ -21,7 +27,8 @@ Agent tool (general-purpose):
     ## Verify against the code
 
     The implementer's report is a claim, not evidence. Read the diff and compare
-    it to the task text line by line. Report what is missing and what was added
+    it to the task text and those spec rows line by line. A difference from a spec
+    row is reported even where the task text allowed it. Report what is missing and what was added
     that the task did not ask for, each with `file:line`.
 
     ## Your Job
